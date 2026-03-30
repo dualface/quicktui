@@ -22,6 +22,7 @@ LISTEN_ADDR=""
 LISTEN_PORT=""
 DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
+SERVICE_STARTED=""
 
 cleanup() {
     [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR"
@@ -82,6 +83,16 @@ download() {
     fi
 }
 
+run_privileged() {
+    if [ "$(id -u)" = "0" ]; then
+        "$@"
+    elif command -v sudo > /dev/null 2>&1; then
+        sudo "$@"
+    else
+        die "Root privileges required but 'sudo' is not available. Please run as root or install sudo."
+    fi
+}
+
 # ============================================================
 # Step 1: Detect platform and architecture
 # ============================================================
@@ -134,11 +145,11 @@ install_tmux() {
         brew install tmux
     elif [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get > /dev/null 2>&1; then
-            sudo apt-get update -q && sudo apt-get install -y tmux
+            run_privileged apt-get update -q && run_privileged apt-get install -y tmux
         elif command -v yum > /dev/null 2>&1; then
-            sudo yum install -y tmux
+            run_privileged yum install -y tmux
         elif command -v dnf > /dev/null 2>&1; then
-            sudo dnf install -y tmux
+            run_privileged dnf install -y tmux
         else
             die "No supported package manager found (apt/yum/dnf). Please install tmux manually."
         fi
@@ -244,8 +255,8 @@ install_binary() {
             ;;
         2)
             INSTALL_PATH="/usr/local/bin/quicktui"
-            sudo mv "$DOWNLOADED_BINARY" "$INSTALL_PATH"
-            sudo chmod 755 "$INSTALL_PATH"
+            run_privileged mv "$DOWNLOADED_BINARY" "$INSTALL_PATH"
+            run_privileged chmod 755 "$INSTALL_PATH"
             ;;
         *)
             die "Invalid choice: $_choice"
@@ -319,10 +330,15 @@ setup_launchd() {
   <string>ai.quicktui</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/bin/sh</string>
-    <string>-c</string>
-    <string>. ${QUICKTUI_CONFIG_FILE} && QUICKTUI_ADDR=${LISTEN_ADDR}:${LISTEN_PORT} exec ${INSTALL_PATH}</string>
+    <string>${INSTALL_PATH}</string>
   </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>QUICKTUI_TOKEN</key>
+    <string>${TOKEN}</string>
+    <key>QUICKTUI_ADDR</key>
+    <string>${LISTEN_ADDR}:${LISTEN_PORT}</string>
+  </dict>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
@@ -332,9 +348,14 @@ setup_launchd() {
 EOF
 
     chmod 600 "$_plist_file"
-    launchctl load "$_plist_file" 2>/dev/null || \
-        warn "Failed to load launchd service. You can start it manually: launchctl load $_plist_file"
-    info "launchd service registered: $_plist_file"
+    if launchctl load "$_plist_file" 2>/dev/null; then
+        SERVICE_STARTED="yes"
+        info "launchd service registered: $_plist_file"
+    else
+        warn "Failed to load launchd service. You can start it manually:"
+        warn "  launchctl load $_plist_file"
+        info "launchd service registered (not started): $_plist_file"
+    fi
 }
 
 setup_systemd() {
@@ -358,12 +379,18 @@ Restart=on-failure
 WantedBy=default.target
 EOF
 
-    systemctl --user daemon-reload 2>/dev/null || \
-        { warn "systemctl --user not available. Service file saved to $_service_file"; return 0; }
+    if ! systemctl --user daemon-reload 2>/dev/null; then
+        warn "systemctl --user not available. Service file saved to $_service_file"
+        return 0
+    fi
     systemctl --user enable quicktui 2>/dev/null || true
-    systemctl --user start quicktui 2>/dev/null || \
+    if systemctl --user start quicktui 2>/dev/null; then
+        SERVICE_STARTED="yes"
+        info "systemd user service registered: $_service_file"
+    else
         warn "Failed to start service. Try: systemctl --user start quicktui"
-    info "systemd user service registered: $_service_file"
+        info "systemd user service registered (not started): $_service_file"
+    fi
 }
 
 configure_service() {
@@ -372,9 +399,20 @@ configure_service() {
         return 0
     fi
 
-    printf 'Listen address [default: 0.0.0.0]: '
-    read -r LISTEN_ADDR </dev/tty
-    LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
+    while true; do
+        printf 'Listen address [default: 0.0.0.0]: '
+        read -r LISTEN_ADDR </dev/tty
+        LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
+        case "$LISTEN_ADDR" in
+            *[\ \;\`\$\(\)\'\"\#\&\|\<\>\\]*)
+                warn "Invalid listen address: '$LISTEN_ADDR'. Only alphanumeric characters, dots, hyphens, and colons are allowed."
+                LISTEN_ADDR=""
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
 
     while true; do
         printf 'Port [default: 3000]: '
@@ -408,15 +446,6 @@ configure_service() {
 # ============================================================
 
 print_success() {
-    _ip=""
-    if [ "$PLATFORM" = "darwin" ]; then
-        _ip="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "")"
-    else
-        _ip="$(hostname -I 2>/dev/null | awk '{print $1}' || echo "")"
-    fi
-    [ -z "$_ip" ] && _ip="localhost"
-
-    _port="${LISTEN_PORT:-3000}"
     _version="$("$INSTALL_PATH" --version 2>/dev/null || echo "")"
 
     printf '\n\033[0;32m✓ QuickTUI installed successfully!\033[0m\n\n'
@@ -424,10 +453,32 @@ print_success() {
     printf '  Config:  %s\n' "$QUICKTUI_CONFIG_FILE"
     [ -n "$_version" ] && printf '  Version: %s\n' "$_version"
     printf '\n'
-    printf 'Getting started:\n'
-    printf '  Open in browser:  http://%s:%s\n' "$_ip" "$_port"
-    printf '  Token:            %s\n' "$TOKEN"
-    printf '  (Enter the token when prompted on first login)\n'
+
+    if [ "$SERVICE_STARTED" = "yes" ]; then
+        _ip=""
+        if [ "$PLATFORM" = "darwin" ]; then
+            _ip="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "")"
+        else
+            _ip="$(hostname -I 2>/dev/null | awk '{print $1}' || echo "")"
+        fi
+        [ -z "$_ip" ] && _ip="localhost"
+        printf 'Getting started:\n'
+        printf '  Open in browser:  http://%s:%s\n' "$_ip" "$LISTEN_PORT"
+        printf '  Token:            %s\n' "$TOKEN"
+        printf '  (Enter the token when prompted on first login)\n'
+    elif [ -n "$LISTEN_PORT" ]; then
+        printf 'Service registration failed. Start manually:\n'
+        if [ "$PLATFORM" = "darwin" ]; then
+            printf '  launchctl load ~/Library/LaunchAgents/ai.quicktui.plist\n'
+        else
+            printf '  systemctl --user start quicktui\n'
+        fi
+        printf '  Token: %s\n' "$TOKEN"
+    else
+        printf 'To start QuickTUI, run:\n'
+        printf '  QUICKTUI_TOKEN=%s %s\n' "$TOKEN" "$INSTALL_PATH"
+    fi
+
     printf '\n'
     printf 'iOS App:\n'
     printf '  App Store & TestFlight:  https://quicktui.ai/#download\n'

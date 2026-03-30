@@ -232,6 +232,10 @@ section {
 }
 
 /* === Download === */
+.download {
+  background-color: var(--bg-secondary);
+}
+
 .download h2 {
   font-family: var(--font-mono);
   font-size: clamp(1.5rem, 3vw, 2rem);

@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+umask 077
 
 # ============================================================
 # QuickTUI Installer
@@ -21,6 +22,9 @@ LISTEN_ADDR=""
 LISTEN_PORT=""
 DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
+
+cleanup() { [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR"; }
+trap cleanup EXIT
 
 # ============================================================
 # Utility functions
@@ -52,7 +56,7 @@ confirm() {
         _hint="[y/N]"
     fi
     printf '%s %s ' "$_prompt" "$_hint"
-    read -r _answer
+    read -r _answer </dev/tty
     case "$_answer" in
         [Yy]*) return 0 ;;
         [Nn]*) return 1 ;;
@@ -217,7 +221,7 @@ install_binary() {
     printf '  [1] %s/.local/bin/quicktui  (no sudo required)  [default]\n' "$HOME"
     printf '  [2] /usr/local/bin/quicktui  (requires sudo)\n'
     printf 'Enter choice [1]: '
-    read -r _choice
+    read -r _choice </dev/tty
     _choice="${_choice:-1}"
 
     case "$_choice" in
@@ -258,7 +262,7 @@ configure_token() {
     printf '  [1] Generate a random token automatically  [default]\n'
     printf '  [2] Enter my own token\n'
     printf 'Enter choice [1]: '
-    read -r _choice
+    read -r _choice </dev/tty
     _choice="${_choice:-1}"
 
     case "$_choice" in
@@ -272,9 +276,9 @@ configure_token() {
             ;;
         2)
             printf 'Enter your token (input hidden): '
-            stty -echo 2>/dev/null || true
-            read -r TOKEN
-            stty echo 2>/dev/null || true
+            stty -echo </dev/tty 2>/dev/null || true
+            read -r TOKEN </dev/tty
+            stty echo </dev/tty 2>/dev/null || true
             printf '\n'
             if [ -z "$TOKEN" ]; then
                 die "Token cannot be empty."
@@ -371,11 +375,11 @@ configure_service() {
     fi
 
     printf 'Listen address [default: 0.0.0.0]: '
-    read -r LISTEN_ADDR
+    read -r LISTEN_ADDR </dev/tty
     LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
 
     printf 'Port [default: 3000]: '
-    read -r LISTEN_PORT
+    read -r LISTEN_PORT </dev/tty
     LISTEN_PORT="${LISTEN_PORT:-3000}"
 
     if [ "$PLATFORM" = "darwin" ]; then

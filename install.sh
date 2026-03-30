@@ -23,8 +23,11 @@ LISTEN_PORT=""
 DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
 
-cleanup() { [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR"; }
-trap cleanup EXIT
+cleanup() {
+    [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR"
+    stty echo </dev/tty 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
 
 # ============================================================
 # Utility functions
@@ -316,15 +319,10 @@ setup_launchd() {
   <string>ai.quicktui</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${INSTALL_PATH}</string>
+    <string>/bin/sh</string>
+    <string>-c</string>
+    <string>. ${QUICKTUI_CONFIG_FILE} && QUICKTUI_ADDR=${LISTEN_ADDR}:${LISTEN_PORT} exec ${INSTALL_PATH}</string>
   </array>
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>QUICKTUI_TOKEN</key>
-    <string>${TOKEN}</string>
-    <key>QUICKTUI_ADDR</key>
-    <string>${LISTEN_ADDR}:${LISTEN_PORT}</string>
-  </dict>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
@@ -378,9 +376,25 @@ configure_service() {
     read -r LISTEN_ADDR </dev/tty
     LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
 
-    printf 'Port [default: 3000]: '
-    read -r LISTEN_PORT </dev/tty
-    LISTEN_PORT="${LISTEN_PORT:-3000}"
+    while true; do
+        printf 'Port [default: 3000]: '
+        read -r LISTEN_PORT </dev/tty
+        LISTEN_PORT="${LISTEN_PORT:-3000}"
+        case "$LISTEN_PORT" in
+            ''|*[!0-9]*)
+                warn "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
+                LISTEN_PORT=""
+                ;;
+            *)
+                if [ "$LISTEN_PORT" -lt 1 ] || [ "$LISTEN_PORT" -gt 65535 ]; then
+                    warn "Port must be between 1 and 65535."
+                    LISTEN_PORT=""
+                else
+                    break
+                fi
+                ;;
+        esac
+    done
 
     if [ "$PLATFORM" = "darwin" ]; then
         setup_launchd

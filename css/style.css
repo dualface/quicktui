@@ -74,6 +74,13 @@ section {
   box-shadow: 0 8px 32px rgba(13, 42, 107, 0.5);
 }
 
+.hero .subtitle {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--text-secondary);
+  max-width: 540px;
+  margin: 0 auto 32px;
+}
+
 .hero h1 {
   font-family: var(--font-mono);
   font-size: clamp(2.5rem, 6vw, 4rem);
@@ -86,7 +93,7 @@ section {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
   color: var(--text-secondary);
   max-width: 640px;
-  margin: 0 auto 40px;
+  margin: 0 auto 8px;
   line-height: 1.5;
 }
 
@@ -248,6 +255,15 @@ section {
   color: var(--text-secondary);
   margin-bottom: 16px;
   text-align: center;
+}
+
+.download-group-note {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  margin-left: 8px;
 }
 
 .download-buttons {

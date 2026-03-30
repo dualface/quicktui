@@ -156,7 +156,7 @@ check_tmux() {
 
     _tmux_version="$(tmux -V 2>/dev/null | sed 's/tmux //')"
     _major="$(echo "$_tmux_version" | cut -d. -f1)"
-    _minor="$(echo "$_tmux_version" | cut -d. -f2 | cut -d- -f1)"
+    _minor="$(echo "$_tmux_version" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')"
 
     if [ "$_major" -lt 3 ] || { [ "$_major" -eq 3 ] && [ "$_minor" -lt 2 ]; }; then
         warn "tmux $_tmux_version detected, but QuickTUI requires tmux 3.2 or later."

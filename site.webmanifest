@@ -1,0 +1,11 @@
+{
+  "name": "QuickTUI",
+  "short_name": "QuickTUI",
+  "icons": [
+    { "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/images/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0d2a6b",
+  "background_color": "#0d2a6b",
+  "display": "standalone"
+}

@@ -18,11 +18,11 @@ curl -fsSL https://quicktui.ai/install.sh | sh
 
 ## 支持平台
 
-| 平台 | 架构 | 二进制文件名 |
-|------|------|-------------|
+| 平台  | 架构                  | 二进制文件名            |
+| ----- | --------------------- | ----------------------- |
 | macOS | Apple Silicon (arm64) | `quicktui-darwin-arm64` |
-| macOS | Intel (amd64) | `quicktui-darwin-amd64` |
-| Linux | x86_64 (amd64) | `quicktui-linux-amd64` |
+| macOS | Intel (amd64)         | `quicktui-darwin-amd64` |
+| Linux | x86_64 (amd64)        | `quicktui-linux-amd64`  |
 
 不支持的平台（Windows 原生、FreeBSD 等）：打印错误信息并退出。
 
@@ -39,7 +39,7 @@ curl -fsSL https://quicktui.ai/install.sh | sh
 - 检查 `tmux` 是否在 PATH 中
 - **未安装**：询问用户是否自动安装
   - macOS：通过 `brew install tmux`
-  - Linux：检测包管理器（apt / yum / dnf），执行对应安装命令
+  - Linux：检测包管理器（apt / yum / dnf），通过 `run_privileged` 执行对应安装命令（兼容 root 环境）
   - 用户拒绝：打印手动安装提示后退出
 - **已安装但版本 < 3.2**：打印警告，询问用户是否继续
   - 版本解析：`tmux -V` 输出格式为 `tmux 3.x`
@@ -56,6 +56,7 @@ curl -fsSL https://quicktui.ai/install.sh | sh
 - 校验失败：打印错误并删除下载文件后退出
 
 **发布要求**：每次发布时，需同时上传 `<filename>.sha256` 文件，内容格式为：
+
 ```
 <sha256hex>  <filename>
 ```
@@ -63,6 +64,7 @@ curl -fsSL https://quicktui.ai/install.sh | sh
 ### Step 4：选择安装路径
 
 提示用户选择：
+
 ```
 Where would you like to install QuickTUI?
   [1] ~/.local/bin/quicktui  (no sudo required)  [default]
@@ -70,7 +72,7 @@ Where would you like to install QuickTUI?
 ```
 
 - 选择 1：如目录不存在则创建 `~/.local/bin`，并提示用户将其加入 PATH（若不在 PATH 中）
-- 选择 2：使用 `sudo mv` 安装，设置权限 `755`
+- 选择 2：使用 `run_privileged mv` 安装，设置权限 `755`（`run_privileged` 在 root 下直接执行，否则调用 `sudo`）
 
 ### Step 5：配置 token
 
@@ -84,6 +86,7 @@ How would you like to set up your access token?
 - 选择 2：提示用户输入，不回显（`stty -echo`）
 
 保存到 `~/.config/quicktui/config`：
+
 ```
 QUICKTUI_TOKEN=<token>
 ```
@@ -97,14 +100,18 @@ Would you like to register QuickTUI as a background service? [y/N]
 ```
 
 用户选择 yes 则继续询问：
+
 ```
 Listen address [default: 0.0.0.0]:
 Port [default: 3000]:
 ```
 
+**地址校验**：`LISTEN_ADDR` 输入不得包含 shell 特殊字符（空格、`;`、`` ` ``、`$`、`()`、`'"`、`#`、`&`、`|`、`<>`、`\`），否则提示重新输入。
+
 **macOS（launchd user agent）：**
 
 生成 `~/Library/LaunchAgents/ai.quicktui.plist`：
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -131,11 +138,12 @@ Port [default: 3000]:
 </plist>
 ```
 
-执行 `launchctl load ~/Library/LaunchAgents/ai.quicktui.plist` 启动服务。
+执行 `launchctl load ~/Library/LaunchAgents/ai.quicktui.plist` 启动服务。启动成功则记录状态，失败时输出手动启动命令。
 
 **Linux（systemd user service）：**
 
 生成 `~/.config/systemd/user/quicktui.service`：
+
 ```ini
 [Unit]
 Description=QuickTUI Remote Terminal Server
@@ -152,15 +160,24 @@ WantedBy=default.target
 ```
 
 执行：
+
 ```bash
 systemctl --user daemon-reload
 systemctl --user enable quicktui
 systemctl --user start quicktui
 ```
 
+启动成功则记录状态，失败时输出 `systemctl --user start quicktui` 手动启动提示。
+
 > **注意**：服务通过 `EnvironmentFile` 读取 `QUICKTUI_TOKEN`，服务配置文件本身不包含 token 明文。
 
 ### Step 7：打印完成信息
+
+完成信息包含 Binary 路径、Config 路径和版本号（若可获取）。
+
+根据服务启动状态分三种情况输出：
+
+**情况 A：服务已成功启动**
 
 ```
 ✓ QuickTUI installed successfully!
@@ -171,14 +188,30 @@ systemctl --user start quicktui
 
 Getting started:
   Open in browser:  http://<local-ip>:<port>
-  Token:            <token>  (save this, you'll need it on first login)
+  Token:            <token>
+  (Enter the token when prompted on first login)
 
 iOS App:
-  App Store:   https://quicktui.ai/#download
-  TestFlight:  https://quicktui.ai/#download
+  App Store & TestFlight:  https://quicktui.ai/#download
 ```
 
 本机 IP 通过 `hostname -I`（Linux）或 `ipconfig getifaddr en0`（macOS）获取，获取失败则显示 `localhost`。
+
+**情况 B：配置了服务但启动失败**
+
+```
+Service registration failed. Start manually:
+  launchctl load ~/Library/LaunchAgents/ai.quicktui.plist   # macOS
+  systemctl --user start quicktui                           # Linux
+  Token: <token>
+```
+
+**情况 C：未注册后台服务**
+
+```
+To start QuickTUI, run:
+  QUICKTUI_TOKEN=<token> /path/to/quicktui
+```
 
 ## 文件存储结构
 

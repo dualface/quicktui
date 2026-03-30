@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360">
+  <rect x="0" y="0" width="480" height="360" rx="24" ry="24" fill="#1a1b26" stroke="#30363d" stroke-width="2"/>
+  <rect x="12" y="12" width="456" height="336" rx="12" ry="12" fill="#0d1117"/>
+  <text x="240" y="180" text-anchor="middle" dominant-baseline="middle" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16">iPad Screenshot</text>
+</svg>

@@ -475,6 +475,18 @@ systemctl --user restart quicktui                  # Linux</code></pre>
               <p>The tmux session you tried to open no longer exists on the server. It may have been closed or the tmux server was restarted. Refresh the session list and select an active session.</p>
             </div>
           </details>
+
+          <details class="faq-item">
+            <summary>I can't type with a non-English input method (Chinese, Japanese, etc.)</summary>
+            <div class="faq-answer">
+              <p>Some input methods (IMEs) do not work directly in the terminal view because the candidate selection UI conflicts with terminal input handling. Use the <strong>Edit</strong> dialog in the shortcut bar instead:</p>
+              <ol style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
+                <li>Tap the <strong>Edit</strong> button in the shortcut bar above the keyboard.</li>
+                <li>Type your text using any input method in the dialog box.</li>
+                <li>Tap <strong>Send</strong> — the text is sent to the terminal at once.</li>
+              </ol>
+            </div>
+          </details>
         </div>
       </div>
     </section>

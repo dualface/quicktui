@@ -347,6 +347,18 @@ systemctl --user status quicktui  # Linux</code></pre>
           </details>
 
           <details class="faq-item">
+            <summary>Terminal rendering is broken when using Ghostty</summary>
+            <div class="faq-answer">
+              <p>Ghostty sets <code>TERM=xterm-ghostty</code> by default. If you installed QuickTUI while Ghostty was your active terminal, the server may have inherited this value, which tmux requires to be present on the server as well.</p>
+              <p>Edit <code>~/.config/quicktui/config</code> and set:</p>
+              <pre><code>QUICKTUI_TERM=xterm-ghostty</code></pre>
+              <p>Then restart the service:</p>
+              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
+systemctl --user restart quicktui                  # Linux</code></pre>
+            </div>
+          </details>
+
+          <details class="faq-item">
             <summary>PTY spawn failed / internal server error when opening a session</summary>
             <div class="faq-answer">
               <p>This usually happens when the server cannot find tmux or cannot open a terminal. Check the server logs:</p>

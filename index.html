@@ -236,8 +236,9 @@
               <div class="connect-step-title">Find your server address and token</div>
               <div class="connect-step-desc">
                 <p>You need two things to connect: the <strong>server address</strong> (IP or hostname + port) and your <strong>access token</strong>.</p>
-                <p>To find your server's local IP on macOS:</p>
-                <pre><code>ipconfig getifaddr en0</code></pre>
+                <p>To find your server's local IP:</p>
+                <pre><code>macOS:  ipconfig getifaddr en0
+Linux:  hostname -I | awk '{print $1}'</code></pre>
                 <p>To view your access token:</p>
                 <pre><code>cat ~/.config/quicktui/config</code></pre>
                 <p>Copy the value after <code>QUICKTUI_TOKEN=</code>.</p>

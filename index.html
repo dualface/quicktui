@@ -209,6 +209,163 @@
       </div>
     </section>
 
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+      <div class="container">
+        <h2 class="section-title">FAQ</h2>
+
+        <div class="faq-group">
+          <h3 class="faq-group-title">Installation</h3>
+
+          <details class="faq-item">
+            <summary>Checksum verification failed during install</summary>
+            <div class="faq-answer">
+              <p>This usually means the download was interrupted or corrupted. Try running the installer again. If the problem persists, the release assets may have been updated — wait a few minutes and retry.</p>
+              <p>You can also verify your network connection and ensure nothing is intercepting HTTPS traffic (e.g. a corporate proxy).</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary><code>~/.local/bin</code> is not in my PATH after install</summary>
+            <div class="faq-answer">
+              <p>Add the following line to your shell config file (<code>~/.zshrc</code>, <code>~/.bashrc</code>, etc.), then restart your terminal:</p>
+              <pre><code>export PATH="$HOME/.local/bin:$PATH"</code></pre>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>tmux is not installed or the version is too old</summary>
+            <div class="faq-answer">
+              <p>QuickTUI requires tmux 3.2 or later. Install or upgrade it:</p>
+              <pre><code>macOS:   brew install tmux
+Ubuntu:  sudo apt install tmux
+CentOS:  sudo yum install tmux</code></pre>
+            </div>
+          </details>
+        </div>
+
+        <div class="faq-group">
+          <h3 class="faq-group-title">Server &amp; Service</h3>
+
+          <details class="faq-item">
+            <summary>Service fails to start: "token is required"</summary>
+            <div class="faq-answer">
+              <p>The server cannot find your access token. Check that <code>~/.config/quicktui/config</code> exists and contains a <code>QUICKTUI_TOKEN=...</code> line. If the file is missing, re-run the installer.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Can't connect — connection refused</summary>
+            <div class="faq-answer">
+              <p>First, verify the service is running:</p>
+              <pre><code>launchctl list | grep quicktui   # macOS
+systemctl --user status quicktui  # Linux</code></pre>
+              <p>If the service is stopped, check the logs for errors. Make sure your firewall allows the configured port (default: <code>8022</code>).</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Non-ASCII characters display as underscores</summary>
+            <div class="faq-answer">
+              <p>The server is running without a locale. Re-run the installer and set the <code>LANG</code> option to match your system, or pass it explicitly:</p>
+              <pre><code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --lang en_US.UTF-8</code></pre>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>PTY spawn failed / internal server error when opening a session</summary>
+            <div class="faq-answer">
+              <p>This usually happens when the server cannot find tmux or cannot open a terminal. Check the server logs:</p>
+              <pre><code>tail -f ~/Library/Logs/QuickTUI/stderr.log   # macOS
+journalctl --user -u quicktui -f             # Linux</code></pre>
+              <p>Ensure tmux is installed and the <code>TERM</code> environment variable is set. Re-running the installer will detect and configure these automatically.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How do I view server logs?</summary>
+            <div class="faq-answer">
+              <pre><code># macOS
+tail -f ~/Library/Logs/QuickTUI/stderr.log
+
+# Linux
+journalctl --user -u quicktui -f</code></pre>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How do I change the listen address or port?</summary>
+            <div class="faq-answer">
+              <p>Pass <code>--addr</code> and <code>--port</code> when running the installer:</p>
+              <pre><code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --addr 127.0.0.1 --port 9000</code></pre>
+              <p>To change an existing install, edit the wrapper script at <code>~/Library/LaunchAgents/ai.quicktui.sh</code> (macOS) or the service file at <code>~/.config/systemd/user/quicktui.service</code> (Linux) and restart the service.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How do I uninstall QuickTUI?</summary>
+            <div class="faq-answer">
+              <pre><code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --uninstall</code></pre>
+              <p>This stops the service and removes the binary, config, service files, and logs.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="faq-group">
+          <h3 class="faq-group-title">tmux</h3>
+
+          <details class="faq-item">
+            <summary>What tmux version is required?</summary>
+            <div class="faq-answer">
+              <p>tmux 3.2 or later is required. Check your version with <code>tmux -V</code>.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>My session list is empty</summary>
+            <div class="faq-answer">
+              <p>QuickTUI connects to your existing tmux server. You need at least one active tmux session on the machine running the server. Create one with:</p>
+              <pre><code>tmux new-session -s mysession</code></pre>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How do I create a new tmux session from the app?</summary>
+            <div class="faq-answer">
+              <p>Currently, sessions must be created directly on the server machine via the tmux CLI. Support for creating sessions from the app is planned for a future release.</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="faq-group">
+          <h3 class="faq-group-title">iOS App &amp; Browser</h3>
+
+          <details class="faq-item">
+            <summary>What is the access token?</summary>
+            <div class="faq-answer">
+              <p>The access token is a secret you set during installation. It protects your server from unauthorized access. You can find it in <code>~/.config/quicktui/config</code> on your server:</p>
+              <pre><code>cat ~/.config/quicktui/config</code></pre>
+              <p>Enter this token when prompted on first login in the app or browser.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Can I connect over the internet?</summary>
+            <div class="faq-answer">
+              <p>Yes. You need your server to be reachable from the internet — either via a public IP, a VPN, or a tunnel service such as Tailscale or Cloudflare Tunnel. Make sure the configured port (<code>8022</code> by default) is accessible and your token is kept secret.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>The app shows "Session not found"</summary>
+            <div class="faq-answer">
+              <p>The tmux session you tried to open no longer exists on the server. It may have been closed or the tmux server was restarted. Refresh the session list and select an active session.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
       <div class="container">

@@ -226,14 +226,6 @@
           </details>
 
           <details class="faq-item">
-            <summary><code>~/.local/bin</code> is not in my PATH after install</summary>
-            <div class="faq-answer">
-              <p>Add the following line to your shell config file (<code>~/.zshrc</code>, <code>~/.bashrc</code>, etc.), then restart your terminal:</p>
-              <pre><code>export PATH="$HOME/.local/bin:$PATH"</code></pre>
-            </div>
-          </details>
-
-          <details class="faq-item">
             <summary>tmux is not installed or the version is too old</summary>
             <div class="faq-answer">
               <p>QuickTUI requires tmux 3.2 or later. Install or upgrade it:</p>
@@ -324,7 +316,7 @@ journalctl --user -u quicktui -f</code></pre>
           <details class="faq-item">
             <summary>My session list is empty</summary>
             <div class="faq-answer">
-              <p>QuickTUI connects to your existing tmux server. You need at least one active tmux session on the machine running the server. Create one with:</p>
+              <p>QuickTUI connects to your existing tmux server. If no sessions exist yet, you can create one directly from the app, or start one on the server with:</p>
               <pre><code>tmux new-session -s mysession</code></pre>
             </div>
           </details>
@@ -332,7 +324,7 @@ journalctl --user -u quicktui -f</code></pre>
           <details class="faq-item">
             <summary>How do I create a new tmux session from the app?</summary>
             <div class="faq-answer">
-              <p>Currently, sessions must be created directly on the server machine via the tmux CLI. Support for creating sessions from the app is planned for a future release.</p>
+              <p>Use the <strong>New Session</strong> button in the app. You only need the server to be running — no existing tmux sessions are required.</p>
             </div>
           </details>
         </div>

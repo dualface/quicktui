@@ -207,6 +207,7 @@ section {
 }
 
 .code-block {
+  position: relative;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -230,6 +231,39 @@ section {
 .code-block .command {
   color: var(--text-primary);
 }
+
+.copy-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.copy-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.copy-btn svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.copy-btn .icon-check {
+  display: none;
+  color: var(--accent-green);
+}
+
+.copy-btn.copied .icon-copy { display: none; }
+.copy-btn.copied .icon-check { display: block; }
+.copy-btn.copied { border-color: var(--accent-green); }
 
 /* === Download === */
 .download {

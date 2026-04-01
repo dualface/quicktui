@@ -8,9 +8,17 @@ umask 077
 # ============================================================
 
 QUICKTUI_REPO="dualface/quicktui"
-QUICKTUI_RELEASES="https://github.com/${QUICKTUI_REPO}/releases/latest/download"
+QUICKTUI_RELEASES="${QUICKTUI_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/latest/download}"
 QUICKTUI_CONFIG_DIR="${HOME}/.config/quicktui"
 QUICKTUI_CONFIG_FILE="${QUICKTUI_CONFIG_DIR}/config"
+
+# CLI options (set via arguments)
+NON_INTERACTIVE=""
+OPT_INSTALL_DIR=""
+OPT_TOKEN=""
+OPT_NO_SERVICE=""
+OPT_ADDR=""
+OPT_PORT=""
 
 # Will be set during detection
 PLATFORM=""
@@ -25,7 +33,7 @@ DOWNLOAD_TMPDIR=""
 SERVICE_STARTED=""
 
 cleanup() {
-    [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR"
+    [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
     stty echo </dev/tty 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
@@ -51,9 +59,60 @@ die() {
     exit 1
 }
 
+# ============================================================
+# Parse command-line arguments
+# ============================================================
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -y|--yes)
+            NON_INTERACTIVE="1"
+            shift
+            ;;
+        --install-dir)
+            OPT_INSTALL_DIR="$2"
+            shift 2
+            ;;
+        --token)
+            OPT_TOKEN="$2"
+            shift 2
+            ;;
+        --no-service)
+            OPT_NO_SERVICE="1"
+            shift
+            ;;
+        --addr)
+            OPT_ADDR="$2"
+            shift 2
+            ;;
+        --port)
+            OPT_PORT="$2"
+            shift 2
+            ;;
+        -h|--help)
+            printf 'Usage: install.sh [OPTIONS]\n\n'
+            printf 'Options:\n'
+            printf '  -y, --yes          Non-interactive mode (use defaults)\n'
+            printf '  --install-dir <1|2>  Install location: 1=~/.local/bin, 2=/usr/local/bin\n'
+            printf '  --token <string>   Set access token (skip prompt)\n'
+            printf '  --no-service       Skip background service registration\n'
+            printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
+            printf '  --port <port>      Listen port (default: 3000)\n'
+            printf '  -h, --help         Show this help\n'
+            exit 0
+            ;;
+        *)
+            die "Unknown option: $1 (use --help for usage)"
+            ;;
+    esac
+done
+
 confirm() {
     _prompt="$1"
     _default="${2:-n}"
+    if [ -n "$NON_INTERACTIVE" ]; then
+        [ "$_default" = "y" ] && return 0 || return 1
+    fi
     if [ "$_default" = "y" ]; then
         _hint="[Y/n]"
     else
@@ -125,11 +184,7 @@ detect_platform() {
             ;;
     esac
 
-    if [ "$PLATFORM" = "linux" ] && [ "$ARCH" = "arm64" ]; then
-        die "Linux arm64 is not yet supported. Please use x86_64 Linux."
-    fi
-
-    BINARY_NAME="quicktui-${PLATFORM}-${ARCH}"
+    BINARY_NAME="quicktui-server-${PLATFORM}-${ARCH}"
     info "Detected platform: ${PLATFORM}/${ARCH}"
 }
 
@@ -231,12 +286,16 @@ download_binary() {
 # ============================================================
 
 install_binary() {
-    printf '\nWhere would you like to install QuickTUI?\n'
-    printf '  [1] %s/.local/bin/quicktui  (no sudo required)  [default]\n' "$HOME"
-    printf '  [2] /usr/local/bin/quicktui  (requires sudo)\n'
-    printf 'Enter choice [1]: '
-    read -r _choice </dev/tty
-    _choice="${_choice:-1}"
+    if [ -n "$NON_INTERACTIVE" ]; then
+        _choice="${OPT_INSTALL_DIR:-1}"
+    else
+        printf '\nWhere would you like to install QuickTUI?\n'
+        printf '  [1] %s/.local/bin/quicktui  (no sudo required)  [default]\n' "$HOME"
+        printf '  [2] /usr/local/bin/quicktui  (requires sudo)\n'
+        printf 'Enter choice [1]: '
+        read -r _choice </dev/tty
+        _choice="${_choice:-1}"
+    fi
 
     case "$_choice" in
         1)
@@ -263,7 +322,7 @@ install_binary() {
             ;;
     esac
 
-    rm -rf "$DOWNLOAD_TMPDIR"
+    DOWNLOAD_TMPDIR=""
     info "Installed to $INSTALL_PATH"
 }
 
@@ -272,37 +331,49 @@ install_binary() {
 # ============================================================
 
 configure_token() {
-    printf '\nHow would you like to set up your access token?\n'
-    printf '  [1] Generate a random token automatically  [default]\n'
-    printf '  [2] Enter my own token\n'
-    printf 'Enter choice [1]: '
-    read -r _choice </dev/tty
-    _choice="${_choice:-1}"
+    if [ -n "$OPT_TOKEN" ]; then
+        TOKEN="$OPT_TOKEN"
+        info "Token configured (from argument)"
+    elif [ -n "$NON_INTERACTIVE" ]; then
+        if command -v openssl > /dev/null 2>&1; then
+            TOKEN="$(openssl rand -hex 32)"
+        else
+            TOKEN="$(head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n')"
+        fi
+        info "Random token generated"
+    else
+        printf '\nHow would you like to set up your access token?\n'
+        printf '  [1] Generate a random token automatically  [default]\n'
+        printf '  [2] Enter my own token\n'
+        printf 'Enter choice [1]: '
+        read -r _choice </dev/tty
+        _choice="${_choice:-1}"
 
-    case "$_choice" in
-        1)
-            if command -v openssl > /dev/null 2>&1; then
-                TOKEN="$(openssl rand -hex 32)"
-            else
-                TOKEN="$(head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n')"
-            fi
-            info "Random token generated"
-            ;;
-        2)
-            printf 'Enter your token (input hidden): '
-            stty -echo </dev/tty 2>/dev/null || true
-            read -r TOKEN </dev/tty
-            stty echo </dev/tty 2>/dev/null || true
-            printf '\n'
-            if [ -z "$TOKEN" ]; then
-                die "Token cannot be empty."
-            fi
-            info "Token configured"
-            ;;
-        *)
-            die "Invalid choice: $_choice"
-            ;;
-    esac
+        case "$_choice" in
+            1)
+                if command -v openssl > /dev/null 2>&1; then
+                    TOKEN="$(openssl rand -hex 32)"
+                else
+                    TOKEN="$(head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n')"
+                fi
+                info "Random token generated"
+                ;;
+            2)
+                printf 'Enter your token (input hidden): '
+                stty -echo </dev/tty 2>/dev/null || true
+                read -r TOKEN </dev/tty
+                stty echo </dev/tty 2>/dev/null || true
+                printf '\n'
+                if [ -z "$TOKEN" ]; then
+                    die "Token cannot be empty."
+                fi
+                info "Token configured"
+                ;;
+            *)
+                die "Invalid choice: $_choice"
+                ;;
+        esac
+    fi
 
     mkdir -p "$QUICKTUI_CONFIG_DIR"
     chmod 700 "$QUICKTUI_CONFIG_DIR"
@@ -318,8 +389,11 @@ configure_token() {
 setup_launchd() {
     _plist_dir="${HOME}/Library/LaunchAgents"
     _plist_file="${_plist_dir}/ai.quicktui.plist"
+    _log_dir="${HOME}/Library/Logs/QuickTUI"
+    _gui_target="gui/$(id -u)"
 
     mkdir -p "$_plist_dir"
+    mkdir -p "$_log_dir"
 
     cat > "$_plist_file" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -334,8 +408,8 @@ setup_launchd() {
   </array>
   <key>EnvironmentVariables</key>
   <dict>
-    <key>QUICKTUI_TOKEN</key>
-    <string>${TOKEN}</string>
+    <key>QUICKTUI_CONFIG</key>
+    <string>${QUICKTUI_CONFIG_FILE}</string>
     <key>QUICKTUI_ADDR</key>
     <string>${LISTEN_ADDR}:${LISTEN_PORT}</string>
   </dict>
@@ -343,17 +417,26 @@ setup_launchd() {
   <true/>
   <key>KeepAlive</key>
   <true/>
+  <key>StandardOutPath</key>
+  <string>${_log_dir}/stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>${_log_dir}/stderr.log</string>
 </dict>
 </plist>
 EOF
 
     chmod 600 "$_plist_file"
-    if launchctl load "$_plist_file" 2>/dev/null; then
+
+    # Unload existing service if present
+    launchctl bootout "$_gui_target/ai.quicktui" 2>/dev/null || true
+
+    if launchctl bootstrap "$_gui_target" "$_plist_file" 2>/dev/null; then
         SERVICE_STARTED="yes"
         info "launchd service registered: $_plist_file"
+        info "Logs: $_log_dir"
     else
         warn "Failed to load launchd service. You can start it manually:"
-        warn "  launchctl load $_plist_file"
+        warn "  launchctl bootstrap $_gui_target $_plist_file"
         info "launchd service registered (not started): $_plist_file"
     fi
 }
@@ -394,45 +477,57 @@ EOF
 }
 
 configure_service() {
-    printf '\n'
-    if ! confirm "Would you like to register QuickTUI as a background service?"; then
+    if [ -n "$OPT_NO_SERVICE" ]; then
+        info "Skipped service registration (--no-service)"
         return 0
     fi
 
-    while true; do
-        printf 'Listen address [default: 0.0.0.0]: '
-        read -r LISTEN_ADDR </dev/tty
-        LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
-        case "$LISTEN_ADDR" in
-            *[\ \;\`\$\(\)\'\"\#\&\|\<\>\\]*)
-                warn "Invalid listen address: '$LISTEN_ADDR'. Only alphanumeric characters, dots, hyphens, and colons are allowed."
-                LISTEN_ADDR=""
-                ;;
-            *)
-                break
-                ;;
-        esac
-    done
+    if [ -z "$NON_INTERACTIVE" ]; then
+        printf '\n'
+        if ! confirm "Would you like to register QuickTUI as a background service?"; then
+            return 0
+        fi
+    fi
 
-    while true; do
-        printf 'Port [default: 3000]: '
-        read -r LISTEN_PORT </dev/tty
-        LISTEN_PORT="${LISTEN_PORT:-3000}"
-        case "$LISTEN_PORT" in
-            ''|*[!0-9]*)
-                warn "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
-                LISTEN_PORT=""
-                ;;
-            *)
-                if [ "$LISTEN_PORT" -lt 1 ] || [ "$LISTEN_PORT" -gt 65535 ]; then
-                    warn "Port must be between 1 and 65535."
-                    LISTEN_PORT=""
-                else
+    if [ -n "$NON_INTERACTIVE" ]; then
+        LISTEN_ADDR="${OPT_ADDR:-0.0.0.0}"
+        LISTEN_PORT="${OPT_PORT:-3000}"
+    else
+        while true; do
+            printf 'Listen address [default: 0.0.0.0]: '
+            read -r LISTEN_ADDR </dev/tty
+            LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
+            case "$LISTEN_ADDR" in
+                *[\ \;\`\$\(\)\'\"\#\&\|\<\>\\]*)
+                    warn "Invalid listen address: '$LISTEN_ADDR'. Only alphanumeric characters, dots, hyphens, and colons are allowed."
+                    LISTEN_ADDR=""
+                    ;;
+                *)
                     break
-                fi
-                ;;
-        esac
-    done
+                    ;;
+            esac
+        done
+
+        while true; do
+            printf 'Port [default: 3000]: '
+            read -r LISTEN_PORT </dev/tty
+            LISTEN_PORT="${LISTEN_PORT:-3000}"
+            case "$LISTEN_PORT" in
+                ''|*[!0-9]*)
+                    warn "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
+                    LISTEN_PORT=""
+                    ;;
+                *)
+                    if [ "$LISTEN_PORT" -lt 1 ] || [ "$LISTEN_PORT" -gt 65535 ]; then
+                        warn "Port must be between 1 and 65535."
+                        LISTEN_PORT=""
+                    else
+                        break
+                    fi
+                    ;;
+            esac
+        done
+    fi
 
     if [ "$PLATFORM" = "darwin" ]; then
         setup_launchd
@@ -469,7 +564,7 @@ print_success() {
     elif [ -n "$LISTEN_PORT" ]; then
         printf 'Service registration failed. Start manually:\n'
         if [ "$PLATFORM" = "darwin" ]; then
-            printf '  launchctl load ~/Library/LaunchAgents/ai.quicktui.plist\n'
+            printf '  launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.quicktui.plist\n'
         else
             printf '  systemctl --user start quicktui\n'
         fi

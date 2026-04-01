@@ -14,11 +14,13 @@ QUICKTUI_CONFIG_FILE="${QUICKTUI_CONFIG_DIR}/config"
 
 # CLI options (set via arguments)
 NON_INTERACTIVE=""
-OPT_INSTALL_DIR=""
 OPT_TOKEN=""
 OPT_NO_SERVICE=""
 OPT_ADDR=""
 OPT_PORT=""
+OPT_TERM=""
+OPT_LANG=""
+UNINSTALL=""
 
 # Will be set during detection
 PLATFORM=""
@@ -26,6 +28,8 @@ ARCH=""
 BINARY_NAME=""
 INSTALL_PATH=""
 TOKEN=""
+TERM_ENV=""
+LANG_ENV=""
 LISTEN_ADDR=""
 LISTEN_PORT=""
 DOWNLOADED_BINARY=""
@@ -34,7 +38,6 @@ SERVICE_STARTED=""
 
 cleanup() {
     [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
-    stty echo </dev/tty 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 
@@ -69,17 +72,21 @@ while [ $# -gt 0 ]; do
             NON_INTERACTIVE="1"
             shift
             ;;
-        --install-dir)
-            OPT_INSTALL_DIR="$2"
-            shift 2
-            ;;
-        --token)
+--token)
             OPT_TOKEN="$2"
             shift 2
             ;;
         --no-service)
             OPT_NO_SERVICE="1"
             shift
+            ;;
+        --term)
+            OPT_TERM="$2"
+            shift 2
+            ;;
+        --lang)
+            OPT_LANG="$2"
+            shift 2
             ;;
         --addr)
             OPT_ADDR="$2"
@@ -89,15 +96,21 @@ while [ $# -gt 0 ]; do
             OPT_PORT="$2"
             shift 2
             ;;
+        --uninstall)
+            UNINSTALL="1"
+            shift
+            ;;
         -h|--help)
             printf 'Usage: install.sh [OPTIONS]\n\n'
             printf 'Options:\n'
             printf '  -y, --yes          Non-interactive mode (use defaults)\n'
-            printf '  --install-dir <1|2>  Install location: 1=~/.local/bin, 2=/usr/local/bin\n'
             printf '  --token <string>   Set access token (skip prompt)\n'
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
             printf '  --port <port>      Listen port (default: 3000)\n'
+            printf '  --term <value>     TERM for tmux (default: xterm-256color)\n'
+            printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
+            printf '  --uninstall        Remove QuickTUI and all related files\n'
             printf '  -h, --help         Show this help\n'
             exit 0
             ;;
@@ -131,6 +144,18 @@ confirm() {
 }
 
 download() {
+    _url="$1"
+    _dest="$2"
+    if command -v curl > /dev/null 2>&1; then
+        curl -fSL --progress-bar "$_url" -o "$_dest"
+    elif command -v wget > /dev/null 2>&1; then
+        wget --show-progress -q "$_url" -O "$_dest"
+    else
+        die "Neither curl nor wget found. Please install one and retry."
+    fi
+}
+
+download_silent() {
     _url="$1"
     _dest="$2"
     if command -v curl > /dev/null 2>&1; then
@@ -250,15 +275,22 @@ download_binary() {
     _binary_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}"
     _sha256_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}.sha256"
 
+    printf '  Temp dir:  %s\n' "$DOWNLOAD_TMPDIR"
     printf '  Downloading QuickTUI (%s)...\n' "$BINARY_NAME"
     download "${QUICKTUI_RELEASES}/${BINARY_NAME}" "$_binary_path" || \
         die "Failed to download binary. Check your internet connection and try again."
 
+    _file_size="$(du -sh "$_binary_path" 2>/dev/null | cut -f1)"
+    printf '  File size: %s\n' "${_file_size:-unknown}"
+
     printf '  Downloading checksum...\n'
-    download "${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256" "$_sha256_path" || \
+    download_silent "${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256" "$_sha256_path" || \
         die "Failed to download checksum file."
 
     printf '  Verifying checksum...\n'
+    # Normalize checksum file: strip any path prefix, keep only hash + filename
+    _hash="$(awk '{print $1}' "${_sha256_path}")"
+    printf '%s  %s\n' "$_hash" "$BINARY_NAME" > "${_sha256_path}"
     _saved_dir="$(pwd)"
     cd "$DOWNLOAD_TMPDIR"
     if [ "$PLATFORM" = "darwin" ]; then
@@ -286,39 +318,16 @@ download_binary() {
 # ============================================================
 
 install_binary() {
-    if [ -n "$NON_INTERACTIVE" ]; then
-        _choice="${OPT_INSTALL_DIR:-1}"
-    else
-        printf '\nWhere would you like to install QuickTUI?\n'
-        printf '  [1] %s/.local/bin/quicktui  (no sudo required)  [default]\n' "$HOME"
-        printf '  [2] /usr/local/bin/quicktui  (requires sudo)\n'
-        printf 'Enter choice [1]: '
-        read -r _choice </dev/tty
-        _choice="${_choice:-1}"
-    fi
-
-    case "$_choice" in
-        1)
-            INSTALL_PATH="${HOME}/.local/bin/quicktui"
-            mkdir -p "${HOME}/.local/bin"
-            mv "$DOWNLOADED_BINARY" "$INSTALL_PATH"
-            chmod 755 "$INSTALL_PATH"
-            case ":${PATH}:" in
-                *":${HOME}/.local/bin:"*) ;;
-                *)
-                    warn "~/.local/bin is not in your PATH."
-                    printf '  Add this to your shell config (~/.bashrc, ~/.zshrc, etc.):\n'
-                    printf '    export PATH="$HOME/.local/bin:$PATH"\n\n'
-                    ;;
-            esac
-            ;;
-        2)
-            INSTALL_PATH="/usr/local/bin/quicktui"
-            run_privileged mv "$DOWNLOADED_BINARY" "$INSTALL_PATH"
-            run_privileged chmod 755 "$INSTALL_PATH"
-            ;;
+    INSTALL_PATH="${HOME}/.local/bin/quicktui-server"
+    mkdir -p "${HOME}/.local/bin"
+    mv "$DOWNLOADED_BINARY" "$INSTALL_PATH"
+    chmod 755 "$INSTALL_PATH"
+    case ":${PATH}:" in
+        *":${HOME}/.local/bin:"*) ;;
         *)
-            die "Invalid choice: $_choice"
+            warn "~/.local/bin is not in your PATH."
+            printf '  Add this to your shell config (~/.bashrc, ~/.zshrc, etc.):\n'
+            printf '    export PATH="$HOME/.local/bin:$PATH"\n\n'
             ;;
     esac
 
@@ -359,11 +368,8 @@ configure_token() {
                 info "Random token generated"
                 ;;
             2)
-                printf 'Enter your token (input hidden): '
-                stty -echo </dev/tty 2>/dev/null || true
+                printf 'Enter your token: '
                 read -r TOKEN </dev/tty
-                stty echo </dev/tty 2>/dev/null || true
-                printf '\n'
                 if [ -z "$TOKEN" ]; then
                     die "Token cannot be empty."
                 fi
@@ -383,7 +389,41 @@ configure_token() {
 }
 
 # ============================================================
-# Step 6: Configure background service (optional)
+# Step 6: Configure terminal environment
+# ============================================================
+
+configure_terminal() {
+    _interactive_term="${TERM:-xterm-256color}"
+    _interactive_lang="${LANG:-en_US.UTF-8}"
+
+    if [ -n "$OPT_TERM" ]; then
+        TERM_ENV="$OPT_TERM"
+    elif [ -n "$NON_INTERACTIVE" ]; then
+        TERM_ENV="xterm-256color"
+    else
+        printf '\nTerminal environment for tmux:\n'
+        printf '  TERM [%s]: ' "$_interactive_term"
+        read -r _input </dev/tty
+        TERM_ENV="${_input:-$_interactive_term}"
+    fi
+
+    if [ -n "$OPT_LANG" ]; then
+        LANG_ENV="$OPT_LANG"
+    elif [ -n "$NON_INTERACTIVE" ]; then
+        LANG_ENV="en_US.UTF-8"
+    else
+        printf '  LANG [%s]: ' "$_interactive_lang"
+        read -r _input </dev/tty
+        LANG_ENV="${_input:-$_interactive_lang}"
+    fi
+
+    printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    info "Terminal: TERM=$TERM_ENV, LANG=$LANG_ENV"
+}
+
+# ============================================================
+# Step 7: Configure background service (optional)
 # ============================================================
 
 setup_launchd() {
@@ -392,8 +432,25 @@ setup_launchd() {
     _log_dir="${HOME}/Library/Logs/QuickTUI"
     _gui_target="gui/$(id -u)"
 
+    _wrapper="${_plist_dir}/ai.quicktui.sh"
+
     mkdir -p "$_plist_dir"
     mkdir -p "$_log_dir"
+
+    # Detect tmux's directory and TMPDIR at install time so launchd can find tmux
+    _tmux_dir="$(dirname "$(command -v tmux)")"
+    # Wrapper script: source config file to load QUICKTUI_TOKEN, then exec server
+    cat > "$_wrapper" << EOF
+#!/bin/sh
+export PATH="${_tmux_dir}:/usr/local/bin:/usr/bin:/bin"
+export TMPDIR="/tmp"
+set -a
+. ${QUICKTUI_CONFIG_FILE}
+set +a
+export QUICKTUI_ADDR="${LISTEN_ADDR}:${LISTEN_PORT}"
+exec ${INSTALL_PATH}
+EOF
+    chmod 700 "$_wrapper"
 
     cat > "$_plist_file" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -404,15 +461,9 @@ setup_launchd() {
   <string>ai.quicktui</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${INSTALL_PATH}</string>
+    <string>/bin/sh</string>
+    <string>${_wrapper}</string>
   </array>
-  <key>EnvironmentVariables</key>
-  <dict>
-    <key>QUICKTUI_CONFIG</key>
-    <string>${QUICKTUI_CONFIG_FILE}</string>
-    <key>QUICKTUI_ADDR</key>
-    <string>${LISTEN_ADDR}:${LISTEN_PORT}</string>
-  </dict>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
@@ -581,6 +632,79 @@ print_success() {
 }
 
 # ============================================================
+# Uninstall
+# ============================================================
+
+uninstall() {
+    printf '\n\033[1mQuickTUI Uninstaller\033[0m\n\n'
+    detect_platform
+
+    _removed=0
+
+    # Stop and remove launchd service (macOS)
+    if [ "$PLATFORM" = "darwin" ]; then
+        _gui_target="gui/$(id -u)"
+        _plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
+        _wrapper="${HOME}/Library/LaunchAgents/ai.quicktui.sh"
+        _log_dir="${HOME}/Library/Logs/QuickTUI"
+
+        launchctl bootout "$_gui_target/ai.quicktui" 2>/dev/null && \
+            info "launchd service stopped"
+
+        if [ -f "$_plist" ]; then
+            rm -f "$_plist"
+            info "Removed: $_plist"
+            _removed=1
+        fi
+        if [ -f "$_wrapper" ]; then
+            rm -f "$_wrapper"
+            info "Removed: $_wrapper"
+            _removed=1
+        fi
+        if [ -d "$_log_dir" ]; then
+            rm -rf "$_log_dir"
+            info "Removed: $_log_dir"
+            _removed=1
+        fi
+    fi
+
+    # Stop and remove systemd service (Linux)
+    if [ "$PLATFORM" = "linux" ]; then
+        _service_file="${HOME}/.config/systemd/user/quicktui.service"
+        systemctl --user stop quicktui 2>/dev/null && \
+            info "systemd service stopped"
+        systemctl --user disable quicktui 2>/dev/null || true
+        if [ -f "$_service_file" ]; then
+            rm -f "$_service_file"
+            systemctl --user daemon-reload 2>/dev/null || true
+            info "Removed: $_service_file"
+            _removed=1
+        fi
+    fi
+
+    # Remove binary
+    _binary="${HOME}/.local/bin/quicktui-server"
+    if [ -f "$_binary" ]; then
+        rm -f "$_binary"
+        info "Removed: $_binary"
+        _removed=1
+    fi
+
+    # Remove config
+    if [ -d "$QUICKTUI_CONFIG_DIR" ]; then
+        rm -rf "$QUICKTUI_CONFIG_DIR"
+        info "Removed: $QUICKTUI_CONFIG_DIR"
+        _removed=1
+    fi
+
+    if [ "$_removed" = "0" ]; then
+        printf '  Nothing to remove. QuickTUI does not appear to be installed.\n'
+    else
+        printf '\n\033[0;32m✓ QuickTUI uninstalled successfully.\033[0m\n\n'
+    fi
+}
+
+# ============================================================
 # Main
 # ============================================================
 
@@ -591,8 +715,13 @@ main() {
     download_binary
     install_binary
     configure_token
+    configure_terminal
     configure_service
     print_success
 }
 
-main
+if [ -n "$UNINSTALL" ]; then
+    uninstall
+else
+    main
+fi

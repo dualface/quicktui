@@ -319,6 +319,42 @@ section {
   font-size: 0.75rem;
 }
 
+.install-options {
+  width: 100%;
+  max-width: 720px;
+  margin: 28px auto 0;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.install-options th {
+  text-align: left;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-primary);
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+.install-options td {
+  padding: 6px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  vertical-align: top;
+}
+
+.install-options tr:last-child td {
+  border-bottom: none;
+}
+
+.install-options code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
 .download-buttons {
   display: flex;
   flex-wrap: wrap;

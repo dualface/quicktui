@@ -322,6 +322,29 @@ CentOS:  sudo yum install tmux</code></pre>
           <h3 class="faq-group-title">Server &amp; Service</h3>
 
           <details class="faq-item">
+            <summary>What can I configure in the config file?</summary>
+            <div class="faq-answer">
+              <p>All settings are stored in <code>~/.config/quicktui/config</code>. After editing, restart the service to apply changes.</p>
+              <pre><code># Access token — required, protects your server from unauthorized access
+QUICKTUI_TOKEN=your-secret-token
+
+# Listen address and port (default: 0.0.0.0:8022)
+# Use 127.0.0.1 to restrict access to localhost only
+QUICKTUI_ADDR=0.0.0.0:8022
+
+# TERM value passed to tmux (default: xterm-256color)
+# Use xterm-ghostty if your terminal is Ghostty
+QUICKTUI_TERM=xterm-256color
+
+# Locale passed to tmux (default: en_US.UTF-8)
+QUICKTUI_LANG=en_US.UTF-8</code></pre>
+              <p>Restart after editing:</p>
+              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
+systemctl --user restart quicktui                  # Linux</code></pre>
+            </div>
+          </details>
+
+          <details class="faq-item">
             <summary>Service fails to start: "token is required"</summary>
             <div class="faq-answer">
               <p>The server cannot find your access token. Check that <code>~/.config/quicktui/config</code> exists and contains a <code>QUICKTUI_TOKEN=...</code> line. If the file is missing, re-run the installer.</p>

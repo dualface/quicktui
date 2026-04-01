@@ -32,6 +32,33 @@ DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
 SERVICE_STARTED=""
 
+cleanup() {
+    [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
+    stty echo </dev/tty 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
+
+# ============================================================
+# Utility functions
+# ============================================================
+
+info() {
+    printf '\033[0;32m  ✓\033[0m %s\n' "$1"
+}
+
+warn() {
+    printf '\033[0;33m  !\033[0m %s\n' "$1"
+}
+
+error() {
+    printf '\033[0;31mError:\033[0m %s\n' "$1" >&2
+}
+
+die() {
+    error "$1"
+    exit 1
+}
+
 # ============================================================
 # Parse command-line arguments
 # ============================================================
@@ -79,33 +106,6 @@ while [ $# -gt 0 ]; do
             ;;
     esac
 done
-
-cleanup() {
-    [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR"
-    stty echo </dev/tty 2>/dev/null || true
-}
-trap cleanup EXIT INT TERM
-
-# ============================================================
-# Utility functions
-# ============================================================
-
-info() {
-    printf '\033[0;32m  ✓\033[0m %s\n' "$1"
-}
-
-warn() {
-    printf '\033[0;33m  !\033[0m %s\n' "$1"
-}
-
-error() {
-    printf '\033[0;31mError:\033[0m %s\n' "$1" >&2
-}
-
-die() {
-    error "$1"
-    exit 1
-}
 
 confirm() {
     _prompt="$1"
@@ -184,11 +184,7 @@ detect_platform() {
             ;;
     esac
 
-    if [ "$PLATFORM" = "linux" ] && [ "$ARCH" = "arm64" ]; then
-        die "Linux arm64 is not yet supported. Please use x86_64 Linux."
-    fi
-
-    BINARY_NAME="quicktui-${PLATFORM}-${ARCH}"
+    BINARY_NAME="quicktui-server-${PLATFORM}-${ARCH}"
     info "Detected platform: ${PLATFORM}/${ARCH}"
 }
 
@@ -326,7 +322,7 @@ install_binary() {
             ;;
     esac
 
-    rm -rf "$DOWNLOAD_TMPDIR"
+    DOWNLOAD_TMPDIR=""
     info "Installed to $INSTALL_PATH"
 }
 
@@ -393,8 +389,11 @@ configure_token() {
 setup_launchd() {
     _plist_dir="${HOME}/Library/LaunchAgents"
     _plist_file="${_plist_dir}/ai.quicktui.plist"
+    _log_dir="${HOME}/Library/Logs/QuickTUI"
+    _gui_target="gui/$(id -u)"
 
     mkdir -p "$_plist_dir"
+    mkdir -p "$_log_dir"
 
     cat > "$_plist_file" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -409,8 +408,8 @@ setup_launchd() {
   </array>
   <key>EnvironmentVariables</key>
   <dict>
-    <key>QUICKTUI_TOKEN</key>
-    <string>${TOKEN}</string>
+    <key>QUICKTUI_CONFIG</key>
+    <string>${QUICKTUI_CONFIG_FILE}</string>
     <key>QUICKTUI_ADDR</key>
     <string>${LISTEN_ADDR}:${LISTEN_PORT}</string>
   </dict>
@@ -418,17 +417,26 @@ setup_launchd() {
   <true/>
   <key>KeepAlive</key>
   <true/>
+  <key>StandardOutPath</key>
+  <string>${_log_dir}/stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>${_log_dir}/stderr.log</string>
 </dict>
 </plist>
 EOF
 
     chmod 600 "$_plist_file"
-    if launchctl load "$_plist_file" 2>/dev/null; then
+
+    # Unload existing service if present
+    launchctl bootout "$_gui_target/ai.quicktui" 2>/dev/null || true
+
+    if launchctl bootstrap "$_gui_target" "$_plist_file" 2>/dev/null; then
         SERVICE_STARTED="yes"
         info "launchd service registered: $_plist_file"
+        info "Logs: $_log_dir"
     else
         warn "Failed to load launchd service. You can start it manually:"
-        warn "  launchctl load $_plist_file"
+        warn "  launchctl bootstrap $_gui_target $_plist_file"
         info "launchd service registered (not started): $_plist_file"
     fi
 }
@@ -556,7 +564,7 @@ print_success() {
     elif [ -n "$LISTEN_PORT" ]; then
         printf 'Service registration failed. Start manually:\n'
         if [ "$PLATFORM" = "darwin" ]; then
-            printf '  launchctl load ~/Library/LaunchAgents/ai.quicktui.plist\n'
+            printf '  launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.quicktui.plist\n'
         else
             printf '  systemctl --user start quicktui\n'
         fi

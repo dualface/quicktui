@@ -412,7 +412,7 @@ section {
 
 .faq-group {
   max-width: 760px;
-  margin: 0 auto 48px;
+  margin: 0 auto 56px;
 }
 
 .faq-group:last-child {
@@ -421,18 +421,32 @@ section {
 
 .faq-group-title {
   font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-  padding-bottom: 8px;
+  letter-spacing: 0.14em;
+  color: var(--accent-blue);
+  margin-bottom: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.faq-group-title::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 13px;
+  background: var(--accent-blue);
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .faq-item {
-  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent);
+  transition: background-color 0.15s;
 }
 
 .faq-item:last-child {
@@ -440,7 +454,7 @@ section {
 }
 
 .faq-item summary {
-  padding: 16px 4px;
+  padding: 17px 6px 17px 0;
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
@@ -451,27 +465,52 @@ section {
   justify-content: space-between;
   gap: 16px;
   user-select: none;
+  transition: color 0.15s;
 }
 
 .faq-item summary::-webkit-details-marker {
   display: none;
 }
 
+/* Circular chevron toggle */
 .faq-item summary::after {
-  content: "+";
-  font-size: 1.2rem;
-  font-weight: 300;
-  color: var(--text-secondary);
+  content: "";
   flex-shrink: 0;
-  transition: transform 0.2s;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--border-color) 90%, transparent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5 5 6.5 8 3.5' stroke='%238b949e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.25s ease, border-color 0.15s;
 }
 
 .faq-item[open] summary::after {
-  transform: rotate(45deg);
+  transform: rotate(180deg);
+  border-color: var(--accent-blue);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5 5 6.5 8 3.5' stroke='%2358a6ff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
 }
 
 .faq-item summary:hover {
   color: var(--accent-blue);
+}
+
+.faq-item summary:hover::after {
+  border-color: var(--accent-blue);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5 5 6.5 8 3.5' stroke='%2358a6ff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+}
+
+.faq-item[open] {
+  background-color: color-mix(in srgb, var(--bg-primary) 35%, transparent);
+  border-radius: 6px;
+  border-bottom-color: transparent;
+  margin-bottom: 4px;
+  padding: 0 12px;
+}
+
+.faq-item[open] + .faq-item {
+  border-top: none;
 }
 
 .faq-item summary code {
@@ -481,13 +520,25 @@ section {
 }
 
 .faq-answer {
-  padding: 0 4px 20px;
+  padding: 2px 2px 20px;
   color: var(--text-secondary);
   font-size: 0.9rem;
-  line-height: 1.7;
+  line-height: 1.75;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  animation: faq-reveal 0.18s ease;
+}
+
+@keyframes faq-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .faq-answer pre {

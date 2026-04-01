@@ -382,9 +382,13 @@ journalctl --user -u quicktui -f</code></pre>
           <details class="faq-item">
             <summary>How do I change the listen address or port?</summary>
             <div class="faq-answer">
-              <p>Pass <code>--addr</code> and <code>--port</code> when running the installer:</p>
+              <p>Edit <code>~/.config/quicktui/config</code> and update the <code>QUICKTUI_ADDR</code> line:</p>
+              <pre><code>QUICKTUI_ADDR=0.0.0.0:9000</code></pre>
+              <p>Then restart the service:</p>
+              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
+systemctl --user restart quicktui                  # Linux</code></pre>
+              <p>You can also set a different address and port at install time:</p>
               <pre><code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --addr 127.0.0.1 --port 9000</code></pre>
-              <p>To change an existing install, edit the wrapper script at <code>~/Library/LaunchAgents/ai.quicktui.sh</code> (macOS) or the service file at <code>~/.config/systemd/user/quicktui.service</code> (Linux) and restart the service.</p>
             </div>
           </details>
 

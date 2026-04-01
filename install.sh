@@ -447,7 +447,6 @@ export TMPDIR="/tmp"
 set -a
 . ${QUICKTUI_CONFIG_FILE}
 set +a
-export QUICKTUI_ADDR="${LISTEN_ADDR}:${LISTEN_PORT}"
 exec ${INSTALL_PATH}
 EOF
     chmod 700 "$_wrapper"
@@ -506,7 +505,6 @@ After=network.target
 [Service]
 EnvironmentFile=${QUICKTUI_CONFIG_FILE}
 ExecStart=${INSTALL_PATH}
-Environment=QUICKTUI_ADDR=${LISTEN_ADDR}:${LISTEN_PORT}
 Restart=on-failure
 
 [Install]
@@ -579,6 +577,9 @@ configure_service() {
             esac
         done
     fi
+
+    printf 'QUICKTUI_ADDR=%s:%s\n' "$LISTEN_ADDR" "$LISTEN_PORT" >> "$QUICKTUI_CONFIG_FILE"
+    info "Listen address: $LISTEN_ADDR:$LISTEN_PORT"
 
     if [ "$PLATFORM" = "darwin" ]; then
         setup_launchd

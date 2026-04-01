@@ -304,6 +304,19 @@ section {
   margin-left: 8px;
 }
 
+.uninstall-hint {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  margin-top: 10px;
+}
+
+.uninstall-hint code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
 .download-buttons {
   display: flex;
   flex-wrap: wrap;

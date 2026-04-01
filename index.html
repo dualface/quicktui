@@ -209,6 +209,87 @@
       </div>
     </section>
 
+    <!-- Connect -->
+    <section class="connect" id="connect">
+      <div class="container">
+        <h2 class="section-title">How to Connect</h2>
+
+        <div class="connect-steps">
+
+          <!-- Step 1 -->
+          <div class="connect-step">
+            <div class="connect-step-num">1</div>
+            <div class="connect-step-body">
+              <div class="connect-step-title">Install and start the server</div>
+              <div class="connect-step-desc">
+                <p>Run the installer on your Mac or Linux machine. The server starts automatically as a background service after installation.</p>
+                <p>The default listen address is <code>0.0.0.0:8022</code>. To use a different port, pass <code>--port &lt;port&gt;</code> during installation.</p>
+                <span class="connect-step-note">The service restarts automatically on reboot — no manual start needed.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="connect-step">
+            <div class="connect-step-num">2</div>
+            <div class="connect-step-body">
+              <div class="connect-step-title">Find your server address and token</div>
+              <div class="connect-step-desc">
+                <p>You need two things to connect: the <strong>server address</strong> (IP or hostname + port) and your <strong>access token</strong>.</p>
+                <p>To find your server's local IP on macOS:</p>
+                <pre><code>ipconfig getifaddr en0</code></pre>
+                <p>To view your access token:</p>
+                <pre><code>cat ~/.config/quicktui/config</code></pre>
+                <p>Copy the value after <code>QUICKTUI_TOKEN=</code>.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="connect-step">
+            <div class="connect-step-num">3</div>
+            <div class="connect-step-body">
+              <div class="connect-step-title">Open the app or browser</div>
+              <div class="connect-step-desc">
+                <p>On iPhone or iPad, open the QuickTUI app. In a browser, navigate to:</p>
+                <pre><code>http://&lt;your-server-ip&gt;:8022</code></pre>
+                <p>For example: <code>http://192.168.1.100:8022</code></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="connect-step">
+            <div class="connect-step-num">4</div>
+            <div class="connect-step-body">
+              <div class="connect-step-title">Add a server and enter your token</div>
+              <div class="connect-step-desc">
+                <p>In the app, tap <strong>Add Server</strong> and fill in:</p>
+                <ul style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
+                  <li><strong>Address</strong> — your server's IP or hostname, e.g. <code>192.168.1.100:8022</code></li>
+                  <li><strong>Token</strong> — the <code>QUICKTUI_TOKEN</code> value from your config file</li>
+                </ul>
+                <p>In the browser, you will be prompted for the token on first visit.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="connect-step">
+            <div class="connect-step-num">5</div>
+            <div class="connect-step-body">
+              <div class="connect-step-title">Connect and manage sessions</div>
+              <div class="connect-step-desc">
+                <p>Tap <strong>Connect</strong>. You will see your tmux sessions. Select an existing one or create a new session with the <strong>New Session</strong> button.</p>
+                <span class="connect-step-note">Connecting over the internet? Use Tailscale, WireGuard, or Cloudflare Tunnel to expose your server safely.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- FAQ -->
     <section class="faq" id="faq">
       <div class="container">

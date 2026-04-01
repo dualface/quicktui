@@ -516,7 +516,7 @@ EOF
         return 0
     fi
     systemctl --user enable quicktui 2>/dev/null || true
-    if systemctl --user start quicktui 2>/dev/null; then
+    if systemctl --user restart quicktui 2>/dev/null; then
         SERVICE_STARTED="yes"
         info "systemd user service registered: $_service_file"
     else

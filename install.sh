@@ -107,7 +107,7 @@ while [ $# -gt 0 ]; do
             printf '  --token <string>   Set access token (skip prompt)\n'
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
-            printf '  --port <port>      Listen port (default: 3000)\n'
+            printf '  --port <port>      Listen port (default: 8022)\n'
             printf '  --term <value>     TERM for tmux (default: xterm-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
@@ -542,7 +542,7 @@ configure_service() {
 
     if [ -n "$NON_INTERACTIVE" ]; then
         LISTEN_ADDR="${OPT_ADDR:-0.0.0.0}"
-        LISTEN_PORT="${OPT_PORT:-3000}"
+        LISTEN_PORT="${OPT_PORT:-8022}"
     else
         while true; do
             printf 'Listen address [default: 0.0.0.0]: '
@@ -560,9 +560,9 @@ configure_service() {
         done
 
         while true; do
-            printf 'Port [default: 3000]: '
+            printf 'Port [default: 8022]: '
             read -r LISTEN_PORT </dev/tty
-            LISTEN_PORT="${LISTEN_PORT:-3000}"
+            LISTEN_PORT="${LISTEN_PORT:-8022}"
             case "$LISTEN_PORT" in
                 ''|*[!0-9]*)
                     warn "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."

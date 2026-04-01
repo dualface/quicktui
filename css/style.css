@@ -222,6 +222,7 @@ section {
   font-size: 0.9rem;
   line-height: 1.7;
   white-space: pre;
+  text-align: center;
 }
 
 .code-block .comment {

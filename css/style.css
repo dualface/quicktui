@@ -319,13 +319,31 @@ section {
   font-size: 0.75rem;
 }
 
+.install-options-hint {
+  max-width: 720px;
+  margin: 20px auto 0;
+  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  opacity: 0.6;
+}
+
+.install-options-title {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .install-options {
   width: 100%;
-  max-width: 720px;
-  margin: 28px auto 0;
+  margin: 0;
   border-collapse: collapse;
   font-family: var(--font-sans);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
 }
 

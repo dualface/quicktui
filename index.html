@@ -165,21 +165,24 @@
             </button>
           </div>
           <p class="uninstall-hint">To uninstall: <code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --uninstall</code></p>
-          <table class="install-options">
-            <thead>
-              <tr><th>Option</th><th>Description</th><th>Default</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>-y, --yes</code></td><td>Non-interactive mode</td><td></td></tr>
-              <tr><td><code>--token &lt;string&gt;</code></td><td>Set access token</td><td><em>prompted</em></td></tr>
-              <tr><td><code>--addr &lt;address&gt;</code></td><td>Listen address</td><td><code>0.0.0.0</code></td></tr>
-              <tr><td><code>--port &lt;port&gt;</code></td><td>Listen port</td><td><code>3000</code></td></tr>
-              <tr><td><code>--term &lt;value&gt;</code></td><td>TERM for tmux</td><td><code>xterm-256color</code></td></tr>
-              <tr><td><code>--lang &lt;value&gt;</code></td><td>LANG for tmux</td><td><code>en_US.UTF-8</code></td></tr>
-              <tr><td><code>--no-service</code></td><td>Skip background service setup</td><td></td></tr>
-              <tr><td><code>--uninstall</code></td><td>Remove QuickTUI and all related files</td><td></td></tr>
-            </tbody>
-          </table>
+          <div class="install-options-hint">
+            <p class="install-options-title">Installer options</p>
+            <table class="install-options">
+              <thead>
+                <tr><th>Option</th><th>Description</th><th>Default</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>-y, --yes</code></td><td>Non-interactive mode</td><td></td></tr>
+                <tr><td><code>--token &lt;string&gt;</code></td><td>Set access token</td><td><em>prompted</em></td></tr>
+                <tr><td><code>--addr &lt;address&gt;</code></td><td>Listen address</td><td><code>0.0.0.0</code></td></tr>
+                <tr><td><code>--port &lt;port&gt;</code></td><td>Listen port</td><td><code>3000</code></td></tr>
+                <tr><td><code>--term &lt;value&gt;</code></td><td>TERM for tmux</td><td><code>xterm-256color</code></td></tr>
+                <tr><td><code>--lang &lt;value&gt;</code></td><td>LANG for tmux</td><td><code>en_US.UTF-8</code></td></tr>
+                <tr><td><code>--no-service</code></td><td>Skip background service setup</td><td></td></tr>
+                <tr><td><code>--uninstall</code></td><td>Remove QuickTUI and all related files</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="download-group">

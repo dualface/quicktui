@@ -628,7 +628,7 @@ print_success() {
 
     printf '\n'
     printf 'iOS App:\n'
-    printf '  App Store & TestFlight:  https://quicktui.ai/#download\n'
+    printf '  App Store:  https://apps.apple.com/app/quicktui/id6761338192\n'
     printf '\n'
 }
 

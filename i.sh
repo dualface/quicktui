@@ -432,107 +432,8 @@ configure_terminal() {
 }
 
 # ============================================================
-# Step 7: Configure background service (optional)
+# Step 7: Configure and register background service
 # ============================================================
-
-setup_launchd() {
-    _plist_dir="${HOME}/Library/LaunchAgents"
-    _plist_file="${_plist_dir}/ai.quicktui.plist"
-    _log_dir="${HOME}/Library/Logs/QuickTUI"
-    _gui_target="gui/$(id -u)"
-
-    _wrapper="${_plist_dir}/ai.quicktui.sh"
-
-    mkdir -p "$_plist_dir"
-    mkdir -p "$_log_dir"
-
-    # Detect tmux's directory and TMPDIR at install time so launchd can find tmux
-    _tmux_dir="$(dirname "$(command -v tmux)")"
-    # Wrapper script: source config file to load QUICKTUI_TOKEN, then exec server
-    cat > "$_wrapper" << EOF
-#!/bin/sh
-export PATH="${_tmux_dir}:/usr/local/bin:/usr/bin:/bin"
-export TMPDIR="/tmp"
-set -a
-. ${QUICKTUI_CONFIG_FILE}
-set +a
-exec ${INSTALL_PATH}
-EOF
-    chmod 700 "$_wrapper"
-
-    cat > "$_plist_file" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>ai.quicktui</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>/bin/sh</string>
-    <string>${_wrapper}</string>
-  </array>
-  <key>RunAtLoad</key>
-  <true/>
-  <key>KeepAlive</key>
-  <true/>
-  <key>StandardOutPath</key>
-  <string>${_log_dir}/stdout.log</string>
-  <key>StandardErrorPath</key>
-  <string>${_log_dir}/stderr.log</string>
-</dict>
-</plist>
-EOF
-
-    chmod 600 "$_plist_file"
-
-    # Unload existing service if present
-    launchctl bootout "$_gui_target/ai.quicktui" 2>/dev/null || true
-
-    if launchctl bootstrap "$_gui_target" "$_plist_file" 2>/dev/null; then
-        SERVICE_STARTED="yes"
-        info "launchd service registered: $_plist_file"
-        info "Logs: $_log_dir"
-    else
-        warn "Failed to load launchd service. You can start it manually:"
-        warn "  launchctl bootstrap $_gui_target $_plist_file"
-        info "launchd service registered (not started): $_plist_file"
-    fi
-}
-
-setup_systemd() {
-    _service_dir="${HOME}/.config/systemd/user"
-    _service_file="${_service_dir}/quicktui.service"
-
-    mkdir -p "$_service_dir"
-
-    cat > "$_service_file" << EOF
-[Unit]
-Description=QuickTUI Remote Terminal Server
-After=network.target
-
-[Service]
-EnvironmentFile=${QUICKTUI_CONFIG_FILE}
-ExecStart=${INSTALL_PATH}
-Restart=on-failure
-
-[Install]
-WantedBy=default.target
-EOF
-
-    if ! systemctl --user daemon-reload 2>/dev/null; then
-        warn "systemctl --user not available. Service file saved to $_service_file"
-        return 0
-    fi
-    systemctl --user enable quicktui 2>/dev/null || true
-    if systemctl --user restart quicktui 2>/dev/null; then
-        SERVICE_STARTED="yes"
-        info "systemd user service registered: $_service_file"
-    else
-        warn "Failed to start service. Try: systemctl --user start quicktui"
-        info "systemd user service registered (not started): $_service_file"
-    fi
-}
 
 configure_service() {
     if [ -n "$OPT_NO_SERVICE" ]; then
@@ -587,13 +488,15 @@ configure_service() {
         done
     fi
 
-    printf 'QUICKTUI_ADDR=%s:%s\n' "$LISTEN_ADDR" "$LISTEN_PORT" >> "$QUICKTUI_CONFIG_FILE"
-    info "Listen address: $LISTEN_ADDR:$LISTEN_PORT"
-
-    if [ "$PLATFORM" = "darwin" ]; then
-        setup_launchd
+    # Delegate service registration to the server binary
+    if "$INSTALL_PATH" --install-service \
+        --addr "${LISTEN_ADDR}:${LISTEN_PORT}" \
+        --term "$TERM_ENV" \
+        --lang "$LANG_ENV"; then
+        SERVICE_STARTED="yes"
     else
-        setup_systemd
+        warn "Service registration failed. You can retry manually:"
+        warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
     fi
 }
 
@@ -647,57 +550,29 @@ print_success() {
 
 uninstall() {
     printf '\n\033[1mQuickTUI Uninstaller\033[0m\n\n'
-    detect_platform
 
     _removed=0
+    _binary="${HOME}/.local/bin/quicktui-server"
 
-    # Stop and remove launchd service (macOS)
-    if [ "$PLATFORM" = "darwin" ]; then
-        _gui_target="gui/$(id -u)"
-        _plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
-        _wrapper="${HOME}/Library/LaunchAgents/ai.quicktui.sh"
-        _log_dir="${HOME}/Library/Logs/QuickTUI"
-
-        launchctl bootout "$_gui_target/ai.quicktui" 2>/dev/null && \
-            info "launchd service stopped"
-
-        if [ -f "$_plist" ]; then
-            rm -f "$_plist"
-            info "Removed: $_plist"
-            _removed=1
-        fi
-        if [ -f "$_wrapper" ]; then
-            rm -f "$_wrapper"
-            info "Removed: $_wrapper"
-            _removed=1
-        fi
-        if [ -d "$_log_dir" ]; then
-            rm -rf "$_log_dir"
-            info "Removed: $_log_dir"
-            _removed=1
-        fi
+    # Unregister service via server binary (handles launchd/systemd)
+    if [ -f "$_binary" ]; then
+        "$_binary" --uninstall-service 2>/dev/null && \
+            info "Service unregistered"
+        _removed=1
     fi
 
-    # Stop and remove systemd service (Linux)
-    if [ "$PLATFORM" = "linux" ]; then
-        _service_file="${HOME}/.config/systemd/user/quicktui.service"
-        systemctl --user stop quicktui 2>/dev/null && \
-            info "systemd service stopped"
-        systemctl --user disable quicktui 2>/dev/null || true
-        if [ -f "$_service_file" ]; then
-            rm -f "$_service_file"
-            systemctl --user daemon-reload 2>/dev/null || true
-            info "Removed: $_service_file"
-            _removed=1
-        fi
+    # Remove log directory (macOS)
+    _log_dir="${HOME}/Library/Logs/QuickTUI"
+    if [ -d "$_log_dir" ]; then
+        rm -rf "$_log_dir"
+        info "Removed: $_log_dir"
+        _removed=1
     fi
 
     # Remove binary
-    _binary="${HOME}/.local/bin/quicktui-server"
     if [ -f "$_binary" ]; then
         rm -f "$_binary"
         info "Removed: $_binary"
-        _removed=1
     fi
 
     # Remove config

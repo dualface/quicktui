@@ -158,13 +158,13 @@
 <div class="download-group">
           <h3>Server <span class="download-group-note">Run on your Mac / Linux / Windows WSL</span></h3>
           <div class="code-block">
-            <pre><span class="command">curl -fsSL https://quicktui.ai/install.sh | sh</span></pre>
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://quicktui.ai/install.sh | sh').then(()=>{this.classList.add('copied');setTimeout(()=>this.classList.remove('copied'),2000)})" title="Copy to clipboard">
+            <pre><span class="command">curl -fsSL https://quicktui.ai/i.sh | sh</span></pre>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://quicktui.ai/i.sh | sh').then(()=>{this.classList.add('copied');setTimeout(()=>this.classList.remove('copied'),2000)})" title="Copy to clipboard">
               <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
           </div>
-          <p class="uninstall-hint">To uninstall: <code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --uninstall</code></p>
+          <p class="uninstall-hint">To uninstall: <code>curl -fsSL https://quicktui.ai/i.sh | sh -s -- --uninstall</code></p>
           <div class="install-options-hint">
             <p class="install-options-title">Installer options</p>
             <table class="install-options">
@@ -357,7 +357,7 @@ systemctl --user status quicktui  # Linux</code></pre>
             <summary>Non-ASCII characters display as underscores</summary>
             <div class="faq-answer">
               <p>The server is running without a locale. Re-run the installer and set the <code>LANG</code> option to match your system, or pass it explicitly:</p>
-              <pre><code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --lang en_US.UTF-8</code></pre>
+              <pre><code>curl -fsSL https://quicktui.ai/i.sh | sh -s -- --lang en_US.UTF-8</code></pre>
             </div>
           </details>
 
@@ -403,14 +403,14 @@ journalctl --user -u quicktui -f</code></pre>
               <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
 systemctl --user restart quicktui                  # Linux</code></pre>
               <p>You can also set a different address and port at install time:</p>
-              <pre><code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --addr 127.0.0.1 --port 9000</code></pre>
+              <pre><code>curl -fsSL https://quicktui.ai/i.sh | sh -s -- --addr 127.0.0.1 --port 9000</code></pre>
             </div>
           </details>
 
           <details class="faq-item">
             <summary>How do I uninstall QuickTUI?</summary>
             <div class="faq-answer">
-              <pre><code>curl -fsSL https://quicktui.ai/install.sh | sh -s -- --uninstall</code></pre>
+              <pre><code>curl -fsSL https://quicktui.ai/i.sh | sh -s -- --uninstall</code></pre>
               <p>This stops the service and removes the binary, config, service files, and logs.</p>
             </div>
           </details>

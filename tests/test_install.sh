@@ -2,12 +2,12 @@
 set -e
 
 # ============================================================
-# Automated tests for install.sh
+# Automated tests for i.sh
 # Run inside Docker: docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test
 # ============================================================
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-INSTALL_SCRIPT="${SCRIPT_DIR}/../install.sh"
+INSTALL_SCRIPT="${SCRIPT_DIR}/../i.sh"
 MOCK_PORT=18123
 MOCK_DIR=""
 MOCK_PID=""
@@ -205,7 +205,7 @@ test_binary_executable() {
 # ============================================================
 
 main() {
-    printf '\n\033[1m=== QuickTUI install.sh Test Suite ===\033[0m\n'
+    printf '\n\033[1m=== QuickTUI i.sh Test Suite ===\033[0m\n'
 
     setup_mock_server
     trap teardown_mock_server EXIT INT TERM

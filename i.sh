@@ -36,10 +36,13 @@ DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
 SERVICE_STARTED=""
 
+_BG_PID=""
 cleanup() {
+    [ -n "$_BG_PID" ] && kill "$_BG_PID" 2>/dev/null || true
     [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
 }
-trap cleanup EXIT INT TERM
+trap 'cleanup; exit 130' INT TERM
+trap cleanup EXIT
 
 # ============================================================
 # Utility functions
@@ -156,6 +159,7 @@ download() {
         die "Neither curl nor wget found. Please install one and retry."
     fi
     _dl_pid=$!
+    _BG_PID=$_dl_pid
     # Spinner while downloading
     _i=0
     while kill -0 "$_dl_pid" 2>/dev/null; do
@@ -168,6 +172,7 @@ download() {
     done
     wait "$_dl_pid"
     _dl_rc=$?
+    _BG_PID=""
     printf '\r\033[K'
     return $_dl_rc
 }

@@ -146,26 +146,32 @@ confirm() {
 download() {
     _url="$1"
     _dest="$2"
+    _msg="${3:-Downloading}"
+    # Start silent download in background
     if command -v curl > /dev/null 2>&1; then
-        curl -fSL --progress-bar "$_url" -o "$_dest"
+        curl -fsSL "$_url" -o "$_dest" &
     elif command -v wget > /dev/null 2>&1; then
-        wget --show-progress -q "$_url" -O "$_dest"
+        wget -q "$_url" -O "$_dest" &
     else
         die "Neither curl nor wget found. Please install one and retry."
     fi
+    _dl_pid=$!
+    # Spinner while downloading
+    _i=0
+    while kill -0 "$_dl_pid" 2>/dev/null; do
+        case $((_i % 4)) in
+            0) _c='-' ;; 1) _c='\' ;; 2) _c='|' ;; 3) _c='/' ;;
+        esac
+        printf '\r  %s %s' "$_c" "$_msg"
+        _i=$((_i + 1))
+        sleep 0.1
+    done
+    wait "$_dl_pid"
+    _dl_rc=$?
+    printf '\r\033[K'
+    return $_dl_rc
 }
 
-download_silent() {
-    _url="$1"
-    _dest="$2"
-    if command -v curl > /dev/null 2>&1; then
-        curl -fsSL "$_url" -o "$_dest"
-    elif command -v wget > /dev/null 2>&1; then
-        wget -q "$_url" -O "$_dest"
-    else
-        die "Neither curl nor wget found. Please install one and retry."
-    fi
-}
 
 run_privileged() {
     if [ "$(id -u)" = "0" ]; then
@@ -276,15 +282,13 @@ download_binary() {
     _sha256_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}.sha256"
 
     printf '  Temp dir:  %s\n' "$DOWNLOAD_TMPDIR"
-    printf '  Downloading QuickTUI (%s)...\n' "$BINARY_NAME"
-    download "${QUICKTUI_RELEASES}/${BINARY_NAME}" "$_binary_path" || \
+    download "${QUICKTUI_RELEASES}/${BINARY_NAME}" "$_binary_path" "Downloading QuickTUI (${BINARY_NAME})..." || \
         die "Failed to download binary. Check your internet connection and try again."
 
     _file_size="$(du -sh "$_binary_path" 2>/dev/null | cut -f1)"
     printf '  File size: %s\n' "${_file_size:-unknown}"
 
-    printf '  Downloading checksum...\n'
-    download_silent "${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256" "$_sha256_path" || \
+    download "${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256" "$_sha256_path" "Downloading checksum..." || \
         die "Failed to download checksum file."
 
     printf '  Verifying checksum...\n'

@@ -8,9 +8,15 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 INSTALL_SCRIPT="${SCRIPT_DIR}/../i.sh"
-MOCK_PORT=18123
+SHELL_BIN="$(command -v sh)"
+ENV_BIN="$(command -v env)"
+PYTHON3_BIN="$(command -v python3)"
+REAL_PATH="${PATH}"
+CURRENT_OS="$(uname -s)"
+MOCK_PORT=""
 MOCK_DIR=""
 MOCK_PID=""
+TEST_TMPDIRS=""
 TESTS_PASSED=0
 TESTS_FAILED=0
 
@@ -28,6 +34,29 @@ fail() {
     printf '\033[0;31m  FAIL\033[0m %s: %s\n' "$1" "$2"
 }
 
+remember_tmpdir() {
+    if [ -z "$TEST_TMPDIRS" ]; then
+        TEST_TMPDIRS="$1"
+    else
+        TEST_TMPDIRS="${TEST_TMPDIRS}
+$1"
+    fi
+}
+
+make_tmpdir() {
+    _dir="$(mktemp -d)"
+    remember_tmpdir "$_dir"
+    printf '%s\n' "$_dir"
+}
+
+cleanup_tmpdirs() {
+    if [ -n "$TEST_TMPDIRS" ]; then
+        printf '%s\n' "$TEST_TMPDIRS" | while IFS= read -r _dir; do
+            [ -n "$_dir" ] && rm -rf "$_dir"
+        done
+    fi
+}
+
 assert_file_exists() {
     if [ -f "$1" ]; then
         pass "$2"
@@ -36,19 +65,35 @@ assert_file_exists() {
     fi
 }
 
-assert_file_not_exists() {
-    if [ ! -f "$1" ]; then
+assert_path_not_exists() {
+    if [ ! -e "$1" ] && [ ! -L "$1" ]; then
         pass "$2"
     else
-        fail "$2" "file should not exist: $1"
+        fail "$2" "path should not exist: $1"
     fi
 }
 
 assert_file_contains() {
-    if grep -q "$2" "$1" 2>/dev/null; then
+    if grep -Fq -- "$2" "$1" 2>/dev/null; then
         pass "$3"
     else
         fail "$3" "'$2' not found in $1"
+    fi
+}
+
+assert_output_contains() {
+    if grep -Fq -- "$2" "$1" 2>/dev/null; then
+        pass "$3"
+    else
+        fail "$3" "'$2' not found in output"
+    fi
+}
+
+assert_output_not_contains() {
+    if grep -Fq -- "$2" "$1" 2>/dev/null; then
+        fail "$3" "unexpected '$2' found in output"
+    else
+        pass "$3"
     fi
 }
 
@@ -61,38 +106,304 @@ assert_file_permission() {
     fi
 }
 
+run_installer() {
+    QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" "$SHELL_BIN" "$INSTALL_SCRIPT" "$@"
+}
+
+run_command_interactive() {
+    _outfile="$1"
+    _input="$2"
+    shift 2
+
+    TTY_OUTPUT_FILE="$_outfile" TTY_INPUT_TEXT="$_input" "$PYTHON3_BIN" - "$@" <<'PY'
+import os
+import select
+import sys
+import time
+import pty
+
+outfile = os.environ["TTY_OUTPUT_FILE"]
+input_text = os.environ.get("TTY_INPUT_TEXT", "")
+if input_text:
+    input_text = input_text + "\n\n"
+input_bytes = input_text.encode()
+cmd = sys.argv[1:]
+
+pid, master = pty.fork()
+if pid == 0:
+    os.execvpe(cmd[0], cmd, os.environ.copy())
+
+if input_bytes:
+    os.write(master, input_bytes)
+
+chunks = []
+deadline = time.time() + 20
+exited = False
+idle_after_exit = 0
+reaped = False
+status = None
+while True:
+    ready, _, _ = select.select([master], [], [], 0.1)
+    if ready:
+        try:
+            data = os.read(master, 4096)
+        except OSError:
+            data = b""
+        if data:
+            chunks.append(data)
+        else:
+            break
+
+    if not reaped:
+        try:
+            waited_pid, status = os.waitpid(pid, os.WNOHANG)
+        except ChildProcessError:
+            waited_pid = pid
+            reaped = True
+            exited = True
+        else:
+            if waited_pid == pid:
+                reaped = True
+                exited = True
+
+    if exited and not ready:
+        idle_after_exit += 1
+        if idle_after_exit >= 5:
+            break
+    elif ready:
+        idle_after_exit = 0
+
+    if time.time() > deadline and not exited:
+        os.kill(pid, 15)
+        _, status = os.waitpid(pid, 0)
+        reaped = True
+        exited = True
+        break
+
+if not reaped:
+    _, status = os.waitpid(pid, 0)
+    reaped = True
+
+rc = os.waitstatus_to_exitcode(status)
+with open(outfile, "wb") as fh:
+    fh.write(b"".join(chunks))
+
+os.close(master)
+sys.exit(rc)
+PY
+}
+
+link_existing_commands() {
+    _dir="$1"
+    shift
+    for _cmd in "$@"; do
+        _path="$(command -v "$_cmd" 2>/dev/null || true)"
+        if [ -n "$_path" ]; then
+            ln -sf "$_path" "${_dir}/${_cmd}"
+        fi
+    done
+}
+
+write_fake_tmux() {
+    _dir="$1"
+    _version="$2"
+    cat > "${_dir}/tmux" <<EOF
+#!/bin/sh
+if [ "\${1:-}" = "-V" ]; then
+    printf 'tmux %s\n' "${_version}"
+    exit 0
+fi
+printf 'fake tmux\n'
+EOF
+    chmod +x "${_dir}/tmux"
+}
+
+write_fake_uname() {
+    _dir="$1"
+    _os="$2"
+    _arch="$3"
+    cat > "${_dir}/uname" <<EOF
+#!/bin/sh
+case "\${1:-}" in
+    -s) printf '%s\n' "${_os}" ;;
+    -m) printf '%s\n' "${_arch}" ;;
+    *) printf '%s\n' "${_os}" ;;
+esac
+EOF
+    chmod +x "${_dir}/uname"
+}
+
+write_fake_id_zero() {
+    _dir="$1"
+    cat > "${_dir}/id" <<'EOF'
+#!/bin/sh
+if [ "${1:-}" = "-u" ]; then
+    printf '0\n'
+else
+    printf '0\n'
+fi
+EOF
+    chmod +x "${_dir}/id"
+}
+
+write_fake_sudo_passthrough() {
+    _dir="$1"
+    cat > "${_dir}/sudo" <<'EOF'
+#!/bin/sh
+exec "$@"
+EOF
+    chmod +x "${_dir}/sudo"
+}
+
+write_fake_pkg_manager_success() {
+    _dir="$1"
+    if [ "$CURRENT_OS" = "Darwin" ]; then
+        _name="brew"
+    else
+        _name="apt-get"
+    fi
+
+    cat > "${_dir}/${_name}" <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+    chmod +x "${_dir}/${_name}"
+
+    if [ "$CURRENT_OS" != "Darwin" ]; then
+        write_fake_id_zero "$_dir"
+        write_fake_sudo_passthrough "$_dir"
+    fi
+}
+
+write_mock_checksum_good() {
+    cd "$MOCK_DIR"
+    sha256sum "$MOCK_BINARY_NAME" > "${MOCK_BINARY_NAME}.sha256" 2>/dev/null || \
+        shasum -a 256 "$MOCK_BINARY_NAME" > "${MOCK_BINARY_NAME}.sha256"
+    cd /
+}
+
+write_mock_checksum_bad() {
+    printf '0000000000000000000000000000000000000000000000000000000000000000  %s\n' \
+        "$MOCK_BINARY_NAME" > "${MOCK_DIR}/${MOCK_BINARY_NAME}.sha256"
+}
+
+choose_mock_port() {
+    "$PYTHON3_BIN" - <<'PY'
+import socket
+
+sock = socket.socket()
+sock.bind(("127.0.0.1", 0))
+print(sock.getsockname()[1])
+sock.close()
+PY
+}
+
 # ============================================================
 # Mock HTTP server setup
 # ============================================================
 
 setup_mock_server() {
-    MOCK_DIR="$(mktemp -d)"
+    MOCK_DIR="$(make_tmpdir)"
+    MOCK_PORT="$(choose_mock_port)"
 
-    # Detect platform to create correct binary name
     _os="$(uname -s)"
     _arch="$(uname -m)"
     case "$_os" in
         Darwin) _platform="darwin" ;;
-        Linux)  _platform="linux" ;;
+        Linux) _platform="linux" ;;
+        *)
+            printf 'ERROR: Unsupported OS for tests: %s\n' "$_os"
+            exit 1
+            ;;
     esac
     case "$_arch" in
         arm64|aarch64) _arch_name="arm64" ;;
-        x86_64|amd64)  _arch_name="amd64" ;;
+        x86_64|amd64) _arch_name="amd64" ;;
+        *)
+            printf 'ERROR: Unsupported architecture for tests: %s\n' "$_arch"
+            exit 1
+            ;;
     esac
-    MOCK_BINARY_NAME="quicktui-${_platform}-${_arch_name}"
+    MOCK_BINARY_NAME="quicktui-server-${_platform}-${_arch_name}"
 
-    # Create fake binary
-    printf '#!/bin/sh\necho "quicktui-mock v0.0.1-test"\n' > "${MOCK_DIR}/${MOCK_BINARY_NAME}"
+    cat > "${MOCK_DIR}/${MOCK_BINARY_NAME}" <<'EOF'
+#!/bin/sh
+set -e
+
+case "${1:-}" in
+    --version)
+        echo "quicktui-mock v0.0.1-test"
+        ;;
+    --install-service)
+        shift
+        if [ "${QUICKTUI_MOCK_INSTALL_SERVICE_FAIL:-}" = "1" ]; then
+            exit 1
+        fi
+
+        addr=""
+        term=""
+        lang=""
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                --addr)
+                    addr="$2"
+                    shift 2
+                    ;;
+                --term)
+                    term="$2"
+                    shift 2
+                    ;;
+                --lang)
+                    lang="$2"
+                    shift 2
+                    ;;
+                *)
+                    echo "unexpected arg: $1" >&2
+                    exit 1
+                    ;;
+            esac
+        done
+
+        mkdir -p "$HOME/.quicktui-test"
+        {
+            printf 'ADDR=%s\n' "$addr"
+            printf 'TERM=%s\n' "$term"
+            printf 'LANG=%s\n' "$lang"
+        } > "$HOME/.quicktui-test/install-service.log"
+
+        case "$(uname -s)" in
+            Darwin)
+                mkdir -p "$HOME/Library/LaunchAgents"
+                {
+                    printf 'Label=ai.quicktui\n'
+                    printf 'Addr=%s\n' "$addr"
+                } > "$HOME/Library/LaunchAgents/ai.quicktui.plist"
+                ;;
+            Linux)
+                mkdir -p "$HOME/.config/systemd/user/default.target.wants"
+                {
+                    printf '[Service]\n'
+                    printf 'Environment=QUICKTUI_ADDR=%s\n' "$addr"
+                    printf 'ExecStart=%s/.local/bin/quicktui-server\n' "$HOME"
+                } > "$HOME/.config/systemd/user/quicktui.service"
+                ln -sf ../quicktui.service "$HOME/.config/systemd/user/default.target.wants/quicktui.service"
+                ;;
+        esac
+        ;;
+    --uninstall-service)
+        rm -f "$HOME/Library/LaunchAgents/ai.quicktui.plist"
+        rm -f "$HOME/.config/systemd/user/quicktui.service"
+        rm -f "$HOME/.config/systemd/user/default.target.wants/quicktui.service"
+        ;;
+    *)
+        echo "quicktui-mock v0.0.1-test"
+        ;;
+esac
+EOF
     chmod +x "${MOCK_DIR}/${MOCK_BINARY_NAME}"
+    write_mock_checksum_good
 
-    # Create sha256 checksum file
-    cd "$MOCK_DIR"
-    sha256sum "${MOCK_BINARY_NAME}" > "${MOCK_BINARY_NAME}.sha256" 2>/dev/null || \
-        shasum -a 256 "${MOCK_BINARY_NAME}" > "${MOCK_BINARY_NAME}.sha256"
-    cd /
-
-    # Start HTTP server
-    python3 -m http.server "$MOCK_PORT" --directory "$MOCK_DIR" > /dev/null 2>&1 &
+    "$PYTHON3_BIN" -m http.server "$MOCK_PORT" --bind 127.0.0.1 --directory "$MOCK_DIR" > /dev/null 2>&1 &
     MOCK_PID=$!
     sleep 1
 
@@ -104,96 +415,452 @@ setup_mock_server() {
 
 teardown_mock_server() {
     [ -n "$MOCK_PID" ] && kill "$MOCK_PID" 2>/dev/null || true
-    [ -n "$MOCK_DIR" ] && rm -rf "$MOCK_DIR"
 }
 
-# Clean up test artifacts between test cases
+cleanup_all() {
+    teardown_mock_server
+    cleanup_tmpdirs
+}
+
 reset_test_env() {
-    rm -rf "${HOME}/.local/bin/quicktui"
+    rm -rf "${HOME}/.local/bin/quicktui-server"
     rm -rf "${HOME}/.config/quicktui"
-    rm -rf "${HOME}/.config/systemd/user/quicktui.service"
-    rm -f /usr/local/bin/quicktui
+    rm -rf "${HOME}/.config/systemd/user"
+    rm -rf "${HOME}/.quicktui-test"
+    rm -rf "${HOME}/Library/LaunchAgents/ai.quicktui.plist"
+    rm -rf "${HOME}/Library/Logs/QuickTUI"
 }
 
 # ============================================================
 # Test cases
 # ============================================================
 
+test_help_flag() {
+    printf '\n--- test_help_flag ---\n'
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if "$SHELL_BIN" "$INSTALL_SCRIPT" --help >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "Non-interactive mode" "--help shows usage info"
+    else
+        fail "--help shows usage info" "help command failed"
+    fi
+}
+
+test_unknown_option() {
+    printf '\n--- test_unknown_option ---\n'
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if "$SHELL_BIN" "$INSTALL_SCRIPT" --bogus >"${_out}" 2>&1; then
+        fail "unknown option is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Unknown option: --bogus" "unknown option is rejected"
+    fi
+}
+
+test_missing_option_value() {
+    printf '\n--- test_missing_option_value ---\n'
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if "$SHELL_BIN" "$INSTALL_SCRIPT" --addr >"${_out}" 2>&1; then
+        fail "missing option value is reported clearly" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Missing value for --addr" "missing option value is reported clearly"
+    fi
+}
+
+test_unsupported_platform() {
+    printf '\n--- test_unsupported_platform ---\n'
+
+    _bin_dir="$(make_tmpdir)"
+    write_fake_uname "$_bin_dir" "Solaris" "x86_64"
+    _out="${_bin_dir}/out"
+
+    if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" -y >"${_out}" 2>&1; then
+        fail "unsupported platform is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Unsupported operating system: Solaris" "unsupported platform is rejected"
+    fi
+}
+
+test_unsupported_architecture() {
+    printf '\n--- test_unsupported_architecture ---\n'
+
+    _bin_dir="$(make_tmpdir)"
+    write_fake_uname "$_bin_dir" "Darwin" "mips64"
+    _out="${_bin_dir}/out"
+
+    if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" -y >"${_out}" 2>&1; then
+        fail "unsupported architecture is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Unsupported architecture: mips64" "unsupported architecture is rejected"
+    fi
+}
+
+test_tmux_missing_noninteractive() {
+    printf '\n--- test_tmux_missing_noninteractive ---\n'
+
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" uname
+    _out="${_bin_dir}/out"
+
+    if PATH="${_bin_dir}" QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" -y >"${_out}" 2>&1; then
+        fail "missing tmux stops non-interactive install" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "tmux is not installed." "missing tmux is reported"
+        assert_output_contains "${_out}" "Please install tmux 3.2 or later and run this installer again." "missing tmux stops non-interactive install"
+    fi
+}
+
+test_tmux_install_reports_missing_after_package_manager_returns_success() {
+    printf '\n--- test_tmux_install_reports_missing_after_package_manager_returns_success ---\n'
+
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" uname
+    write_fake_pkg_manager_success "$_bin_dir"
+    _out="${_bin_dir}/out"
+
+    _input="$(printf 'y\n')"
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" "PATH=${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT"; then
+        fail "tmux install verifies command becomes available" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "tmux installation completed, but 'tmux' is still not in PATH." "tmux install verifies command becomes available"
+    fi
+}
+
+test_tmux_old_version_noninteractive() {
+    printf '\n--- test_tmux_old_version_noninteractive ---\n'
+
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" uname sed cut
+    write_fake_tmux "$_bin_dir" "3.1"
+    _out="${_bin_dir}/out"
+
+    if PATH="${_bin_dir}" QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" -y >"${_out}" 2>&1; then
+        fail "old tmux stops non-interactive install" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "QuickTUI requires tmux 3.2 or later." "old tmux warning is shown"
+    fi
+}
+
+test_tmux_old_version_interactive_continue() {
+    printf '\n--- test_tmux_old_version_interactive_continue ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    write_fake_tmux "$_bin_dir" "3.1"
+    _out="${_bin_dir}/out"
+    _input="$(printf 'y\n\n\n\n\n\nn\n')"
+
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" \
+        "PATH=${_bin_dir}:${REAL_PATH}" \
+        "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT"; then
+        assert_output_contains "${_out}" "QuickTUI requires tmux 3.2 or later." "interactive old tmux warning is shown"
+        assert_file_exists "${HOME}/.config/quicktui/config" "interactive continue with old tmux still installs"
+    else
+        fail "interactive continue with old tmux still installs" "installer unexpectedly failed"
+    fi
+}
+
+test_no_download_tool() {
+    printf '\n--- test_no_download_tool ---\n'
+
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" uname sed cut mktemp rm
+    write_fake_tmux "$_bin_dir" "3.6"
+    _out="${_bin_dir}/out"
+
+    if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" -y --no-service >"${_out}" 2>&1; then
+        fail "missing curl and wget is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Neither curl nor wget found" "missing curl and wget is rejected"
+    fi
+}
+
+test_checksum_failure() {
+    printf '\n--- test_checksum_failure ---\n'
+    reset_test_env
+
+    write_mock_checksum_bad
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    if run_installer -y --no-service >"${_out}" 2>&1; then
+        fail "checksum mismatch aborts install" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Checksum verification failed" "checksum mismatch aborts install"
+    fi
+
+    write_mock_checksum_good
+}
+
 test_default_install() {
     printf '\n--- test_default_install ---\n'
     reset_test_env
 
-    QUICKTUI_RELEASES="http://localhost:${MOCK_PORT}" \
-        sh "$INSTALL_SCRIPT" -y --no-service
+    run_installer -y --no-service
 
-    assert_file_exists "${HOME}/.local/bin/quicktui" "binary installed to ~/.local/bin"
+    assert_file_exists "${HOME}/.local/bin/quicktui-server" "binary installed to ~/.local/bin"
     assert_file_exists "${HOME}/.config/quicktui/config" "config file created"
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=" "config contains token"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=0.0.0.0:8022" "default listen address saved to config"
     assert_file_permission "${HOME}/.config/quicktui" "700" "config dir permission 700"
     assert_file_permission "${HOME}/.config/quicktui/config" "600" "config file permission 600"
-    assert_file_not_exists "${HOME}/.config/systemd/user/quicktui.service" "no systemd service with --no-service"
+    assert_path_not_exists "${HOME}/.config/systemd/user/quicktui.service" "no systemd service with --no-service"
+    assert_path_not_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "no launchd service with --no-service"
+}
+
+test_no_service_message() {
+    printf '\n--- test_no_service_message ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if run_installer -y --no-service --token message-test >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "To start QuickTUI, run:" "--no-service keeps the success message in the manual-start path"
+        assert_output_not_contains "${_out}" "Service registration failed" "--no-service does not print service failure"
+    else
+        fail "--no-service keeps the success message in the manual-start path" "installer unexpectedly failed"
+    fi
 }
 
 test_custom_token() {
     printf '\n--- test_custom_token ---\n'
     reset_test_env
 
-    QUICKTUI_RELEASES="http://localhost:${MOCK_PORT}" \
-        sh "$INSTALL_SCRIPT" -y --no-service --token "mytoken123"
+    run_installer -y --no-service --token "mytoken123"
 
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=mytoken123" "custom token saved correctly"
 }
 
-test_install_dir_2() {
-    printf '\n--- test_install_dir_2 ---\n'
+test_custom_addr_no_service() {
+    printf '\n--- test_custom_addr_no_service ---\n'
     reset_test_env
 
-    QUICKTUI_RELEASES="http://localhost:${MOCK_PORT}" \
-        sh "$INSTALL_SCRIPT" -y --no-service --install-dir 2
+    run_installer -y --no-service --addr 127.0.0.1 --port 9000
 
-    assert_file_exists "/usr/local/bin/quicktui" "binary installed to /usr/local/bin"
-    assert_file_not_exists "${HOME}/.local/bin/quicktui" "not installed to ~/.local/bin"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "custom listen address saved without service registration"
+}
+
+test_ipv6_addr_no_service() {
+    printf '\n--- test_ipv6_addr_no_service ---\n'
+    reset_test_env
+
+    run_installer -y --no-service --addr "[::1]" --port 9000
+
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=[::1]:9000" "IPv6 listen address is accepted"
+}
+
+test_invalid_noninteractive_addr() {
+    printf '\n--- test_invalid_noninteractive_addr ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if run_installer -y --no-service --addr "bad addr" >"${_out}" 2>&1; then
+        fail "invalid listen address is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Invalid listen address: 'bad addr'" "invalid listen address is rejected"
+    fi
+}
+
+test_invalid_noninteractive_port() {
+    printf '\n--- test_invalid_noninteractive_port ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if run_installer -y --no-service --port 70000 >"${_out}" 2>&1; then
+        fail "invalid listen port is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Invalid port: '70000'" "invalid listen port is rejected"
+    fi
 }
 
 test_service_config() {
     printf '\n--- test_service_config ---\n'
     reset_test_env
 
-    QUICKTUI_RELEASES="http://localhost:${MOCK_PORT}" \
-        sh "$INSTALL_SCRIPT" -y --addr 127.0.0.1 --port 8080
+    run_installer -y --token test-token --addr 127.0.0.1 --port 8080 --term xterm-ghostty --lang zh_CN.UTF-8
 
-    _service_file="${HOME}/.config/systemd/user/quicktui.service"
-    # On Linux (Docker), systemd service file should be created
-    _os="$(uname -s)"
-    if [ "$_os" = "Linux" ]; then
-        assert_file_exists "$_service_file" "systemd service file created"
-        assert_file_contains "$_service_file" "QUICKTUI_ADDR=127.0.0.1:8080" "service has correct addr:port"
-        assert_file_contains "$_service_file" "ExecStart=${HOME}/.local/bin/quicktui" "service has correct ExecStart"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:8080" "custom listen address saved to config"
+    assert_file_exists "${HOME}/.quicktui-test/install-service.log" "install-service invocation recorded"
+    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "ADDR=127.0.0.1:8080" "service installer received addr:port"
+    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "TERM=xterm-ghostty" "service installer received TERM"
+    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "LANG=zh_CN.UTF-8" "service installer received LANG"
+
+    if [ "$CURRENT_OS" = "Linux" ]; then
+        assert_file_exists "${HOME}/.config/systemd/user/quicktui.service" "systemd service file created"
+        assert_file_contains "${HOME}/.config/systemd/user/quicktui.service" "Environment=QUICKTUI_ADDR=127.0.0.1:8080" "service file stores custom addr:port"
+        assert_file_contains "${HOME}/.config/systemd/user/quicktui.service" "ExecStart=${HOME}/.local/bin/quicktui-server" "service file uses quicktui-server"
     else
-        pass "skipped systemd test on non-Linux"
+        assert_file_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "launchd plist created"
+        assert_file_contains "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "Addr=127.0.0.1:8080" "launchd plist stores custom addr:port"
     fi
 }
 
-test_help_flag() {
-    printf '\n--- test_help_flag ---\n'
+test_service_registration_failure() {
+    printf '\n--- test_service_registration_failure ---\n'
+    reset_test_env
 
-    _output="$(sh "$INSTALL_SCRIPT" --help 2>&1)"
-    if echo "$_output" | grep -q "Non-interactive mode"; then
-        pass "--help shows usage info"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if QUICKTUI_MOCK_INSTALL_SERVICE_FAIL=1 QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" -y --token fail-token --addr 127.0.0.1 --port 8081 >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "Service registration failed. Start manually:" "service failure path is shown"
+        assert_output_contains "${_out}" "--install-service --addr 127.0.0.1:8081" "service retry command is printed"
+        assert_path_not_exists "${HOME}/.quicktui-test/install-service.log" "failed service registration does not create success artifact"
     else
-        fail "--help shows usage info" "help output missing expected text"
+        fail "service failure path is shown" "installer unexpectedly failed"
     fi
+}
+
+test_interactive_invalid_token_choice() {
+    printf '\n--- test_interactive_invalid_token_choice ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _input="$(printf '3\n')"
+
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT"; then
+        fail "interactive invalid token choice is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Invalid choice: 3" "interactive invalid token choice is rejected"
+    fi
+}
+
+test_interactive_empty_custom_token() {
+    printf '\n--- test_interactive_empty_custom_token ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _input="$(printf '2\n\n')"
+
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT"; then
+        fail "interactive empty custom token is rejected" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Token cannot be empty." "interactive empty custom token is rejected"
+    fi
+}
+
+test_interactive_custom_token_and_decline_service() {
+    printf '\n--- test_interactive_custom_token_and_decline_service ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _input="$(printf '2\ncustom-interactive-token\n\n\n\n\nn\n')"
+
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT"; then
+        assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=custom-interactive-token" "interactive custom token is saved"
+        assert_path_not_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "interactive decline leaves no launchd service"
+        assert_path_not_exists "${HOME}/.config/systemd/user/quicktui.service" "interactive decline leaves no systemd service"
+    else
+        fail "interactive custom token is saved" "installer unexpectedly failed"
+    fi
+}
+
+test_interactive_provided_addr_port_not_prompted() {
+    printf '\n--- test_interactive_provided_addr_port_not_prompted ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _input="$(printf '\n\n\nn\n')"
+
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" --addr 127.0.0.1 --port 9001; then
+        assert_output_not_contains "${_out}" "Listen address [default:" "interactive CLI addr skips listen-address prompt"
+        assert_output_not_contains "${_out}" "Port [default:" "interactive CLI port skips port prompt"
+        assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9001" "interactive CLI addr and port are saved"
+    else
+        fail "interactive CLI addr and port are saved" "installer unexpectedly failed"
+    fi
+}
+
+test_interactive_invalid_addr_and_port_reprompt() {
+    printf '\n--- test_interactive_invalid_addr_and_port_reprompt ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _input="$(printf '\nbad addr\n127.0.0.1\n99999\n9000\n\n\nn\n')"
+
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT"; then
+        assert_output_contains "${_out}" "Invalid listen address: 'bad addr'" "interactive invalid address is re-prompted"
+        assert_output_contains "${_out}" "Invalid port: '99999'" "interactive invalid port is re-prompted"
+        assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "interactive re-prompt saves the corrected addr:port"
+    else
+        fail "interactive re-prompt saves the corrected addr:port" "installer unexpectedly failed"
+    fi
+}
+
+test_uninstall_nothing_installed() {
+    printf '\n--- test_uninstall_nothing_installed ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if "$SHELL_BIN" "$INSTALL_SCRIPT" --uninstall >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "Nothing to remove. QuickTUI does not appear to be installed." "empty uninstall is a no-op"
+    else
+        fail "empty uninstall is a no-op" "uninstall unexpectedly failed"
+    fi
+}
+
+test_uninstall_removes_leftovers_without_binary() {
+    printf '\n--- test_uninstall_removes_leftovers_without_binary ---\n'
+    reset_test_env
+
+    mkdir -p "${HOME}/.config/quicktui"
+    printf 'QUICKTUI_TOKEN=stale\nQUICKTUI_ADDR=127.0.0.1:9999\n' > "${HOME}/.config/quicktui/config"
+    mkdir -p "${HOME}/Library/Logs/QuickTUI"
+    printf 'stale log\n' > "${HOME}/Library/Logs/QuickTUI/stderr.log"
+
+    if [ "$CURRENT_OS" = "Linux" ]; then
+        mkdir -p "${HOME}/.config/systemd/user/default.target.wants"
+        printf '[Service]\nEnvironment=QUICKTUI_ADDR=127.0.0.1:9999\n' > "${HOME}/.config/systemd/user/quicktui.service"
+        ln -sf ../quicktui.service "${HOME}/.config/systemd/user/default.target.wants/quicktui.service"
+    else
+        mkdir -p "${HOME}/Library/LaunchAgents"
+        printf 'Label=ai.quicktui\n' > "${HOME}/Library/LaunchAgents/ai.quicktui.plist"
+    fi
+
+    "$SHELL_BIN" "$INSTALL_SCRIPT" --uninstall
+
+    assert_path_not_exists "${HOME}/.config/quicktui" "config directory removed during uninstall"
+    assert_path_not_exists "${HOME}/Library/Logs/QuickTUI" "log directory removed during uninstall"
+    assert_path_not_exists "${HOME}/.config/systemd/user/quicktui.service" "systemd service removed during uninstall"
+    assert_path_not_exists "${HOME}/.config/systemd/user/default.target.wants/quicktui.service" "systemd service symlink removed during uninstall"
+    assert_path_not_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "launchd plist removed during uninstall"
 }
 
 test_binary_executable() {
     printf '\n--- test_binary_executable ---\n'
     reset_test_env
 
-    QUICKTUI_RELEASES="http://localhost:${MOCK_PORT}" \
-        sh "$INSTALL_SCRIPT" -y --no-service
+    run_installer -y --no-service
 
-    _output="$("${HOME}/.local/bin/quicktui" 2>&1 || true)"
-    if echo "$_output" | grep -q "quicktui-mock"; then
+    _output="$("${HOME}/.local/bin/quicktui-server" 2>&1 || true)"
+    if echo "$_output" | grep -Fq "quicktui-mock"; then
         pass "installed binary is executable"
     else
         fail "installed binary is executable" "unexpected output: $_output"
@@ -208,13 +875,35 @@ main() {
     printf '\n\033[1m=== QuickTUI i.sh Test Suite ===\033[0m\n'
 
     setup_mock_server
-    trap teardown_mock_server EXIT INT TERM
+    trap cleanup_all EXIT INT TERM
 
     test_help_flag
+    test_unknown_option
+    test_missing_option_value
+    test_unsupported_platform
+    test_unsupported_architecture
+    test_tmux_missing_noninteractive
+    test_tmux_install_reports_missing_after_package_manager_returns_success
+    test_tmux_old_version_noninteractive
+    test_tmux_old_version_interactive_continue
+    test_no_download_tool
+    test_checksum_failure
     test_default_install
+    test_no_service_message
     test_custom_token
-    test_install_dir_2
+    test_custom_addr_no_service
+    test_ipv6_addr_no_service
+    test_invalid_noninteractive_addr
+    test_invalid_noninteractive_port
     test_service_config
+    test_service_registration_failure
+    test_interactive_invalid_token_choice
+    test_interactive_empty_custom_token
+    test_interactive_custom_token_and_decline_service
+    test_interactive_provided_addr_port_not_prompted
+    test_interactive_invalid_addr_and_port_reprompt
+    test_uninstall_nothing_installed
+    test_uninstall_removes_leftovers_without_binary
     test_binary_executable
 
     printf '\n\033[1m=== Results: %d passed, %d failed ===\033[0m\n\n' "$TESTS_PASSED" "$TESTS_FAILED"

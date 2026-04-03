@@ -75,7 +75,8 @@ while [ $# -gt 0 ]; do
             NON_INTERACTIVE="1"
             shift
             ;;
---token)
+        --token)
+            [ $# -ge 2 ] || die "Missing value for $1"
             OPT_TOKEN="$2"
             shift 2
             ;;
@@ -84,18 +85,22 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         --term)
+            [ $# -ge 2 ] || die "Missing value for $1"
             OPT_TERM="$2"
             shift 2
             ;;
         --lang)
+            [ $# -ge 2 ] || die "Missing value for $1"
             OPT_LANG="$2"
             shift 2
             ;;
         --addr)
+            [ $# -ge 2 ] || die "Missing value for $1"
             OPT_ADDR="$2"
             shift 2
             ;;
         --port)
+            [ $# -ge 2 ] || die "Missing value for $1"
             OPT_PORT="$2"
             shift 2
             ;;
@@ -144,6 +149,30 @@ confirm() {
             ;;
         *) return 1 ;;
     esac
+}
+
+validate_listen_addr() {
+    _addr="$1"
+    [ -n "$_addr" ] || return 1
+    case "$_addr" in
+        *[!A-Za-z0-9.:\-\[\]]*)
+            return 1
+            ;;
+        *)
+            return 0
+            ;;
+    esac
+}
+
+validate_port() {
+    _port="$1"
+    case "$_port" in
+        ''|*[!0-9]*)
+            return 1
+            ;;
+    esac
+
+    [ "$_port" -ge 1 ] && [ "$_port" -le 65535 ]
 }
 
 download() {
@@ -253,6 +282,9 @@ check_tmux() {
         warn "tmux is not installed."
         if confirm "Would you like to install tmux automatically?"; then
             install_tmux
+            if ! command -v tmux > /dev/null 2>&1; then
+                die "tmux installation completed, but 'tmux' is still not in PATH."
+            fi
         else
             printf '\nPlease install tmux 3.2 or later and run this installer again.\n'
             printf '  macOS:  brew install tmux\n'
@@ -260,7 +292,6 @@ check_tmux() {
             printf '  CentOS: sudo yum install tmux\n\n'
             exit 1
         fi
-        return
     fi
 
     _tmux_version="$(tmux -V 2>/dev/null | sed 's/tmux //')"
@@ -398,7 +429,57 @@ configure_token() {
 }
 
 # ============================================================
-# Step 6: Configure terminal environment
+# Step 6: Configure listen address
+# ============================================================
+
+configure_network() {
+    _default_addr="${OPT_ADDR:-0.0.0.0}"
+    _default_port="${OPT_PORT:-8022}"
+
+    if [ -n "$OPT_ADDR" ]; then
+        LISTEN_ADDR="$OPT_ADDR"
+    elif [ -n "$NON_INTERACTIVE" ]; then
+        LISTEN_ADDR="0.0.0.0"
+    else
+        while true; do
+            printf '\nListen address [default: %s]: ' "$_default_addr"
+            read -r LISTEN_ADDR </dev/tty || exit 130
+            LISTEN_ADDR="${LISTEN_ADDR:-$_default_addr}"
+            if validate_listen_addr "$LISTEN_ADDR"; then
+                break
+            fi
+            warn "Invalid listen address: '$LISTEN_ADDR'. Only letters, numbers, dots, hyphens, colons, and square brackets are allowed."
+            LISTEN_ADDR=""
+        done
+    fi
+
+    validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
+
+    if [ -n "$OPT_PORT" ]; then
+        LISTEN_PORT="$OPT_PORT"
+    elif [ -n "$NON_INTERACTIVE" ]; then
+        LISTEN_PORT="8022"
+    else
+        while true; do
+            printf 'Port [default: %s]: ' "$_default_port"
+            read -r LISTEN_PORT </dev/tty || exit 130
+            LISTEN_PORT="${LISTEN_PORT:-$_default_port}"
+            if validate_port "$LISTEN_PORT"; then
+                break
+            fi
+            warn "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
+            LISTEN_PORT=""
+        done
+    fi
+
+    validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
+
+    printf 'QUICKTUI_ADDR=%s:%s\n' "$LISTEN_ADDR" "$LISTEN_PORT" >> "$QUICKTUI_CONFIG_FILE"
+    info "Listen address: ${LISTEN_ADDR}:${LISTEN_PORT}"
+}
+
+# ============================================================
+# Step 7: Configure terminal environment
 # ============================================================
 
 configure_terminal() {
@@ -432,11 +513,12 @@ configure_terminal() {
 }
 
 # ============================================================
-# Step 7: Configure and register background service
+# Step 8: Configure and register background service
 # ============================================================
 
 configure_service() {
     if [ -n "$OPT_NO_SERVICE" ]; then
+        SERVICE_STARTED="skipped"
         info "Skipped service registration (--no-service)"
         return 0
     fi
@@ -444,48 +526,9 @@ configure_service() {
     if [ -z "$NON_INTERACTIVE" ]; then
         printf '\n'
         if ! confirm "Would you like to register QuickTUI as a background service?"; then
+            SERVICE_STARTED="skipped"
             return 0
         fi
-    fi
-
-    if [ -n "$NON_INTERACTIVE" ]; then
-        LISTEN_ADDR="${OPT_ADDR:-0.0.0.0}"
-        LISTEN_PORT="${OPT_PORT:-8022}"
-    else
-        while true; do
-            printf 'Listen address [default: 0.0.0.0]: '
-            read -r LISTEN_ADDR </dev/tty || exit 130
-            LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
-            case "$LISTEN_ADDR" in
-                *[\ \;\`\$\(\)\'\"\#\&\|\<\>\\]*)
-                    warn "Invalid listen address: '$LISTEN_ADDR'. Only alphanumeric characters, dots, hyphens, and colons are allowed."
-                    LISTEN_ADDR=""
-                    ;;
-                *)
-                    break
-                    ;;
-            esac
-        done
-
-        while true; do
-            printf 'Port [default: 8022]: '
-            read -r LISTEN_PORT </dev/tty || exit 130
-            LISTEN_PORT="${LISTEN_PORT:-8022}"
-            case "$LISTEN_PORT" in
-                ''|*[!0-9]*)
-                    warn "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
-                    LISTEN_PORT=""
-                    ;;
-                *)
-                    if [ "$LISTEN_PORT" -lt 1 ] || [ "$LISTEN_PORT" -gt 65535 ]; then
-                        warn "Port must be between 1 and 65535."
-                        LISTEN_PORT=""
-                    else
-                        break
-                    fi
-                    ;;
-            esac
-        done
     fi
 
     # Delegate service registration to the server binary
@@ -495,13 +538,14 @@ configure_service() {
         --lang "$LANG_ENV"; then
         SERVICE_STARTED="yes"
     else
+        SERVICE_STARTED="failed"
         warn "Service registration failed. You can retry manually:"
         warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
     fi
 }
 
 # ============================================================
-# Step 7: Print success message
+# Step 9: Print success message
 # ============================================================
 
 print_success() {
@@ -525,7 +569,7 @@ print_success() {
         printf '  Open in browser:  http://%s:%s\n' "$_ip" "$LISTEN_PORT"
         printf '  Token:            %s\n' "$TOKEN"
         printf '  (Enter the token when prompted on first login)\n'
-    elif [ -n "$LISTEN_PORT" ]; then
+    elif [ "$SERVICE_STARTED" = "failed" ]; then
         printf 'Service registration failed. Start manually:\n'
         if [ "$PLATFORM" = "darwin" ]; then
             printf '  launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.quicktui.plist\n'
@@ -553,12 +597,40 @@ uninstall() {
 
     _removed=0
     _binary="${HOME}/.local/bin/quicktui-server"
+    _os="$(uname -s)"
+    _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
+    _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
+    _systemd_link="${HOME}/.config/systemd/user/default.target.wants/quicktui.service"
 
     # Unregister service via server binary (handles launchd/systemd)
     if [ -f "$_binary" ]; then
         "$_binary" --uninstall-service 2>/dev/null && \
             info "Service unregistered"
         _removed=1
+    fi
+
+    if [ "$_os" = "Darwin" ]; then
+        if [ -f "$_launchd_plist" ]; then
+            launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
+                launchctl unload "$_launchd_plist" >/dev/null 2>&1 || true
+            rm -f "$_launchd_plist"
+            info "Removed: $_launchd_plist"
+            _removed=1
+        fi
+    else
+        if [ -f "$_systemd_service" ] || [ -L "$_systemd_link" ]; then
+            if command -v systemctl > /dev/null 2>&1; then
+                systemctl --user disable --now quicktui >/dev/null 2>&1 || \
+                    systemctl --user stop quicktui >/dev/null 2>&1 || true
+            fi
+            rm -f "$_systemd_link"
+            rm -f "$_systemd_service"
+            if command -v systemctl > /dev/null 2>&1; then
+                systemctl --user daemon-reload >/dev/null 2>&1 || true
+            fi
+            info "Removed: ${HOME}/.config/systemd/user/quicktui.service"
+            _removed=1
+        fi
     fi
 
     # Remove log directory (macOS)
@@ -600,6 +672,7 @@ main() {
     download_binary
     install_binary
     configure_token
+    configure_network
     configure_terminal
     configure_service
     print_success

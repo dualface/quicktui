@@ -221,7 +221,8 @@ section {
   font-family: var(--font-mono);
   font-size: 0.9rem;
   line-height: 1.7;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
   text-align: center;
 }
 

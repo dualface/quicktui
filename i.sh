@@ -135,7 +135,7 @@ confirm() {
         _hint="[y/N]"
     fi
     printf '%s %s ' "$_prompt" "$_hint"
-    read -r _answer </dev/tty
+    read -r _answer </dev/tty || exit 130
     case "$_answer" in
         [Yy]*) return 0 ;;
         [Nn]*) return 1 ;;
@@ -364,7 +364,7 @@ configure_token() {
         printf '  [1] Generate a random token automatically  [default]\n'
         printf '  [2] Enter my own token\n'
         printf 'Enter choice [1]: '
-        read -r _choice </dev/tty
+        read -r _choice </dev/tty || exit 130
         _choice="${_choice:-1}"
 
         case "$_choice" in
@@ -378,7 +378,7 @@ configure_token() {
                 ;;
             2)
                 printf 'Enter your token: '
-                read -r TOKEN </dev/tty
+                read -r TOKEN </dev/tty || exit 130
                 if [ -z "$TOKEN" ]; then
                     die "Token cannot be empty."
                 fi
@@ -412,7 +412,7 @@ configure_terminal() {
     else
         printf '\nTerminal environment for tmux:\n'
         printf '  TERM [%s]: ' "$_interactive_term"
-        read -r _input </dev/tty
+        read -r _input </dev/tty || exit 130
         TERM_ENV="${_input:-$_interactive_term}"
     fi
 
@@ -422,7 +422,7 @@ configure_terminal() {
         LANG_ENV="en_US.UTF-8"
     else
         printf '  LANG [%s]: ' "$_interactive_lang"
-        read -r _input </dev/tty
+        read -r _input </dev/tty || exit 130
         LANG_ENV="${_input:-$_interactive_lang}"
     fi
 
@@ -553,7 +553,7 @@ configure_service() {
     else
         while true; do
             printf 'Listen address [default: 0.0.0.0]: '
-            read -r LISTEN_ADDR </dev/tty
+            read -r LISTEN_ADDR </dev/tty || exit 130
             LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0}"
             case "$LISTEN_ADDR" in
                 *[\ \;\`\$\(\)\'\"\#\&\|\<\>\\]*)
@@ -568,7 +568,7 @@ configure_service() {
 
         while true; do
             printf 'Port [default: 8022]: '
-            read -r LISTEN_PORT </dev/tty
+            read -r LISTEN_PORT </dev/tty || exit 130
             LISTEN_PORT="${LISTEN_PORT:-8022}"
             case "$LISTEN_PORT" in
                 ''|*[!0-9]*)

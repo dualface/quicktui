@@ -379,8 +379,21 @@ install_binary() {
 # Step 5: Configure token
 # ============================================================
 
+validate_token() {
+    case "$1" in
+        *[!A-Za-z0-9._~:/?#@!\$\&\'*+,\;=%^-]*)
+            return 1
+            ;;
+        "")
+            return 1
+            ;;
+    esac
+    return 0
+}
+
 configure_token() {
     if [ -n "$OPT_TOKEN" ]; then
+        validate_token "$OPT_TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
         TOKEN="$OPT_TOKEN"
         info "Token configured (from argument)"
     elif [ -n "$NON_INTERACTIVE" ]; then
@@ -408,11 +421,14 @@ configure_token() {
                 info "Random token generated"
                 ;;
             2)
-                printf 'Enter your token: '
-                read -r TOKEN </dev/tty || exit 130
-                if [ -z "$TOKEN" ]; then
-                    die "Token cannot be empty."
-                fi
+                while true; do
+                    printf 'Enter your token: '
+                    read -r TOKEN </dev/tty || exit 130
+                    if validate_token "$TOKEN"; then
+                        break
+                    fi
+                    warn "Invalid token: only printable non-whitespace characters are allowed."
+                done
                 info "Token configured"
                 ;;
             *)
@@ -579,7 +595,7 @@ print_success() {
         printf '  Token: %s\n' "$TOKEN"
     else
         printf 'To start QuickTUI, run:\n'
-        printf '  QUICKTUI_TOKEN=%s %s\n' "$TOKEN" "$INSTALL_PATH"
+        printf '  QUICKTUI_TOKEN='\''%s'\'' %s\n' "$TOKEN" "$INSTALL_PATH"
     fi
 
     printf '\n'

@@ -689,8 +689,12 @@ print_success() {
         [ -z "$_ip" ] && _ip="localhost"
         printf 'Getting started:\n'
         printf '  Open in browser:  http://%s:%s\n' "$_ip" "$LISTEN_PORT"
-        printf '  Token:            %s\n' "$TOKEN"
-        printf '  (Enter the token when prompted on first login)\n'
+        if [ -n "$IS_UPGRADE" ] && [ "$TOKEN" = "$EXISTING_TOKEN" ]; then
+            printf '  Token:            (unchanged)\n'
+        else
+            printf '  Token:            %s\n' "$TOKEN"
+            printf '  (Enter the token when prompted on first login)\n'
+        fi
     elif [ "$SERVICE_STARTED" = "failed" ]; then
         printf 'Service registration failed. Start manually:\n'
         if [ "$PLATFORM" = "darwin" ]; then
@@ -698,7 +702,11 @@ print_success() {
         else
             printf '  systemctl --user start quicktui\n'
         fi
-        printf '  Token: %s\n' "$TOKEN"
+        if [ -n "$IS_UPGRADE" ] && [ "$TOKEN" = "$EXISTING_TOKEN" ]; then
+            printf '  Token:            (unchanged)\n'
+        else
+            printf '  Token: %s\n' "$TOKEN"
+        fi
     else
         printf 'To start QuickTUI, run:\n'
         printf '  QUICKTUI_TOKEN='\''%s'\'' %s\n' "$TOKEN" "$INSTALL_PATH"

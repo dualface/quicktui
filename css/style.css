@@ -192,13 +192,13 @@ section {
 .slideshow {
   position: relative;
   width: 280px;
-  height: 560px;
+  height: 600px;
 }
 
 .slideshow .slide {
   position: absolute;
-  /* screen area: x=12 y=12 w=256 h=536 in the 280x560 frame */
-  top: 12px;
+  /* screen area: x=12 y=32 w=256 h=536 in the 280x600 frame */
+  top: 32px;
   left: 12px;
   width: 256px;
   height: 536px;

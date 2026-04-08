@@ -391,6 +391,8 @@ case "${1:-}" in
         esac
         ;;
     --uninstall-service)
+        mkdir -p "$HOME/.quicktui-test"
+        printf 'uninstall-service called\n' >> "$HOME/.quicktui-test/uninstall-service.log"
         rm -f "$HOME/Library/LaunchAgents/ai.quicktui.plist"
         rm -f "$HOME/.config/systemd/user/quicktui.service"
         rm -f "$HOME/.config/systemd/user/default.target.wants/quicktui.service"
@@ -867,6 +869,124 @@ test_binary_executable() {
     fi
 }
 
+test_upgrade_preserves_token() {
+    printf '\n--- test_upgrade_preserves_token ---\n'
+    reset_test_env
+
+    # First install
+    run_installer -y --no-service --token "original-token-abc"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=original-token-abc" "first install sets token"
+
+    # Upgrade (re-run without --token)
+    run_installer -y --no-service
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=original-token-abc" "upgrade preserves existing token"
+}
+
+test_upgrade_preserves_config() {
+    printf '\n--- test_upgrade_preserves_config ---\n'
+    reset_test_env
+
+    # First install with custom config
+    run_installer -y --no-service --token "keep-me" --addr 127.0.0.1 --port 9000 --term xterm-ghostty --lang zh_CN.UTF-8
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "first install sets addr"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=xterm-ghostty" "first install sets term"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=zh_CN.UTF-8" "first install sets lang"
+
+    # Upgrade without any overrides
+    run_installer -y --no-service
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=keep-me" "upgrade preserves token"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "upgrade preserves addr"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=xterm-ghostty" "upgrade preserves term"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=zh_CN.UTF-8" "upgrade preserves lang"
+}
+
+test_upgrade_with_new_token() {
+    printf '\n--- test_upgrade_with_new_token ---\n'
+    reset_test_env
+
+    # First install
+    run_installer -y --no-service --token "old-token"
+
+    # Upgrade with explicit new token
+    run_installer -y --no-service --token "new-token"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=new-token" "upgrade --token overrides existing token"
+}
+
+test_upgrade_replaces_binary() {
+    printf '\n--- test_upgrade_replaces_binary ---\n'
+    reset_test_env
+
+    # First install
+    run_installer -y --no-service
+
+    # Record old binary checksum
+    _old_sum="$(sha256sum "${HOME}/.local/bin/quicktui-server" 2>/dev/null | cut -d' ' -f1 || \
+                shasum -a 256 "${HOME}/.local/bin/quicktui-server" | cut -d' ' -f1)"
+
+    # Tamper with the mock to produce a different binary for upgrade
+    printf '\n# upgraded' >> "${MOCK_DIR}/${MOCK_BINARY_NAME}"
+    write_mock_checksum_good
+
+    # Upgrade
+    run_installer -y --no-service
+
+    _new_sum="$(sha256sum "${HOME}/.local/bin/quicktui-server" 2>/dev/null | cut -d' ' -f1 || \
+                shasum -a 256 "${HOME}/.local/bin/quicktui-server" | cut -d' ' -f1)"
+
+    if [ "$_old_sum" != "$_new_sum" ]; then
+        pass "upgrade replaces binary with new version"
+    else
+        fail "upgrade replaces binary with new version" "checksum unchanged after upgrade"
+    fi
+
+    # Restore original mock
+    sed -i.bak '$ d' "${MOCK_DIR}/${MOCK_BINARY_NAME}" 2>/dev/null || \
+        sed -i '' '$ d' "${MOCK_DIR}/${MOCK_BINARY_NAME}"
+    rm -f "${MOCK_DIR}/${MOCK_BINARY_NAME}.bak"
+    write_mock_checksum_good
+}
+
+test_upgrade_stops_service_before_replace() {
+    printf '\n--- test_upgrade_stops_service_before_replace ---\n'
+    reset_test_env
+
+    # First install with service
+    run_installer -y --token "svc-token" --addr 127.0.0.1 --port 8080
+
+    # Upgrade
+    run_installer -y
+
+    assert_file_exists "${HOME}/.quicktui-test/uninstall-service.log" "upgrade calls --uninstall-service to stop old service"
+}
+
+test_upgrade_shows_upgrade_message() {
+    printf '\n--- test_upgrade_shows_upgrade_message ---\n'
+    reset_test_env
+
+    # First install
+    run_installer -y --no-service
+
+    # Upgrade
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    run_installer -y --no-service >"${_out}" 2>&1
+    assert_output_contains "${_out}" "Upgrader" "upgrade shows Upgrader title"
+    assert_output_contains "${_out}" "upgraded successfully" "upgrade shows upgraded message"
+}
+
+test_upgrade_ipv6_preserves_addr() {
+    printf '\n--- test_upgrade_ipv6_preserves_addr ---\n'
+    reset_test_env
+
+    # First install with IPv6
+    run_installer -y --no-service --token "ipv6-tok" --addr "[::1]" --port 9000
+
+    # Upgrade without overrides
+    run_installer -y --no-service
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=ipv6-tok" "upgrade preserves token with IPv6 config"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=[::1]:9000" "upgrade preserves IPv6 address"
+}
+
 # ============================================================
 # Main
 # ============================================================
@@ -905,6 +1025,13 @@ main() {
     test_uninstall_nothing_installed
     test_uninstall_removes_leftovers_without_binary
     test_binary_executable
+    test_upgrade_preserves_token
+    test_upgrade_preserves_config
+    test_upgrade_with_new_token
+    test_upgrade_replaces_binary
+    test_upgrade_stops_service_before_replace
+    test_upgrade_shows_upgrade_message
+    test_upgrade_ipv6_preserves_addr
 
     printf '\n\033[1m=== Results: %d passed, %d failed ===\033[0m\n\n' "$TESTS_PASSED" "$TESTS_FAILED"
 

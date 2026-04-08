@@ -35,6 +35,12 @@ LISTEN_PORT=""
 DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
 SERVICE_STARTED=""
+IS_UPGRADE=""
+EXISTING_TOKEN=""
+EXISTING_ADDR=""
+EXISTING_PORT=""
+EXISTING_TERM=""
+EXISTING_LANG=""
 
 _BG_PID=""
 cleanup() {
@@ -218,6 +224,42 @@ run_privileged() {
 }
 
 # ============================================================
+# Step 0: Detect existing installation (upgrade mode)
+# ============================================================
+
+detect_existing_install() {
+    _existing_binary="${HOME}/.local/bin/quicktui-server"
+    if [ -f "$_existing_binary" ]; then
+        IS_UPGRADE="1"
+        _old_version="$("$_existing_binary" --version 2>/dev/null || echo "unknown")"
+        info "Existing installation detected ($_old_version)"
+    fi
+
+    if [ -f "$QUICKTUI_CONFIG_FILE" ]; then
+        while IFS='=' read -r _key _val; do
+            case "$_key" in
+                QUICKTUI_TOKEN) EXISTING_TOKEN="$_val" ;;
+                QUICKTUI_ADDR)
+                    # Split addr:port — handle IPv6 [::1]:8022
+                    case "$_val" in
+                        \[*\]:*)
+                            EXISTING_ADDR="$(echo "$_val" | sed 's/\]:[0-9]*$/]/')"
+                            EXISTING_PORT="$(echo "$_val" | sed 's/.*\]://')"
+                            ;;
+                        *:*)
+                            EXISTING_ADDR="${_val%:*}"
+                            EXISTING_PORT="${_val##*:}"
+                            ;;
+                    esac
+                    ;;
+                QUICKTUI_TERM) EXISTING_TERM="$_val" ;;
+                QUICKTUI_LANG) EXISTING_LANG="$_val" ;;
+            esac
+        done < "$QUICKTUI_CONFIG_FILE"
+    fi
+}
+
+# ============================================================
 # Step 1: Detect platform and architecture
 # ============================================================
 
@@ -354,14 +396,56 @@ download_binary() {
 }
 
 # ============================================================
+# Step 3.5: Stop existing service before replacing binary
+# ============================================================
+
+stop_existing_service() {
+    _binary="${HOME}/.local/bin/quicktui-server"
+    _os="$(uname -s)"
+    _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
+    _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
+
+    # Try server binary's own uninstall-service first
+    if [ -f "$_binary" ]; then
+        "$_binary" --uninstall-service 2>/dev/null || true
+    fi
+
+    # Belt-and-suspenders: also stop via OS service manager
+    if [ "$_os" = "Darwin" ]; then
+        if [ -f "$_launchd_plist" ]; then
+            launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
+                launchctl unload "$_launchd_plist" >/dev/null 2>&1 || true
+        fi
+    else
+        if [ -f "$_systemd_service" ]; then
+            if command -v systemctl > /dev/null 2>&1; then
+                systemctl --user stop quicktui >/dev/null 2>&1 || true
+            fi
+        fi
+    fi
+    info "Stopped existing service"
+}
+
+# ============================================================
 # Step 4: Install binary
 # ============================================================
 
 install_binary() {
     INSTALL_PATH="${HOME}/.local/bin/quicktui-server"
     mkdir -p "${HOME}/.local/bin"
+
+    if [ -n "$IS_UPGRADE" ]; then
+        stop_existing_service
+    fi
+
     mv "$DOWNLOADED_BINARY" "$INSTALL_PATH"
     chmod 755 "$INSTALL_PATH"
+
+    # Verify the new binary is functional
+    if ! "$INSTALL_PATH" --version > /dev/null 2>&1; then
+        die "Binary replacement failed: new binary at $INSTALL_PATH is not functional."
+    fi
+
     case ":${PATH}:" in
         *":${HOME}/.local/bin:"*) ;;
         *)
@@ -396,6 +480,9 @@ configure_token() {
         validate_token "$OPT_TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
         TOKEN="$OPT_TOKEN"
         info "Token configured (from argument)"
+    elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TOKEN" ]; then
+        TOKEN="$EXISTING_TOKEN"
+        info "Token preserved from existing config"
     elif [ -n "$NON_INTERACTIVE" ]; then
         if command -v openssl > /dev/null 2>&1; then
             TOKEN="$(openssl rand -hex 32)"
@@ -449,11 +536,13 @@ configure_token() {
 # ============================================================
 
 configure_network() {
-    _default_addr="${OPT_ADDR:-0.0.0.0}"
-    _default_port="${OPT_PORT:-8022}"
+    _default_addr="${OPT_ADDR:-${EXISTING_ADDR:-0.0.0.0}}"
+    _default_port="${OPT_PORT:-${EXISTING_PORT:-8022}}"
 
     if [ -n "$OPT_ADDR" ]; then
         LISTEN_ADDR="$OPT_ADDR"
+    elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_ADDR" ]; then
+        LISTEN_ADDR="$EXISTING_ADDR"
     elif [ -n "$NON_INTERACTIVE" ]; then
         LISTEN_ADDR="0.0.0.0"
     else
@@ -473,6 +562,8 @@ configure_network() {
 
     if [ -n "$OPT_PORT" ]; then
         LISTEN_PORT="$OPT_PORT"
+    elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_PORT" ]; then
+        LISTEN_PORT="$EXISTING_PORT"
     elif [ -n "$NON_INTERACTIVE" ]; then
         LISTEN_PORT="8022"
     else
@@ -504,6 +595,8 @@ configure_terminal() {
 
     if [ -n "$OPT_TERM" ]; then
         TERM_ENV="$OPT_TERM"
+    elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TERM" ]; then
+        TERM_ENV="$EXISTING_TERM"
     elif [ -n "$NON_INTERACTIVE" ]; then
         TERM_ENV="xterm-256color"
     else
@@ -515,6 +608,8 @@ configure_terminal() {
 
     if [ -n "$OPT_LANG" ]; then
         LANG_ENV="$OPT_LANG"
+    elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_LANG" ]; then
+        LANG_ENV="$EXISTING_LANG"
     elif [ -n "$NON_INTERACTIVE" ]; then
         LANG_ENV="en_US.UTF-8"
     else
@@ -567,7 +662,11 @@ configure_service() {
 print_success() {
     _version="$("$INSTALL_PATH" --version 2>/dev/null || echo "")"
 
-    printf '\n\033[0;32m✓ QuickTUI installed successfully!\033[0m\n\n'
+    if [ -n "$IS_UPGRADE" ]; then
+        printf '\n\033[0;32m✓ QuickTUI upgraded successfully!\033[0m\n\n'
+    else
+        printf '\n\033[0;32m✓ QuickTUI installed successfully!\033[0m\n\n'
+    fi
     printf '  Binary:  %s\n' "$INSTALL_PATH"
     printf '  Config:  %s\n' "$QUICKTUI_CONFIG_FILE"
     [ -n "$_version" ] && printf '  Version: %s\n' "$_version"
@@ -618,27 +717,21 @@ uninstall() {
     _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
     _systemd_link="${HOME}/.config/systemd/user/default.target.wants/quicktui.service"
 
-    # Unregister service via server binary (handles launchd/systemd)
+    # Stop and unregister service
     if [ -f "$_binary" ]; then
-        "$_binary" --uninstall-service 2>/dev/null && \
-            info "Service unregistered"
+        stop_existing_service
         _removed=1
     fi
 
+    # Remove service files
     if [ "$_os" = "Darwin" ]; then
         if [ -f "$_launchd_plist" ]; then
-            launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
-                launchctl unload "$_launchd_plist" >/dev/null 2>&1 || true
             rm -f "$_launchd_plist"
             info "Removed: $_launchd_plist"
             _removed=1
         fi
     else
         if [ -f "$_systemd_service" ] || [ -L "$_systemd_link" ]; then
-            if command -v systemctl > /dev/null 2>&1; then
-                systemctl --user disable --now quicktui >/dev/null 2>&1 || \
-                    systemctl --user stop quicktui >/dev/null 2>&1 || true
-            fi
             rm -f "$_systemd_link"
             rm -f "$_systemd_service"
             if command -v systemctl > /dev/null 2>&1; then
@@ -682,7 +775,12 @@ uninstall() {
 # ============================================================
 
 main() {
-    printf '\n\033[1mQuickTUI Installer\033[0m\n\n'
+    detect_existing_install
+    if [ -n "$IS_UPGRADE" ]; then
+        printf '\n\033[1mQuickTUI Upgrader\033[0m\n\n'
+    else
+        printf '\n\033[1mQuickTUI Installer\033[0m\n\n'
+    fi
     detect_platform
     check_tmux
     download_binary

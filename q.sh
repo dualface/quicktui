@@ -306,12 +306,54 @@ detect_platform() {
 # Step 2: Check tmux
 # ============================================================
 
+install_tmux_from_builds() {
+    # Map platform/arch to tmux-builds naming: macos not darwin, x86_64 not amd64
+    _tmux_os="$PLATFORM"
+    [ "$_tmux_os" = "darwin" ] && _tmux_os="macos"
+    _tmux_arch="$ARCH"
+    [ "$_tmux_arch" = "amd64" ] && _tmux_arch="x86_64"
+
+    # Resolve version (env override for testing, otherwise query GitHub API)
+    _tmux_ver="${TMUX_BUILDS_VERSION:-}"
+    if [ -z "$_tmux_ver" ]; then
+        _api_url="https://api.github.com/repos/tmux/tmux-builds/releases/latest"
+        if command -v curl > /dev/null 2>&1; then
+            _tmux_ver="$(curl -fsSL "$_api_url" 2>/dev/null | \
+                sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p')"
+        elif command -v wget > /dev/null 2>&1; then
+            _tmux_ver="$(wget -qO- "$_api_url" 2>/dev/null | \
+                sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p')"
+        fi
+        [ -z "$_tmux_ver" ] && die "Failed to detect tmux version from GitHub."
+    fi
+
+    _tmux_base_url="${TMUX_BUILDS_RELEASES:-https://github.com/tmux/tmux-builds/releases/latest/download}"
+    _tmux_filename="tmux-${_tmux_ver}-${_tmux_os}-${_tmux_arch}.tar.gz"
+
+    _tmux_tmpdir="$(mktemp -d)"
+    _tmux_tarball="${_tmux_tmpdir}/tmux.tar.gz"
+
+    download "${_tmux_base_url}/${_tmux_filename}" "$_tmux_tarball" "Downloading tmux ${_tmux_ver}..." || \
+        { rm -rf "$_tmux_tmpdir"; die "Failed to download tmux binary."; }
+
+    mkdir -p "${HOME}/.local/tmux" "${HOME}/.local/bin"
+    tar -xzf "$_tmux_tarball" -C "${HOME}/.local/tmux"
+    chmod 755 "${HOME}/.local/tmux/tmux"
+    ln -sf "${HOME}/.local/tmux/tmux" "${HOME}/.local/bin/tmux"
+    rm -rf "$_tmux_tmpdir"
+    info "tmux installed to ~/.local/tmux (symlinked to ~/.local/bin/tmux)"
+}
+
 install_tmux() {
     if [ "$PLATFORM" = "darwin" ]; then
-        if ! command -v brew > /dev/null 2>&1; then
-            die "Homebrew not found. Please install tmux manually: brew install tmux"
+        if command -v brew > /dev/null 2>&1; then
+            brew install tmux
+        elif command -v port > /dev/null 2>&1; then
+            run_privileged port install tmux
+        else
+            install_tmux_from_builds
+            return
         fi
-        brew install tmux
     elif [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get > /dev/null 2>&1; then
             run_privileged apt-get update -q && run_privileged apt-get install -y tmux
@@ -320,18 +362,29 @@ install_tmux() {
         elif command -v dnf > /dev/null 2>&1; then
             run_privileged dnf install -y tmux
         else
-            die "No supported package manager found (apt/yum/dnf). Please install tmux manually."
+            install_tmux_from_builds
+            return
         fi
     fi
     info "tmux installed"
 }
 
+_find_tmux() {
+    command -v tmux 2>/dev/null && return 0
+    # Also check ~/.local/bin in case it's not in PATH yet
+    if [ -x "${HOME}/.local/bin/tmux" ]; then
+        printf '%s\n' "${HOME}/.local/bin/tmux"
+        return 0
+    fi
+    return 1
+}
+
 check_tmux() {
-    if ! command -v tmux > /dev/null 2>&1; then
+    if ! _find_tmux > /dev/null; then
         warn "tmux is not installed."
         if confirm "Would you like to install tmux automatically?"; then
             install_tmux
-            if ! command -v tmux > /dev/null 2>&1; then
+            if ! _find_tmux > /dev/null; then
                 die "tmux installation completed, but 'tmux' is still not in PATH."
             fi
         else
@@ -343,7 +396,8 @@ check_tmux() {
         fi
     fi
 
-    _tmux_version="$(tmux -V 2>/dev/null | sed 's/tmux //')"
+    _tmux_bin="$(_find_tmux)"
+    _tmux_version="$("$_tmux_bin" -V 2>/dev/null | sed 's/tmux //')"
     _major="$(echo "$_tmux_version" | cut -d. -f1)"
     _minor="$(echo "$_tmux_version" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')"
 

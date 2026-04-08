@@ -405,6 +405,24 @@ EOF
     chmod +x "${MOCK_DIR}/${MOCK_BINARY_NAME}"
     write_mock_checksum_good
 
+    # Create mock tmux tarball for install_tmux_from_builds tests
+    _tmux_os="$_platform"
+    [ "$_tmux_os" = "darwin" ] && _tmux_os="macos"
+    _tmux_arch_name="$_arch_name"
+    [ "$_tmux_arch_name" = "amd64" ] && _tmux_arch_name="x86_64"
+    MOCK_TMUX_TARBALL="tmux-0.0.1-test-${_tmux_os}-${_tmux_arch_name}.tar.gz"
+
+    _tmux_stage="$(make_tmpdir)"
+    cat > "${_tmux_stage}/tmux" <<'TMUXEOF'
+#!/bin/sh
+case "${1:-}" in
+    -V) printf 'tmux 3.6a\n' ;;
+    *)  printf 'mock-tmux\n' ;;
+esac
+TMUXEOF
+    chmod +x "${_tmux_stage}/tmux"
+    tar -czf "${MOCK_DIR}/${MOCK_TMUX_TARBALL}" -C "$_tmux_stage" tmux
+
     "$PYTHON3_BIN" -m http.server "$MOCK_PORT" --bind 127.0.0.1 --directory "$MOCK_DIR" > /dev/null 2>&1 &
     MOCK_PID=$!
     sleep 1
@@ -987,6 +1005,41 @@ test_upgrade_ipv6_preserves_addr() {
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=[::1]:9000" "upgrade preserves IPv6 address"
 }
 
+test_tmux_install_from_builds_no_pkg_manager() {
+    printf '\n--- test_tmux_install_from_builds_no_pkg_manager ---\n'
+    reset_test_env
+
+    # Minimal PATH: essential commands but no brew/port/apt-get/yum/dnf/tmux
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" sh env uname curl wget sed cut mktemp rm tar chmod ln mkdir mv id du printf od awk shasum sha256sum head cat kill sleep stat grep tr
+
+    _out="${_bin_dir}/out"
+    _input="$(printf 'y\n\n\n\n\nn\n')"
+
+    _err="${_bin_dir}/err"
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" \
+        "PATH=${_bin_dir}" \
+        "HOME=${HOME}" \
+        "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "TMUX_BUILDS_VERSION=0.0.1-test" \
+        "TMUX_BUILDS_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" 2>"$_err"; then
+        assert_file_exists "${HOME}/.local/tmux/tmux" "tmux binary installed to ~/.local/tmux"
+        assert_file_exists "${HOME}/.local/bin/tmux" "tmux symlinked to ~/.local/bin"
+        if [ -L "${HOME}/.local/bin/tmux" ]; then
+            pass "~/.local/bin/tmux is a symlink"
+        else
+            fail "~/.local/bin/tmux is a symlink" "not a symlink"
+        fi
+        assert_output_contains "${_out}" "tmux installed to ~/.local/tmux" "from-builds success message shown"
+    else
+        printf '    DEBUG stdout: '; head -20 "${_out}" 2>/dev/null; printf '\n'
+        printf '    DEBUG stderr: '; head -20 "${_err}" 2>/dev/null; printf '\n'
+        fail "tmux install from builds completes successfully" "installer unexpectedly failed"
+    fi
+}
+
 # ============================================================
 # Main
 # ============================================================
@@ -1032,6 +1085,7 @@ main() {
     test_upgrade_stops_service_before_replace
     test_upgrade_shows_upgrade_message
     test_upgrade_ipv6_preserves_addr
+    test_tmux_install_from_builds_no_pkg_manager
 
     printf '\n\033[1m=== Results: %d passed, %d failed ===\033[0m\n\n' "$TESTS_PASSED" "$TESTS_FAILED"
 

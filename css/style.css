@@ -202,7 +202,7 @@ section {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.3s ease;
 }
 
 .slideshow .slide.active {

@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install -y \
     curl ca-certificates python3 tmux \
     && rm -rf /var/lib/apt/lists/*
 
-COPY i.sh /workspace/i.sh
+COPY q.sh /workspace/q.sh
 COPY tests/test_install.sh /workspace/tests/test_install.sh
-RUN chmod +x /workspace/i.sh /workspace/tests/test_install.sh
+RUN chmod +x /workspace/q.sh /workspace/tests/test_install.sh
 
 CMD ["sh", "/workspace/tests/test_install.sh"]

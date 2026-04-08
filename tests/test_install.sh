@@ -2,12 +2,12 @@
 set -e
 
 # ============================================================
-# Automated tests for i.sh
+# Automated tests for q.sh
 # Run inside Docker: docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test
 # ============================================================
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-INSTALL_SCRIPT="${SCRIPT_DIR}/../i.sh"
+INSTALL_SCRIPT="${SCRIPT_DIR}/../q.sh"
 SHELL_BIN="$(command -v sh)"
 ENV_BIN="$(command -v env)"
 PYTHON3_BIN="$(command -v python3)"
@@ -752,7 +752,7 @@ test_interactive_empty_custom_token() {
         "$SHELL_BIN" "$INSTALL_SCRIPT"; then
         fail "interactive empty custom token is rejected" "installer unexpectedly succeeded"
     else
-        assert_output_contains "${_out}" "Token cannot be empty." "interactive empty custom token is rejected"
+        assert_output_contains "${_out}" "Invalid token: only printable non-whitespace characters are allowed." "interactive empty custom token is rejected"
     fi
 }
 
@@ -872,7 +872,7 @@ test_binary_executable() {
 # ============================================================
 
 main() {
-    printf '\n\033[1m=== QuickTUI i.sh Test Suite ===\033[0m\n'
+    printf '\n\033[1m=== QuickTUI q.sh Test Suite ===\033[0m\n'
 
     setup_mock_server
     trap cleanup_all EXIT INT TERM

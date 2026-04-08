@@ -4,7 +4,7 @@ umask 077
 
 # ============================================================
 # QuickTUI Installer
-# Usage: curl -fsSL https://quicktui.ai/i.sh | sh
+# Usage: curl -fsSL https://quicktui.ai/q.sh | sh
 # ============================================================
 
 QUICKTUI_REPO="dualface/quicktui"
@@ -109,7 +109,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         -h|--help)
-            printf 'Usage: i.sh [OPTIONS]\n\n'
+            printf 'Usage: q.sh [OPTIONS]\n\n'
             printf 'Options:\n'
             printf '  -y, --yes          Non-interactive mode (use defaults)\n'
             printf '  --token <string>   Set access token (skip prompt)\n'

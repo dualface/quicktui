@@ -81,6 +81,14 @@ assert_file_contains() {
     fi
 }
 
+assert_file_not_contains() {
+    if grep -Fq -- "$2" "$1" 2>/dev/null; then
+        fail "$3" "unexpected '$2' found in $1"
+    else
+        pass "$3"
+    fi
+}
+
 assert_output_contains() {
     if grep -Fq -- "$2" "$1" 2>/dev/null; then
         pass "$3"
@@ -137,7 +145,7 @@ if input_bytes:
     os.write(master, input_bytes)
 
 chunks = []
-deadline = time.time() + 20
+deadline = time.time() + 40
 exited = False
 idle_after_exit = 0
 reaped = False
@@ -389,10 +397,54 @@ case "${1:-}" in
                 ln -sf ../quicktui.service "$HOME/.config/systemd/user/default.target.wants/quicktui.service"
                 ;;
         esac
+
+        if [ "${QUICKTUI_MOCK_SKIP_SERVICE_START:-}" != "1" ]; then
+            python3 - "$addr" >"$HOME/.quicktui-test/mock-service.log" 2>&1 <<'PY' &
+import http.server
+import socket
+import sys
+
+listen = sys.argv[1]
+if listen.startswith("["):
+    host, rest = listen[1:].split("]", 1)
+    port = int(rest[1:])
+else:
+    host, port_text = listen.rsplit(":", 1)
+    port = int(port_text)
+
+if host in ("", "0.0.0.0"):
+    host = "127.0.0.1"
+elif host == "::":
+    host = "::1"
+
+class Handler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"quicktui mock service")
+
+    def log_message(self, fmt, *args):
+        return
+
+class Server(http.server.ThreadingHTTPServer):
+    allow_reuse_address = True
+
+Server.address_family = socket.AF_INET6 if ":" in host else socket.AF_INET
+httpd = Server((host, port), Handler)
+httpd.serve_forever()
+PY
+            printf '%s\n' "$!" > "$HOME/.quicktui-test/mock-service.pid"
+            sleep 1
+        fi
         ;;
     --uninstall-service)
         mkdir -p "$HOME/.quicktui-test"
         printf 'uninstall-service called\n' >> "$HOME/.quicktui-test/uninstall-service.log"
+        if [ -f "$HOME/.quicktui-test/mock-service.pid" ]; then
+            _mock_pid="$(cat "$HOME/.quicktui-test/mock-service.pid" 2>/dev/null || true)"
+            [ -n "$_mock_pid" ] && kill "$_mock_pid" 2>/dev/null || true
+            rm -f "$HOME/.quicktui-test/mock-service.pid"
+        fi
         rm -f "$HOME/Library/LaunchAgents/ai.quicktui.plist"
         rm -f "$HOME/.config/systemd/user/quicktui.service"
         rm -f "$HOME/.config/systemd/user/default.target.wants/quicktui.service"
@@ -442,7 +494,35 @@ cleanup_all() {
     cleanup_tmpdirs
 }
 
+kill_mock_service() {
+    if [ -f "${HOME}/.quicktui-test/mock-service.pid" ]; then
+        _mock_pid="$(cat "${HOME}/.quicktui-test/mock-service.pid" 2>/dev/null || true)"
+        [ -n "$_mock_pid" ] && kill "$_mock_pid" 2>/dev/null || true
+        rm -f "${HOME}/.quicktui-test/mock-service.pid"
+    fi
+}
+
+cleanup_test_tmux_install() {
+    _tmux_symlink="${HOME}/.local/bin/tmux"
+    _tmux_dir="${HOME}/.local/tmux"
+
+    if [ -L "$_tmux_symlink" ]; then
+        _tmux_target="$(readlink "$_tmux_symlink" 2>/dev/null || true)"
+        case "$_tmux_target" in
+            "${HOME}/.local/tmux/tmux"|../tmux/tmux)
+                rm -f "$_tmux_symlink"
+                ;;
+        esac
+    fi
+
+    if [ -f "${_tmux_dir}/tmux" ] && grep -Fq "mock-tmux" "${_tmux_dir}/tmux" 2>/dev/null; then
+        rm -rf "$_tmux_dir"
+    fi
+}
+
 reset_test_env() {
+    kill_mock_service
+    cleanup_test_tmux_install
     rm -rf "${HOME}/.local/bin/quicktui-server"
     rm -rf "${HOME}/.config/quicktui"
     rm -rf "${HOME}/.config/systemd/user"
@@ -575,7 +655,7 @@ test_tmux_old_version_interactive_continue() {
     _bin_dir="$(make_tmpdir)"
     write_fake_tmux "$_bin_dir" "3.1"
     _out="${_bin_dir}/out"
-    _input="$(printf 'y\n\n\n\n\n\nn\n')"
+    _input="$(printf 'y\n\n\n\n\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" \
@@ -631,6 +711,7 @@ test_default_install() {
     assert_file_exists "${HOME}/.config/quicktui/config" "config file created"
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=" "config contains token"
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=0.0.0.0:8022" "default listen address saved to config"
+    assert_file_not_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TMUX_BIN=" "system tmux install does not force QUICKTUI_TMUX_BIN"
     assert_file_permission "${HOME}/.config/quicktui" "700" "config dir permission 700"
     assert_file_permission "${HOME}/.config/quicktui/config" "600" "config file permission 600"
     assert_path_not_exists "${HOME}/.config/systemd/user/quicktui.service" "no systemd service with --no-service"
@@ -742,6 +823,22 @@ test_service_registration_failure() {
     fi
 }
 
+test_service_startup_failure_after_registration() {
+    printf '\n--- test_service_startup_failure_after_registration ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if QUICKTUI_MOCK_SKIP_SERVICE_START=1 QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" -y --token fail-token --addr 127.0.0.1 --port 8082 >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "Service was registered but did not start successfully. Start manually:" "startup-check failure path is shown"
+        assert_output_contains "${_out}" "--install-service --addr 127.0.0.1:8082" "startup-check failure prints retry command"
+        assert_file_exists "${HOME}/.quicktui-test/install-service.log" "startup-check failure happens after registration"
+    else
+        fail "startup-check failure path is shown" "installer unexpectedly failed"
+    fi
+}
+
 test_interactive_invalid_token_choice() {
     printf '\n--- test_interactive_invalid_token_choice ---\n'
     reset_test_env
@@ -782,16 +879,42 @@ test_interactive_custom_token_and_decline_service() {
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
-    _input="$(printf '2\ncustom-interactive-token\n\n\n\n\nn\n')"
+    _service_port="$(choose_mock_port)"
+    _input="$(printf '2\ncustom-interactive-token\n\n\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
-        "$SHELL_BIN" "$INSTALL_SCRIPT"; then
+        "$SHELL_BIN" "$INSTALL_SCRIPT" --addr 127.0.0.1 --port "${_service_port}"; then
         assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=custom-interactive-token" "interactive custom token is saved"
         assert_path_not_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "interactive decline leaves no launchd service"
         assert_path_not_exists "${HOME}/.config/systemd/user/quicktui.service" "interactive decline leaves no systemd service"
     else
         fail "interactive custom token is saved" "installer unexpectedly failed"
+    fi
+}
+
+test_interactive_service_prompt_defaults_yes() {
+    printf '\n--- test_interactive_service_prompt_defaults_yes ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _service_port="$(choose_mock_port)"
+    _input='
+
+
+'
+
+    if run_command_interactive "${_out}" "${_input}" \
+        "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" --addr 127.0.0.1 --port "${_service_port}"; then
+        if [ "$CURRENT_OS" = "Linux" ]; then
+            assert_file_exists "${HOME}/.config/systemd/user/quicktui.service" "blank service prompt defaults to yes on Linux"
+        else
+            assert_file_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "blank service prompt defaults to yes on macOS"
+        fi
+    else
+        fail "blank service prompt defaults to yes" "installer unexpectedly failed"
     fi
 }
 
@@ -1032,6 +1155,7 @@ test_tmux_install_from_builds_no_pkg_manager() {
         else
             fail "~/.local/bin/tmux is a symlink" "not a symlink"
         fi
+        assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TMUX_BIN=${HOME}/.local/tmux/tmux" "from-builds install writes absolute QUICKTUI_TMUX_BIN"
         assert_output_contains "${_out}" "tmux installed to ~/.local/tmux" "from-builds success message shown"
     else
         printf '    DEBUG stdout: '; head -20 "${_out}" 2>/dev/null; printf '\n'
@@ -1049,6 +1173,7 @@ main() {
 
     setup_mock_server
     trap cleanup_all EXIT INT TERM
+    reset_test_env
 
     test_help_flag
     test_unknown_option
@@ -1070,9 +1195,11 @@ main() {
     test_invalid_noninteractive_port
     test_service_config
     test_service_registration_failure
+    test_service_startup_failure_after_registration
     test_interactive_invalid_token_choice
     test_interactive_empty_custom_token
     test_interactive_custom_token_and_decline_service
+    test_interactive_service_prompt_defaults_yes
     test_interactive_provided_addr_port_not_prompted
     test_interactive_invalid_addr_and_port_reprompt
     test_uninstall_nothing_installed

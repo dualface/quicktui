@@ -35,13 +35,17 @@ LISTEN_PORT=""
 DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
 SERVICE_STARTED=""
+SERVICE_FAILURE_REASON=""
 IS_UPGRADE=""
+TMUX_BIN_CONFIG=""
+INSTALLED_TMUX_BIN=""
 EXISTING_SERVICE=""
 EXISTING_TOKEN=""
 EXISTING_ADDR=""
 EXISTING_PORT=""
 EXISTING_TERM=""
 EXISTING_LANG=""
+EXISTING_TMUX_BIN=""
 
 _BG_PID=""
 cleanup() {
@@ -182,6 +186,45 @@ validate_port() {
     [ "$_port" -ge 1 ] && [ "$_port" -le 65535 ]
 }
 
+service_probe_url() {
+    _probe_host="$LISTEN_ADDR"
+    case "$_probe_host" in
+        0.0.0.0)
+            _probe_host="127.0.0.1"
+            ;;
+        "::"|"[::]")
+            _probe_host="[::1]"
+            ;;
+        \[*\])
+            ;;
+        *:*)
+            _probe_host="[$_probe_host]"
+            ;;
+    esac
+    printf 'http://%s:%s/\n' "$_probe_host" "$LISTEN_PORT"
+}
+
+wait_for_service_ready() {
+    _probe_url="$(service_probe_url)"
+    _attempt=1
+    while [ "$_attempt" -le 20 ]; do
+        if command -v curl > /dev/null 2>&1; then
+            if curl -fsS --max-time 2 "$_probe_url" > /dev/null 2>&1; then
+                return 0
+            fi
+        elif command -v wget > /dev/null 2>&1; then
+            if wget -q --timeout=2 -O - "$_probe_url" > /dev/null 2>&1; then
+                return 0
+            fi
+        else
+            return 1
+        fi
+        sleep 0.5
+        _attempt=$((_attempt + 1))
+    done
+    return 1
+}
+
 download() {
     _url="$1"
     _dest="$2"
@@ -255,6 +298,7 @@ detect_existing_install() {
                     ;;
                 QUICKTUI_TERM) EXISTING_TERM="$_val" ;;
                 QUICKTUI_LANG) EXISTING_LANG="$_val" ;;
+                QUICKTUI_TMUX_BIN) EXISTING_TMUX_BIN="$_val" ;;
             esac
         done < "$QUICKTUI_CONFIG_FILE"
     fi
@@ -338,8 +382,9 @@ install_tmux_from_builds() {
 
     mkdir -p "${HOME}/.local/tmux" "${HOME}/.local/bin"
     tar -xzf "$_tmux_tarball" -C "${HOME}/.local/tmux"
-    chmod 755 "${HOME}/.local/tmux/tmux"
-    ln -sf "${HOME}/.local/tmux/tmux" "${HOME}/.local/bin/tmux"
+    INSTALLED_TMUX_BIN="${HOME}/.local/tmux/tmux"
+    chmod 755 "$INSTALLED_TMUX_BIN"
+    ln -sf "$INSTALLED_TMUX_BIN" "${HOME}/.local/bin/tmux"
     rm -rf "$_tmux_tmpdir"
     info "tmux installed to ~/.local/tmux (symlinked to ~/.local/bin/tmux)"
 }
@@ -408,6 +453,14 @@ check_tmux() {
         fi
     else
         info "tmux $_tmux_version detected"
+    fi
+
+    if [ -n "$INSTALLED_TMUX_BIN" ]; then
+        TMUX_BIN_CONFIG="$INSTALLED_TMUX_BIN"
+    elif [ -n "$EXISTING_TMUX_BIN" ]; then
+        TMUX_BIN_CONFIG="$EXISTING_TMUX_BIN"
+    else
+        TMUX_BIN_CONFIG=""
     fi
 }
 
@@ -681,6 +734,9 @@ configure_terminal() {
 
     printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$QUICKTUI_CONFIG_FILE"
     printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    if [ -n "$TMUX_BIN_CONFIG" ]; then
+        printf 'QUICKTUI_TMUX_BIN=%s\n' "$TMUX_BIN_CONFIG" >> "$QUICKTUI_CONFIG_FILE"
+    fi
     info "Terminal: TERM=$TERM_ENV, LANG=$LANG_ENV"
 }
 
@@ -697,7 +753,7 @@ configure_service() {
 
     if [ -z "$NON_INTERACTIVE" ] && [ -z "$EXISTING_SERVICE" ]; then
         printf '\n'
-        if ! confirm "Would you like to register QuickTUI as a background service?"; then
+        if ! confirm "Would you like to register QuickTUI as a background service?" y; then
             SERVICE_STARTED="skipped"
             return 0
         fi
@@ -708,9 +764,18 @@ configure_service() {
         --addr "${LISTEN_ADDR}:${LISTEN_PORT}" \
         --term "$TERM_ENV" \
         --lang "$LANG_ENV"; then
-        SERVICE_STARTED="yes"
+        if wait_for_service_ready; then
+            SERVICE_STARTED="yes"
+        else
+            SERVICE_STARTED="failed"
+            SERVICE_FAILURE_REASON="startup"
+            warn "Service was registered but did not become reachable at $(service_probe_url)"
+            warn "You can retry manually:"
+            warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
+        fi
     else
         SERVICE_STARTED="failed"
+        SERVICE_FAILURE_REASON="registration"
         warn "Service registration failed. You can retry manually:"
         warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
     fi
@@ -750,7 +815,11 @@ print_success() {
             printf '  (Enter the token when prompted on first login)\n'
         fi
     elif [ "$SERVICE_STARTED" = "failed" ]; then
-        printf 'Service registration failed. Start manually:\n'
+        if [ "$SERVICE_FAILURE_REASON" = "startup" ]; then
+            printf 'Service was registered but did not start successfully. Start manually:\n'
+        else
+            printf 'Service registration failed. Start manually:\n'
+        fi
         if [ "$PLATFORM" = "darwin" ]; then
             printf '  launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.quicktui.plist\n'
         else

@@ -129,12 +129,17 @@
         <h2 class="section-title">See It in Action</h2>
         <div class="screenshots-grid">
           <div class="screenshot-item">
-            <img
-              src="images/iphone-screenshot.gif"
-              alt="QuickTUI on iPhone"
-              width="280"
-              height="560"
-            />
+            <div class="slideshow" id="iphone-slideshow">
+              <img src="images/iPhone/01-setup-wizard-01.png" alt="QuickTUI Setup Wizard" class="slide active" />
+              <img src="images/iPhone/02-setup-wizard-02.png" alt="QuickTUI Setup Wizard" class="slide" />
+              <img src="images/iPhone/03-use-ai-agent-01.png" alt="QuickTUI AI Agent" class="slide" />
+              <img src="images/iPhone/04-use-ai-agent-02.png" alt="QuickTUI AI Agent" class="slide" />
+              <img src="images/iPhone/05-accessory-bar-01.png" alt="QuickTUI Accessory Bar" class="slide" />
+              <img src="images/iPhone/06-shortcuts-01.png" alt="QuickTUI Shortcuts" class="slide" />
+              <img src="images/iPhone/07-settings-01.png" alt="QuickTUI Settings" class="slide" />
+              <img src="images/iPhone/08-accessory-bar-02.png" alt="QuickTUI Accessory Bar" class="slide" />
+              <img src="images/iPhone/09-setup-wizard-03.png" alt="QuickTUI Setup Wizard" class="slide" />
+            </div>
             <span class="label">iPhone</span>
           </div>
           <div class="screenshot-item">
@@ -502,5 +507,18 @@ systemctl --user restart quicktui                  # Linux service
         </a>
       </div>
     </footer>
+    <script>
+      (function () {
+        var box = document.getElementById("iphone-slideshow");
+        if (!box) return;
+        var slides = box.querySelectorAll(".slide");
+        var cur = 0;
+        setInterval(function () {
+          slides[cur].classList.remove("active");
+          cur = (cur + 1) % slides.length;
+          slides[cur].classList.add("active");
+        }, 3000);
+      })();
+    </script>
   </body>
 </html>

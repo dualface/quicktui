@@ -144,12 +144,18 @@
             <span class="label">iPhone</span>
           </div>
           <div class="screenshot-item">
-            <img
-              src="images/ipad-placeholder.svg"
-              alt="QuickTUI on iPad"
-              width="480"
-              height="360"
-            />
+            <div class="slideshow slideshow-ipad" id="ipad-slideshow">
+              <img src="images/iPad/01-setup-wizard-01.png" alt="QuickTUI Setup Wizard" class="slide active" />
+              <img src="images/iPad/02-setup-wizard-02.png" alt="QuickTUI Setup Wizard" class="slide" />
+              <img src="images/iPad/03-use-ai-agent-01.png" alt="QuickTUI AI Agent" class="slide" />
+              <img src="images/iPad/04-use-ai-agent-02.png" alt="QuickTUI AI Agent" class="slide" />
+              <img src="images/iPad/05-accessory-bar-01.png" alt="QuickTUI Accessory Bar" class="slide" />
+              <img src="images/iPad/06-shortcuts-01.png" alt="QuickTUI Shortcuts" class="slide" />
+              <img src="images/iPad/07-settings-01.png" alt="QuickTUI Settings" class="slide" />
+              <img src="images/iPad/08-accessory-bar-02.png" alt="QuickTUI Accessory Bar" class="slide" />
+              <img src="images/iPad/09-setup-wizard-03.png" alt="QuickTUI Setup Wizard" class="slide" />
+              <img src="images/ipad-frame.svg" alt="" class="phone-frame" />
+            </div>
             <span class="label">iPad</span>
           </div>
         </div>
@@ -510,15 +516,19 @@ systemctl --user restart quicktui                  # Linux service
     </footer>
     <script>
       (function () {
-        var box = document.getElementById("iphone-slideshow");
-        if (!box) return;
-        var slides = box.querySelectorAll(".slide");
-        var cur = 0;
-        setInterval(function () {
-          slides[cur].classList.remove("active");
-          cur = (cur + 1) % slides.length;
-          slides[cur].classList.add("active");
-        }, 1500);
+        function startSlideshow(id) {
+          var box = document.getElementById(id);
+          if (!box) return;
+          var slides = box.querySelectorAll(".slide");
+          var cur = 0;
+          setInterval(function () {
+            slides[cur].classList.remove("active");
+            cur = (cur + 1) % slides.length;
+            slides[cur].classList.add("active");
+          }, 1500);
+        }
+        startSlideshow("iphone-slideshow");
+        startSlideshow("ipad-slideshow");
       })();
     </script>
   </body>

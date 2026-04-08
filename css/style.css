@@ -197,11 +197,11 @@ section {
 
 .slideshow .slide {
   position: absolute;
-  /* screen area: x=12 y=32 w=256 h=536 in the 280x600 frame */
-  top: 32px;
+  /* screen area: x=12 y=12 w=256 h=576 in the 280x600 frame */
+  top: 12px;
   left: 12px;
   width: 256px;
-  height: 536px;
+  height: 576px;
   object-fit: cover;
   border-radius: 24px;
   opacity: 0;
@@ -210,6 +210,20 @@ section {
 
 .slideshow .slide.active {
   opacity: 1;
+}
+
+.slideshow-ipad {
+  width: 480px;
+  height: 640px;
+}
+
+.slideshow-ipad .slide {
+  /* screen area: x=12 y=12 w=456 h=616 in the 480x640 frame */
+  top: 12px;
+  left: 12px;
+  width: 456px;
+  height: 616px;
+  border-radius: 16px;
 }
 
 .slideshow .phone-frame {

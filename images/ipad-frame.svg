@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="640" viewBox="0 0 480 640">
+  <defs>
+    <mask id="m">
+      <rect width="480" height="640" fill="white"/>
+      <rect x="12" y="12" width="456" height="616" rx="16" ry="16" fill="black"/>
+    </mask>
+  </defs>
+  <rect width="480" height="640" rx="28" ry="28" fill="#1a1b26" stroke="#30363d" stroke-width="2" mask="url(#m)"/>
+</svg>

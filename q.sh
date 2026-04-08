@@ -36,6 +36,7 @@ DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
 SERVICE_STARTED=""
 IS_UPGRADE=""
+EXISTING_SERVICE=""
 EXISTING_TOKEN=""
 EXISTING_ADDR=""
 EXISTING_PORT=""
@@ -256,6 +257,12 @@ detect_existing_install() {
                 QUICKTUI_LANG) EXISTING_LANG="$_val" ;;
             esac
         done < "$QUICKTUI_CONFIG_FILE"
+    fi
+
+    # Detect existing service registration
+    if [ -f "${HOME}/Library/LaunchAgents/ai.quicktui.plist" ] || \
+       [ -f "${HOME}/.config/systemd/user/quicktui.service" ]; then
+        EXISTING_SERVICE="1"
     fi
 }
 
@@ -634,7 +641,7 @@ configure_service() {
         return 0
     fi
 
-    if [ -z "$NON_INTERACTIVE" ]; then
+    if [ -z "$NON_INTERACTIVE" ] && [ -z "$EXISTING_SERVICE" ]; then
         printf '\n'
         if ! confirm "Would you like to register QuickTUI as a background service?"; then
             SERVICE_STARTED="skipped"

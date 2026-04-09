@@ -1,4 +1,5 @@
 .*
+!.github
 Thumbs.db
 
 docs/

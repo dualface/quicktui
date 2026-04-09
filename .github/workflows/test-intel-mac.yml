@@ -1,0 +1,124 @@
+name: Test q.sh on Intel Mac
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'q.sh'
+      - 'tests/**'
+      - '.github/workflows/test-intel-mac.yml'
+
+jobs:
+  integration-test:
+    name: Install & run on Intel macOS
+    runs-on: macos-13          # Intel x86_64
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Intel architecture
+        run: |
+          arch="$(uname -m)"
+          echo "Architecture: $arch"
+          [ "$arch" = "x86_64" ] || { echo "::error::Expected x86_64, got $arch"; exit 1; }
+
+      - name: Run q.sh non-interactive install
+        run: |
+          sh q.sh -y --port 18022
+        env:
+          TERM: xterm-256color
+
+      - name: Verify tmux installed
+        run: |
+          tmux_bin=""
+          if command -v tmux >/dev/null 2>&1; then
+            tmux_bin="$(command -v tmux)"
+          elif [ -x "$HOME/.local/bin/tmux" ]; then
+            tmux_bin="$HOME/.local/bin/tmux"
+          fi
+          [ -n "$tmux_bin" ] || { echo "::error::tmux not found"; exit 1; }
+          echo "tmux path: $tmux_bin"
+          "$tmux_bin" -V
+          version="$("$tmux_bin" -V | sed 's/tmux //')"
+          major="$(echo "$version" | cut -d. -f1)"
+          echo "tmux version: $version (major=$major)"
+          [ "$major" -ge 3 ] || { echo "::error::tmux version too old: $version"; exit 1; }
+
+      - name: Verify quicktui-server binary
+        run: |
+          binary="$HOME/.local/bin/quicktui-server"
+          [ -f "$binary" ] || { echo "::error::Binary not found at $binary"; exit 1; }
+          [ -x "$binary" ] || { echo "::error::Binary not executable"; exit 1; }
+          echo "Binary: $binary"
+          file "$binary"
+          "$binary" --version
+
+      - name: Verify config file
+        run: |
+          config="$HOME/.config/quicktui/config"
+          [ -f "$config" ] || { echo "::error::Config not found at $config"; exit 1; }
+          echo "Config contents (token redacted):"
+          sed 's/QUICKTUI_TOKEN=.*/QUICKTUI_TOKEN=***/' "$config"
+          grep -q 'QUICKTUI_TOKEN=' "$config" || { echo "::error::No token in config"; exit 1; }
+          grep -q 'QUICKTUI_ADDR=.*:18022' "$config" || { echo "::error::Port 18022 not in config"; exit 1; }
+
+      - name: Verify launchd service registered
+        run: |
+          plist="$HOME/Library/LaunchAgents/ai.quicktui.plist"
+          [ -f "$plist" ] || { echo "::error::LaunchAgent plist not found"; exit 1; }
+          echo "Plist found: $plist"
+          cat "$plist"
+
+      - name: Verify service is reachable
+        run: |
+          # Give the service a moment to start
+          attempt=1
+          while [ "$attempt" -le 30 ]; do
+            if curl -fsS --max-time 2 http://127.0.0.1:18022/ >/dev/null 2>&1; then
+              echo "Service reachable on attempt $attempt"
+              break
+            fi
+            sleep 1
+            attempt=$((attempt + 1))
+          done
+          curl -fsS --max-time 5 -o /dev/null -w "HTTP %{http_code} from http://127.0.0.1:18022/\n" http://127.0.0.1:18022/ || {
+            echo "::error::Service not reachable at http://127.0.0.1:18022/"
+            echo "--- launchctl list ---"
+            launchctl list | grep -i quicktui || true
+            echo "--- log files ---"
+            cat "$HOME/Library/Logs/QuickTUI/"*.log 2>/dev/null || echo "(no logs)"
+            exit 1
+          }
+
+      - name: Test uninstall
+        run: |
+          sh q.sh --uninstall
+          [ ! -f "$HOME/.local/bin/quicktui-server" ] || { echo "::error::Binary still exists after uninstall"; exit 1; }
+          [ ! -d "$HOME/.config/quicktui" ] || { echo "::error::Config dir still exists after uninstall"; exit 1; }
+          [ ! -f "$HOME/Library/LaunchAgents/ai.quicktui.plist" ] || { echo "::error::Plist still exists after uninstall"; exit 1; }
+          echo "Uninstall clean"
+
+      - name: Test reinstall after uninstall
+        run: |
+          sh q.sh -y --port 18022
+          "$HOME/.local/bin/quicktui-server" --version
+          attempt=1
+          while [ "$attempt" -le 30 ]; do
+            if curl -fsS --max-time 2 http://127.0.0.1:18022/ >/dev/null 2>&1; then
+              echo "Service reachable after reinstall (attempt $attempt)"
+              break
+            fi
+            sleep 1
+            attempt=$((attempt + 1))
+          done
+          curl -fsS --max-time 5 -o /dev/null -w "HTTP %{http_code}\n" http://127.0.0.1:18022/ || {
+            echo "::error::Service not reachable after reinstall"
+            exit 1
+          }
+          echo "Reinstall OK"
+
+      - name: Final cleanup
+        if: always()
+        run: |
+          sh q.sh --uninstall 2>/dev/null || true

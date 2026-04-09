@@ -703,7 +703,7 @@ test_tmux_old_version_interactive_continue() {
     _bin_dir="$(make_tmpdir)"
     write_fake_tmux "$_bin_dir" "3.1"
     _out="${_bin_dir}/out"
-    _input="$(printf 'y\n\n\n\n\nn\n')"
+    _input="$(printf 'y\n\n\n\n\n\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" \
@@ -948,7 +948,12 @@ test_interactive_service_prompt_defaults_yes() {
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
     _service_port="$(choose_mock_port)"
-    _input="$(printf '\n\n\n\n')"
+    _input='
+
+
+
+y
+'
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \

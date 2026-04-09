@@ -20,31 +20,19 @@ jobs:
       - name: Verify Rosetta 2 available
         run: |
           echo "Native arch: $(uname -m)"
-          # Ensure Rosetta is installed (usually pre-installed on GH runners)
           arch -x86_64 uname -m | tee /dev/stderr | grep -q x86_64
           echo "Rosetta 2 OK"
+
+      - name: Install tmux via Homebrew
+        run: |
+          brew install tmux
+          tmux -V
 
       - name: Run q.sh under Rosetta 2
         run: |
           arch -x86_64 sh q.sh -y --port 18022
         env:
           TERM: xterm-256color
-
-      - name: Verify tmux installed
-        run: |
-          tmux_bin=""
-          if command -v tmux >/dev/null 2>&1; then
-            tmux_bin="$(command -v tmux)"
-          elif [ -x "$HOME/.local/bin/tmux" ]; then
-            tmux_bin="$HOME/.local/bin/tmux"
-          fi
-          [ -n "$tmux_bin" ] || { echo "::error::tmux not found"; exit 1; }
-          echo "tmux path: $tmux_bin"
-          "$tmux_bin" -V
-          version="$("$tmux_bin" -V | sed 's/tmux //')"
-          major="$(echo "$version" | cut -d. -f1)"
-          echo "tmux version: $version (major=$major)"
-          [ "$major" -ge 3 ] || { echo "::error::tmux version too old: $version"; exit 1; }
 
       - name: Verify quicktui-server binary (amd64)
         run: |

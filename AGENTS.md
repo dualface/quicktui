@@ -1,49 +1,17 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+## 结构
 
-This repository is a small static site plus installer/test assets.
+这是静态官网加安装脚本仓库。`index.html` 是主落地页，当前样式直接内联在页面里；`privacy.html` 是隐私页；`images/` 放 logo、设备边框和截图资源；`docs/` 放站点素材；`q.sh` 是 POSIX `sh` 安装/卸载脚本；`tests/test_install.sh` 是安装器回归测试；`Dockerfile.test` 用于在干净容器里跑同一套测试。
 
-- `index.html`: landing page and contributor-facing product copy.
-- `css/style.css`: all site styling, including screenshot layout and responsive rules.
-- `images/`: logos, device frames, and screenshot assets (`images/iPhone/`, `images/iPad/`).
-- `q.sh`: POSIX `sh` installer/uninstaller for QuickTUI server.
-- `tests/test_install.sh`: end-to-end installer regression suite.
-- `Dockerfile.test`: Ubuntu-based test runner for `tests/test_install.sh`.
+## 常用命令
 
-## Build, Test, and Development Commands
+没有前端构建流程，主要是静态 HTML 和 shell。常用命令：`sh q.sh --help` 查看当前安装器参数，`sh tests/test_install.sh` 跑本地回归，`docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test` 在容器里复现测试环境，`python3 -m http.server` 本地预览页面，`git diff --check` 做补丁基本检查。
 
-There is no frontend build pipeline here; changes are mostly static HTML/CSS and shell.
+## 编码约定
 
-- `sh q.sh --help`: inspect the current installer CLI surface.
-- `sh tests/test_install.sh`: run the installer regression suite locally.
-- `docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test`: run the same installer suite in a clean container.
-- `python3 -m http.server`: optional local preview for `index.html` and `css/style.css`.
-- `git diff --check`: quick whitespace / patch sanity check before commit.
+HTML 保持现有 2 空格缩进；样式改动直接编辑 `index.html` 里的 `<style>`，不要再引入第二份样式源。`q.sh` 必须保持 POSIX `sh` 兼容，不能引入 bash 语法。截图和资源文件按设备分组命名，例如 `images/iPad/...`、`images/iPhone/...`。测试里优先补辅助函数或 `test_<behavior>()`，不要堆一段一次性断言脚本。
 
-## Coding Style & Naming Conventions
+## 测试与提交
 
-- Use 2-space indentation in HTML and CSS; keep formatting consistent with existing files.
-- Keep `q.sh` compatible with POSIX `sh`; do not introduce bash-only syntax.
-- Prefer small, direct edits over new abstractions. This repo is intentionally simple.
-- Keep screenshot and asset names descriptive and grouped by device, for example `images/iPad/01-setup-wizard-01.png`.
-- In shell tests, add helpers or `test_*` functions rather than inline one-off logic.
-
-## Testing Guidelines
-
-- Installer behavior changes should be covered in `tests/test_install.sh`.
-- Name new tests `test_<behavior>()` and reset state inside the test before assertions.
-- For static site changes, run `git diff --check`; for layout or copy changes, also do a browser spot check when practical.
-
-## Commit & Pull Request Guidelines
-
-- Use concise imperative commit subjects, for example `Align connect flow copy with current iOS onboarding paths`.
-- Keep commits scoped by concern: installer, tests, or site copy/layout.
-- Include a short rationale in the commit body when behavior changes.
-- PRs should summarize user-facing impact, list verification steps, and include screenshots for `index.html` / CSS changes.
-
-## Security & Configuration Notes
-
-- Never commit real tokens, server URLs, or generated local state.
-- Keep `.omx/` untracked.
-- Use placeholder values such as `QUICKTUI_TOKEN=your-secret-token` in docs and examples.
+安装器行为变更必须同步覆盖 `tests/test_install.sh`；不要只改脚本不补回归。站点文案或布局变更至少跑 `git diff --check`，可见样式改动再补一次浏览器 spot check。提交信息保持 why-first，按安装器、测试、站点文案/布局分 scope；行为变化要在正文写清验证步骤。不要提交真实 token、服务器地址、本地状态文件或 `.omx/` 内容。

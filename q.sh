@@ -261,7 +261,11 @@ run_privileged() {
     if [ "$(id -u)" = "0" ]; then
         "$@"
     elif command -v sudo > /dev/null 2>&1; then
-        sudo "$@"
+        if [ -n "$NON_INTERACTIVE" ]; then
+            sudo -n "$@"
+        else
+            sudo "$@"
+        fi
     else
         die "Root privileges required but 'sudo' is not available. Please run as root or install sudo."
     fi

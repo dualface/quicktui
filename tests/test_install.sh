@@ -258,9 +258,38 @@ write_fake_sudo_passthrough() {
     _dir="$1"
     cat > "${_dir}/sudo" <<'EOF'
 #!/bin/sh
+# Strip -n flag so passthrough works for both interactive and non-interactive
+case "$1" in -n) shift ;; esac
 exec "$@"
 EOF
     chmod +x "${_dir}/sudo"
+}
+
+write_fake_sudo_password_required() {
+    _dir="$1"
+    cat > "${_dir}/sudo" <<'EOF'
+#!/bin/sh
+# Simulate sudo that requires a password: -n fails, without -n hangs
+if [ "$1" = "-n" ]; then
+    printf 'sudo: a password is required\n' >&2
+    exit 1
+fi
+exec "$@"
+EOF
+    chmod +x "${_dir}/sudo"
+}
+
+write_fake_id_nonroot() {
+    _dir="$1"
+    cat > "${_dir}/id" <<'EOF'
+#!/bin/sh
+if [ "${1:-}" = "-u" ]; then
+    printf '1000\n'
+else
+    printf '1000\n'
+fi
+EOF
+    chmod +x "${_dir}/id"
 }
 
 write_fake_pkg_manager_success() {
@@ -1146,6 +1175,53 @@ test_upgrade_ipv6_preserves_addr() {
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=[::1]:9000" "upgrade preserves IPv6 address"
 }
 
+test_sudo_n_fallback_to_tmux_builds() {
+    printf '\n--- test_sudo_n_fallback_to_tmux_builds ---\n'
+    reset_test_env
+
+    # Linux-only: simulate non-root user whose sudo requires a password.
+    # In -y mode, run_privileged uses sudo -n which should fail immediately,
+    # causing install_tmux to fall back to install_tmux_from_builds.
+    if [ "$CURRENT_OS" = "Darwin" ]; then
+        pass "sudo -n fallback to tmux-builds (skipped: macOS uses brew, not sudo)"
+        return
+    fi
+
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" sh env uname curl wget sed cut mktemp rm tar gzip chmod ln mkdir mv du printf od awk shasum sha256sum head cat kill sleep stat grep tr openssl
+    write_fake_id_nonroot "$_bin_dir"
+    write_fake_sudo_password_required "$_bin_dir"
+
+    # Provide apt-get that would succeed if sudo worked
+    cat > "${_bin_dir}/apt-get" <<'APTEOF'
+#!/bin/sh
+exit 0
+APTEOF
+    chmod +x "${_bin_dir}/apt-get"
+
+    # Patch out well-known paths so we exercise the full install chain
+    _patched_script="${_bin_dir}/q-patched.sh"
+    sed 's|/usr/local/bin/tmux /usr/bin/tmux|/nonexistent/tmux|' "$INSTALL_SCRIPT" > "$_patched_script"
+    chmod +x "$_patched_script"
+
+    _out="${_bin_dir}/out"
+    _err="${_bin_dir}/err"
+    if PATH="${_bin_dir}" \
+        HOME="${HOME}" \
+        QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        TMUX_BUILDS_VERSION=0.0.1-test \
+        TMUX_BUILDS_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$_patched_script" -y --no-service >"${_out}" 2>"${_err}"; then
+        assert_file_exists "${HOME}/.local/tmux/tmux" "sudo -n fallback installs tmux from builds"
+        assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TMUX_BIN=${HOME}/.local/tmux/tmux" \
+            "sudo -n fallback writes QUICKTUI_TMUX_BIN"
+    else
+        printf '    DEBUG stdout: '; head -20 "${_out}" 2>/dev/null; printf '\n'
+        printf '    DEBUG stderr: '; head -20 "${_err}" 2>/dev/null; printf '\n'
+        fail "sudo -n fallback installs tmux from builds" "installer failed"
+    fi
+}
+
 test_tmux_found_at_well_known_path_sets_config() {
     printf '\n--- test_tmux_found_at_well_known_path_sets_config ---\n'
     reset_test_env
@@ -1266,6 +1342,7 @@ main() {
     test_upgrade_stops_service_before_replace
     test_upgrade_shows_upgrade_message
     test_upgrade_ipv6_preserves_addr
+    test_sudo_n_fallback_to_tmux_builds
     test_tmux_found_at_well_known_path_sets_config
     test_tmux_install_from_builds_no_pkg_manager
 

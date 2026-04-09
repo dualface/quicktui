@@ -21,6 +21,7 @@ OPT_PORT=""
 OPT_TERM=""
 OPT_LANG=""
 UNINSTALL=""
+CHECK_ONLY=""
 
 # Will be set during detection
 PLATFORM=""
@@ -105,6 +106,10 @@ while [ $# -gt 0 ]; do
             OPT_LANG="$2"
             shift 2
             ;;
+        --check)
+            CHECK_ONLY="1"
+            shift
+            ;;
         --addr)
             [ $# -ge 2 ] || die "Missing value for $1"
             OPT_ADDR="$2"
@@ -129,6 +134,7 @@ while [ $# -gt 0 ]; do
             printf '  --port <port>      Listen port (default: 8022)\n'
             printf '  --term <value>     TERM for tmux (default: xterm-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
+            printf '  --check              Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
             printf '  -h, --help         Show this help\n'
             exit 0

@@ -1,4 +1,4 @@
-name: Test q.sh on Intel Mac
+name: Test q.sh on Intel Mac (Rosetta 2)
 
 on:
   workflow_dispatch:
@@ -10,22 +10,23 @@ on:
 
 jobs:
   integration-test:
-    name: Install & run on Intel macOS
-    runs-on: macos-13-large    # Intel x86_64 (paid runner)
+    name: Install & run darwin/amd64 via Rosetta 2
+    runs-on: macos-15           # ARM64 runner, use arch -x86_64 for Rosetta
     timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify Intel architecture
+      - name: Verify Rosetta 2 available
         run: |
-          arch="$(uname -m)"
-          echo "Architecture: $arch"
-          [ "$arch" = "x86_64" ] || { echo "::error::Expected x86_64, got $arch"; exit 1; }
+          echo "Native arch: $(uname -m)"
+          # Ensure Rosetta is installed (usually pre-installed on GH runners)
+          arch -x86_64 uname -m | tee /dev/stderr | grep -q x86_64
+          echo "Rosetta 2 OK"
 
-      - name: Run q.sh non-interactive install
+      - name: Run q.sh under Rosetta 2
         run: |
-          sh q.sh -y --port 18022
+          arch -x86_64 sh q.sh -y --port 18022
         env:
           TERM: xterm-256color
 
@@ -45,14 +46,17 @@ jobs:
           echo "tmux version: $version (major=$major)"
           [ "$major" -ge 3 ] || { echo "::error::tmux version too old: $version"; exit 1; }
 
-      - name: Verify quicktui-server binary
+      - name: Verify quicktui-server binary (amd64)
         run: |
           binary="$HOME/.local/bin/quicktui-server"
           [ -f "$binary" ] || { echo "::error::Binary not found at $binary"; exit 1; }
           [ -x "$binary" ] || { echo "::error::Binary not executable"; exit 1; }
           echo "Binary: $binary"
           file "$binary"
-          "$binary" --version
+          # Confirm it's actually an x86_64 binary
+          file "$binary" | grep -q "x86_64" || { echo "::error::Binary is not x86_64"; exit 1; }
+          # Run via Rosetta
+          arch -x86_64 "$binary" --version
 
       - name: Verify config file
         run: |
@@ -72,7 +76,6 @@ jobs:
 
       - name: Verify service is reachable
         run: |
-          # Give the service a moment to start
           attempt=1
           while [ "$attempt" -le 30 ]; do
             if curl -fsS --max-time 2 http://127.0.0.1:18022/ >/dev/null 2>&1; then
@@ -101,8 +104,8 @@ jobs:
 
       - name: Test reinstall after uninstall
         run: |
-          sh q.sh -y --port 18022
-          "$HOME/.local/bin/quicktui-server" --version
+          arch -x86_64 sh q.sh -y --port 18022
+          arch -x86_64 "$HOME/.local/bin/quicktui-server" --version
           attempt=1
           while [ "$attempt" -le 30 ]; do
             if curl -fsS --max-time 2 http://127.0.0.1:18022/ >/dev/null 2>&1; then

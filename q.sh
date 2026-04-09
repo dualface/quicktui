@@ -471,7 +471,11 @@ check_tmux() {
     # Record explicit path when tmux is NOT in $PATH
     if [ -n "$INSTALLED_TMUX_BIN" ]; then
         TMUX_BIN_CONFIG="$INSTALLED_TMUX_BIN"
-    elif [ -n "$EXISTING_TMUX_BIN" ]; then
+    elif [ -n "$EXISTING_TMUX_BIN" ] && _existing_ver="$("$EXISTING_TMUX_BIN" -V 2>/dev/null | sed 's/tmux //')" && \
+         _ex_major="$(echo "$_existing_ver" | cut -d. -f1)" && \
+         _ex_minor="$(echo "$_existing_ver" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')" && \
+         [ "$_ex_major" -ge 3 ] 2>/dev/null && \
+         { [ "$_ex_major" -gt 3 ] || [ "$_ex_minor" -ge 2 ]; }; then
         TMUX_BIN_CONFIG="$EXISTING_TMUX_BIN"
     elif command -v tmux > /dev/null 2>&1; then
         TMUX_BIN_CONFIG=""

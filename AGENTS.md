@@ -4,6 +4,10 @@
 
 This is a static website plus installer script repository. `index.html` is the main landing page with styles inlined; `privacy.html` is the privacy page; `images/` holds logos, device frames, and screenshots; `docs/` holds site assets; `q.sh` is the POSIX `sh` install/uninstall script; `tests/test_install.sh` is the installer regression test suite; `Dockerfile.test` runs the same tests in a clean container; `.github/workflows/test-intel-mac.yml` runs an integration test of the `darwin/amd64` binary on macOS via Rosetta 2.
 
+## Language Policy
+
+Everything in this repository must stay in English, including `AGENTS.md`, docs, page copy, comments, commit-facing notes, and test descriptions. Do not switch this repo to Chinese or mixed-language wording.
+
 ## Common Commands
 
 No frontend build pipeline — just static HTML and shell. Key commands: `sh q.sh --help` to view installer options, `docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test` to run the regression test suite in a clean container, `python3 -m http.server` to preview pages locally, `git diff --check` for basic patch sanity.

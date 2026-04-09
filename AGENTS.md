@@ -6,7 +6,7 @@ This is a static website plus installer script repository. `index.html` is the m
 
 ## Common Commands
 
-No frontend build pipeline — just static HTML and shell. Key commands: `sh q.sh --help` to view installer options, `sh tests/test_install.sh` to run local regression tests, `docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test` to reproduce the test environment in a container, `python3 -m http.server` to preview pages locally, `git diff --check` for basic patch sanity.
+No frontend build pipeline — just static HTML and shell. Key commands: `sh q.sh --help` to view installer options, `docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test` to run the regression test suite in a clean container, `python3 -m http.server` to preview pages locally, `git diff --check` for basic patch sanity.
 
 ## Coding Conventions
 
@@ -14,4 +14,6 @@ HTML uses 2-space indentation; style changes go directly into the `<style>` bloc
 
 ## Testing And Commits
 
-Installer behavior changes must include corresponding coverage in `tests/test_install.sh`; never change the script without updating regressions. Site copy or layout changes should at least pass `git diff --check`; visible style changes should also get a browser spot check. Commit messages should be why-first, scoped by installer / tests / site copy-layout; behavioral changes must describe verification steps in the body. Never commit real tokens, server addresses, local state files, or `.omx/` contents.
+**Never run tests on the local host machine.** Always use Docker (`docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test`) or push to trigger GitHub Actions. If `docker` is not in PATH, use the full path `/Applications/Docker.app/Contents/Resources/bin/docker`.
+
+Installer behavior changes must include corresponding coverage in `tests/test_install.sh`; never change the script without updating regressions. Tests that restrict PATH to isolate code paths should patch out well-known absolute paths (`/usr/local/bin/tmux`, `/usr/bin/tmux`) via `sed` when the Docker image has those binaries pre-installed. Site copy or layout changes should at least pass `git diff --check`; visible style changes should also get a browser spot check. Commit messages should be why-first, scoped by installer / tests / site copy-layout; behavioral changes must describe verification steps in the body. Never commit real tokens, server addresses, local state files, or `.omx/` contents.

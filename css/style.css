@@ -781,8 +781,12 @@ section {
     align-items: center;
   }
 
+  .screenshot-item {
+    width: 100%;
+  }
+
   .slideshow-ipad {
-    width: min(100%, 480px);
+    width: min(92vw, 480px);
     height: auto;
     aspect-ratio: 480 / 640;
   }

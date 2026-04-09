@@ -893,7 +893,7 @@ test_interactive_invalid_token_choice() {
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
-    _input="$(printf '3\n')"
+    _input="$(printf '\n\n3\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -910,7 +910,7 @@ test_interactive_empty_custom_token() {
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
-    _input="$(printf '2\n\n')"
+    _input="$(printf '\n\n2\n\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -928,7 +928,7 @@ test_interactive_custom_token_and_decline_service() {
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
     _service_port="$(choose_mock_port)"
-    _input="$(printf '2\ncustom-interactive-token\n\n\nn\n')"
+    _input="$(printf '\n\n2\ncustom-interactive-token\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -948,10 +948,7 @@ test_interactive_service_prompt_defaults_yes() {
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
     _service_port="$(choose_mock_port)"
-    _input='
-
-
-'
+    _input="$(printf '\n\n\n\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -991,7 +988,7 @@ test_interactive_invalid_addr_and_port_reprompt() {
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
-    _input="$(printf '\nbad addr\n127.0.0.1\n99999\n9000\n\n\nn\n')"
+    _input="$(printf '\n\n\nbad addr\n127.0.0.1\n99999\n9000\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -1268,7 +1265,7 @@ test_tmux_install_from_builds_no_pkg_manager() {
     chmod +x "$_patched_script"
 
     _out="${_bin_dir}/out"
-    _input="$(printf 'y\n\n\n\n\nn\n')"
+    _input="$(printf 'y\n\n\ny\n\n\n\nn\n')"
 
     _err="${_bin_dir}/err"
     if run_command_interactive "${_out}" "${_input}" \

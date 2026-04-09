@@ -781,6 +781,21 @@ section {
     align-items: center;
   }
 
+  .slideshow-ipad {
+    width: min(100%, 480px);
+    height: auto;
+    aspect-ratio: 480 / 640;
+  }
+
+  .slideshow-ipad .slide {
+    top: 2.5%;
+    left: 2.5%;
+    width: 95%;
+    height: 96.25%;
+    object-fit: contain;
+    background-color: var(--bg-primary);
+  }
+
   .connect-step {
     gap: 16px;
   }

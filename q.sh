@@ -427,7 +427,7 @@ _find_tmux() {
 check_tmux() {
     if ! _find_tmux > /dev/null; then
         warn "tmux is not installed."
-        if confirm "Would you like to install tmux automatically?"; then
+        if confirm "Would you like to install tmux automatically?" y; then
             install_tmux
             if ! _find_tmux > /dev/null; then
                 die "tmux installation completed, but 'tmux' is still not in PATH."

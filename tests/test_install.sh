@@ -606,12 +606,14 @@ test_tmux_missing_noninteractive() {
     link_existing_commands "$_bin_dir" uname
     _out="${_bin_dir}/out"
 
+    # Non-interactive mode now auto-installs tmux (default=y).
+    # With restricted PATH (no curl/wget/brew), the install attempt fails.
     if PATH="${_bin_dir}" QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
         "$SHELL_BIN" "$INSTALL_SCRIPT" -y >"${_out}" 2>&1; then
-        fail "missing tmux stops non-interactive install" "installer unexpectedly succeeded"
+        fail "missing tmux triggers auto-install attempt" "installer unexpectedly succeeded"
     else
         assert_output_contains "${_out}" "tmux is not installed." "missing tmux is reported"
-        assert_output_contains "${_out}" "Please install tmux 3.2 or later and run this installer again." "missing tmux stops non-interactive install"
+        assert_output_not_contains "${_out}" "Please install tmux 3.2 or later and run this installer again." "non-interactive does not show manual-install hint"
     fi
 }
 

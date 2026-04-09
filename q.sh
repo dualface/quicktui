@@ -416,8 +416,16 @@ install_tmux() {
 }
 
 _find_tmux() {
+    # 1. $PATH
     command -v tmux 2>/dev/null && return 0
-    # Also check ~/.local/bin in case it's not in PATH yet
+    # 2. Well-known system paths
+    for _p in /usr/local/bin/tmux /usr/bin/tmux; do
+        if [ -x "$_p" ]; then
+            printf '%s\n' "$_p"
+            return 0
+        fi
+    done
+    # 3. Previously installed by tmux-builds
     if [ -x "${HOME}/.local/bin/tmux" ]; then
         printf '%s\n' "${HOME}/.local/bin/tmux"
         return 0
@@ -431,7 +439,7 @@ check_tmux() {
         if confirm "Would you like to install tmux automatically?" y; then
             install_tmux
             if ! _find_tmux > /dev/null; then
-                die "tmux installation completed, but 'tmux' is still not in PATH."
+                die "tmux installation completed, but tmux is still not found."
             fi
         else
             printf '\nPlease install tmux 3.2 or later and run this installer again.\n'
@@ -456,12 +464,15 @@ check_tmux() {
         info "tmux $_tmux_version detected"
     fi
 
+    # Record explicit path when tmux is NOT in $PATH
     if [ -n "$INSTALLED_TMUX_BIN" ]; then
         TMUX_BIN_CONFIG="$INSTALLED_TMUX_BIN"
     elif [ -n "$EXISTING_TMUX_BIN" ]; then
         TMUX_BIN_CONFIG="$EXISTING_TMUX_BIN"
-    else
+    elif command -v tmux > /dev/null 2>&1; then
         TMUX_BIN_CONFIG=""
+    else
+        TMUX_BIN_CONFIG="$_tmux_bin"
     fi
 }
 

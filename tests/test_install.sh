@@ -602,6 +602,14 @@ test_unsupported_architecture() {
 test_tmux_missing_noninteractive() {
     printf '\n--- test_tmux_missing_noninteractive ---\n'
 
+    # Skip when tmux exists at well-known absolute paths — the installer
+    # would find it even with a restricted PATH.
+    if [ -x /usr/local/bin/tmux ] || [ -x /usr/bin/tmux ]; then
+        pass "missing tmux is reported (skipped: tmux at well-known path)"
+        pass "non-interactive does not show manual-install hint (skipped: tmux at well-known path)"
+        return
+    fi
+
     _bin_dir="$(make_tmpdir)"
     link_existing_commands "$_bin_dir" uname
     _out="${_bin_dir}/out"
@@ -620,6 +628,14 @@ test_tmux_missing_noninteractive() {
 test_tmux_install_reports_missing_after_package_manager_returns_success() {
     printf '\n--- test_tmux_install_reports_missing_after_package_manager_returns_success ---\n'
 
+    # Skip when tmux exists at well-known absolute paths (e.g. Docker image
+    # with tmux pre-installed at /usr/bin/tmux) — the installer would
+    # legitimately find and use it even with a restricted PATH.
+    if [ -x /usr/local/bin/tmux ] || [ -x /usr/bin/tmux ]; then
+        pass "tmux install verifies command becomes available (skipped: tmux at well-known path)"
+        return
+    fi
+
     _bin_dir="$(make_tmpdir)"
     link_existing_commands "$_bin_dir" uname
     write_fake_pkg_manager_success "$_bin_dir"
@@ -630,7 +646,7 @@ test_tmux_install_reports_missing_after_package_manager_returns_success() {
         "$ENV_BIN" "PATH=${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT"; then
         fail "tmux install verifies command becomes available" "installer unexpectedly succeeded"
     else
-        assert_output_contains "${_out}" "tmux installation completed, but 'tmux' is still not in PATH." "tmux install verifies command becomes available"
+        assert_output_contains "${_out}" "tmux installation completed, but tmux is still not found." "tmux install verifies command becomes available"
     fi
 }
 
@@ -1130,6 +1146,36 @@ test_upgrade_ipv6_preserves_addr() {
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=[::1]:9000" "upgrade preserves IPv6 address"
 }
 
+test_tmux_found_at_well_known_path_sets_config() {
+    printf '\n--- test_tmux_found_at_well_known_path_sets_config ---\n'
+    reset_test_env
+
+    # Place a fake tmux at a well-known path outside $PATH so that
+    # _find_tmux discovers it via the absolute-path fallback.
+    _bin_dir="$(make_tmpdir)"
+    _well_known_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" uname sed cut curl wget mktemp rm tar gzip chmod ln mkdir mv id du printf od awk shasum sha256sum head cat kill sleep stat grep tr openssl
+
+    write_fake_tmux "$_well_known_dir" "3.6a"
+    _well_known_tmux="${_well_known_dir}/tmux"
+
+    _out="${_bin_dir}/out"
+    # Patch _find_tmux's well-known paths to use our temp dir instead of
+    # /usr/local/bin and /usr/bin so the test stays self-contained.
+    _patched_script="${_bin_dir}/q-patched.sh"
+    sed "s|/usr/local/bin/tmux /usr/bin/tmux|${_well_known_tmux}|" "$INSTALL_SCRIPT" > "$_patched_script"
+    chmod +x "$_patched_script"
+
+    if PATH="${_bin_dir}" QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$_patched_script" -y --no-service >"${_out}" 2>&1; then
+        assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TMUX_BIN=${_well_known_tmux}" \
+            "well-known-path tmux writes QUICKTUI_TMUX_BIN"
+    else
+        fail "well-known-path tmux writes QUICKTUI_TMUX_BIN" "installer failed unexpectedly"
+        printf '    DEBUG: '; head -30 "${_out}" 2>/dev/null; printf '\n'
+    fi
+}
+
 test_tmux_install_from_builds_no_pkg_manager() {
     printf '\n--- test_tmux_install_from_builds_no_pkg_manager ---\n'
     reset_test_env
@@ -1137,6 +1183,12 @@ test_tmux_install_from_builds_no_pkg_manager() {
     # Minimal PATH: essential commands but no brew/port/apt-get/yum/dnf/tmux
     _bin_dir="$(make_tmpdir)"
     link_existing_commands "$_bin_dir" sh env uname curl wget sed cut mktemp rm tar gzip chmod ln mkdir mv id du printf od awk shasum sha256sum head cat kill sleep stat grep tr
+
+    # Patch out well-known paths so the test always exercises the
+    # tmux-builds download path, even when /usr/bin/tmux exists.
+    _patched_script="${_bin_dir}/q-patched.sh"
+    sed 's|/usr/local/bin/tmux /usr/bin/tmux|/nonexistent/tmux|' "$INSTALL_SCRIPT" > "$_patched_script"
+    chmod +x "$_patched_script"
 
     _out="${_bin_dir}/out"
     _input="$(printf 'y\n\n\n\n\nn\n')"
@@ -1149,7 +1201,7 @@ test_tmux_install_from_builds_no_pkg_manager() {
         "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
         "TMUX_BUILDS_VERSION=0.0.1-test" \
         "TMUX_BUILDS_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
-        "$SHELL_BIN" "$INSTALL_SCRIPT" 2>"$_err"; then
+        "$SHELL_BIN" "$_patched_script" 2>"$_err"; then
         assert_file_exists "${HOME}/.local/tmux/tmux" "tmux binary installed to ~/.local/tmux"
         assert_file_exists "${HOME}/.local/bin/tmux" "tmux symlinked to ~/.local/bin"
         if [ -L "${HOME}/.local/bin/tmux" ]; then
@@ -1214,6 +1266,7 @@ main() {
     test_upgrade_stops_service_before_replace
     test_upgrade_shows_upgrade_message
     test_upgrade_ipv6_preserves_addr
+    test_tmux_found_at_well_known_path_sets_config
     test_tmux_install_from_builds_no_pkg_manager
 
     printf '\n\033[1m=== Results: %d passed, %d failed ===\033[0m\n\n' "$TESTS_PASSED" "$TESTS_FAILED"

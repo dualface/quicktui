@@ -990,10 +990,10 @@ preflight_checks() {
     # 4. PTY allocatable
     if [ "$PLATFORM" = "darwin" ]; then
         _pty_ok=""
-        script -q /dev/null sh -c 'exit 0' > /dev/null 2>&1 && _pty_ok=1
+        script -q /dev/null sh -c 'exit 0' < /dev/null > /dev/null 2>&1 && _pty_ok=1
     else
         _pty_ok=""
-        script -qc 'exit 0' /dev/null > /dev/null 2>&1 && _pty_ok=1
+        script -qc 'exit 0' /dev/null < /dev/null > /dev/null 2>&1 && _pty_ok=1
     fi
     if [ -n "$_pty_ok" ]; then
         info "PTY allocation OK"

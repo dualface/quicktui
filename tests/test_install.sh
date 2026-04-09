@@ -1326,7 +1326,7 @@ test_preflight_warns_missing_locale() {
 exit 0
 EOF
     chmod +x "${_bin_dir}/locale"
-    link_existing_commands "$_bin_dir" uname tmux infocmp sh script
+    link_existing_commands "$_bin_dir" uname tmux infocmp sh script sed grep
     write_fake_tmux "$_bin_dir" "3.6a"
 
     if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --lang en_US.UTF-8 >"${_out}" 2>&1; then
@@ -1351,7 +1351,7 @@ test_preflight_warns_missing_terminfo() {
 exit 1
 EOF
     chmod +x "${_bin_dir}/infocmp"
-    link_existing_commands "$_bin_dir" uname tmux locale sh script
+    link_existing_commands "$_bin_dir" uname tmux locale sh script sed grep
     write_fake_tmux "$_bin_dir" "3.6a"
 
     if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --term xterm-256color >"${_out}" 2>&1; then
@@ -1370,7 +1370,7 @@ test_preflight_skips_when_locale_cmd_missing() {
     _out="${_tmp}/out"
 
     # Do NOT link locale — it should be missing from PATH
-    link_existing_commands "$_bin_dir" uname tmux infocmp sh script
+    link_existing_commands "$_bin_dir" uname tmux infocmp sh script sed grep
     write_fake_tmux "$_bin_dir" "3.6a"
 
     # Should not error; locale check should be skipped
@@ -1383,6 +1383,9 @@ test_preflight_skips_when_locale_cmd_missing() {
 test_preflight_tmux_session_cleanup() {
     printf '\n--- test_preflight_tmux_session_cleanup ---\n'
     reset_test_env
+
+    # Clean up any leftover session from previous tests
+    tmux kill-session -t _qtui_preflight 2>/dev/null || true
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"

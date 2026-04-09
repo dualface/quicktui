@@ -1136,7 +1136,7 @@ test_tmux_install_from_builds_no_pkg_manager() {
 
     # Minimal PATH: essential commands but no brew/port/apt-get/yum/dnf/tmux
     _bin_dir="$(make_tmpdir)"
-    link_existing_commands "$_bin_dir" sh env uname curl wget sed cut mktemp rm tar chmod ln mkdir mv id du printf od awk shasum sha256sum head cat kill sleep stat grep tr
+    link_existing_commands "$_bin_dir" sh env uname curl wget sed cut mktemp rm tar gzip chmod ln mkdir mv id du printf od awk shasum sha256sum head cat kill sleep stat grep tr
 
     _out="${_bin_dir}/out"
     _input="$(printf 'y\n\n\n\n\nn\n')"

@@ -390,26 +390,27 @@ install_tmux_from_builds() {
 }
 
 install_tmux() {
+    _pkg_ok=""
     if [ "$PLATFORM" = "darwin" ]; then
         if command -v brew > /dev/null 2>&1; then
-            brew install tmux
+            if brew install tmux 2>/dev/null; then _pkg_ok=1; fi
         elif command -v port > /dev/null 2>&1; then
-            run_privileged port install tmux
-        else
-            install_tmux_from_builds
-            return
+            if run_privileged port install tmux 2>/dev/null; then _pkg_ok=1; fi
         fi
     elif [ "$PLATFORM" = "linux" ]; then
         if command -v apt-get > /dev/null 2>&1; then
-            run_privileged apt-get update -q && run_privileged apt-get install -y tmux
+            if run_privileged apt-get update -q && run_privileged apt-get install -y tmux; then _pkg_ok=1; fi
         elif command -v yum > /dev/null 2>&1; then
-            run_privileged yum install -y tmux
+            if run_privileged yum install -y tmux; then _pkg_ok=1; fi
         elif command -v dnf > /dev/null 2>&1; then
-            run_privileged dnf install -y tmux
-        else
-            install_tmux_from_builds
-            return
+            if run_privileged dnf install -y tmux; then _pkg_ok=1; fi
         fi
+    fi
+
+    if [ -z "$_pkg_ok" ]; then
+        warn "Package manager unavailable or failed; downloading tmux from GitHub."
+        install_tmux_from_builds
+        return
     fi
     info "tmux installed"
 }

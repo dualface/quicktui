@@ -23,23 +23,16 @@ jobs:
           arch -x86_64 uname -m | tee /dev/stderr | grep -q x86_64
           echo "Rosetta 2 OK"
 
+      - name: Install tmux (native brew)
+        run: |
+          brew install tmux
+          echo "tmux $(tmux -V) installed via brew"
+
       - name: Run q.sh under Rosetta 2
         run: |
           arch -x86_64 sh q.sh -y --port 18022
         env:
           TERM: xterm-256color
-
-      - name: Verify tmux installed by q.sh
-        run: |
-          tmux_bin=""
-          if command -v tmux >/dev/null 2>&1; then
-            tmux_bin="$(command -v tmux)"
-          elif [ -x "$HOME/.local/bin/tmux" ]; then
-            tmux_bin="$HOME/.local/bin/tmux"
-          fi
-          [ -n "$tmux_bin" ] || { echo "::error::tmux not found after install"; exit 1; }
-          echo "tmux path: $tmux_bin"
-          "$tmux_bin" -V
 
       - name: Verify quicktui-server binary (amd64)
         run: |

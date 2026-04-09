@@ -224,11 +224,15 @@
           <div class="connect-step">
             <div class="connect-step-num">1</div>
             <div class="connect-step-body">
-              <div class="connect-step-title">Install and start the server</div>
+              <div class="connect-step-title">Choose how to add your server</div>
               <div class="connect-step-desc">
-                <p>Run the installer on your Mac or Linux machine. The installer always writes <code>~/.config/quicktui/config</code>, then asks whether to register a background service. The default choice is <strong>Yes</strong>.</p>
-                <p>The default listen address is <code>0.0.0.0:8022</code>. To use a different address or port, pass <code>--addr</code> and/or <code>--port</code> during installation. The installer writes the final value to <code>~/.config/quicktui/config</code> as <code>QUICKTUI_ADDR</code>.</p>
-                <span class="connect-step-note">If you register the service, it starts immediately and restarts on reboot. If you skip it, run the exact command printed by the installer. Manual startup uses flags and environment variables directly; it does not automatically load <code>~/.config/quicktui/config</code>.</span>
+                <p>On iPhone or iPad, the QuickTUI Setup Wizard supports three paths:</p>
+                <ul style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
+                  <li><strong>Quick Setup</strong> — SSH into your server and install QuickTUI automatically.</li>
+                  <li><strong>Scan QR Code</strong> — run <code>quicktui-server --qrcode</code> on an existing server, then scan it.</li>
+                  <li><strong>Add Existing Server</strong> — enter the server URL and access token manually.</li>
+                </ul>
+                <span class="connect-step-note">In a browser, there is no setup wizard. Open the server URL directly and enter the token when prompted.</span>
               </div>
             </div>
           </div>
@@ -237,15 +241,13 @@
           <div class="connect-step">
             <div class="connect-step-num">2</div>
             <div class="connect-step-body">
-              <div class="connect-step-title">Find your server address and token</div>
+              <div class="connect-step-title">Install and start the server</div>
               <div class="connect-step-desc">
-                <p>You need two things to connect: the <strong>server address</strong> (IP or hostname + port) and your <strong>access token</strong>.</p>
-                <p>To find your server's local IP:</p>
-                <pre><code>macOS:  ipconfig getifaddr en0 || ipconfig getifaddr en1
-Linux:  hostname -I | awk '{print $1}'</code></pre>
-                <p>If you are using the background service, you can view the saved token and address with:</p>
-                <pre><code>cat ~/.config/quicktui/config</code></pre>
-                <p>Copy the value after <code>QUICKTUI_TOKEN=</code>. If you customized the listen address or port, use the value from <code>QUICKTUI_ADDR=...</code> as well. If you start the server manually, use the token and address you passed on that command line instead.</p>
+                <p>If you use <strong>Quick Setup</strong>, the app will SSH into your Mac or Linux server, run the installer, and configure QuickTUI for you.</p>
+                <p>If you install it yourself, run:</p>
+                <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+                <p>The installer writes <code>~/.config/quicktui/config</code>, then asks whether to register a background service. The default choice is <strong>Yes</strong>. The default listen address is <code>0.0.0.0:8022</code>.</p>
+                <span class="connect-step-note">If you skip service registration, run the exact command printed by the installer. Manual startup uses flags and environment variables directly; it does not automatically load <code>~/.config/quicktui/config</code>.</span>
               </div>
             </div>
           </div>
@@ -254,11 +256,15 @@ Linux:  hostname -I | awk '{print $1}'</code></pre>
           <div class="connect-step">
             <div class="connect-step-num">3</div>
             <div class="connect-step-body">
-              <div class="connect-step-title">Open the app or browser</div>
+              <div class="connect-step-title">Get your address and token</div>
               <div class="connect-step-desc">
-                <p>On iPhone or iPad, open the QuickTUI app. In a browser, navigate to the address from <code>QUICKTUI_ADDR</code>:</p>
-                <pre><code>http://&lt;your-server-ip&gt;:&lt;your-port&gt;</code></pre>
-                <p>For example: <code>http://192.168.1.100:8022</code> or <code>http://127.0.0.1:9000</code></p>
+                <p>If you are adding an existing server manually, you need the server URL and access token.</p>
+                <p>To find your server's local IP:</p>
+                <pre><code>macOS:  ipconfig getifaddr en0 || ipconfig getifaddr en1
+Linux:  hostname -I | awk '{print $1}'</code></pre>
+                <p>If you are using the background service, you can view the saved token and address with:</p>
+                <pre><code>cat ~/.config/quicktui/config</code></pre>
+                <p>For QR onboarding, just run <code>quicktui-server --qrcode</code> on the server and scan it in the app.</p>
               </div>
             </div>
           </div>
@@ -267,14 +273,15 @@ Linux:  hostname -I | awk '{print $1}'</code></pre>
           <div class="connect-step">
             <div class="connect-step-num">4</div>
             <div class="connect-step-body">
-              <div class="connect-step-title">Add a server and enter your token</div>
+              <div class="connect-step-title">Open the app or browser</div>
               <div class="connect-step-desc">
-                <p>In the app, tap <strong>Add Server</strong> and fill in:</p>
+                <p>On iPhone or iPad, open the QuickTUI app and choose the setup path that matches your server:</p>
                 <ul style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
-                  <li><strong>Address</strong> — your server's IP or hostname, e.g. <code>192.168.1.100:8022</code></li>
-                  <li><strong>Token</strong> — the <code>QUICKTUI_TOKEN</code> value from your config file</li>
+                  <li><strong>Quick Setup</strong> if the server is not installed yet and SSH access is available.</li>
+                  <li><strong>Scan QR Code</strong> if you ran <code>quicktui-server --qrcode</code>.</li>
+                  <li><strong>Add Existing Server</strong> if you already have the server URL and token.</li>
                 </ul>
-                <p>In the browser, you will be prompted for the token on first visit.</p>
+                <p>In a browser, navigate to your server URL, for example <code>http://192.168.1.100:8022</code>, then enter the token on first visit.</p>
               </div>
             </div>
           </div>

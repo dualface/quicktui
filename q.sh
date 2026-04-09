@@ -726,10 +726,22 @@ configure_network() {
 }
 
 # ============================================================
-# Step 7: Configure terminal environment
+# Write terminal environment to config file
 # ============================================================
 
-configure_terminal() {
+write_terminal_config() {
+    printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    if [ -n "$TMUX_BIN_CONFIG" ]; then
+        printf 'QUICKTUI_TMUX_BIN=%s\n' "$TMUX_BIN_CONFIG" >> "$QUICKTUI_CONFIG_FILE"
+    fi
+}
+
+# ============================================================
+# Collect terminal environment values (no config file writes)
+# ============================================================
+
+collect_terminal_env() {
     _interactive_term="${TERM:-xterm-256color}"
     _interactive_lang="${LANG:-en_US.UTF-8}"
 
@@ -758,11 +770,6 @@ configure_terminal() {
         LANG_ENV="${_input:-$_interactive_lang}"
     fi
 
-    printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$QUICKTUI_CONFIG_FILE"
-    printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$QUICKTUI_CONFIG_FILE"
-    if [ -n "$TMUX_BIN_CONFIG" ]; then
-        printf 'QUICKTUI_TMUX_BIN=%s\n' "$TMUX_BIN_CONFIG" >> "$QUICKTUI_CONFIG_FILE"
-    fi
     info "Terminal: TERM=$TERM_ENV, LANG=$LANG_ENV"
 }
 
@@ -938,6 +945,10 @@ uninstall() {
 # Main
 # ============================================================
 
+preflight_checks() {
+    :
+}
+
 main() {
     detect_existing_install
     if [ -n "$IS_UPGRADE" ]; then
@@ -947,11 +958,13 @@ main() {
     fi
     detect_platform
     check_tmux
+    collect_terminal_env
+    preflight_checks
     download_binary
     install_binary
     configure_token
     configure_network
-    configure_terminal
+    write_terminal_config
     configure_service
     print_success
 }

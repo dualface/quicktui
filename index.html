@@ -226,9 +226,9 @@
             <div class="connect-step-body">
               <div class="connect-step-title">Install and start the server</div>
               <div class="connect-step-desc">
-                <p>Run the installer on your Mac or Linux machine. The installer always writes <code>~/.config/quicktui/config</code>, then asks whether to register a background service.</p>
+                <p>Run the installer on your Mac or Linux machine. The installer always writes <code>~/.config/quicktui/config</code>, then asks whether to register a background service. The default choice is <strong>Yes</strong>.</p>
                 <p>The default listen address is <code>0.0.0.0:8022</code>. To use a different address or port, pass <code>--addr</code> and/or <code>--port</code> during installation. The installer writes the final value to <code>~/.config/quicktui/config</code> as <code>QUICKTUI_ADDR</code>.</p>
-                <span class="connect-step-note">If you register the service, it starts immediately and restarts on reboot. If you skip it, run the command printed by the installer, for example <code>QUICKTUI_TOKEN=... ~/.local/bin/quicktui-server</code>.</span>
+                <span class="connect-step-note">If you register the service, it starts immediately and restarts on reboot. If you skip it, run the exact command printed by the installer. Manual startup uses flags and environment variables directly; it does not automatically load <code>~/.config/quicktui/config</code>.</span>
               </div>
             </div>
           </div>
@@ -243,9 +243,9 @@
                 <p>To find your server's local IP:</p>
                 <pre><code>macOS:  ipconfig getifaddr en0 || ipconfig getifaddr en1
 Linux:  hostname -I | awk '{print $1}'</code></pre>
-                <p>To view your access token:</p>
+                <p>If you are using the background service, you can view the saved token and address with:</p>
                 <pre><code>cat ~/.config/quicktui/config</code></pre>
-                <p>Copy the value after <code>QUICKTUI_TOKEN=</code>. If you customized the listen address or port, use the value from <code>QUICKTUI_ADDR=...</code> as well.</p>
+                <p>Copy the value after <code>QUICKTUI_TOKEN=</code>. If you customized the listen address or port, use the value from <code>QUICKTUI_ADDR=...</code> as well. If you start the server manually, use the token and address you passed on that command line instead.</p>
               </div>
             </div>
           </div>
@@ -314,10 +314,11 @@ Linux:  hostname -I | awk '{print $1}'</code></pre>
           <details class="faq-item">
             <summary>tmux is not installed or the version is too old</summary>
             <div class="faq-answer">
-              <p>QuickTUI requires tmux 3.2 or later. Install or upgrade it:</p>
+              <p>QuickTUI requires tmux 3.2 or later. The installer can usually install tmux for you. If you want to install or upgrade it yourself:</p>
               <pre><code>macOS:   brew install tmux
 Ubuntu:  sudo apt install tmux
 CentOS:  sudo yum install tmux</code></pre>
+              <p>If the installer falls back to a prebuilt tmux archive, it will save <code>QUICKTUI_TMUX_BIN</code> in <code>~/.config/quicktui/config</code> so the background service can keep finding that exact binary.</p>
             </div>
           </details>
         </div>
@@ -328,74 +329,84 @@ CentOS:  sudo yum install tmux</code></pre>
           <details class="faq-item">
             <summary>What can I configure in the config file?</summary>
             <div class="faq-answer">
-              <p>All settings are stored in <code>~/.config/quicktui/config</code>. The installer writes this file even if you skip background service registration. After editing, restart the service or restart your manual <code>quicktui-server</code> process to apply changes.</p>
-              <pre><code># Access token — required, protects your server from unauthorized access
+              <p>If you use the background service, its source of truth is <code>~/.config/quicktui/config</code>. The installer writes this file even if you skip service registration, but a manual <code>quicktui-server</code> process does <strong>not</strong> read the config file automatically on normal startup.</p>
+              <pre><code># Access token — required
 QUICKTUI_TOKEN=your-secret-token
 
 # Listen address and port (default: 0.0.0.0:8022)
-# Use 127.0.0.1 to restrict access to localhost only
 QUICKTUI_ADDR=0.0.0.0:8022
 
 # TERM value passed to tmux (default: xterm-256color)
-# Use xterm-ghostty if your terminal is Ghostty
 QUICKTUI_TERM=xterm-256color
 
 # Locale passed to tmux (default: en_US.UTF-8)
-QUICKTUI_LANG=en_US.UTF-8</code></pre>
-              <p>Restart after editing:</p>
-              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS service
-systemctl --user restart quicktui                  # Linux service
-~/.local/bin/quicktui-server                       # manual start</code></pre>
+QUICKTUI_LANG=en_US.UTF-8
+
+# Optional: absolute path to tmux, used when the installer bootstrapped tmux
+QUICKTUI_TMUX_BIN=/Users/you/.local/tmux/tmux</code></pre>
+              <p>After editing the config file, restart the service:</p>
+              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
+systemctl --user restart quicktui                  # Linux</code></pre>
+              <p>If you run <code>quicktui-server</code> manually, pass flags or env vars directly instead:</p>
+              <pre><code>QUICKTUI_TOKEN=your-secret-token \
+QUICKTUI_ADDR=0.0.0.0:8022 \
+~/.local/bin/quicktui-server</code></pre>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary>Service fails to start: "token is required"</summary>
+            <summary>QuickTUI says "token is required"</summary>
             <div class="faq-answer">
-              <p>The server cannot find your access token. Check that <code>~/.config/quicktui/config</code> exists and contains a <code>QUICKTUI_TOKEN=...</code> line. If the file is missing, re-run the installer.</p>
+              <p>There are two common cases:</p>
+              <ul style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
+                <li><strong>Background service</strong>: make sure <code>~/.config/quicktui/config</code> exists and contains <code>QUICKTUI_TOKEN=...</code>.</li>
+                <li><strong>Manual start</strong>: pass <code>--token</code> or set <code>QUICKTUI_TOKEN</code> in the environment. Normal server startup does not read the config file automatically.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Service was registered but did not start successfully</summary>
+            <div class="faq-answer">
+              <p>The installer now checks whether the service actually becomes reachable after registration. If this step fails, try starting it manually first:</p>
+              <pre><code>launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.quicktui.plist   # macOS
+systemctl --user start quicktui                                             # Linux</code></pre>
+              <p>Then check the logs. Common causes are a missing <code>QUICKTUI_TOKEN</code>, an invalid <code>QUICKTUI_TMUX_BIN</code>, or a <code>QUICKTUI_TERM</code> value that is not available on the server.</p>
             </div>
           </details>
 
           <details class="faq-item">
             <summary>Can't connect — connection refused</summary>
             <div class="faq-answer">
-              <p>First, verify the server is running. If you registered the background service, check it with:</p>
-              <pre><code>launchctl list | grep quicktui   # macOS
-systemctl --user status quicktui  # Linux</code></pre>
-              <p>If you skipped service registration, start the server again with <code>~/.local/bin/quicktui-server</code>, or rerun the exact command printed by the installer.</p>
-              <p>If the server is stopped, check the logs or terminal output for errors. Make sure your firewall allows the configured port from <code>QUICKTUI_ADDR</code>.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>Non-ASCII characters display as underscores</summary>
-            <div class="faq-answer">
-              <p>The server is running without a locale. Re-run the installer and set the <code>LANG</code> option to match your system, or pass it explicitly:</p>
-              <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- --lang en_US.UTF-8</code></pre>
+              <p>First, verify that the server is running:</p>
+              <pre><code>launchctl print gui/$(id -u)/ai.quicktui   # macOS service
+systemctl --user status quicktui           # Linux service</code></pre>
+              <p>If you skipped service registration, start the server with the same token and address you intend to use, for example:</p>
+              <pre><code>QUICKTUI_TOKEN=your-secret-token \
+QUICKTUI_ADDR=0.0.0.0:8022 \
+~/.local/bin/quicktui-server</code></pre>
+              <p>If the process is running, make sure your firewall or tunnel allows the port from <code>QUICKTUI_ADDR</code>.</p>
             </div>
           </details>
 
           <details class="faq-item">
             <summary>Terminal rendering is broken when using Ghostty</summary>
             <div class="faq-answer">
-              <p>Ghostty sets <code>TERM=xterm-ghostty</code> by default. If you installed QuickTUI while Ghostty was your active terminal, the server may have inherited this value, which tmux requires to be present on the server as well.</p>
+              <p>Ghostty uses <code>TERM=xterm-ghostty</code>. If the server or service should use that terminfo entry too, set:</p>
               <p>Edit <code>~/.config/quicktui/config</code> and set:</p>
               <pre><code>QUICKTUI_TERM=xterm-ghostty</code></pre>
-              <p>Then restart the service or restart your manual <code>quicktui-server</code> process:</p>
-              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS service
-systemctl --user restart quicktui                  # Linux service
-~/.local/bin/quicktui-server                       # manual start</code></pre>
+              <p>Then restart the service, or rerun your manual server command with <code>--term xterm-ghostty</code>.</p>
             </div>
           </details>
 
           <details class="faq-item">
             <summary>PTY spawn failed / internal server error when opening a session</summary>
             <div class="faq-answer">
-              <p>This usually happens when the server cannot find tmux or cannot open a terminal. If you are running as a background service, check the service logs:</p>
-              <pre><code>tail -f ~/Library/Logs/QuickTUI/stderr.log   # macOS service
+              <p>This usually means the server could not launch or attach tmux. Check the logs first:</p>
+              <pre><code>tail -f ~/Library/Logs/QuickTUI/stdout.log ~/Library/Logs/QuickTUI/stderr.log   # macOS service
 journalctl --user -u quicktui -f             # Linux service</code></pre>
-              <p>If you started <code>quicktui-server</code> manually, inspect the terminal output from that process instead.</p>
-              <p>Ensure tmux is installed and the <code>TERM</code> environment variable is set. Re-running the installer will detect and configure these automatically.</p>
+              <p>If the config contains <code>QUICKTUI_TMUX_BIN</code>, it must be an absolute path to a real tmux binary. If the installer added that line for a bundled tmux, leave it intact unless the binary moved.</p>
+              <p>Also verify that <code>QUICKTUI_TERM</code> and <code>QUICKTUI_LANG</code> are valid for the environment where the server is running.</p>
             </div>
           </details>
 
@@ -404,7 +415,7 @@ journalctl --user -u quicktui -f             # Linux service</code></pre>
             <div class="faq-answer">
               <p>If QuickTUI is running as a background service:</p>
               <pre><code># macOS
-tail -f ~/Library/Logs/QuickTUI/stderr.log
+tail -f ~/Library/Logs/QuickTUI/stdout.log ~/Library/Logs/QuickTUI/stderr.log
 
 # Linux
 journalctl --user -u quicktui -f</code></pre>
@@ -415,13 +426,15 @@ journalctl --user -u quicktui -f</code></pre>
           <details class="faq-item">
             <summary>How do I change the listen address or port?</summary>
             <div class="faq-answer">
-              <p>Edit <code>~/.config/quicktui/config</code> and update the <code>QUICKTUI_ADDR</code> line:</p>
+              <p>If you use the background service, edit <code>~/.config/quicktui/config</code> and update <code>QUICKTUI_ADDR</code>:</p>
               <pre><code>QUICKTUI_ADDR=0.0.0.0:9000</code></pre>
-              <p>Then restart the service or restart your manual <code>quicktui-server</code> process:</p>
-              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS service
-systemctl --user restart quicktui                  # Linux service
-~/.local/bin/quicktui-server                       # manual start</code></pre>
-              <p>You can also set a different address and port at install time. The installer will save the value to <code>QUICKTUI_ADDR</code> for you:</p>
+              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
+systemctl --user restart quicktui                  # Linux</code></pre>
+              <p>If you run the server manually, pass the address directly on startup:</p>
+              <pre><code>~/.local/bin/quicktui-server \
+  --token your-secret-token \
+  --addr 0.0.0.0:9000</code></pre>
+              <p>You can also set a different address and port at install time. The installer will save the final value to <code>QUICKTUI_ADDR</code> for service-based setups:</p>
               <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- --addr 127.0.0.1 --port 9000</code></pre>
             </div>
           </details>
@@ -439,24 +452,10 @@ systemctl --user restart quicktui                  # Linux service
           <h3 class="faq-group-title">tmux</h3>
 
           <details class="faq-item">
-            <summary>What tmux version is required?</summary>
-            <div class="faq-answer">
-              <p>tmux 3.2 or later is required. Check your version with <code>tmux -V</code>.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
             <summary>My session list is empty</summary>
             <div class="faq-answer">
-              <p>QuickTUI connects to your existing tmux server. If no sessions exist yet, you can create one directly from the app, or start one on the server with:</p>
+              <p>QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <strong>New Session</strong>, or create one on the server yourself:</p>
               <pre><code>tmux new-session -s mysession</code></pre>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>How do I create a new tmux session from the app?</summary>
-            <div class="faq-answer">
-              <p>Use the <strong>New Session</strong> button in the app. You only need the server to be running — no existing tmux sessions are required.</p>
             </div>
           </details>
         </div>
@@ -481,21 +480,10 @@ systemctl --user restart quicktui                  # Linux service
           </details>
 
           <details class="faq-item">
-            <summary>The app shows "Session not found"</summary>
+            <summary>The app or browser shows "Session not found"</summary>
             <div class="faq-answer">
-              <p>The tmux session you tried to open no longer exists on the server. It may have been closed or the tmux server was restarted. Refresh the session list and select an active session.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>I can't type with a non-English input method (Chinese, Japanese, etc.)</summary>
-            <div class="faq-answer">
-              <p>Some input methods (IMEs) do not work directly in the terminal view because the candidate selection UI conflicts with terminal input handling. Use the <strong>Edit</strong> dialog in the shortcut bar instead:</p>
-              <ol style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
-                <li>Tap the <strong>Edit</strong> button in the shortcut bar above the keyboard.</li>
-                <li>Type your text using any input method in the dialog box.</li>
-                <li>Tap <strong>Send</strong> — the text is sent to the terminal at once.</li>
-              </ol>
+              <p>This comes directly from the server. It can mean the tmux session was closed or renamed, but it can also mean the tmux server is no longer running or cannot be reached.</p>
+              <p>Refresh the session list, then open an existing session or create a new one.</p>
             </div>
           </details>
         </div>

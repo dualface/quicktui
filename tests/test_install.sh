@@ -571,6 +571,7 @@ test_help_flag() {
     _out="${_tmp}/out"
     if "$SHELL_BIN" "$INSTALL_SCRIPT" --help >"${_out}" 2>&1; then
         assert_output_contains "${_out}" "Non-interactive mode" "--help shows usage info"
+        assert_output_contains "${_out}" "--check" "--help documents --check flag"
     else
         fail "--help shows usage info" "help command failed"
     fi
@@ -1294,6 +1295,113 @@ test_tmux_install_from_builds_no_pkg_manager() {
     fi
 }
 
+test_check_flag_runs_without_install() {
+    printf '\n--- test_check_flag_runs_without_install ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # --check should run environment checks and exit without downloading or installing
+    if "$SHELL_BIN" "$INSTALL_SCRIPT" --check >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "Environment checks" "check flag prints environment checks header"
+    else
+        # Even if checks find warnings, we still verify it ran checks (not an install)
+        assert_output_contains "${_out}" "Environment checks" "check flag prints environment checks header"
+    fi
+
+    assert_path_not_exists "${HOME}/.local/bin/quicktui-server" "check flag does not install binary"
+    assert_path_not_exists "${HOME}/.config/quicktui/config" "check flag does not write config"
+}
+
+test_preflight_warns_missing_locale() {
+    printf '\n--- test_preflight_warns_missing_locale ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Create a fake locale command that returns no locales
+    cat > "${_bin_dir}/locale" <<'EOF'
+#!/bin/sh
+# Return empty locale list
+exit 0
+EOF
+    chmod +x "${_bin_dir}/locale"
+    link_existing_commands "$_bin_dir" uname tmux infocmp sh script
+    write_fake_tmux "$_bin_dir" "3.6a"
+
+    if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --lang en_US.UTF-8 >"${_out}" 2>&1; then
+        fail "missing locale produces warning" "check unexpectedly passed"
+    else
+        assert_output_contains "${_out}" 'Locale "en_US.UTF-8" is not available' "missing locale warning shown"
+        assert_output_contains "${_out}" "issue(s) found" "summary shows issue count"
+    fi
+}
+
+test_preflight_warns_missing_terminfo() {
+    printf '\n--- test_preflight_warns_missing_terminfo ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Create a fake infocmp that always fails
+    cat > "${_bin_dir}/infocmp" <<'EOF'
+#!/bin/sh
+exit 1
+EOF
+    chmod +x "${_bin_dir}/infocmp"
+    link_existing_commands "$_bin_dir" uname tmux locale sh script
+    write_fake_tmux "$_bin_dir" "3.6a"
+
+    if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --term xterm-256color >"${_out}" 2>&1; then
+        fail "missing terminfo produces warning" "check unexpectedly passed"
+    else
+        assert_output_contains "${_out}" 'Terminfo entry for "xterm-256color" not found' "missing terminfo warning shown"
+    fi
+}
+
+test_preflight_skips_when_locale_cmd_missing() {
+    printf '\n--- test_preflight_skips_when_locale_cmd_missing ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Do NOT link locale — it should be missing from PATH
+    link_existing_commands "$_bin_dir" uname tmux infocmp sh script
+    write_fake_tmux "$_bin_dir" "3.6a"
+
+    # Should not error; locale check should be skipped
+    PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check >"${_out}" 2>&1 || true
+
+    assert_output_contains "${_out}" "Locale check skipped" "locale check skipped when command missing"
+    assert_output_not_contains "${_out}" 'Locale "' "no locale warning when command missing"
+}
+
+test_preflight_tmux_session_cleanup() {
+    printf '\n--- test_preflight_tmux_session_cleanup ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Run --check with real tmux (available in Docker image)
+    "$SHELL_BIN" "$INSTALL_SCRIPT" --check >"${_out}" 2>&1 || true
+
+    # The _qtui_preflight session should have been cleaned up
+    if tmux has-session -t _qtui_preflight 2>/dev/null; then
+        fail "preflight tmux session cleaned up" "session _qtui_preflight still exists"
+        tmux kill-session -t _qtui_preflight 2>/dev/null || true
+    else
+        pass "preflight tmux session cleaned up"
+    fi
+}
+
 # ============================================================
 # Main
 # ============================================================
@@ -1306,6 +1414,11 @@ main() {
     reset_test_env
 
     test_help_flag
+    test_check_flag_runs_without_install
+    test_preflight_warns_missing_locale
+    test_preflight_warns_missing_terminfo
+    test_preflight_skips_when_locale_cmd_missing
+    test_preflight_tmux_session_cleanup
     test_unknown_option
     test_missing_option_value
     test_unsupported_platform

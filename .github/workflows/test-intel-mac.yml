@@ -11,7 +11,7 @@ on:
 jobs:
   integration-test:
     name: Install & run on Intel macOS
-    runs-on: macos-13          # Intel x86_64
+    runs-on: macos-13-large    # Intel x86_64 (paid runner)
     timeout-minutes: 10
 
     steps:

@@ -832,13 +832,15 @@ print_success() {
     printf '\n'
 
     if [ "$SERVICE_STARTED" = "yes" ]; then
-        _ip=""
-        if [ "$PLATFORM" = "darwin" ]; then
-            _ip="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "")"
-        else
-            _ip="$(hostname -I 2>/dev/null | awk '{print $1}' || echo "")"
+        _ip="$LISTEN_ADDR"
+        if [ "$_ip" = "0.0.0.0" ] || [ -z "$_ip" ]; then
+            if [ "$PLATFORM" = "darwin" ]; then
+                _ip="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "")"
+            else
+                _ip="$(hostname -I 2>/dev/null | awk '{print $1}' || echo "")"
+            fi
+            [ -z "$_ip" ] && _ip="localhost"
         fi
-        [ -z "$_ip" ] && _ip="localhost"
         printf 'Getting started:\n'
         printf '  Open in browser:  http://%s:%s\n' "$_ip" "$LISTEN_PORT"
         if [ -n "$IS_UPGRADE" ] && [ "$TOKEN" = "$EXISTING_TOKEN" ]; then

@@ -21,6 +21,7 @@ OPT_PORT=""
 OPT_TERM=""
 OPT_LANG=""
 UNINSTALL=""
+CHECK_ONLY=""
 
 # Will be set during detection
 PLATFORM=""
@@ -105,6 +106,10 @@ while [ $# -gt 0 ]; do
             OPT_LANG="$2"
             shift 2
             ;;
+        --check)
+            CHECK_ONLY="1"
+            shift
+            ;;
         --addr)
             [ $# -ge 2 ] || die "Missing value for $1"
             OPT_ADDR="$2"
@@ -129,6 +134,7 @@ while [ $# -gt 0 ]; do
             printf '  --port <port>      Listen port (default: 8022)\n'
             printf '  --term <value>     TERM for tmux (default: xterm-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
+            printf '  --check              Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
             printf '  -h, --help         Show this help\n'
             exit 0
@@ -720,10 +726,22 @@ configure_network() {
 }
 
 # ============================================================
-# Step 7: Configure terminal environment
+# Write terminal environment to config file
 # ============================================================
 
-configure_terminal() {
+write_terminal_config() {
+    printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    if [ -n "$TMUX_BIN_CONFIG" ]; then
+        printf 'QUICKTUI_TMUX_BIN=%s\n' "$TMUX_BIN_CONFIG" >> "$QUICKTUI_CONFIG_FILE"
+    fi
+}
+
+# ============================================================
+# Collect terminal environment values (no config file writes)
+# ============================================================
+
+collect_terminal_env() {
     _interactive_term="${TERM:-xterm-256color}"
     _interactive_lang="${LANG:-en_US.UTF-8}"
 
@@ -752,11 +770,6 @@ configure_terminal() {
         LANG_ENV="${_input:-$_interactive_lang}"
     fi
 
-    printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$QUICKTUI_CONFIG_FILE"
-    printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$QUICKTUI_CONFIG_FILE"
-    if [ -n "$TMUX_BIN_CONFIG" ]; then
-        printf 'QUICKTUI_TMUX_BIN=%s\n' "$TMUX_BIN_CONFIG" >> "$QUICKTUI_CONFIG_FILE"
-    fi
     info "Terminal: TERM=$TERM_ENV, LANG=$LANG_ENV"
 }
 
@@ -929,6 +942,102 @@ uninstall() {
 }
 
 # ============================================================
+# Environment preflight checks
+# ============================================================
+
+preflight_checks() {
+    printf '\n  Environment checks:\n'
+    _preflight_warnings=0
+
+    # 1. Locale available
+    if command -v locale > /dev/null 2>&1; then
+        _normalized="$(echo "$LANG_ENV" | sed 's/UTF-/utf/; s/-//g')"
+        if locale -a 2>/dev/null | grep -iq "^$(echo "$_normalized" | sed 's/\./\\./g')$" || \
+           locale -a 2>/dev/null | grep -iq "^$(echo "$LANG_ENV" | sed 's/\./\\./g')$"; then
+            info "Locale $LANG_ENV available"
+        else
+            warn "Locale \"$LANG_ENV\" is not available on this system, falling back to C.UTF-8."
+            LANG_ENV="C.UTF-8"
+        fi
+    else
+        printf '    - Locale check skipped (locale command not found)\n'
+    fi
+
+    # 2. Terminfo exists
+    if command -v infocmp > /dev/null 2>&1; then
+        if infocmp "$TERM_ENV" > /dev/null 2>&1; then
+            info "Terminfo $TERM_ENV found"
+        else
+            warn "Terminfo entry for \"$TERM_ENV\" not found, falling back to screen-256color."
+            TERM_ENV="screen-256color"
+        fi
+    else
+        printf '    - Terminfo check skipped (infocmp command not found)\n'
+    fi
+
+    # 3. Default shell executable
+    _check_shell="${SHELL:-/bin/sh}"
+    if [ -x "$_check_shell" ]; then
+        info "Default shell $_check_shell OK"
+    else
+        warn "Default shell \"$_check_shell\" is not executable."
+        printf '    Set the SHELL environment variable to a valid shell path, or install the missing shell.\n'
+        _preflight_warnings=$((_preflight_warnings + 1))
+    fi
+
+    # 4. PTY allocatable
+    if [ "$PLATFORM" = "darwin" ]; then
+        _pty_ok=""
+        script -q /dev/null sh -c 'exit 0' < /dev/null > /dev/null 2>&1 && _pty_ok=1
+    else
+        _pty_ok=""
+        script -qc 'exit 0' /dev/null < /dev/null > /dev/null 2>&1 && _pty_ok=1
+    fi
+    if [ -n "$_pty_ok" ]; then
+        info "PTY allocation OK"
+    else
+        warn "Cannot allocate a pseudo-terminal (PTY)."
+        printf '    Check system PTY limits (Linux: /proc/sys/kernel/pty/max) or container configuration.\n'
+        printf '    Some container runtimes need --privileged or explicit /dev/pts mount.\n'
+        _preflight_warnings=$((_preflight_warnings + 1))
+    fi
+
+    # 5. tmux can start a session
+    _tmux_check_bin="${TMUX_BIN_CONFIG:-tmux}"
+    if command -v "$_tmux_check_bin" > /dev/null 2>&1 || [ -x "$_tmux_check_bin" ]; then
+        _tmux_stderr="$(TERM="$TERM_ENV" LANG="$LANG_ENV" LC_ALL="$LANG_ENV" "$_tmux_check_bin" new-session -d -s _qtui_preflight 2>&1)"
+        _tmux_rc=$?
+        "$_tmux_check_bin" kill-session -t _qtui_preflight 2>/dev/null || true
+        if [ "$_tmux_rc" -eq 0 ]; then
+            info "tmux session test passed"
+        else
+            warn "tmux failed to start a test session."
+            [ -n "$_tmux_stderr" ] && printf '    %s\n' "$_tmux_stderr"
+            _preflight_warnings=$((_preflight_warnings + 1))
+        fi
+    else
+        warn "tmux binary not found at \"$_tmux_check_bin\"."
+        _preflight_warnings=$((_preflight_warnings + 1))
+    fi
+
+    # Summary
+    if [ "$_preflight_warnings" -gt 0 ]; then
+        printf '\n'
+        warn "$_preflight_warnings issue(s) found. Some features may not work correctly."
+
+        if [ -n "$CHECK_ONLY" ]; then
+            return 1
+        elif [ -z "$NON_INTERACTIVE" ]; then
+            if ! confirm "Continue installation?" n; then
+                exit 1
+            fi
+        fi
+    fi
+    printf '\n'
+    return 0
+}
+
+# ============================================================
 # Main
 # ============================================================
 
@@ -941,17 +1050,30 @@ main() {
     fi
     detect_platform
     check_tmux
+    collect_terminal_env
+    preflight_checks
     download_binary
     install_binary
     configure_token
     configure_network
-    configure_terminal
+    write_terminal_config
     configure_service
     print_success
 }
 
 if [ -n "$UNINSTALL" ]; then
     uninstall
+elif [ -n "$CHECK_ONLY" ]; then
+    detect_existing_install
+    detect_platform
+    check_tmux
+    TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-xterm-256color}}"
+    LANG_ENV="${OPT_LANG:-${EXISTING_LANG:-en_US.UTF-8}}"
+    if [ -n "$EXISTING_TMUX_BIN" ]; then
+        TMUX_BIN_CONFIG="$EXISTING_TMUX_BIN"
+    fi
+    preflight_checks
+    exit $?
 else
     main
 fi

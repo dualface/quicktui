@@ -571,6 +571,7 @@ test_help_flag() {
     _out="${_tmp}/out"
     if "$SHELL_BIN" "$INSTALL_SCRIPT" --help >"${_out}" 2>&1; then
         assert_output_contains "${_out}" "Non-interactive mode" "--help shows usage info"
+        assert_output_contains "${_out}" "--check" "--help documents --check flag"
     else
         fail "--help shows usage info" "help command failed"
     fi
@@ -702,7 +703,7 @@ test_tmux_old_version_interactive_continue() {
     _bin_dir="$(make_tmpdir)"
     write_fake_tmux "$_bin_dir" "3.1"
     _out="${_bin_dir}/out"
-    _input="$(printf 'y\n\n\n\n\nn\n')"
+    _input="$(printf 'y\n\n\n\n\n\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" \
@@ -836,13 +837,13 @@ test_service_config() {
     printf '\n--- test_service_config ---\n'
     reset_test_env
 
-    run_installer -y --token test-token --addr 127.0.0.1 --port 8080 --term xterm-ghostty --lang zh_CN.UTF-8
+    run_installer -y --token test-token --addr 127.0.0.1 --port 8080 --term screen --lang C.UTF-8
 
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:8080" "custom listen address saved to config"
     assert_file_exists "${HOME}/.quicktui-test/install-service.log" "install-service invocation recorded"
     assert_file_contains "${HOME}/.quicktui-test/install-service.log" "ADDR=127.0.0.1:8080" "service installer received addr:port"
-    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "TERM=xterm-ghostty" "service installer received TERM"
-    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "LANG=zh_CN.UTF-8" "service installer received LANG"
+    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "TERM=screen" "service installer received TERM"
+    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "LANG=C.UTF-8" "service installer received LANG"
 
     if [ "$CURRENT_OS" = "Linux" ]; then
         assert_file_exists "${HOME}/.config/systemd/user/quicktui.service" "systemd service file created"
@@ -892,7 +893,7 @@ test_interactive_invalid_token_choice() {
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
-    _input="$(printf '3\n')"
+    _input="$(printf '\n\n3\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -909,7 +910,7 @@ test_interactive_empty_custom_token() {
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
-    _input="$(printf '2\n\n')"
+    _input="$(printf '\n\n2\n\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -927,7 +928,7 @@ test_interactive_custom_token_and_decline_service() {
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
     _service_port="$(choose_mock_port)"
-    _input="$(printf '2\ncustom-interactive-token\n\n\nn\n')"
+    _input="$(printf '\n\n2\ncustom-interactive-token\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -950,6 +951,8 @@ test_interactive_service_prompt_defaults_yes() {
     _input='
 
 
+
+y
 '
 
     if run_command_interactive "${_out}" "${_input}" \
@@ -990,7 +993,7 @@ test_interactive_invalid_addr_and_port_reprompt() {
 
     _tmp="$(make_tmpdir)"
     _out="${_tmp}/out"
-    _input="$(printf '\nbad addr\n127.0.0.1\n99999\n9000\n\n\nn\n')"
+    _input="$(printf '\n\n\nbad addr\n127.0.0.1\n99999\n9000\nn\n')"
 
     if run_command_interactive "${_out}" "${_input}" \
         "$ENV_BIN" "QUICKTUI_RELEASES=http://127.0.0.1:${MOCK_PORT}" \
@@ -1075,17 +1078,17 @@ test_upgrade_preserves_config() {
     reset_test_env
 
     # First install with custom config
-    run_installer -y --no-service --token "keep-me" --addr 127.0.0.1 --port 9000 --term xterm-ghostty --lang zh_CN.UTF-8
+    run_installer -y --no-service --token "keep-me" --addr 127.0.0.1 --port 9000 --term screen --lang C.UTF-8
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "first install sets addr"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=xterm-ghostty" "first install sets term"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=zh_CN.UTF-8" "first install sets lang"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=screen" "first install sets term"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=C.UTF-8" "first install sets lang"
 
     # Upgrade without any overrides
     run_installer -y --no-service
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=keep-me" "upgrade preserves token"
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "upgrade preserves addr"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=xterm-ghostty" "upgrade preserves term"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=zh_CN.UTF-8" "upgrade preserves lang"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=screen" "upgrade preserves term"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=C.UTF-8" "upgrade preserves lang"
 }
 
 test_upgrade_with_new_token() {
@@ -1267,7 +1270,7 @@ test_tmux_install_from_builds_no_pkg_manager() {
     chmod +x "$_patched_script"
 
     _out="${_bin_dir}/out"
-    _input="$(printf 'y\n\n\n\n\nn\n')"
+    _input="$(printf 'y\n\n\ny\n\n\n\nn\n')"
 
     _err="${_bin_dir}/err"
     if run_command_interactive "${_out}" "${_input}" \
@@ -1294,6 +1297,117 @@ test_tmux_install_from_builds_no_pkg_manager() {
     fi
 }
 
+test_check_flag_runs_without_install() {
+    printf '\n--- test_check_flag_runs_without_install ---\n'
+    reset_test_env
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # --check should run environment checks and exit without downloading or installing
+    if "$SHELL_BIN" "$INSTALL_SCRIPT" --check >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "Environment checks" "check flag prints environment checks header"
+    else
+        # Even if checks find warnings, we still verify it ran checks (not an install)
+        assert_output_contains "${_out}" "Environment checks" "check flag prints environment checks header"
+    fi
+
+    assert_path_not_exists "${HOME}/.local/bin/quicktui-server" "check flag does not install binary"
+    assert_path_not_exists "${HOME}/.config/quicktui/config" "check flag does not write config"
+}
+
+test_preflight_warns_missing_locale() {
+    printf '\n--- test_preflight_warns_missing_locale ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Create a fake locale command that returns no locales
+    cat > "${_bin_dir}/locale" <<'EOF'
+#!/bin/sh
+# Return empty locale list
+exit 0
+EOF
+    chmod +x "${_bin_dir}/locale"
+    link_existing_commands "$_bin_dir" uname infocmp sh script sed grep cut
+    write_fake_tmux "$_bin_dir" "3.6a"
+
+    # Locale fallback is not an error — --check should exit 0
+    PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --lang en_US.UTF-8 >"${_out}" 2>&1 || true
+
+    assert_output_contains "${_out}" "falling back to C.UTF-8" "missing locale triggers fallback"
+}
+
+test_preflight_warns_missing_terminfo() {
+    printf '\n--- test_preflight_warns_missing_terminfo ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Create a fake infocmp that always fails
+    cat > "${_bin_dir}/infocmp" <<'EOF'
+#!/bin/sh
+exit 1
+EOF
+    chmod +x "${_bin_dir}/infocmp"
+    link_existing_commands "$_bin_dir" uname locale sh script sed grep cut
+    write_fake_tmux "$_bin_dir" "3.6a"
+
+    # Terminfo fallback is not an error — --check should exit 0
+    PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --term xterm-256color >"${_out}" 2>&1 || true
+
+    assert_output_contains "${_out}" "falling back to screen-256color" "missing terminfo triggers fallback"
+}
+
+test_preflight_skips_when_locale_cmd_missing() {
+    printf '\n--- test_preflight_skips_when_locale_cmd_missing ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Do NOT link locale — it should be missing from PATH
+    link_existing_commands "$_bin_dir" uname infocmp sh script sed grep cut
+    write_fake_tmux "$_bin_dir" "3.6a"
+
+    # Should not error; locale check should be skipped
+    PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check >"${_out}" 2>&1 || true
+
+    assert_output_contains "${_out}" "Locale check skipped" "locale check skipped when command missing"
+    assert_output_not_contains "${_out}" 'Locale "' "no locale warning when command missing"
+}
+
+test_preflight_tmux_session_cleanup() {
+    printf '\n--- test_preflight_tmux_session_cleanup ---\n'
+    reset_test_env
+
+    # Use the real tmux binary, not any fake from previous tests
+    _real_tmux="$(command -v tmux 2>/dev/null || echo /usr/bin/tmux)"
+
+    # Clean up any leftover session from previous tests
+    "$_real_tmux" kill-session -t _qtui_preflight 2>/dev/null || true
+    "$_real_tmux" kill-server 2>/dev/null || true
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+
+    # Run --check with real tmux (available in Docker image)
+    "$SHELL_BIN" "$INSTALL_SCRIPT" --check >"${_out}" 2>&1 || true
+
+    # The _qtui_preflight session should have been cleaned up
+    if "$_real_tmux" has-session -t _qtui_preflight 2>/dev/null; then
+        fail "preflight tmux session cleaned up" "session _qtui_preflight still exists"
+        "$_real_tmux" kill-session -t _qtui_preflight 2>/dev/null || true
+    else
+        pass "preflight tmux session cleaned up"
+    fi
+}
+
 # ============================================================
 # Main
 # ============================================================
@@ -1306,6 +1420,11 @@ main() {
     reset_test_env
 
     test_help_flag
+    test_check_flag_runs_without_install
+    test_preflight_warns_missing_locale
+    test_preflight_warns_missing_terminfo
+    test_preflight_skips_when_locale_cmd_missing
+    test_preflight_tmux_session_cleanup
     test_unknown_option
     test_missing_option_value
     test_unsupported_platform

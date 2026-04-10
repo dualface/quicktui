@@ -956,9 +956,8 @@ preflight_checks() {
            locale -a 2>/dev/null | grep -iq "^$(echo "$LANG_ENV" | sed 's/\./\\./g')$"; then
             info "Locale $LANG_ENV available"
         else
-            warn "Locale \"$LANG_ENV\" is not available on this system."
-            printf '    Install it (e.g. sudo locale-gen %s && sudo update-locale) or use --lang C.UTF-8\n' "$LANG_ENV"
-            _preflight_warnings=$((_preflight_warnings + 1))
+            warn "Locale \"$LANG_ENV\" is not available on this system, falling back to C.UTF-8."
+            LANG_ENV="C.UTF-8"
         fi
     else
         printf '    - Locale check skipped (locale command not found)\n'
@@ -969,9 +968,8 @@ preflight_checks() {
         if infocmp "$TERM_ENV" > /dev/null 2>&1; then
             info "Terminfo $TERM_ENV found"
         else
-            warn "Terminfo entry for \"$TERM_ENV\" not found."
-            printf '    Install ncurses-term (e.g. sudo apt-get install ncurses-term) or use --term screen-256color\n'
-            _preflight_warnings=$((_preflight_warnings + 1))
+            warn "Terminfo entry for \"$TERM_ENV\" not found, falling back to screen-256color."
+            TERM_ENV="screen-256color"
         fi
     else
         printf '    - Terminfo check skipped (infocmp command not found)\n'
@@ -1007,7 +1005,7 @@ preflight_checks() {
     # 5. tmux can start a session
     _tmux_check_bin="${TMUX_BIN_CONFIG:-tmux}"
     if command -v "$_tmux_check_bin" > /dev/null 2>&1 || [ -x "$_tmux_check_bin" ]; then
-        _tmux_stderr="$("$_tmux_check_bin" new-session -d -s _qtui_preflight 2>&1)"
+        _tmux_stderr="$(TERM="$TERM_ENV" LANG="$LANG_ENV" LC_ALL="$LANG_ENV" "$_tmux_check_bin" new-session -d -s _qtui_preflight 2>&1)"
         _tmux_rc=$?
         "$_tmux_check_bin" kill-session -t _qtui_preflight 2>/dev/null || true
         if [ "$_tmux_rc" -eq 0 ]; then

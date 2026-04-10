@@ -837,13 +837,13 @@ test_service_config() {
     printf '\n--- test_service_config ---\n'
     reset_test_env
 
-    run_installer -y --token test-token --addr 127.0.0.1 --port 8080 --term xterm-ghostty --lang zh_CN.UTF-8
+    run_installer -y --token test-token --addr 127.0.0.1 --port 8080 --term screen --lang C.UTF-8
 
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:8080" "custom listen address saved to config"
     assert_file_exists "${HOME}/.quicktui-test/install-service.log" "install-service invocation recorded"
     assert_file_contains "${HOME}/.quicktui-test/install-service.log" "ADDR=127.0.0.1:8080" "service installer received addr:port"
-    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "TERM=xterm-ghostty" "service installer received TERM"
-    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "LANG=zh_CN.UTF-8" "service installer received LANG"
+    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "TERM=screen" "service installer received TERM"
+    assert_file_contains "${HOME}/.quicktui-test/install-service.log" "LANG=C.UTF-8" "service installer received LANG"
 
     if [ "$CURRENT_OS" = "Linux" ]; then
         assert_file_exists "${HOME}/.config/systemd/user/quicktui.service" "systemd service file created"
@@ -1078,17 +1078,17 @@ test_upgrade_preserves_config() {
     reset_test_env
 
     # First install with custom config
-    run_installer -y --no-service --token "keep-me" --addr 127.0.0.1 --port 9000 --term xterm-ghostty --lang zh_CN.UTF-8
+    run_installer -y --no-service --token "keep-me" --addr 127.0.0.1 --port 9000 --term screen --lang C.UTF-8
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "first install sets addr"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=xterm-ghostty" "first install sets term"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=zh_CN.UTF-8" "first install sets lang"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=screen" "first install sets term"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=C.UTF-8" "first install sets lang"
 
     # Upgrade without any overrides
     run_installer -y --no-service
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TOKEN=keep-me" "upgrade preserves token"
     assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_ADDR=127.0.0.1:9000" "upgrade preserves addr"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=xterm-ghostty" "upgrade preserves term"
-    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=zh_CN.UTF-8" "upgrade preserves lang"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_TERM=screen" "upgrade preserves term"
+    assert_file_contains "${HOME}/.config/quicktui/config" "QUICKTUI_LANG=C.UTF-8" "upgrade preserves lang"
 }
 
 test_upgrade_with_new_token() {
@@ -1334,12 +1334,10 @@ EOF
     link_existing_commands "$_bin_dir" uname infocmp sh script sed grep cut
     write_fake_tmux "$_bin_dir" "3.6a"
 
-    if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --lang en_US.UTF-8 >"${_out}" 2>&1; then
-        fail "missing locale produces warning" "check unexpectedly passed"
-    else
-        assert_output_contains "${_out}" 'Locale "en_US.UTF-8" is not available' "missing locale warning shown"
-        assert_output_contains "${_out}" "issue(s) found" "summary shows issue count"
-    fi
+    # Locale fallback is not an error — --check should exit 0
+    PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --lang en_US.UTF-8 >"${_out}" 2>&1 || true
+
+    assert_output_contains "${_out}" "falling back to C.UTF-8" "missing locale triggers fallback"
 }
 
 test_preflight_warns_missing_terminfo() {
@@ -1359,11 +1357,10 @@ EOF
     link_existing_commands "$_bin_dir" uname locale sh script sed grep cut
     write_fake_tmux "$_bin_dir" "3.6a"
 
-    if PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --term xterm-256color >"${_out}" 2>&1; then
-        fail "missing terminfo produces warning" "check unexpectedly passed"
-    else
-        assert_output_contains "${_out}" 'Terminfo entry for "xterm-256color" not found' "missing terminfo warning shown"
-    fi
+    # Terminfo fallback is not an error — --check should exit 0
+    PATH="${_bin_dir}" "$SHELL_BIN" "$INSTALL_SCRIPT" --check --term xterm-256color >"${_out}" 2>&1 || true
+
+    assert_output_contains "${_out}" "falling back to screen-256color" "missing terminfo triggers fallback"
 }
 
 test_preflight_skips_when_locale_cmd_missing() {

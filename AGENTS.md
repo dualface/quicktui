@@ -2,22 +2,22 @@
 
 ## Structure
 
-This is a static website plus installer script repository. `index.html` is the main landing page with styles inlined; `privacy.html` is the privacy page; `images/` holds logos, device frames, and screenshots; `docs/` holds site assets; `q.sh` is the POSIX `sh` install/uninstall script; `tests/test_install.sh` is the installer regression test suite; `Dockerfile.test` runs the same tests in a clean container; `.github/workflows/test-intel-mac.yml` runs an integration test of the `darwin/amd64` binary on macOS via Rosetta 2.
+Static website + installer script repo. `index.html` = main landing page, styles inlined. `privacy.html` = privacy page. `images/` = logos/device frames/screenshots. `docs/` = site assets. `q.sh` = POSIX `sh` install/uninstall script. `tests/test_install.sh` = installer regression suite. `Dockerfile.test` runs same tests in clean container. `.github/workflows/test-intel-mac.yml` → integration test of `darwin/amd64` binary on macOS via Rosetta 2.
 
 ## Language Policy
 
-Everything in this repository must stay in English, including `AGENTS.md`, docs, page copy, comments, commit-facing notes, and test descriptions. Do not switch this repo to Chinese or mixed-language wording.
+Repo English-only: `AGENTS.md`, docs, page copy, comments, commit notes, test descriptions. No Chinese or mixed-language wording.
 
 ## Common Commands
 
-No frontend build pipeline — just static HTML and shell. Key commands: `sh q.sh --help` to view installer options, `docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test` to run the regression test suite in a clean container, `python3 -m http.server` to preview pages locally, `git diff --check` for basic patch sanity.
+No frontend build pipeline — static HTML + shell. Key commands: `sh q.sh --help` (installer options), `docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test` (regression suite in clean container), `python3 -m http.server` (local preview), `git diff --check` (patch sanity).
 
 ## Coding Conventions
 
-HTML uses 2-space indentation; style changes go directly into the `<style>` block in `index.html` — do not introduce a second stylesheet source. `q.sh` must remain POSIX `sh` compatible; no bash-only syntax. Screenshots and assets are grouped by device, e.g. `images/iPad/...`, `images/iPhone/...`. In tests, prefer adding helper functions or `test_<behavior>()` cases; do not pile up one-off assertion scripts.
+HTML: 2-space indent. Style changes → `<style>` block in `index.html`. No second stylesheet source. `q.sh` = POSIX `sh` only, no bash-isms. Screenshots/assets grouped by device, e.g. `images/iPad/...`, `images/iPhone/...`. Tests: prefer helper fns or `test_<behavior>()` cases. No one-off assertion scripts.
 
 ## Testing And Commits
 
-**Never run tests on the local host machine.** Always use Docker (`docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test`) or push to trigger GitHub Actions. If `docker` is not in PATH, use the full path `/Applications/Docker.app/Contents/Resources/bin/docker`.
+**Never run tests on local host.** Always Docker (`docker build -f Dockerfile.test -t quicktui-test . && docker run --rm quicktui-test`) or push → GitHub Actions. `docker` not in PATH → full path `/Applications/Docker.app/Contents/Resources/bin/docker`.
 
-Installer behavior changes must include corresponding coverage in `tests/test_install.sh`; never change the script without updating regressions. Tests that restrict PATH to isolate code paths should patch out well-known absolute paths (`/usr/local/bin/tmux`, `/usr/bin/tmux`) via `sed` when the Docker image has those binaries pre-installed. Site copy or layout changes should at least pass `git diff --check`; visible style changes should also get a browser spot check. Commit messages should be why-first, scoped by installer / tests / site copy-layout; behavioral changes must describe verification steps in the body. Never commit real tokens, server addresses, local state files, or `.omx/` contents.
+Installer behavior changes → add coverage in `tests/test_install.sh`. Never change script without updating regressions. PATH-restricting tests should patch out well-known absolute paths (`/usr/local/bin/tmux`, `/usr/bin/tmux`) via `sed` when Docker image pre-installs them. Site copy/layout changes → pass `git diff --check`. Visible style changes → browser spot check. Commit messages why-first, scoped by installer / tests / site copy-layout. Behavioral changes → describe verification in body. Never commit real tokens, server addresses, local state files, or `.omx/` contents.

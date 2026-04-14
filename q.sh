@@ -947,11 +947,7 @@ uninstall() {
 # Environment preflight checks
 # ============================================================
 
-preflight_checks() {
-    printf '\n  Environment checks:\n'
-    _preflight_warnings=0
-
-    # 1. Locale available
+preflight_check_locale() {
     if command -v locale > /dev/null 2>&1; then
         _normalized="$(echo "$LANG_ENV" | sed 's/UTF-/utf/; s/-//g')"
         if locale -a 2>/dev/null | grep -iq "^$(echo "$_normalized" | sed 's/\./\\./g')$" || \
@@ -964,8 +960,9 @@ preflight_checks() {
     else
         printf '    - Locale check skipped (locale command not found)\n'
     fi
+}
 
-    # 2. Terminfo exists
+preflight_check_terminfo() {
     if command -v infocmp > /dev/null 2>&1; then
         if infocmp "$TERM_ENV" > /dev/null 2>&1; then
             info "Terminfo $TERM_ENV found"
@@ -976,8 +973,9 @@ preflight_checks() {
     else
         printf '    - Terminfo check skipped (infocmp command not found)\n'
     fi
+}
 
-    # 3. Default shell executable
+preflight_check_default_shell() {
     _check_shell="${SHELL:-/bin/sh}"
     if [ -x "$_check_shell" ]; then
         info "Default shell $_check_shell OK"
@@ -986,8 +984,9 @@ preflight_checks() {
         printf '    Set the SHELL environment variable to a valid shell path, or install the missing shell.\n'
         _preflight_warnings=$((_preflight_warnings + 1))
     fi
+}
 
-    # 4. PTY allocatable
+preflight_check_pty() {
     if [ "$PLATFORM" = "darwin" ]; then
         _pty_ok=""
         script -q /dev/null sh -c 'exit 0' < /dev/null > /dev/null 2>&1 && _pty_ok=1
@@ -1003,8 +1002,9 @@ preflight_checks() {
         printf '    Some container runtimes need --privileged or explicit /dev/pts mount.\n'
         _preflight_warnings=$((_preflight_warnings + 1))
     fi
+}
 
-    # 5. tmux can start a session
+preflight_check_tmux_session() {
     _tmux_check_bin="${TMUX_BIN_CONFIG:-tmux}"
     if command -v "$_tmux_check_bin" > /dev/null 2>&1 || [ -x "$_tmux_check_bin" ]; then
         _tmux_stderr="$(TERM="$TERM_ENV" LANG="$LANG_ENV" LC_ALL="$LANG_ENV" "$_tmux_check_bin" new-session -d -s _qtui_preflight 2>&1)"
@@ -1021,8 +1021,9 @@ preflight_checks() {
         warn "tmux binary not found at \"$_tmux_check_bin\"."
         _preflight_warnings=$((_preflight_warnings + 1))
     fi
+}
 
-    # Summary
+preflight_finalize() {
     if [ "$_preflight_warnings" -gt 0 ]; then
         printf '\n'
         warn "$_preflight_warnings issue(s) found. Some features may not work correctly."
@@ -1037,6 +1038,18 @@ preflight_checks() {
     fi
     printf '\n'
     return 0
+}
+
+preflight_checks() {
+    printf '\n  Environment checks:\n'
+    _preflight_warnings=0
+
+    preflight_check_locale
+    preflight_check_terminfo
+    preflight_check_default_shell
+    preflight_check_pty
+    preflight_check_tmux_session
+    preflight_finalize
 }
 
 # ============================================================

@@ -1408,6 +1408,16 @@ test_preflight_tmux_session_cleanup() {
     fi
 }
 
+test_snapshot_baselines() {
+    printf '\n--- test_snapshot_baselines ---\n'
+
+    if "$SHELL_BIN" "${SCRIPT_DIR}/check_snapshots.sh"; then
+        pass "snapshot baselines match q.sh --help and q.sh --check"
+    else
+        fail "snapshot baselines match q.sh --help and q.sh --check" "snapshot diff failed"
+    fi
+}
+
 # ============================================================
 # Main
 # ============================================================
@@ -1464,6 +1474,7 @@ main() {
     test_sudo_n_fallback_to_tmux_builds
     test_tmux_found_at_well_known_path_sets_config
     test_tmux_install_from_builds_no_pkg_manager
+    test_snapshot_baselines
 
     printf '\n\033[1m=== Results: %d passed, %d failed ===\033[0m\n\n' "$TESTS_PASSED" "$TESTS_FAILED"
 

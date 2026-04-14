@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY q.sh /workspace/q.sh
-COPY tests/test_install.sh /workspace/tests/test_install.sh
-RUN chmod +x /workspace/q.sh /workspace/tests/test_install.sh
+COPY tests /workspace/tests
+RUN chmod +x /workspace/q.sh /workspace/tests/test_install.sh /workspace/tests/check_snapshots.sh
 
 CMD ["sh", "/workspace/tests/test_install.sh"]

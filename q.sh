@@ -429,29 +429,54 @@ run_privileged() {
 # Step 0: Detect existing installation (upgrade mode)
 # ============================================================
 
-detect_existing_install() {
+detect_existing_binary() {
     _existing_binary="${HOME}/.local/bin/quicktui-server"
-    if [ -f "$_existing_binary" ]; then
+    [ -f "$_existing_binary" ] || return 1
+    "$_existing_binary" --version 2>/dev/null || echo "unknown"
+}
+
+load_existing_config() {
+    [ -f "$QUICKTUI_CONFIG_FILE" ] || return 1
+    exec 3< "$QUICKTUI_CONFIG_FILE"
+}
+
+parse_existing_config_value() {
+    _key="$1"
+    _val="$2"
+
+    case "$_key" in
+        QUICKTUI_TOKEN) EXISTING_TOKEN="$_val" ;;
+        QUICKTUI_ADDR) EXISTING_ADDR_RAW="$_val" ;;
+        QUICKTUI_TERM) EXISTING_TERM="$_val" ;;
+        QUICKTUI_LANG) EXISTING_LANG="$_val" ;;
+        QUICKTUI_TMUX_BIN) EXISTING_TMUX_BIN="$_val" ;;
+    esac
+}
+
+detect_existing_service_registration() {
+    if [ -f "${HOME}/Library/LaunchAgents/ai.quicktui.plist" ] || \
+       [ -f "${HOME}/.config/systemd/user/quicktui.service" ]; then
+        return 0
+    fi
+    return 1
+}
+
+detect_existing_install() {
+    if _old_version="$(detect_existing_binary)"; then
         IS_UPGRADE="1"
-        _old_version="$("$_existing_binary" --version 2>/dev/null || echo "unknown")"
         info "Existing installation detected ($_old_version)"
     fi
 
-    if [ -f "$QUICKTUI_CONFIG_FILE" ]; then
+    if load_existing_config; then
         while IFS='=' read -r _key _val; do
-            case "$_key" in
-                QUICKTUI_TOKEN) EXISTING_TOKEN="$_val" ;;
-                QUICKTUI_ADDR) EXISTING_ADDR_RAW="$_val" ;;
-                QUICKTUI_TERM) EXISTING_TERM="$_val" ;;
-                QUICKTUI_LANG) EXISTING_LANG="$_val" ;;
-                QUICKTUI_TMUX_BIN) EXISTING_TMUX_BIN="$_val" ;;
-            esac
-        done < "$QUICKTUI_CONFIG_FILE"
+            parse_existing_config_value "$_key" "$_val"
+        done <&3
+        exec 3<&-
     fi
 
-    # Detect existing service registration
-    if [ -f "${HOME}/Library/LaunchAgents/ai.quicktui.plist" ] || \
-       [ -f "${HOME}/.config/systemd/user/quicktui.service" ]; then
+    validate_existing_config
+
+    if detect_existing_service_registration; then
         EXISTING_SERVICE="1"
     fi
 }
@@ -1287,7 +1312,6 @@ main() {
     validate_cli_options
     validate_cli_terminal_overrides
     detect_existing_install
-    validate_existing_config
     if [ -n "$IS_UPGRADE" ]; then
         printf '\n\033[1mQuickTUI Upgrader\033[0m\n\n'
     else
@@ -1312,7 +1336,6 @@ elif [ -n "$CHECK_ONLY" ]; then
     validate_cli_options
     validate_cli_terminal_overrides
     detect_existing_install
-    validate_existing_config
     detect_platform
     check_tmux
     TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-screen-256color}}"

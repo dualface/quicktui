@@ -3,7 +3,7 @@
 
   Environment checks:
 [0;32m  ✓[0m Locale en_US.UTF-8 available
-[0;32m  ✓[0m Terminfo xterm-256color found
+[0;32m  ✓[0m Terminfo screen-256color found
 [0;32m  ✓[0m Default shell /bin/sh OK
 [0;32m  ✓[0m PTY allocation OK
 [0;32m  ✓[0m tmux session test passed

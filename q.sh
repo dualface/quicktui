@@ -48,8 +48,6 @@ EXISTING_ADDR_RAW=""
 EXISTING_TERM=""
 EXISTING_LANG=""
 EXISTING_TMUX_BIN=""
-STAGED_BINARY_PATH=""
-BACKUP_BINARY_PATH=""
 
 _BG_PID=""
 cleanup() {
@@ -80,17 +78,6 @@ die() {
     exit 1
 }
 
-fetch_text() {
-    _url="$1"
-    if command -v curl > /dev/null 2>&1; then
-        curl -fsSL "$_url"
-    elif command -v wget > /dev/null 2>&1; then
-        wget -qO- "$_url"
-    else
-        die "Neither curl nor wget found. Please install one and retry."
-    fi
-}
-
 shell_quote() {
     printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
 }
@@ -110,28 +97,6 @@ sha256_file() {
     else
         die "No SHA-256 tool found (need sha256sum, shasum, or openssl)."
     fi
-}
-
-tmux_release_version_from_json() {
-    _json_path="$1"
-    sed -n '/"tag_name"/{
-        s/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p
-        q
-    }' "$_json_path"
-}
-
-tmux_release_digest_from_json() {
-    _json_path="$1"
-    _filename="$2"
-    awk -v target="\"name\": \"${_filename}\"" '
-        index($0, target) { in_asset = 1; next }
-        in_asset && /"digest": "sha256:/ {
-            sub(/.*"digest": "sha256:/, "")
-            sub(/".*/, "")
-            print
-            exit
-        }
-    ' "$_json_path"
 }
 
 # ============================================================
@@ -247,6 +212,27 @@ validate_terminal_value() {
     return 0
 }
 
+locale_available() {
+    _value="$1"
+    _normalized="$(printf '%s\n' "$_value" | sed 's/UTF-/utf/; s/-//g')"
+    locale -a 2>/dev/null | grep -iq "^$(printf '%s\n' "$_normalized" | sed 's/\./\\./g')$" || \
+        locale -a 2>/dev/null | grep -iq "^$(printf '%s\n' "$_value" | sed 's/\./\\./g')$"
+}
+
+require_locale_available() {
+    _label="$1"
+    _value="$2"
+    command -v locale > /dev/null 2>&1 || die "Cannot validate ${_label}: 'locale' command not found."
+    locale_available "$_value" || die "Invalid ${_label}: '$_value'. Locale is not available on this system."
+}
+
+require_terminfo_available() {
+    _label="$1"
+    _value="$2"
+    command -v infocmp > /dev/null 2>&1 || die "Cannot validate ${_label}: 'infocmp' command not found."
+    infocmp "$_value" > /dev/null 2>&1 || die "Invalid ${_label}: '$_value'. Terminfo entry not found on this system."
+}
+
 validate_cli_options() {
     if [ -n "$OPT_TOKEN" ]; then
         validate_token "$OPT_TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
@@ -267,17 +253,10 @@ validate_cli_options() {
 
 validate_cli_terminal_overrides() {
     if [ -n "$OPT_LANG" ]; then
-        command -v locale > /dev/null 2>&1 || die "Cannot validate LANG: 'locale' command not found."
-        _normalized="$(echo "$OPT_LANG" | sed 's/UTF-/utf/; s/-//g')"
-        if ! locale -a 2>/dev/null | grep -iq "^$(echo "$_normalized" | sed 's/\./\\./g')$" && \
-           ! locale -a 2>/dev/null | grep -iq "^$(echo "$OPT_LANG" | sed 's/\./\\./g')$"; then
-            die "Invalid LANG: '$OPT_LANG'. Locale is not available on this system."
-        fi
+        require_locale_available "LANG" "$OPT_LANG"
     fi
-
     if [ -n "$OPT_TERM" ]; then
-        command -v infocmp > /dev/null 2>&1 || die "Cannot validate TERM: 'infocmp' command not found."
-        infocmp "$OPT_TERM" > /dev/null 2>&1 || die "Invalid TERM: '$OPT_TERM'. Terminfo entry not found on this system."
+        require_terminfo_available "TERM" "$OPT_TERM"
     fi
 }
 
@@ -316,18 +295,12 @@ validate_existing_config() {
 
     if [ -n "$EXISTING_TERM" ]; then
         validate_terminal_value "$EXISTING_TERM" || die "Invalid QUICKTUI_TERM in existing config: '$EXISTING_TERM'"
-        command -v infocmp > /dev/null 2>&1 || die "Cannot validate QUICKTUI_TERM in existing config: 'infocmp' command not found."
-        infocmp "$EXISTING_TERM" > /dev/null 2>&1 || die "Invalid QUICKTUI_TERM in existing config: '$EXISTING_TERM'. Terminfo entry not found on this system."
+        require_terminfo_available "QUICKTUI_TERM in existing config" "$EXISTING_TERM"
     fi
 
     if [ -n "$EXISTING_LANG" ]; then
         validate_terminal_value "$EXISTING_LANG" || die "Invalid QUICKTUI_LANG in existing config: '$EXISTING_LANG'"
-        command -v locale > /dev/null 2>&1 || die "Cannot validate QUICKTUI_LANG in existing config: 'locale' command not found."
-        _normalized="$(echo "$EXISTING_LANG" | sed 's/UTF-/utf/; s/-//g')"
-        if ! locale -a 2>/dev/null | grep -iq "^$(echo "$_normalized" | sed 's/\./\\./g')$" && \
-           ! locale -a 2>/dev/null | grep -iq "^$(echo "$EXISTING_LANG" | sed 's/\./\\./g')$"; then
-            die "Invalid QUICKTUI_LANG in existing config: '$EXISTING_LANG'. Locale is not available on this system."
-        fi
+        require_locale_available "QUICKTUI_LANG in existing config" "$EXISTING_LANG"
     fi
 }
 
@@ -431,54 +404,30 @@ run_privileged() {
 # Step 0: Detect existing installation (upgrade mode)
 # ============================================================
 
-detect_existing_binary() {
-    _existing_binary="${HOME}/.local/bin/quicktui-server"
-    [ -f "$_existing_binary" ] || return 1
-    "$_existing_binary" --version 2>/dev/null || echo "unknown"
-}
-
-load_existing_config() {
-    [ -f "$QUICKTUI_CONFIG_FILE" ] || return 1
-    exec 3< "$QUICKTUI_CONFIG_FILE"
-}
-
-parse_existing_config_value() {
-    _key="$1"
-    _val="$2"
-
-    case "$_key" in
-        QUICKTUI_TOKEN) EXISTING_TOKEN="$_val" ;;
-        QUICKTUI_ADDR) EXISTING_ADDR_RAW="$_val" ;;
-        QUICKTUI_TERM) EXISTING_TERM="$_val" ;;
-        QUICKTUI_LANG) EXISTING_LANG="$_val" ;;
-        QUICKTUI_TMUX_BIN) EXISTING_TMUX_BIN="$_val" ;;
-    esac
-}
-
-detect_existing_service_registration() {
-    if [ -f "${HOME}/Library/LaunchAgents/ai.quicktui.plist" ] || \
-       [ -f "${HOME}/.config/systemd/user/quicktui.service" ]; then
-        return 0
-    fi
-    return 1
-}
-
 detect_existing_install() {
-    if _old_version="$(detect_existing_binary)"; then
+    _existing_binary="${HOME}/.local/bin/quicktui-server"
+    if [ -f "$_existing_binary" ]; then
         IS_UPGRADE="1"
+        _old_version="$("$_existing_binary" --version 2>/dev/null || echo "unknown")"
         info "Existing installation detected ($_old_version)"
     fi
 
-    if load_existing_config; then
+    if [ -f "$QUICKTUI_CONFIG_FILE" ]; then
         while IFS='=' read -r _key _val; do
-            parse_existing_config_value "$_key" "$_val"
-        done <&3
-        exec 3<&-
+            case "$_key" in
+                QUICKTUI_TOKEN) EXISTING_TOKEN="$_val" ;;
+                QUICKTUI_ADDR) EXISTING_ADDR_RAW="$_val" ;;
+                QUICKTUI_TERM) EXISTING_TERM="$_val" ;;
+                QUICKTUI_LANG) EXISTING_LANG="$_val" ;;
+                QUICKTUI_TMUX_BIN) EXISTING_TMUX_BIN="$_val" ;;
+            esac
+        done < "$QUICKTUI_CONFIG_FILE"
     fi
 
     validate_existing_config
 
-    if detect_existing_service_registration; then
+    if [ -f "${HOME}/Library/LaunchAgents/ai.quicktui.plist" ] || \
+       [ -f "${HOME}/.config/systemd/user/quicktui.service" ]; then
         EXISTING_SERVICE="1"
     fi
 }
@@ -523,60 +472,48 @@ detect_platform() {
 # Step 2: Check tmux
 # ============================================================
 
-resolve_tmux_build_target() {
-    _tmux_ver="${1:-${TMUX_BUILD_VERSION:-}}"
+install_tmux_from_builds() {
+    _tmux_os="$PLATFORM"
+    [ "$_tmux_os" = "darwin" ] && _tmux_os="macos"
+    _tmux_arch="$ARCH"
+    [ "$_tmux_arch" = "amd64" ] && _tmux_arch="x86_64"
+    _tmux_ver="${TMUX_BUILDS_VERSION:-}"
 
-    TMUX_BUILD_OS="$PLATFORM"
-    [ "$TMUX_BUILD_OS" = "darwin" ] && TMUX_BUILD_OS="macos"
-    TMUX_BUILD_ARCH="$ARCH"
-    [ "$TMUX_BUILD_ARCH" = "amd64" ] && TMUX_BUILD_ARCH="x86_64"
-
-    TMUX_BUILD_FILENAME=""
-    [ -n "$_tmux_ver" ] && TMUX_BUILD_FILENAME="tmux-${_tmux_ver}-${TMUX_BUILD_OS}-${TMUX_BUILD_ARCH}.tar.gz"
-    return 0
-}
-
-fetch_tmux_release_version() {
-    TMUX_BUILD_VERSION="${TMUX_BUILDS_VERSION:-}"
-    if [ -z "$TMUX_BUILD_VERSION" ]; then
+    if [ -z "$_tmux_ver" ]; then
         _api_url="https://api.github.com/repos/tmux/tmux-builds/releases/latest"
         if command -v curl > /dev/null 2>&1; then
-            TMUX_BUILD_VERSION="$(curl -fsSL "$_api_url" 2>/dev/null | \
+            _tmux_ver="$(curl -fsSL "$_api_url" 2>/dev/null | \
                 sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p')"
         elif command -v wget > /dev/null 2>&1; then
-            TMUX_BUILD_VERSION="$(wget -qO- "$_api_url" 2>/dev/null | \
+            _tmux_ver="$(wget -qO- "$_api_url" 2>/dev/null | \
                 sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p')"
         fi
-        [ -z "$TMUX_BUILD_VERSION" ] && die "Failed to detect tmux version from GitHub."
+        [ -z "$_tmux_ver" ] && die "Failed to detect tmux version from GitHub."
     fi
 
-    resolve_tmux_build_target "$TMUX_BUILD_VERSION"
-}
+    _tmux_base_url="${TMUX_BUILDS_RELEASES:-https://github.com/tmux/tmux-builds/releases/latest/download}"
+    _tmux_filename="tmux-${_tmux_ver}-${_tmux_os}-${_tmux_arch}.tar.gz"
+    _tmux_tmpdir="$(mktemp -d)"
+    _tmux_tarball="${_tmux_tmpdir}/tmux.tar.gz"
 
-download_tmux_archive() {
-    TMUX_BUILD_BASE_URL="${TMUX_BUILDS_RELEASES:-https://github.com/tmux/tmux-builds/releases/latest/download}"
-    TMUX_BUILD_TMPDIR="$(mktemp -d)"
-    TMUX_BUILD_TARBALL="${TMUX_BUILD_TMPDIR}/tmux.tar.gz"
+    download "${_tmux_base_url}/${_tmux_filename}" "$_tmux_tarball" "Downloading tmux ${_tmux_ver}..." || \
+        { rm -rf "$_tmux_tmpdir"; die "Failed to download tmux binary."; }
+    if [ -n "$TMUX_BUILDS_SHA256" ]; then
+        _expected_sha="$(normalize_sha256 "$TMUX_BUILDS_SHA256")"
+        _actual_sha="$(normalize_sha256 "$(sha256_file "$_tmux_tarball")")"
+        [ "$_actual_sha" = "$_expected_sha" ] || {
+            rm -rf "$_tmux_tmpdir"
+            die "tmux checksum verification failed"
+        }
+    fi
 
-    download "${TMUX_BUILD_BASE_URL}/${TMUX_BUILD_FILENAME}" "$TMUX_BUILD_TARBALL" "Downloading tmux ${TMUX_BUILD_VERSION}..." || \
-        { rm -rf "$TMUX_BUILD_TMPDIR"; die "Failed to download tmux binary."; }
-}
-
-install_tmux_archive() {
     mkdir -p "${HOME}/.local/tmux" "${HOME}/.local/bin"
-    tar -xzf "$TMUX_BUILD_TARBALL" -C "${HOME}/.local/tmux"
+    tar -xzf "$_tmux_tarball" -C "${HOME}/.local/tmux"
     INSTALLED_TMUX_BIN="${HOME}/.local/tmux/tmux"
     chmod 755 "$INSTALLED_TMUX_BIN"
     ln -sf "$INSTALLED_TMUX_BIN" "${HOME}/.local/bin/tmux"
-    rm -rf "$TMUX_BUILD_TMPDIR"
+    rm -rf "$_tmux_tmpdir"
     info "tmux installed to ~/.local/tmux (symlinked to ~/.local/bin/tmux)"
-}
-
-install_tmux_from_builds() {
-    resolve_tmux_build_target
-    fetch_tmux_release_version
-    download_tmux_archive
-    install_tmux_archive
 }
 
 install_tmux() {
@@ -704,25 +641,12 @@ download_binary() {
         die "Failed to download checksum file."
 
     printf '  Verifying checksum...\n'
-    # Normalize checksum file: strip any path prefix, keep only hash + filename
-    _hash="$(awk '{print $1}' "${_sha256_path}")"
-    printf '%s  %s\n' "$_hash" "$BINARY_NAME" > "${_sha256_path}"
-    _saved_dir="$(pwd)"
-    cd "$DOWNLOAD_TMPDIR"
-    if [ "$PLATFORM" = "darwin" ]; then
-        shasum -a 256 -c "${BINARY_NAME}.sha256" > /dev/null 2>&1 || {
-            cd "$_saved_dir"
-            rm -rf "$DOWNLOAD_TMPDIR"
-            die "Checksum verification failed. The downloaded file may be corrupted."
-        }
-    else
-        sha256sum -c "${BINARY_NAME}.sha256" > /dev/null 2>&1 || {
-            cd "$_saved_dir"
-            rm -rf "$DOWNLOAD_TMPDIR"
-            die "Checksum verification failed. The downloaded file may be corrupted."
-        }
-    fi
-    cd "$_saved_dir"
+    _expected_hash="$(normalize_sha256 "$(awk '{print $1}' "${_sha256_path}")")"
+    _actual_hash="$(normalize_sha256 "$(sha256_file "$_binary_path")")"
+    [ "$_actual_hash" = "$_expected_hash" ] || {
+        rm -rf "$DOWNLOAD_TMPDIR"
+        die "Checksum verification failed. The downloaded file may be corrupted."
+    }
 
     chmod +x "$_binary_path"
     DOWNLOADED_BINARY="$_binary_path"
@@ -827,43 +751,39 @@ stop_binary_processes() {
 # Step 4: Install binary
 # ============================================================
 
-prepare_binary_swap_paths() {
+install_binary() {
     INSTALL_PATH="${HOME}/.local/bin/quicktui-server"
+    _staged_path="${HOME}/.local/bin/.quicktui-server.new.$$"
+    _backup_path="${HOME}/.local/bin/.quicktui-server.backup.$$"
     mkdir -p "${HOME}/.local/bin"
-    STAGED_BINARY_PATH="${HOME}/.local/bin/.quicktui-server.new.$$"
-    BACKUP_BINARY_PATH="${HOME}/.local/bin/.quicktui-server.backup.$$"
-}
 
-stage_binary_candidate() {
-    cp "$DOWNLOADED_BINARY" "$STAGED_BINARY_PATH"
-    chmod 755 "$STAGED_BINARY_PATH"
-}
-
-validate_staged_binary() {
-    if ! "$STAGED_BINARY_PATH" --version > /dev/null 2>&1; then
-        rm -f "$STAGED_BINARY_PATH"
-        die "Binary replacement failed: staged binary at $STAGED_BINARY_PATH is not functional."
+    if [ -n "$IS_UPGRADE" ]; then
+        stop_existing_service
+        stop_binary_processes "$INSTALL_PATH"
     fi
-}
 
-swap_binary_with_backup() {
+    cp "$DOWNLOADED_BINARY" "$_staged_path"
+    chmod 755 "$_staged_path"
+    if ! "$_staged_path" --version > /dev/null 2>&1; then
+        rm -f "$_staged_path"
+        die "Binary replacement failed: staged binary at $_staged_path is not functional."
+    fi
     if [ -f "$INSTALL_PATH" ]; then
-        mv "$INSTALL_PATH" "$BACKUP_BINARY_PATH"
+        mv "$INSTALL_PATH" "$_backup_path"
     fi
-
-    if ! mv "$STAGED_BINARY_PATH" "$INSTALL_PATH"; then
-        [ -f "$BACKUP_BINARY_PATH" ] && mv "$BACKUP_BINARY_PATH" "$INSTALL_PATH" || true
-        rm -f "$STAGED_BINARY_PATH"
+    if ! mv "$_staged_path" "$INSTALL_PATH"; then
+        [ -f "$_backup_path" ] && mv "$_backup_path" "$INSTALL_PATH" || true
+        rm -f "$_staged_path"
         die "Binary replacement failed: could not move new binary into place."
     fi
-}
 
-restore_previous_binary() {
-    rm -f "$INSTALL_PATH"
-    [ -f "$BACKUP_BINARY_PATH" ] && mv "$BACKUP_BINARY_PATH" "$INSTALL_PATH" || true
-}
+    if ! "$INSTALL_PATH" --version > /dev/null 2>&1; then
+        rm -f "$INSTALL_PATH"
+        [ -f "$_backup_path" ] && mv "$_backup_path" "$INSTALL_PATH" || true
+        die "Binary replacement failed: new binary at $INSTALL_PATH is not functional."
+    fi
 
-warn_if_local_bin_not_on_path() {
+    rm -f "$_backup_path"
     case ":${PATH}:" in
         *":${HOME}/.local/bin:"*) ;;
         *)
@@ -872,28 +792,6 @@ warn_if_local_bin_not_on_path() {
             printf '    export PATH="$HOME/.local/bin:$PATH"\n\n'
             ;;
     esac
-}
-
-install_binary() {
-    INSTALL_PATH="${HOME}/.local/bin/quicktui-server"
-
-    if [ -n "$IS_UPGRADE" ]; then
-        stop_existing_service
-        stop_binary_processes "$INSTALL_PATH"
-    fi
-
-    prepare_binary_swap_paths
-    stage_binary_candidate
-    validate_staged_binary
-    swap_binary_with_backup
-
-    if ! "$INSTALL_PATH" --version > /dev/null 2>&1; then
-        restore_previous_binary
-        die "Binary replacement failed: new binary at $INSTALL_PATH is not functional."
-    fi
-
-    rm -f "$BACKUP_BINARY_PATH"
-    warn_if_local_bin_not_on_path
 
     DOWNLOAD_TMPDIR=""
     info "Installed to $INSTALL_PATH"
@@ -923,54 +821,41 @@ generate_random_token_value() {
     fi
 }
 
-resolve_token_value() {
-    TOKEN=""
-    TOKEN_INFO_MESSAGE=""
-    TOKEN_NEEDS_PROMPT=""
-    TOKEN_NEEDS_GENERATION=""
-
+configure_token() {
     if [ -n "$OPT_TOKEN" ]; then
-        validate_token "$OPT_TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
         TOKEN="$OPT_TOKEN"
-        TOKEN_INFO_MESSAGE="Token configured (from argument)"
+        info "Token configured (from argument)"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TOKEN" ]; then
         TOKEN="$EXISTING_TOKEN"
-        TOKEN_INFO_MESSAGE="Token preserved from existing config"
+        info "Token preserved from existing config"
     elif [ -n "$NON_INTERACTIVE" ]; then
-        TOKEN_NEEDS_GENERATION="1"
+        generate_random_token_value
+        info "Random token generated"
     else
-        TOKEN_NEEDS_PROMPT="1"
+        printf '\nHow would you like to set up your access token?\n'
+        printf '  [1] Generate a random token automatically  [default]\n'
+        printf '  [2] Enter my own token\n'
+        printf 'Enter choice [1]: '
+        read -r _choice </dev/tty || exit 130
+        _choice="${_choice:-1}"
+
+        case "$_choice" in
+            1)
+                generate_random_token_value
+                info "Random token generated"
+                ;;
+            2)
+                printf 'Enter your token: '
+                read -r TOKEN </dev/tty || exit 130
+                validate_token "$TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
+                info "Token configured"
+                ;;
+            *)
+                die "Invalid choice: $_choice"
+                ;;
+        esac
     fi
-}
 
-prompt_for_token_value() {
-    [ -n "$TOKEN_NEEDS_PROMPT" ] || return 0
-
-    printf '\nHow would you like to set up your access token?\n'
-    printf '  [1] Generate a random token automatically  [default]\n'
-    printf '  [2] Enter my own token\n'
-    printf 'Enter choice [1]: '
-    read -r _choice </dev/tty || exit 130
-    _choice="${_choice:-1}"
-
-    case "$_choice" in
-        1)
-            generate_random_token_value
-            TOKEN_INFO_MESSAGE="Random token generated"
-            ;;
-        2)
-            printf 'Enter your token: '
-            read -r TOKEN </dev/tty || exit 130
-            validate_token "$TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
-            TOKEN_INFO_MESSAGE="Token configured"
-            ;;
-        *)
-            die "Invalid choice: $_choice"
-            ;;
-    esac
-}
-
-write_token_config() {
     mkdir -p "$QUICKTUI_CONFIG_DIR"
     chmod 700 "$QUICKTUI_CONFIG_DIR"
     printf 'QUICKTUI_TOKEN=%s\n' "$TOKEN" > "$QUICKTUI_CONFIG_FILE"
@@ -978,25 +863,14 @@ write_token_config() {
     info "Config saved to $QUICKTUI_CONFIG_FILE"
 }
 
-configure_token() {
-    resolve_token_value
-    if [ -n "$TOKEN_NEEDS_GENERATION" ]; then
-        generate_random_token_value
-        TOKEN_INFO_MESSAGE="Random token generated"
-    fi
-    prompt_for_token_value
-    [ -n "$TOKEN_INFO_MESSAGE" ] && info "$TOKEN_INFO_MESSAGE"
-    write_token_config
-}
-
 # ============================================================
 # Step 6: Configure listen address
 # ============================================================
 
-resolve_listen_addr() {
-    LISTEN_ADDR=""
-    LISTEN_ADDR_DEFAULT="${OPT_ADDR:-${EXISTING_ADDR:-0.0.0.0}}"
-    LISTEN_ADDR_NEEDS_PROMPT=""
+configure_network() {
+    _default_addr="${OPT_ADDR:-${EXISTING_ADDR:-0.0.0.0}}"
+    _default_port="${OPT_PORT:-${EXISTING_PORT:-8022}}"
+
     if [ -n "$OPT_ADDR" ]; then
         LISTEN_ADDR="$OPT_ADDR"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_ADDR" ]; then
@@ -1004,25 +878,12 @@ resolve_listen_addr() {
     elif [ -n "$NON_INTERACTIVE" ]; then
         LISTEN_ADDR="0.0.0.0"
     else
-        LISTEN_ADDR_NEEDS_PROMPT="1"
-        return 0
+        printf '\nListen address [default: %s]: ' "$_default_addr"
+        read -r LISTEN_ADDR </dev/tty || exit 130
+        LISTEN_ADDR="${LISTEN_ADDR:-$_default_addr}"
+        validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
     fi
 
-    validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
-}
-
-prompt_for_listen_addr() {
-    [ -n "$LISTEN_ADDR_NEEDS_PROMPT" ] || return 0
-    printf '\nListen address [default: %s]: ' "$LISTEN_ADDR_DEFAULT"
-    read -r LISTEN_ADDR </dev/tty || exit 130
-    LISTEN_ADDR="${LISTEN_ADDR:-$LISTEN_ADDR_DEFAULT}"
-    validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
-}
-
-resolve_listen_port() {
-    LISTEN_PORT=""
-    LISTEN_PORT_DEFAULT="${OPT_PORT:-${EXISTING_PORT:-8022}}"
-    LISTEN_PORT_NEEDS_PROMPT=""
     if [ -n "$OPT_PORT" ]; then
         LISTEN_PORT="$OPT_PORT"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_PORT" ]; then
@@ -1030,32 +891,17 @@ resolve_listen_port() {
     elif [ -n "$NON_INTERACTIVE" ]; then
         LISTEN_PORT="8022"
     else
-        LISTEN_PORT_NEEDS_PROMPT="1"
-        return 0
+        printf 'Port [default: %s]: ' "$_default_port"
+        read -r LISTEN_PORT </dev/tty || exit 130
+        LISTEN_PORT="${LISTEN_PORT:-$_default_port}"
+        validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
     fi
 
+    validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
     validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
-}
 
-prompt_for_listen_port() {
-    [ -n "$LISTEN_PORT_NEEDS_PROMPT" ] || return 0
-    printf 'Port [default: %s]: ' "$LISTEN_PORT_DEFAULT"
-    read -r LISTEN_PORT </dev/tty || exit 130
-    LISTEN_PORT="${LISTEN_PORT:-$LISTEN_PORT_DEFAULT}"
-    validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
-}
-
-write_network_config() {
     printf 'QUICKTUI_ADDR=%s:%s\n' "$LISTEN_ADDR" "$LISTEN_PORT" >> "$QUICKTUI_CONFIG_FILE"
     info "Listen address: ${LISTEN_ADDR}:${LISTEN_PORT}"
-}
-
-configure_network() {
-    resolve_listen_addr
-    prompt_for_listen_addr
-    resolve_listen_port
-    prompt_for_listen_port
-    write_network_config
 }
 
 # ============================================================
@@ -1275,11 +1121,12 @@ uninstall() {
 # Environment preflight checks
 # ============================================================
 
-preflight_check_locale() {
+preflight_checks() {
+    printf '\n  Environment checks:\n'
+    _preflight_warnings=0
+
     if command -v locale > /dev/null 2>&1; then
-        _normalized="$(echo "$LANG_ENV" | sed 's/UTF-/utf/; s/-//g')"
-        if locale -a 2>/dev/null | grep -iq "^$(echo "$_normalized" | sed 's/\./\\./g')$" || \
-           locale -a 2>/dev/null | grep -iq "^$(echo "$LANG_ENV" | sed 's/\./\\./g')$"; then
+        if locale_available "$LANG_ENV"; then
             info "Locale $LANG_ENV available"
         else
             warn "Locale \"$LANG_ENV\" is not available on this system, falling back to C.UTF-8."
@@ -1288,9 +1135,7 @@ preflight_check_locale() {
     else
         printf '    - Locale check skipped (locale command not found)\n'
     fi
-}
 
-preflight_check_terminfo() {
     if command -v infocmp > /dev/null 2>&1; then
         if infocmp "$TERM_ENV" > /dev/null 2>&1; then
             info "Terminfo $TERM_ENV found"
@@ -1301,9 +1146,7 @@ preflight_check_terminfo() {
     else
         printf '    - Terminfo check skipped (infocmp command not found)\n'
     fi
-}
 
-preflight_check_default_shell() {
     _check_shell="${SHELL:-/bin/sh}"
     if [ -x "$_check_shell" ]; then
         info "Default shell $_check_shell OK"
@@ -1312,9 +1155,7 @@ preflight_check_default_shell() {
         printf '    Set the SHELL environment variable to a valid shell path, or install the missing shell.\n'
         _preflight_warnings=$((_preflight_warnings + 1))
     fi
-}
 
-preflight_check_pty() {
     if [ "$PLATFORM" = "darwin" ]; then
         _pty_ok=""
         script -q /dev/null sh -c 'exit 0' < /dev/null > /dev/null 2>&1 && _pty_ok=1
@@ -1330,9 +1171,7 @@ preflight_check_pty() {
         printf '    Some container runtimes need --privileged or explicit /dev/pts mount.\n'
         _preflight_warnings=$((_preflight_warnings + 1))
     fi
-}
 
-preflight_check_tmux_session() {
     _tmux_check_bin="${TMUX_BIN_CONFIG:-tmux}"
     if command -v "$_tmux_check_bin" > /dev/null 2>&1 || [ -x "$_tmux_check_bin" ]; then
         _tmux_stderr="$(TERM="$TERM_ENV" LANG="$LANG_ENV" LC_ALL="$LANG_ENV" "$_tmux_check_bin" new-session -d -s _qtui_preflight 2>&1)"
@@ -1349,35 +1188,19 @@ preflight_check_tmux_session() {
         warn "tmux binary not found at \"$_tmux_check_bin\"."
         _preflight_warnings=$((_preflight_warnings + 1))
     fi
-}
 
-preflight_finalize() {
     if [ "$_preflight_warnings" -gt 0 ]; then
         printf '\n'
         warn "$_preflight_warnings issue(s) found. Some features may not work correctly."
 
         if [ -n "$CHECK_ONLY" ]; then
             return 1
-        elif [ -z "$NON_INTERACTIVE" ]; then
-            if ! confirm "Continue installation?" n; then
-                exit 1
-            fi
+        elif [ -z "$NON_INTERACTIVE" ] && ! confirm "Continue installation?" n; then
+            exit 1
         fi
     fi
     printf '\n'
     return 0
-}
-
-preflight_checks() {
-    printf '\n  Environment checks:\n'
-    _preflight_warnings=0
-
-    preflight_check_locale
-    preflight_check_terminfo
-    preflight_check_default_shell
-    preflight_check_pty
-    preflight_check_tmux_session
-    preflight_finalize
 }
 
 # ============================================================

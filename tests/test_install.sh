@@ -313,6 +313,59 @@ EOF
     fi
 }
 
+write_fake_wget() {
+    _dir="$1"
+    cat > "${_dir}/wget" <<'EOF'
+#!/bin/sh
+set -e
+
+_out=""
+_url=""
+_timeout="2"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -q)
+            shift
+            ;;
+        -qO-)
+            _out="-"
+            shift
+            ;;
+        -O)
+            _out="$2"
+            shift 2
+            ;;
+        --timeout=*)
+            _timeout="${1#*=}"
+            shift
+            ;;
+        *)
+            _url="$1"
+            shift
+            ;;
+    esac
+done
+
+[ -n "$_url" ] || exit 1
+[ -n "$_out" ] || _out="-"
+
+python3 - "$_url" "$_out" "$_timeout" <<'PY'
+import sys
+import urllib.request
+
+url, out, timeout_text = sys.argv[1:4]
+data = urllib.request.urlopen(url, timeout=float(timeout_text)).read()
+if out == "-":
+    sys.stdout.buffer.write(data)
+else:
+    with open(out, "wb") as fh:
+        fh.write(data)
+PY
+EOF
+    chmod +x "${_dir}/wget"
+}
+
 write_mock_checksum_good() {
     cd "$MOCK_DIR"
     sha256sum "$MOCK_BINARY_NAME" > "${MOCK_BINARY_NAME}.sha256" 2>/dev/null || \
@@ -1060,6 +1113,52 @@ test_service_startup_failure_after_registration() {
     fi
 }
 
+test_service_startup_failure_uses_loopback_probe_for_wildcard_addr() {
+    printf '\n--- test_service_startup_failure_uses_loopback_probe_for_wildcard_addr ---\n'
+    reset_test_env
+
+    _service_port="$(choose_mock_port)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _patched_script="${_tmp}/q-fast-probe.sh"
+    sed 's/while \[ "$_attempt" -le 20 \]/while [ "$_attempt" -le 2 ]/' "$INSTALL_SCRIPT" > "$_patched_script"
+    chmod +x "$_patched_script"
+
+    if QUICKTUI_MOCK_SKIP_SERVICE_START=1 \
+        QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$_patched_script" -y --token loopback-token --addr 0.0.0.0 --port "${_service_port}" >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "did not become reachable at http://127.0.0.1:${_service_port}/" \
+            "wildcard addr uses loopback probe URL"
+        assert_file_exists "${HOME}/.quicktui-test/install-service.log" \
+            "wildcard probe failure happens after service registration"
+    else
+        fail "wildcard addr uses loopback probe URL" "installer unexpectedly failed"
+    fi
+}
+
+test_service_startup_failure_formats_ipv6_probe_url() {
+    printf '\n--- test_service_startup_failure_formats_ipv6_probe_url ---\n'
+    reset_test_env
+
+    _service_port="$(choose_mock_port)"
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    _patched_script="${_tmp}/q-fast-probe.sh"
+    sed 's/while \[ "$_attempt" -le 20 \]/while [ "$_attempt" -le 2 ]/' "$INSTALL_SCRIPT" > "$_patched_script"
+    chmod +x "$_patched_script"
+
+    if QUICKTUI_MOCK_SKIP_SERVICE_START=1 \
+        QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$_patched_script" -y --token ipv6-probe-token --addr "[::1]" --port "${_service_port}" >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "did not become reachable at http://[::1]:${_service_port}/" \
+            "IPv6 probe URL stays bracketed"
+        assert_file_exists "${HOME}/.quicktui-test/install-service.log" \
+            "IPv6 probe failure happens after service registration"
+    else
+        fail "IPv6 probe URL stays bracketed" "installer unexpectedly failed"
+    fi
+}
+
 test_interactive_invalid_token_choice() {
     printf '\n--- test_interactive_invalid_token_choice ---\n'
     reset_test_env
@@ -1248,6 +1347,28 @@ test_uninstall_removes_leftovers_without_binary() {
     assert_path_not_exists "${HOME}/.config/systemd/user/quicktui.service" "systemd service removed during uninstall"
     assert_path_not_exists "${HOME}/.config/systemd/user/default.target.wants/quicktui.service" "systemd service symlink removed during uninstall"
     assert_path_not_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "launchd plist removed during uninstall"
+}
+
+test_uninstall_after_real_install() {
+    printf '\n--- test_uninstall_after_real_install ---\n'
+    reset_test_env
+
+    _service_port="$(choose_mock_port)"
+    run_installer -y --token uninstall-token --addr 127.0.0.1 --port "${_service_port}"
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if "$SHELL_BIN" "$INSTALL_SCRIPT" --uninstall >"${_out}" 2>&1; then
+        assert_output_contains "${_out}" "uninstalled successfully" "uninstall reports success after real install"
+        assert_file_exists "${HOME}/.quicktui-test/uninstall-service.log" "uninstall calls --uninstall-service after real install"
+        assert_path_not_exists "${HOME}/.local/bin/quicktui-server" "binary removed after real uninstall"
+        assert_path_not_exists "${HOME}/.config/quicktui" "config removed after real uninstall"
+        assert_path_not_exists "${HOME}/.config/systemd/user/quicktui.service" "systemd service removed after real uninstall"
+        assert_path_not_exists "${HOME}/Library/LaunchAgents/ai.quicktui.plist" "launchd plist removed after real uninstall"
+        assert_path_not_exists "${HOME}/.quicktui-test/mock-service.pid" "mock service stopped during uninstall"
+    else
+        fail "uninstall reports success after real install" "uninstall unexpectedly failed"
+    fi
 }
 
 test_binary_executable() {
@@ -1687,6 +1808,40 @@ APTEOF
     fi
 }
 
+test_tmux_install_requires_sudo_when_nonroot_and_missing() {
+    printf '\n--- test_tmux_install_requires_sudo_when_nonroot_and_missing ---\n'
+    reset_test_env
+
+    if [ "$CURRENT_OS" = "Darwin" ]; then
+        pass "missing sudo stops tmux install (skipped: macOS path differs)"
+        return
+    fi
+
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" sh uname
+    write_fake_id_nonroot "$_bin_dir"
+
+    cat > "${_bin_dir}/apt-get" <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+    chmod +x "${_bin_dir}/apt-get"
+
+    _patched_script="${_bin_dir}/q-patched.sh"
+    sed 's|/usr/local/bin/tmux /usr/bin/tmux|/nonexistent/tmux|' "$INSTALL_SCRIPT" > "$_patched_script"
+    chmod +x "$_patched_script"
+
+    _out="${_bin_dir}/out"
+    if PATH="${_bin_dir}" "$SHELL_BIN" "$_patched_script" -y --no-service >"${_out}" 2>&1; then
+        fail "missing sudo stops tmux install" "installer unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Root privileges required but 'sudo' is not available." \
+            "missing sudo stops tmux install"
+        assert_output_not_contains "${_out}" "Package manager unavailable or failed; downloading tmux from GitHub." \
+            "missing sudo does not silently fall back to tmux builds"
+    fi
+}
+
 test_tmux_found_at_well_known_path_sets_config() {
     printf '\n--- test_tmux_found_at_well_known_path_sets_config ---\n'
     reset_test_env
@@ -1782,6 +1937,33 @@ test_tmux_install_from_builds_rejects_bad_checksum() {
         fail "tmux install from builds rejects bad checksum" "installer unexpectedly succeeded"
     else
         assert_output_contains "${_out}" "tmux checksum verification failed" "tmux install from builds rejects bad checksum"
+    fi
+}
+
+test_wget_fallback_handles_download_and_service_probe() {
+    printf '\n--- test_wget_fallback_handles_download_and_service_probe ---\n'
+    reset_test_env
+
+    _bin_dir="$(make_tmpdir)"
+    link_existing_commands "$_bin_dir" sh uname sed cut mktemp rm tar gzip chmod ln mkdir mv cp du \
+        printf od awk sha256sum head cat kill sleep stat grep tr locale infocmp script python3 openssl
+    write_fake_wget "$_bin_dir"
+    write_fake_tmux "$_bin_dir" "3.6a"
+
+    _service_port="$(choose_mock_port)"
+    _out="${_bin_dir}/out"
+    if PATH="${_bin_dir}" \
+        HOME="${HOME}" \
+        QUICKTUI_RELEASES="http://127.0.0.1:${MOCK_PORT}" \
+        "$SHELL_BIN" "$INSTALL_SCRIPT" -y --token wget-token --addr 127.0.0.1 --port "${_service_port}" >"${_out}" 2>&1; then
+        assert_file_exists "${HOME}/.quicktui-test/install-service.log" \
+            "wget fallback still registers the service"
+        assert_output_contains "${_out}" "Getting started:" \
+            "wget fallback completes service startup checks"
+        assert_output_not_contains "${_out}" "Service registration failed" \
+            "wget fallback avoids service registration failure"
+    else
+        fail "wget fallback completes service startup checks" "installer unexpectedly failed"
     fi
 }
 
@@ -1983,6 +2165,8 @@ main() {
     test_service_config
     test_service_registration_failure
     test_service_startup_failure_after_registration
+    test_service_startup_failure_uses_loopback_probe_for_wildcard_addr
+    test_service_startup_failure_formats_ipv6_probe_url
     test_interactive_invalid_token_choice
     test_interactive_empty_custom_token
     test_interactive_invalid_lang_exits_immediately
@@ -1993,6 +2177,7 @@ main() {
     test_interactive_invalid_port_exits_immediately
     test_uninstall_nothing_installed
     test_uninstall_removes_leftovers_without_binary
+    test_uninstall_after_real_install
     test_binary_executable
     test_upgrade_preserves_token
     test_upgrade_preserves_config
@@ -2005,8 +2190,11 @@ main() {
     test_upgrade_shows_upgrade_message
     test_upgrade_ipv6_preserves_addr
     test_sudo_n_fallback_to_tmux_builds
+    test_tmux_install_requires_sudo_when_nonroot_and_missing
     test_tmux_found_at_well_known_path_sets_config
     test_tmux_install_from_builds_no_pkg_manager
+    test_tmux_install_from_builds_rejects_bad_checksum
+    test_wget_fallback_handles_download_and_service_probe
     test_snapshot_baselines
 
     printf '\n\033[1m=== Results: %d passed, %d failed ===\033[0m\n\n' "$TESTS_PASSED" "$TESTS_FAILED"

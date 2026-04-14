@@ -1,0 +1,13 @@
+Usage: q.sh [OPTIONS]
+
+Options:
+  -y, --yes          Non-interactive mode (use defaults)
+  --token <string>   Set access token (skip prompt)
+  --no-service       Skip background service registration
+  --addr <address>   Listen address (default: 0.0.0.0)
+  --port <port>      Listen port (default: 8022)
+  --term <value>     TERM for tmux (default: screen-256color)
+  --lang <value>     LANG for tmux (default: en_US.UTF-8)
+  --check              Run environment checks without installing
+  --uninstall        Remove QuickTUI and all related files
+  -h, --help         Show this help

@@ -360,43 +360,60 @@ detect_platform() {
 # Step 2: Check tmux
 # ============================================================
 
-install_tmux_from_builds() {
-    # Map platform/arch to tmux-builds naming: macos not darwin, x86_64 not amd64
-    _tmux_os="$PLATFORM"
-    [ "$_tmux_os" = "darwin" ] && _tmux_os="macos"
-    _tmux_arch="$ARCH"
-    [ "$_tmux_arch" = "amd64" ] && _tmux_arch="x86_64"
+resolve_tmux_build_target() {
+    _tmux_ver="${1:-${TMUX_BUILD_VERSION:-}}"
 
-    # Resolve version (env override for testing, otherwise query GitHub API)
-    _tmux_ver="${TMUX_BUILDS_VERSION:-}"
-    if [ -z "$_tmux_ver" ]; then
+    TMUX_BUILD_OS="$PLATFORM"
+    [ "$TMUX_BUILD_OS" = "darwin" ] && TMUX_BUILD_OS="macos"
+    TMUX_BUILD_ARCH="$ARCH"
+    [ "$TMUX_BUILD_ARCH" = "amd64" ] && TMUX_BUILD_ARCH="x86_64"
+
+    TMUX_BUILD_FILENAME=""
+    [ -n "$_tmux_ver" ] && TMUX_BUILD_FILENAME="tmux-${_tmux_ver}-${TMUX_BUILD_OS}-${TMUX_BUILD_ARCH}.tar.gz"
+    return 0
+}
+
+fetch_tmux_release_version() {
+    TMUX_BUILD_VERSION="${TMUX_BUILDS_VERSION:-}"
+    if [ -z "$TMUX_BUILD_VERSION" ]; then
         _api_url="https://api.github.com/repos/tmux/tmux-builds/releases/latest"
         if command -v curl > /dev/null 2>&1; then
-            _tmux_ver="$(curl -fsSL "$_api_url" 2>/dev/null | \
+            TMUX_BUILD_VERSION="$(curl -fsSL "$_api_url" 2>/dev/null | \
                 sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p')"
         elif command -v wget > /dev/null 2>&1; then
-            _tmux_ver="$(wget -qO- "$_api_url" 2>/dev/null | \
+            TMUX_BUILD_VERSION="$(wget -qO- "$_api_url" 2>/dev/null | \
                 sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"v\{0,1\}\([^"]*\)".*/\1/p')"
         fi
-        [ -z "$_tmux_ver" ] && die "Failed to detect tmux version from GitHub."
+        [ -z "$TMUX_BUILD_VERSION" ] && die "Failed to detect tmux version from GitHub."
     fi
 
-    _tmux_base_url="${TMUX_BUILDS_RELEASES:-https://github.com/tmux/tmux-builds/releases/latest/download}"
-    _tmux_filename="tmux-${_tmux_ver}-${_tmux_os}-${_tmux_arch}.tar.gz"
+    resolve_tmux_build_target "$TMUX_BUILD_VERSION"
+}
 
-    _tmux_tmpdir="$(mktemp -d)"
-    _tmux_tarball="${_tmux_tmpdir}/tmux.tar.gz"
+download_tmux_archive() {
+    TMUX_BUILD_BASE_URL="${TMUX_BUILDS_RELEASES:-https://github.com/tmux/tmux-builds/releases/latest/download}"
+    TMUX_BUILD_TMPDIR="$(mktemp -d)"
+    TMUX_BUILD_TARBALL="${TMUX_BUILD_TMPDIR}/tmux.tar.gz"
 
-    download "${_tmux_base_url}/${_tmux_filename}" "$_tmux_tarball" "Downloading tmux ${_tmux_ver}..." || \
-        { rm -rf "$_tmux_tmpdir"; die "Failed to download tmux binary."; }
+    download "${TMUX_BUILD_BASE_URL}/${TMUX_BUILD_FILENAME}" "$TMUX_BUILD_TARBALL" "Downloading tmux ${TMUX_BUILD_VERSION}..." || \
+        { rm -rf "$TMUX_BUILD_TMPDIR"; die "Failed to download tmux binary."; }
+}
 
+install_tmux_archive() {
     mkdir -p "${HOME}/.local/tmux" "${HOME}/.local/bin"
-    tar -xzf "$_tmux_tarball" -C "${HOME}/.local/tmux"
+    tar -xzf "$TMUX_BUILD_TARBALL" -C "${HOME}/.local/tmux"
     INSTALLED_TMUX_BIN="${HOME}/.local/tmux/tmux"
     chmod 755 "$INSTALLED_TMUX_BIN"
     ln -sf "$INSTALLED_TMUX_BIN" "${HOME}/.local/bin/tmux"
-    rm -rf "$_tmux_tmpdir"
+    rm -rf "$TMUX_BUILD_TMPDIR"
     info "tmux installed to ~/.local/tmux (symlinked to ~/.local/bin/tmux)"
+}
+
+install_tmux_from_builds() {
+    resolve_tmux_build_target
+    fetch_tmux_release_version
+    download_tmux_archive
+    install_tmux_archive
 }
 
 install_tmux() {

@@ -48,6 +48,8 @@ EXISTING_ADDR_RAW=""
 EXISTING_TERM=""
 EXISTING_LANG=""
 EXISTING_TMUX_BIN=""
+STAGED_BINARY_PATH=""
+BACKUP_BINARY_PATH=""
 
 _BG_PID=""
 cleanup() {
@@ -825,43 +827,43 @@ stop_binary_processes() {
 # Step 4: Install binary
 # ============================================================
 
-install_binary() {
+prepare_binary_swap_paths() {
     INSTALL_PATH="${HOME}/.local/bin/quicktui-server"
     mkdir -p "${HOME}/.local/bin"
-    _staged_binary="${HOME}/.local/bin/.quicktui-server.new.$$"
-    _backup_binary="${HOME}/.local/bin/.quicktui-server.backup.$$"
+    STAGED_BINARY_PATH="${HOME}/.local/bin/.quicktui-server.new.$$"
+    BACKUP_BINARY_PATH="${HOME}/.local/bin/.quicktui-server.backup.$$"
+}
 
-    if [ -n "$IS_UPGRADE" ]; then
-        stop_existing_service
-        stop_binary_processes "$INSTALL_PATH"
+stage_binary_candidate() {
+    cp "$DOWNLOADED_BINARY" "$STAGED_BINARY_PATH"
+    chmod 755 "$STAGED_BINARY_PATH"
+}
+
+validate_staged_binary() {
+    if ! "$STAGED_BINARY_PATH" --version > /dev/null 2>&1; then
+        rm -f "$STAGED_BINARY_PATH"
+        die "Binary replacement failed: staged binary at $STAGED_BINARY_PATH is not functional."
     fi
+}
 
-    cp "$DOWNLOADED_BINARY" "$_staged_binary"
-    chmod 755 "$_staged_binary"
-
-    if ! "$_staged_binary" --version > /dev/null 2>&1; then
-        rm -f "$_staged_binary"
-        die "Binary replacement failed: staged binary at $_staged_binary is not functional."
-    fi
-
+swap_binary_with_backup() {
     if [ -f "$INSTALL_PATH" ]; then
-        mv "$INSTALL_PATH" "$_backup_binary"
+        mv "$INSTALL_PATH" "$BACKUP_BINARY_PATH"
     fi
 
-    if ! mv "$_staged_binary" "$INSTALL_PATH"; then
-        [ -f "$_backup_binary" ] && mv "$_backup_binary" "$INSTALL_PATH" || true
-        rm -f "$_staged_binary"
+    if ! mv "$STAGED_BINARY_PATH" "$INSTALL_PATH"; then
+        [ -f "$BACKUP_BINARY_PATH" ] && mv "$BACKUP_BINARY_PATH" "$INSTALL_PATH" || true
+        rm -f "$STAGED_BINARY_PATH"
         die "Binary replacement failed: could not move new binary into place."
     fi
+}
 
-    if ! "$INSTALL_PATH" --version > /dev/null 2>&1; then
-        rm -f "$INSTALL_PATH"
-        [ -f "$_backup_binary" ] && mv "$_backup_binary" "$INSTALL_PATH" || true
-        die "Binary replacement failed: new binary at $INSTALL_PATH is not functional."
-    fi
+restore_previous_binary() {
+    rm -f "$INSTALL_PATH"
+    [ -f "$BACKUP_BINARY_PATH" ] && mv "$BACKUP_BINARY_PATH" "$INSTALL_PATH" || true
+}
 
-    rm -f "$_backup_binary"
-
+warn_if_local_bin_not_on_path() {
     case ":${PATH}:" in
         *":${HOME}/.local/bin:"*) ;;
         *)
@@ -870,6 +872,28 @@ install_binary() {
             printf '    export PATH="$HOME/.local/bin:$PATH"\n\n'
             ;;
     esac
+}
+
+install_binary() {
+    INSTALL_PATH="${HOME}/.local/bin/quicktui-server"
+
+    if [ -n "$IS_UPGRADE" ]; then
+        stop_existing_service
+        stop_binary_processes "$INSTALL_PATH"
+    fi
+
+    prepare_binary_swap_paths
+    stage_binary_candidate
+    validate_staged_binary
+    swap_binary_with_backup
+
+    if ! "$INSTALL_PATH" --version > /dev/null 2>&1; then
+        restore_previous_binary
+        die "Binary replacement failed: new binary at $INSTALL_PATH is not functional."
+    fi
+
+    rm -f "$BACKUP_BINARY_PATH"
+    warn_if_local_bin_not_on_path
 
     DOWNLOAD_TMPDIR=""
     info "Installed to $INSTALL_PATH"

@@ -1361,7 +1361,8 @@ EOF
     if run_installer -y --no-service >"${_out}" 2>&1; then
         fail "upgrade failure restores previous binary" "upgrade unexpectedly succeeded"
     else
-        assert_output_contains "${_out}" "Binary replacement failed:" "upgrade failure reports binary replacement error"
+        assert_output_contains "${_out}" "Binary replacement failed: staged binary at ${HOME}/.local/bin/.quicktui-server.new." "upgrade failure reports staged binary validation error"
+        assert_output_contains "${_out}" "is not functional." "upgrade failure keeps staged binary validation suffix"
         _after_sum="$(sha256sum "${HOME}/.local/bin/quicktui-server" 2>/dev/null | cut -d' ' -f1 || \
             shasum -a 256 "${HOME}/.local/bin/quicktui-server" | cut -d' ' -f1)"
         if [ "$_before_sum" = "$_after_sum" ]; then
@@ -1493,6 +1494,64 @@ esac
 EOF
     chmod +x "${MOCK_DIR}/${MOCK_BINARY_NAME}"
     write_mock_checksum_good
+}
+
+test_upgrade_post_swap_failure_restores_previous_binary() {
+    printf '\n--- test_upgrade_post_swap_failure_restores_previous_binary ---\n'
+    reset_test_env
+
+    run_installer -y --no-service --token "stable-token"
+    _before_sum="$(sha256sum "${HOME}/.local/bin/quicktui-server" 2>/dev/null | cut -d' ' -f1 || \
+        shasum -a 256 "${HOME}/.local/bin/quicktui-server" | cut -d' ' -f1)"
+
+    cat > "${MOCK_DIR}/${MOCK_BINARY_NAME}" <<'EOF'
+#!/bin/sh
+set -e
+
+case "${1:-}" in
+    --version)
+        case "$0" in
+            */.quicktui-server.new.*)
+                echo "quicktui-post-swap-mock v0.0.1-test"
+                ;;
+            *)
+                exit 1
+                ;;
+        esac
+        ;;
+    *)
+        echo "quicktui-post-swap-mock v0.0.1-test"
+        ;;
+esac
+EOF
+    chmod +x "${MOCK_DIR}/${MOCK_BINARY_NAME}"
+    write_mock_checksum_good
+
+    _tmp="$(make_tmpdir)"
+    _out="${_tmp}/out"
+    if run_installer -y --no-service >"${_out}" 2>&1; then
+        fail "upgrade post-swap failure restores previous binary" "upgrade unexpectedly succeeded"
+    else
+        assert_output_contains "${_out}" "Binary replacement failed: new binary at ${HOME}/.local/bin/quicktui-server is not functional." "upgrade post-swap failure reports final binary validation error"
+        assert_output_not_contains "${_out}" "~/.local/bin is not in your PATH." "upgrade post-swap failure suppresses PATH warning"
+        _after_sum="$(sha256sum "${HOME}/.local/bin/quicktui-server" 2>/dev/null | cut -d' ' -f1 || \
+            shasum -a 256 "${HOME}/.local/bin/quicktui-server" | cut -d' ' -f1)"
+        if [ "$_before_sum" = "$_after_sum" ]; then
+            pass "upgrade post-swap failure restores previous binary"
+        else
+            fail "upgrade post-swap failure restores previous binary" "installed binary checksum changed after post-swap failure"
+        fi
+
+        _restored_version="$("${HOME}/.local/bin/quicktui-server" --version 2>/dev/null || true)"
+        if [ "$_restored_version" = "quicktui-mock v0.0.1-test" ]; then
+            pass "upgrade post-swap failure leaves previous binary runnable"
+        else
+            fail "upgrade post-swap failure leaves previous binary runnable" "unexpected restored binary version: ${_restored_version}"
+        fi
+    fi
+
+    teardown_mock_server
+    setup_mock_server
 }
 
 test_upgrade_stops_service_before_replace() {
@@ -1940,6 +1999,7 @@ main() {
     test_upgrade_with_new_token
     test_upgrade_replaces_binary
     test_upgrade_failure_restores_previous_binary
+    test_upgrade_post_swap_failure_restores_previous_binary
     test_upgrade_stops_service_before_replace
     test_upgrade_stops_manual_binary_processes_before_replace
     test_upgrade_shows_upgrade_message

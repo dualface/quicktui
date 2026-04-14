@@ -915,50 +915,62 @@ validate_token() {
     return 0
 }
 
-configure_token() {
+generate_random_token_value() {
+    if command -v openssl > /dev/null 2>&1; then
+        TOKEN="$(openssl rand -hex 32)"
+    else
+        TOKEN="$(head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n')"
+    fi
+}
+
+resolve_token_value() {
+    TOKEN=""
+    TOKEN_INFO_MESSAGE=""
+    TOKEN_NEEDS_PROMPT=""
+    TOKEN_NEEDS_GENERATION=""
+
     if [ -n "$OPT_TOKEN" ]; then
         validate_token "$OPT_TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
         TOKEN="$OPT_TOKEN"
-        info "Token configured (from argument)"
+        TOKEN_INFO_MESSAGE="Token configured (from argument)"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TOKEN" ]; then
         TOKEN="$EXISTING_TOKEN"
-        info "Token preserved from existing config"
+        TOKEN_INFO_MESSAGE="Token preserved from existing config"
     elif [ -n "$NON_INTERACTIVE" ]; then
-        if command -v openssl > /dev/null 2>&1; then
-            TOKEN="$(openssl rand -hex 32)"
-        else
-            TOKEN="$(head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n')"
-        fi
-        info "Random token generated"
+        TOKEN_NEEDS_GENERATION="1"
     else
-        printf '\nHow would you like to set up your access token?\n'
-        printf '  [1] Generate a random token automatically  [default]\n'
-        printf '  [2] Enter my own token\n'
-        printf 'Enter choice [1]: '
-        read -r _choice </dev/tty || exit 130
-        _choice="${_choice:-1}"
-
-        case "$_choice" in
-            1)
-                if command -v openssl > /dev/null 2>&1; then
-                    TOKEN="$(openssl rand -hex 32)"
-                else
-                    TOKEN="$(head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n')"
-                fi
-                info "Random token generated"
-                ;;
-            2)
-                printf 'Enter your token: '
-                read -r TOKEN </dev/tty || exit 130
-                validate_token "$TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
-                info "Token configured"
-                ;;
-            *)
-                die "Invalid choice: $_choice"
-                ;;
-        esac
+        TOKEN_NEEDS_PROMPT="1"
     fi
+}
 
+prompt_for_token_value() {
+    [ -n "$TOKEN_NEEDS_PROMPT" ] || return 0
+
+    printf '\nHow would you like to set up your access token?\n'
+    printf '  [1] Generate a random token automatically  [default]\n'
+    printf '  [2] Enter my own token\n'
+    printf 'Enter choice [1]: '
+    read -r _choice </dev/tty || exit 130
+    _choice="${_choice:-1}"
+
+    case "$_choice" in
+        1)
+            generate_random_token_value
+            TOKEN_INFO_MESSAGE="Random token generated"
+            ;;
+        2)
+            printf 'Enter your token: '
+            read -r TOKEN </dev/tty || exit 130
+            validate_token "$TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
+            TOKEN_INFO_MESSAGE="Token configured"
+            ;;
+        *)
+            die "Invalid choice: $_choice"
+            ;;
+    esac
+}
+
+write_token_config() {
     mkdir -p "$QUICKTUI_CONFIG_DIR"
     chmod 700 "$QUICKTUI_CONFIG_DIR"
     printf 'QUICKTUI_TOKEN=%s\n' "$TOKEN" > "$QUICKTUI_CONFIG_FILE"
@@ -966,14 +978,25 @@ configure_token() {
     info "Config saved to $QUICKTUI_CONFIG_FILE"
 }
 
+configure_token() {
+    resolve_token_value
+    if [ -n "$TOKEN_NEEDS_GENERATION" ]; then
+        generate_random_token_value
+        TOKEN_INFO_MESSAGE="Random token generated"
+    fi
+    prompt_for_token_value
+    [ -n "$TOKEN_INFO_MESSAGE" ] && info "$TOKEN_INFO_MESSAGE"
+    write_token_config
+}
+
 # ============================================================
 # Step 6: Configure listen address
 # ============================================================
 
-configure_network() {
-    _default_addr="${OPT_ADDR:-${EXISTING_ADDR:-0.0.0.0}}"
-    _default_port="${OPT_PORT:-${EXISTING_PORT:-8022}}"
-
+resolve_listen_addr() {
+    LISTEN_ADDR=""
+    LISTEN_ADDR_DEFAULT="${OPT_ADDR:-${EXISTING_ADDR:-0.0.0.0}}"
+    LISTEN_ADDR_NEEDS_PROMPT=""
     if [ -n "$OPT_ADDR" ]; then
         LISTEN_ADDR="$OPT_ADDR"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_ADDR" ]; then
@@ -981,13 +1004,25 @@ configure_network() {
     elif [ -n "$NON_INTERACTIVE" ]; then
         LISTEN_ADDR="0.0.0.0"
     else
-        printf '\nListen address [default: %s]: ' "$_default_addr"
-        read -r LISTEN_ADDR </dev/tty || exit 130
-        LISTEN_ADDR="${LISTEN_ADDR:-$_default_addr}"
+        LISTEN_ADDR_NEEDS_PROMPT="1"
+        return 0
     fi
 
     validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
+}
 
+prompt_for_listen_addr() {
+    [ -n "$LISTEN_ADDR_NEEDS_PROMPT" ] || return 0
+    printf '\nListen address [default: %s]: ' "$LISTEN_ADDR_DEFAULT"
+    read -r LISTEN_ADDR </dev/tty || exit 130
+    LISTEN_ADDR="${LISTEN_ADDR:-$LISTEN_ADDR_DEFAULT}"
+    validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
+}
+
+resolve_listen_port() {
+    LISTEN_PORT=""
+    LISTEN_PORT_DEFAULT="${OPT_PORT:-${EXISTING_PORT:-8022}}"
+    LISTEN_PORT_NEEDS_PROMPT=""
     if [ -n "$OPT_PORT" ]; then
         LISTEN_PORT="$OPT_PORT"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_PORT" ]; then
@@ -995,15 +1030,32 @@ configure_network() {
     elif [ -n "$NON_INTERACTIVE" ]; then
         LISTEN_PORT="8022"
     else
-        printf 'Port [default: %s]: ' "$_default_port"
-        read -r LISTEN_PORT </dev/tty || exit 130
-        LISTEN_PORT="${LISTEN_PORT:-$_default_port}"
+        LISTEN_PORT_NEEDS_PROMPT="1"
+        return 0
     fi
 
     validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
+}
 
+prompt_for_listen_port() {
+    [ -n "$LISTEN_PORT_NEEDS_PROMPT" ] || return 0
+    printf 'Port [default: %s]: ' "$LISTEN_PORT_DEFAULT"
+    read -r LISTEN_PORT </dev/tty || exit 130
+    LISTEN_PORT="${LISTEN_PORT:-$LISTEN_PORT_DEFAULT}"
+    validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
+}
+
+write_network_config() {
     printf 'QUICKTUI_ADDR=%s:%s\n' "$LISTEN_ADDR" "$LISTEN_PORT" >> "$QUICKTUI_CONFIG_FILE"
     info "Listen address: ${LISTEN_ADDR}:${LISTEN_PORT}"
+}
+
+configure_network() {
+    resolve_listen_addr
+    prompt_for_listen_addr
+    resolve_listen_port
+    prompt_for_listen_port
+    write_network_config
 }
 
 # ============================================================

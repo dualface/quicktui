@@ -15,6 +15,7 @@ QUICKTUI_CONFIG_FILE="${QUICKTUI_CONFIG_DIR}/config"
 # CLI options (set via arguments)
 NON_INTERACTIVE=""
 OPT_TOKEN=""
+OPT_ROTATE_TOKEN=""
 OPT_NO_SERVICE=""
 OPT_ADDR=""
 OPT_PORT=""
@@ -134,6 +135,10 @@ while [ $# -gt 0 ]; do
             OPT_TOKEN="$2"
             shift 2
             ;;
+        --rotate-token)
+            OPT_ROTATE_TOKEN="1"
+            shift
+            ;;
         --no-service)
             OPT_NO_SERVICE="1"
             shift
@@ -171,6 +176,7 @@ while [ $# -gt 0 ]; do
             printf 'Options:\n'
             printf '  -y, --yes          Non-interactive mode (use defaults)\n'
             printf '  --token <string>   Set access token (skip prompt)\n'
+            printf '  --rotate-token     Generate a fresh random token (overrides preserved token on upgrade)\n'
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
             printf '  --port <port>      Listen port (default: 8022)\n'
@@ -275,6 +281,9 @@ require_terminfo_available() {
 }
 
 validate_cli_options() {
+    if [ -n "$OPT_TOKEN" ] && [ -n "$OPT_ROTATE_TOKEN" ]; then
+        die "--token and --rotate-token are mutually exclusive."
+    fi
     if [ -n "$OPT_TOKEN" ]; then
         validate_token "$OPT_TOKEN" || die "Invalid token: only printable non-whitespace characters are allowed."
     fi
@@ -959,6 +968,9 @@ configure_token() {
     if [ -n "$OPT_TOKEN" ]; then
         TOKEN="$OPT_TOKEN"
         info "Token configured (from argument)"
+    elif [ -n "$OPT_ROTATE_TOKEN" ]; then
+        generate_random_token_value
+        info "Token rotated (new random value)"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TOKEN" ]; then
         TOKEN="$EXISTING_TOKEN"
         info "Token preserved from existing config"
@@ -1127,11 +1139,21 @@ configure_service() {
         fi
     fi
 
-    # Delegate service registration to the server binary
-    if "$INSTALL_PATH" --install-service \
+    # Delegate service registration to the server binary. Capture its output
+    # so we can highlight the QR-code reminder line before echoing it back.
+    _svc_out="$(mktemp)"
+    _svc_rc=0
+    "$INSTALL_PATH" --install-service \
         --addr "${LISTEN_ADDR}:${LISTEN_PORT}" \
         --term "$TERM_ENV" \
-        --lang "$LANG_ENV"; then
+        --lang "$LANG_ENV" > "$_svc_out" 2>&1 || _svc_rc=$?
+    awk -v hi="${C_BOLD}${C_GREEN}" -v rst="$C_RESET" '
+        /--qrcode/ { print hi $0 rst; next }
+        { print }
+    ' "$_svc_out"
+    rm -f "$_svc_out"
+
+    if [ "$_svc_rc" -eq 0 ]; then
         if wait_for_service_ready; then
             SERVICE_STARTED="yes"
         else

@@ -1140,17 +1140,15 @@ configure_service() {
     fi
 
     # Delegate service registration to the server binary. Capture its output
-    # so we can highlight the QR-code reminder line before echoing it back.
+    # so we can suppress the QR-code reminder line (q.sh re-emits it under
+    # "Getting started" in print_success with its own colorization).
     _svc_out="$(mktemp)"
     _svc_rc=0
     "$INSTALL_PATH" --install-service \
         --addr "${LISTEN_ADDR}:${LISTEN_PORT}" \
         --term "$TERM_ENV" \
         --lang "$LANG_ENV" > "$_svc_out" 2>&1 || _svc_rc=$?
-    awk -v hi="${C_BOLD}${C_GREEN}" -v rst="$C_RESET" '
-        /--qrcode/ { print hi $0 rst; next }
-        { print }
-    ' "$_svc_out"
+    awk '/--qrcode/ { next } { print }' "$_svc_out"
     rm -f "$_svc_out"
 
     if [ "$_svc_rc" -eq 0 ]; then
@@ -1240,6 +1238,8 @@ print_success() {
             printf '  Token:            %s' "$(mask_token "$TOKEN")"
             printf '  (Enter the token when prompted on first login)\n'
         fi
+        printf "  %sTip:%s Run %s'quicktui-server --qrcode'%s to display the connection QR code for the iOS app.\n" \
+            "$C_BOLD$C_GREEN" "$C_RESET" "$C_BOLD" "$C_RESET"
     elif [ "$SERVICE_STARTED" = "failed" ]; then
         if [ "$SERVICE_FAILURE_REASON" = "startup" ]; then
             printf 'Service was registered but did not start successfully. Start manually:\n'

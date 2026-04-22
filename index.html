@@ -1,1348 +1,1964 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QuickTUI — Remote Terminal Manager</title>
-    <meta
-      name="description"
-      content="Drive AI Agents from anywhere — a tmux-based remote terminal manager with native iPhone &amp; iPad support."
-    />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/images/apple-touch-icon.png"
-    />
-    <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#0d2a6b" />
-    <style>
-      /* === Reset & Base === */
-      *, *::before, *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      :root {
-        --bg-primary: #0d1117;
-        --bg-secondary: #161b22;
-        --accent-blue: #58a6ff;
-        --accent-green: #3fb950;
-        --text-primary: #e6edf3;
-        --text-secondary: #8b949e;
-        --border-color: #30363d;
-        --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-        --font-mono: "SF Mono", "Cascadia Code", "Fira Code", Consolas, "Liberation Mono", monospace;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        font-family: var(--font-sans);
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      /* === Layout === */
-      .container {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 24px;
-      }
-
-      section {
-        padding: 80px 0;
-      }
-
-      /* === Hero === */
-      .hero {
-        min-height: 70vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image: radial-gradient(circle, var(--border-color) 1px, transparent 1px);
-        background-size: 24px 24px;
-        opacity: 0.4;
-        pointer-events: none;
-      }
-
-      .hero-content {
-        position: relative;
-        z-index: 1;
-      }
-
-      .hero-logo {
-        width: 96px;
-        height: 96px;
-        border-radius: 22px;
-        margin-bottom: 24px;
-        box-shadow: 0 8px 32px rgba(13, 42, 107, 0.5);
-      }
-
-      .hero .subtitle {
-        font-size: clamp(0.9rem, 2vw, 1.05rem);
-        color: var(--text-secondary);
-        max-width: 540px;
-        margin: 0 auto 32px;
-      }
-
-      .hero h1 {
-        font-family: var(--font-mono);
-        font-size: clamp(2.5rem, 6vw, 4rem);
-        font-weight: 700;
-        margin-bottom: 16px;
-        letter-spacing: -0.02em;
-      }
-
-      .hero .tagline {
-        font-size: clamp(1rem, 2.5vw, 1.25rem);
-        color: var(--text-secondary);
-        max-width: 640px;
-        margin: 0 auto 8px;
-        line-height: 1.5;
-      }
-
-      /* === Buttons === */
-      .btn-primary {
-        display: inline-block;
-        padding: 14px 36px;
-        background-color: var(--accent-blue);
-        color: #ffffff;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: opacity 0.2s, transform 0.2s;
-      }
-
-      .btn-primary:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-      }
-
-      /* === Features === */
-      .features {
-        background-color: var(--bg-secondary);
-      }
-
-      .features-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-      }
-
-      .feature-card {
-        background-color: var(--bg-primary);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 32px;
-        transition: border-color 0.2s;
-      }
-
-      .feature-card:hover {
-        border-color: var(--accent-blue);
-      }
-
-      .feature-card .icon {
-        width: 40px;
-        height: 40px;
-        margin-bottom: 16px;
-        color: var(--accent-green);
-      }
-
-      .feature-card h3 {
-        font-family: var(--font-mono);
-        font-size: 1.1rem;
-        margin-bottom: 8px;
-      }
-
-      .feature-card p {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.5;
-      }
-
-      /* === Screenshots === */
-      .screenshots {
-        text-align: center;
-      }
-
-      .screenshots h2 {
-        font-family: var(--font-mono);
-        font-size: clamp(1.5rem, 3vw, 2rem);
-        margin-bottom: 48px;
-      }
-
-      .screenshots-grid {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        gap: 40px;
-        flex-wrap: wrap;
-      }
-
-      .screenshot-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .screenshot-item img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-      }
-
-      .slideshow {
-        position: relative;
-        width: 280px;
-        height: 600px;
-      }
-
-      .slideshow .slide {
-        position: absolute;
-        /* screen area: x=12 y=12 w=256 h=576 in the 280x600 frame */
-        top: 12px;
-        left: 12px;
-        width: 256px;
-        height: 576px;
-        object-fit: cover;
-        border-radius: 24px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .slideshow .slide.active {
-        opacity: 1;
-      }
-
-      .slideshow-ipad {
-        width: 480px;
-        height: 640px;
-      }
-
-      .slideshow-ipad .slide {
-        /* screen area: x=12 y=12 w=456 h=616 in the 480x640 frame */
-        top: 12px;
-        left: 12px;
-        width: 456px;
-        height: 616px;
-        border-radius: 16px;
-      }
-
-      .slideshow .phone-frame {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 1;
-      }
-
-      .screenshot-item .label {
-        color: var(--text-secondary);
-        font-size: 0.85rem;
-      }
-
-      /* === Quick Start === */
-      .quickstart {
-        background-color: var(--bg-secondary);
-      }
-
-      .quickstart h2 {
-        font-family: var(--font-mono);
-        font-size: clamp(1.5rem, 3vw, 2rem);
-        margin-bottom: 32px;
-        text-align: center;
-      }
-
-      .code-block {
-        position: relative;
-        background-color: var(--bg-primary);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 24px;
-        overflow-x: auto;
-        max-width: 720px;
-        margin: 0 auto;
-      }
-
-      .code-block pre {
-        font-family: var(--font-mono);
-        font-size: 0.9rem;
-        line-height: 1.7;
-        white-space: pre-wrap;
-        word-break: break-all;
-        text-align: center;
-      }
-
-      .code-block .comment {
-        color: var(--accent-green);
-      }
-
-      .code-block .command {
-        color: var(--text-primary);
-      }
-
-      .copy-btn {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: none;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        padding: 6px;
-        cursor: pointer;
-        color: var(--text-secondary);
-        transition: color 0.2s, border-color 0.2s;
-      }
-
-      .copy-btn:hover {
-        color: var(--text-primary);
-        border-color: var(--text-secondary);
-      }
-
-      .copy-btn svg {
-        width: 16px;
-        height: 16px;
-        display: block;
-      }
-
-      .copy-btn .icon-check {
-        display: none;
-        color: var(--accent-green);
-      }
-
-      .copy-btn.copied .icon-copy { display: none; }
-      .copy-btn.copied .icon-check { display: block; }
-      .copy-btn.copied { border-color: var(--accent-green); }
-
-      /* === Connect === */
-      .connect {
-        background-color: var(--bg-primary);
-      }
-
-      .connect-steps {
-        max-width: 720px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-      }
-
-      .connect-step {
-        display: flex;
-        gap: 24px;
-        position: relative;
-      }
-
-      /* Vertical line connecting steps */
-      .connect-step:not(:last-child)::after {
-        content: "";
-        position: absolute;
-        left: 19px;
-        top: 44px;
-        bottom: -4px;
-        width: 2px;
-        background: linear-gradient(to bottom, var(--border-color), color-mix(in srgb, var(--border-color) 20%, transparent));
-      }
-
-      .connect-step-num {
-        flex-shrink: 0;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid var(--border-color);
-        background-color: var(--bg-secondary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--text-secondary);
-        z-index: 1;
-        transition: border-color 0.2s, color 0.2s;
-      }
-
-      .connect-step:hover .connect-step-num {
-        border-color: var(--accent-blue);
-        color: var(--accent-blue);
-      }
-
-      .connect-step-body {
-        padding: 8px 0 40px;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .connect-step:last-child .connect-step-body {
-        padding-bottom: 0;
-      }
-
-      .connect-step-title {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 8px;
-        line-height: 1.4;
-      }
-
-      .connect-step-desc {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        line-height: 1.7;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .connect-step-desc code {
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        color: var(--accent-blue);
-      }
-
-      .connect-step-desc pre {
-        background-color: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 12px 16px;
-        overflow-x: auto;
-      }
-
-      .connect-step-desc pre code {
-        font-family: var(--font-mono);
-        font-size: 0.82rem;
-        color: var(--text-primary);
-      }
-
-      .connect-step-note {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        background-color: color-mix(in srgb, var(--accent-green) 8%, transparent);
-        border: 1px solid color-mix(in srgb, var(--accent-green) 25%, transparent);
-        border-radius: 6px;
-        padding: 6px 10px;
-        margin-top: 4px;
-      }
-
-      .connect-step-note::before {
-        content: "✓";
-        color: var(--accent-green);
-        font-weight: 700;
-      }
-
-      /* === Download === */
-      .download {
-        background-color: var(--bg-secondary);
-      }
-
-      .download h2 {
-        font-family: var(--font-mono);
-        font-size: clamp(1.5rem, 3vw, 2rem);
-        margin-bottom: 12px;
-        text-align: center;
-      }
-
-      .download .subtitle {
-        color: var(--text-secondary);
-        text-align: center;
-        margin-bottom: 48px;
-      }
-
-      .download-group {
-        margin-bottom: 40px;
-      }
-
-      .download-group h3 {
-        font-family: var(--font-mono);
-        font-size: 1rem;
-        color: var(--text-secondary);
-        margin-bottom: 16px;
-        text-align: center;
-      }
-
-      .download-group-note {
-        font-family: var(--font-sans);
-        font-size: 0.8rem;
-        font-weight: 400;
-        color: var(--text-secondary);
-        opacity: 0.6;
-        margin-left: 8px;
-      }
-
-      .uninstall-hint {
-        font-family: var(--font-sans);
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        opacity: 0.5;
-        margin-top: 20px;
-        text-align: center;
-      }
-
-      .uninstall-hint code {
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-      }
-
-      .install-options-hint {
-        max-width: 720px;
-        margin: 20px auto 0;
-        border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-        border-radius: 8px;
-        padding: 16px 20px;
-        opacity: 0.6;
-      }
-
-      .install-options-title {
-        font-family: var(--font-sans);
-        font-size: 0.78rem;
-        color: var(--text-secondary);
-        margin: 0 0 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .install-options {
-        width: 100%;
-        margin: 0;
-        border-collapse: collapse;
-        font-family: var(--font-sans);
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-      }
-
-      .install-options th {
-        text-align: left;
-        padding: 6px 12px;
-        border-bottom: 1px solid var(--border-color);
-        font-weight: 600;
-        color: var(--text-primary);
-        opacity: 0.6;
-        white-space: nowrap;
-      }
-
-      .install-options td {
-        padding: 6px 12px;
-        border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-        vertical-align: top;
-      }
-
-      .install-options tr:last-child td {
-        border-bottom: none;
-      }
-
-      .install-options code {
-        font-family: var(--font-mono);
-        font-size: 0.78rem;
-        white-space: nowrap;
-      }
-
-      .download-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-      }
-
-      .btn-download {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 20px;
-        background-color: transparent;
-        color: var(--text-primary);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: border-color 0.2s, background-color 0.2s;
-      }
-
-      .btn-download:hover {
-        border-color: var(--accent-blue);
-        background-color: rgba(88, 166, 255, 0.1);
-      }
-
-      .btn-download svg {
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-      }
-
-      /* === FAQ === */
-      .faq {
-        background-color: var(--bg-secondary);
-      }
-
-      .faq-group {
-        max-width: 760px;
-        margin: 0 auto 56px;
-      }
-
-      .faq-group:last-child {
-        margin-bottom: 0;
-      }
-
-      .faq-group-title {
-        font-family: var(--font-sans);
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        color: var(--accent-blue);
-        margin-bottom: 4px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .faq-group-title::before {
-        content: "";
-        display: inline-block;
-        width: 3px;
-        height: 13px;
-        background: var(--accent-blue);
-        border-radius: 2px;
-        flex-shrink: 0;
-      }
-
-      .faq-item {
-        border-bottom: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent);
-        transition: background-color 0.15s;
-      }
-
-      .faq-item:last-child {
-        border-bottom: none;
-      }
-
-      .faq-item summary {
-        padding: 17px 6px 17px 0;
-        cursor: pointer;
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: var(--text-primary);
-        list-style: none;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        user-select: none;
-        transition: color 0.15s;
-      }
-
-      .faq-item summary::-webkit-details-marker {
-        display: none;
-      }
-
-      /* Circular chevron toggle */
-      .faq-item summary::after {
-        content: "";
-        flex-shrink: 0;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        border: 1.5px solid color-mix(in srgb, var(--border-color) 90%, transparent);
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5 5 6.5 8 3.5' stroke='%238b949e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: center;
-        transition: transform 0.25s ease, border-color 0.15s;
-      }
-
-      .faq-item[open] summary::after {
-        transform: rotate(180deg);
-        border-color: var(--accent-blue);
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5 5 6.5 8 3.5' stroke='%2358a6ff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-      }
-
-      .faq-item summary:hover {
-        color: var(--accent-blue);
-      }
-
-      .faq-item summary:hover::after {
-        border-color: var(--accent-blue);
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5 5 6.5 8 3.5' stroke='%2358a6ff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-      }
-
-      .faq-item[open] {
-        background-color: color-mix(in srgb, var(--bg-primary) 35%, transparent);
-        border-radius: 6px;
-        border-bottom-color: transparent;
-        margin-bottom: 4px;
-        padding: 0 12px;
-      }
-
-      .faq-item[open] + .faq-item {
-        border-top: none;
-      }
-
-      .faq-item summary code {
-        font-family: var(--font-mono);
-        font-size: 0.88rem;
-        color: var(--accent-blue);
-      }
-
-      .faq-answer {
-        padding: 2px 2px 20px;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        line-height: 1.75;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        animation: faq-reveal 0.18s ease;
-      }
-
-      @keyframes faq-reveal {
-        from {
-          opacity: 0;
-          transform: translateY(-6px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .faq-answer pre {
-        background-color: var(--bg-primary);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 14px 16px;
-        overflow-x: auto;
-      }
-
-      .faq-answer pre code {
-        font-family: var(--font-mono);
-        font-size: 0.82rem;
-        color: var(--text-primary);
-      }
-
-      .faq-answer code {
-        font-family: var(--font-mono);
-        font-size: 0.85rem;
-        color: var(--accent-blue);
-      }
-
-      /* === Footer === */
-      .footer {
-        border-top: 1px solid var(--border-color);
-        padding: 24px 0;
-        text-align: center;
-        color: var(--text-secondary);
-        font-size: 0.85rem;
-      }
-
-      .footer .container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 24px;
-        flex-wrap: wrap;
-      }
-
-      .github-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: var(--text-secondary);
-        text-decoration: none;
-        font-size: 0.85rem;
-        transition: color 0.2s;
-      }
-
-      .github-link:hover {
-        color: var(--text-primary);
-      }
-
-      /* === Section titles (shared) === */
-      .section-title {
-        font-family: var(--font-mono);
-        font-size: clamp(1.5rem, 3vw, 2rem);
-        margin-bottom: 48px;
-        text-align: center;
-      }
-
-      /* === Responsive === */
-      @media (max-width: 768px) {
-        section {
-          padding: 60px 0;
-        }
-
-        .features-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .screenshots-grid {
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .screenshot-item {
-          width: 100%;
-        }
-
-        .slideshow-ipad {
-          width: min(92vw, 480px);
-          height: auto;
-          aspect-ratio: 480 / 640;
-        }
-
-        .slideshow-ipad .slide {
-          top: 2.5%;
-          left: 2.5%;
-          width: 95%;
-          height: 96.25%;
-          object-fit: contain;
-          background-color: var(--bg-primary);
-        }
-
-        .connect-step {
-          gap: 16px;
-        }
-
-        .connect-step-num {
-          width: 32px;
-          height: 32px;
-          font-size: 0.78rem;
-        }
-
-        .connect-step:not(:last-child)::after {
-          left: 15px;
-          top: 36px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Hero -->
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI — tmux-powered remote terminal for iPhone, iPad & browsers</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ───────────────────────────────────────────────── tokens */
+:root {
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --serif: 'Instrument Serif', 'Times New Roman', serif;
+  --accent: oklch(0.70 0.19 255);      /* logo blue */
+  --accent-ink: oklch(0.22 0.08 255);
+  --accent-glow: oklch(0.70 0.19 255 / 0.35);
+  --radius: 4px;
+  --maxw: 1240px;
+  --gutter: clamp(20px, 4vw, 48px);
+}
+[data-theme="dark"] {
+  --bg: oklch(0.145 0.012 255);
+  --bg-1: oklch(0.175 0.015 255);
+  --bg-2: oklch(0.21 0.018 255);
+  --ink: oklch(0.96 0.006 255);
+  --ink-2: oklch(0.78 0.01 255);
+  --ink-3: oklch(0.55 0.012 255);
+  --ink-4: oklch(0.40 0.015 255);
+  --line: oklch(0.30 0.018 255);
+  --line-soft: oklch(0.24 0.016 255);
+  --chip: oklch(0.22 0.018 255);
+  --scan: rgba(255,255,255,0.02);
+}
+[data-theme="light"] {
+  --bg: oklch(0.985 0.003 95);
+  --bg-1: oklch(0.97 0.005 95);
+  --bg-2: oklch(0.94 0.007 95);
+  --ink: oklch(0.18 0.01 255);
+  --ink-2: oklch(0.38 0.012 255);
+  --ink-3: oklch(0.55 0.012 255);
+  --ink-4: oklch(0.68 0.01 255);
+  --line: oklch(0.84 0.01 255);
+  --line-soft: oklch(0.90 0.008 255);
+  --chip: oklch(0.95 0.006 95);
+  --accent-ink: oklch(0.18 0.08 255);
+  --scan: rgba(0,0,0,0.02);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* subtle scanline / grid backdrop */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, var(--scan) 0 1px, transparent 1px 3px);
+  z-index: 1;
+  opacity: .6;
+}
+
+/* ───────────────────────────────────────────────── chrome */
+.shell { position: relative; z-index: 2; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.rule { border-top: 1px solid var(--line); }
+.rule-soft { border-top: 1px solid var(--line-soft); }
+
+.mono { font-family: var(--mono); }
+.path {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+  white-space: nowrap;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 6px; height: 6px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  border-radius: 1px;
+}
+
+/* ───────────────────────────────────────────────── top nav */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+}
+.brand-mark {
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid; place-items: center;
+  color: #0a0d12;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+  transition: background 200ms ease;
+}
+.brand-name sup {
+  color: var(--accent);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 26px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.nav-links a { position: relative; }
+.nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:hover .n { color: var(--accent); }
+
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+.kbd {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: var(--ink-2);
+  background: var(--bg-1);
+}
+
+.theme-toggle {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink-3); }
+
+.btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 140ms ease;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--ink-3); }
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 600;
+  box-shadow: 0 0 0 0 var(--accent-glow);
+}
+.btn-primary:hover {
+  box-shadow: 0 0 0 4px var(--accent-glow);
+  border-color: var(--accent);
+}
+.btn .arr { transition: transform 160ms ease; }
+.btn:hover .arr { transform: translateX(2px); }
+
+/* ───────────────────────────────────────────────── status bar */
+.statusbar {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-4);
+  padding: 8px 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line-soft);
+}
+.statusbar .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px var(--accent-glow);
+  vertical-align: middle; margin-right: 6px;
+  animation: blink 2.4s steps(2, end) infinite;
+}
+@keyframes blink { 50% { opacity: .35; } }
+.statusbar .sep { opacity: 0.35; margin: 0 10px; }
+
+/* ───────────────────────────────────────────────── HERO */
+.hero { padding: clamp(48px, 8vw, 110px) 0 clamp(40px, 6vw, 80px); position: relative; }
+
+/* hero-ascii backdrop */
+.hero-ascii {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--line);
+  white-space: pre;
+  overflow: hidden;
+  opacity: 0.5;
+  mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
+}
+
+/* variant 1: editorial */
+.hero-variant { display: none; }
+.hero-variant.is-active { display: block; }
+
+.v1-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(40px, 6vw, 80px);
+  align-items: end;
+}
+.v1 h1 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: clamp(44px, 8.2vw, 112px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  margin: 22px 0 0;
+  text-wrap: balance;
+}
+.v1 h1 .slash { color: var(--accent); }
+.v1 h1 .serif-word { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; }
+.v1 .sub-cn {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink-3);
+  margin-top: 22px;
+  max-width: 46ch;
+  line-height: 1.65;
+}
+.v1 .lede {
+  font-size: 18px;
+  color: var(--ink-2);
+  max-width: 44ch;
+  margin: 0 0 28px;
+  line-height: 1.55;
+}
+.v1 .ctas { display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
+.v1 .meta-col {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  padding-bottom: 10px;
+}
+.v1 .meta-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 18px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--line-soft);
+}
+.v1 .meta-row b { color: var(--ink); font-weight: 500; }
+.v1 .meta-row .k { color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.06em; font-size: 10.5px; }
+
+/* variant 2: centered terminal boot */
+.v2 { text-align: center; position: relative; }
+.v2 .mark {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+}
+.v2 h1 {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: clamp(52px, 9.5vw, 148px);
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+  margin: 18px 0 14px;
+}
+.v2 h1 .u { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 6px; text-underline-offset: 10px; }
+.v2 .tag-en { font-size: 20px; color: var(--ink-2); max-width: 52ch; margin: 24px auto 8px; }
+.v2 .tag-cn { font-family: var(--mono); font-size: 13px; color: var(--ink-4); max-width: 40ch; margin: 0 auto; }
+.v2 .ctas { display: flex; gap: 10px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+.v2 .boot {
+  max-width: 640px;
+  margin: 40px auto 0;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  background: var(--bg-1);
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 14px 18px;
+  line-height: 1.8;
+}
+.v2 .boot .ok { color: var(--accent); }
+.v2 .boot .dim { color: var(--ink-4); }
+
+/* variant 3: brutalist code block */
+.v3 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0, 520px); gap: clamp(40px, 6vw, 80px); align-items: center; }
+.v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; }
+.v3 h1 {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(40px, 7vw, 88px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin: 18px 0 24px;
+  text-transform: uppercase;
+}
+.v3 h1 em { font-style: normal; background: var(--accent); color: var(--accent-ink); padding: 0 .15em; }
+.v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
+.v3 .sub-cn { font-family: var(--mono); font-size: 13px; color: var(--ink-4); max-width: 40ch; }
+.v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+
+/* device preview (right column in v1 & v3) */
+.device-stack {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  max-width: 460px;
+  margin-left: auto;
+}
+.phone {
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 9 / 19;
+  background: #000;
+  border-radius: 36px;
+  border: 1px solid var(--line);
+  padding: 8px;
+  position: relative;
+  box-shadow:
+    0 30px 80px -20px rgba(0,0,0,.6),
+    0 0 0 1px oklch(1 0 0 / 0.03) inset;
+}
+.phone::before {
+  content: "";
+  position: absolute;
+  top: 10px; left: 50%; transform: translateX(-50%);
+  width: 70px; height: 16px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 2;
+}
+.phone-screen {
+  width: 100%; height: 100%;
+  background: #0a0f0a;
+  border-radius: 30px;
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.phone-status {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: #d9f7dc;
+  padding: 14px 20px 8px;
+}
+
+/* terminal content (shared) */
+.term {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.55;
+  padding: 10px 12px;
+  color: #cfe9d3;
+  overflow: hidden;
+}
+.term .prompt { color: var(--accent); }
+.term .path { color: #7db8ff; }
+.term .flag { color: #b8c0ff; }
+.term .com { color: #6b7a73; }
+.term .warn { color: #f2c97a; }
+.term .err { color: #f2829a; }
+.term .ok { color: #9ef5a8; }
+.term .box {
+  border: 1px solid rgba(158, 245, 168, 0.25);
+  padding: 6px 8px;
+  margin: 6px 0;
+  border-radius: 2px;
+}
+
+/* layered tablet behind phone */
+.tablet {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 360px;
+  max-width: 80%;
+  aspect-ratio: 4 / 3;
+  background: #0b0b0b;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 30px 70px -20px rgba(0,0,0,.55);
+  transform: rotate(2deg);
+  z-index: 0;
+}
+.phone { position: absolute; left: 0; top: 0; z-index: 1; transform: rotate(-3deg); }
+
+.tablet-screen {
+  width: 100%; height: 100%;
+  background: #0a0f0a;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.tablet-tabs {
+  display: flex;
+  background: #111;
+  padding: 4px 6px 0;
+  gap: 2px;
+  border-bottom: 1px solid #1a1a1a;
+}
+.tablet-tab {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: #808880;
+  padding: 4px 10px;
+  border-radius: 4px 4px 0 0;
+}
+.tablet-tab.active { background: #0a0f0a; color: var(--accent); border: 1px solid #1a1a1a; border-bottom: 0; }
+
+/* ───────────────────────────────────────────────── sections */
+.section {
+  padding: clamp(72px, 10vw, 140px) 0;
+  border-top: 1px solid var(--line);
+}
+.section-head {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 700px);
+  gap: clamp(40px, 6vw, 80px);
+  margin-bottom: 60px;
+  align-items: end;
+}
+.section-head h2 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: clamp(32px, 5vw, 56px);
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  margin: 18px 0 0;
+  text-wrap: balance;
+}
+.section-head h2 em { font-style: normal; color: var(--accent); }
+.section-head h2 .serif { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+.section-head p {
+  font-size: 16px;
+  color: var(--ink-2);
+  max-width: 52ch;
+  margin: 0;
+}
+.section-head .sub-cn {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-4);
+  margin-top: 8px;
+  max-width: 48ch;
+}
+
+/* ───────────── features */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.feat {
+  background: var(--bg);
+  padding: 28px 26px 32px;
+  position: relative;
+  transition: background 180ms ease;
+}
+.feat:hover { background: var(--bg-1); }
+.feat.col-6 { grid-column: span 6; }
+.feat.col-4 { grid-column: span 4; }
+.feat.col-8 { grid-column: span 8; }
+.feat.col-12 { grid-column: span 12; }
+.feat .idx {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-4);
+  letter-spacing: 0.12em;
+}
+.feat h3 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin: 14px 0 8px;
+}
+.feat .h-cn {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-bottom: 14px;
+}
+.feat p {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 48ch;
+}
+.feat .viz {
+  margin-top: 22px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  background: var(--bg-1);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  padding: 12px 14px;
+  line-height: 1.8;
+  overflow: hidden;
+}
+.feat .viz .hl { color: var(--accent); }
+.feat .viz .dim { color: var(--ink-4); }
+
+/* keygraph viz for "connect anywhere" */
+.keyvis {
+  position: relative;
+  height: 160px;
+  margin-top: 22px;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--bg-1);
+  overflow: hidden;
+}
+.keyvis svg { width: 100%; height: 100%; display: block; }
+
+/* ───────────── in-action (devices row) */
+.devices-row {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 40px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: clamp(28px, 4vw, 60px);
+  background: var(--bg-1);
+  position: relative;
+}
+.devices-row::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0, transparent calc(50% - .5px), var(--line-soft) calc(50% - .5px), var(--line-soft) calc(50% + .5px), transparent calc(50% + .5px));
+  pointer-events: none;
+  opacity: 0;
+}
+.devices-copy h3 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: -0.03em;
+  margin: 10px 0 10px;
+}
+.devices-copy p { color: var(--ink-2); max-width: 40ch; }
+.devices-copy .p-cn { font-family: var(--mono); font-size: 12px; color: var(--ink-4); margin-top: 10px; }
+.devices-copy ul {
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.devices-copy li { padding: 10px 0; border-top: 1px dashed var(--line-soft); display: flex; gap: 12px; }
+.devices-copy li .k { color: var(--ink-4); min-width: 80px; }
+.devices-copy li .v { color: var(--ink); }
+
+.devices-mock {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 24px;
+  align-items: end;
+}
+
+/* ───────────── use cases */
+.usecases {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+.uc {
+  padding: 32px 24px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line-soft);
+  min-height: 220px;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.uc:last-child { border-right: 0; }
+.uc .glyph {
+  font-family: var(--mono);
+  font-size: 28px;
+  color: var(--accent);
+  line-height: 1;
+  height: 32px;
+  display: flex;
+  align-items: flex-start;
+  letter-spacing: -0.04em;
+  margin-bottom: 0;
+}
+.uc h4 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  margin: 32px 0 12px;
+  min-height: 3em;
+}
+.uc .h4-cn { font-family: var(--mono); font-size: 11px; color: var(--ink-4); margin-bottom: 10px; }
+.uc p { color: var(--ink-2); font-size: 13px; margin: 0; line-height: 1.55; }
+
+/* ───────────── install */
+.install {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.install-left { padding: clamp(28px, 4vw, 48px); border-right: 1px solid var(--line); }
+.install-left h3 { font-family: var(--mono); font-size: 24px; font-weight: 600; letter-spacing: -0.025em; margin: 12px 0 12px; }
+.install-left p { color: var(--ink-2); margin: 0 0 18px; max-width: 42ch; }
+.install-left .steps { display: grid; gap: 10px; margin-top: 14px; }
+.install-left .step {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px dashed var(--line-soft);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.install-left .step .n { color: var(--ink-4); }
+.install-left .step b { font-weight: 500; color: var(--ink); }
+.install-left .step .d { color: var(--ink-3); font-size: 11px; margin-top: 2px; }
+
+.install-right {
+  background: var(--bg-1);
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.terminal-chrome {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.terminal-chrome .traffic {
+  display: flex; gap: 6px;
+}
+.terminal-chrome .traffic i {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--ink-4); opacity: .35;
+  display: block;
+}
+.terminal-chrome .traffic i:nth-child(1) { background: #ed6a5e; opacity: .8; }
+.terminal-chrome .traffic i:nth-child(2) { background: #f4c152; opacity: .8; }
+.terminal-chrome .traffic i:nth-child(3) { background: #62c554; opacity: .8; }
+.terminal-chrome .ttitle { margin-left: 8px; color: var(--ink-3); }
+.terminal-chrome .tabs { margin-left: auto; display: flex; gap: 4px; }
+.terminal-chrome .tab { padding: 2px 8px; border: 1px solid var(--line-soft); border-radius: 3px; color: var(--ink-4); font-size: 10px; }
+.terminal-chrome .tab.on { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 30%, var(--line)); }
+
+.terminal-body {
+  padding: 18px 20px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.75;
+  flex: 1;
+  color: var(--ink-2);
+  overflow: auto;
+}
+.terminal-body .p { color: var(--accent); }
+.terminal-body .c { color: var(--ink); }
+.terminal-body .com { color: var(--ink-4); }
+.terminal-body .ok { color: var(--accent); }
+.terminal-body .warn { color: #f2c97a; }
+.terminal-body .hl { color: #7db8ff; }
+.terminal-body hr { border: 0; border-top: 1px dashed var(--line-soft); margin: 10px 0; }
+
+/* ───────────── FAQ */
+.faq {
+  border-top: 1px solid var(--line);
+}
+.faq-item {
+  border-bottom: 1px solid var(--line-soft);
+  padding: 22px 0;
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
+  gap: 24px;
+  cursor: pointer;
+  transition: opacity 180ms;
+}
+.faq-item:hover { opacity: 1; }
+.faq-item .n { font-family: var(--mono); font-size: 12px; color: var(--ink-4); padding-top: 4px; }
+.faq-item .q { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+.faq-item .q-cn { font-family: var(--mono); font-size: 12px; color: var(--ink-4); margin-top: 4px; font-weight: 400; }
+.faq-item .a { grid-column: 2; color: var(--ink-2); font-size: 14px; line-height: 1.7; max-width: 88ch; margin-top: 14px; display: none; cursor: text; }
+.faq-item.open .a { display: block; }
+.faq-item .a p { margin: 0 0 10px; }
+.faq-item .a p:last-child { margin-bottom: 0; }
+.faq-item .a pre.cmd {
+  margin: 10px 0;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-1);
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+}
+.faq-item .a pre.cmd .dim { color: var(--ink-3); }
+.faq-item .a pre.cmd .com { color: var(--ink-4); }
+.faq-item .a pre.cmd .ok  { color: var(--accent); }
+.faq-item .plus {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--ink-3);
+  width: 22px;
+  height: 22px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 200ms ease, color 200ms ease;
+  line-height: 1;
+}
+.faq-item.open .plus { transform: rotate(45deg); color: var(--accent); }
+
+/* ───────────── footer */
+.foot {
+  padding: 48px 0 40px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.foot .left { display: flex; align-items: center; gap: 14px; }
+.foot .links { display: flex; gap: 20px; }
+.foot .links a:hover { color: var(--ink); }
+
+/* ───────────────────────────────────────────────── i18n */
+html[lang="en"] .cn-only { display: none !important; }
+html[lang="zh"] .en-only { display: none !important; }
+html[lang="zh"] body { font-feature-settings: normal; }
+.lang-toggle {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 2px;
+  margin-right: 4px;
+}
+.lang-toggle button {
+  background: transparent;
+  border: 0;
+  color: var(--ink-4);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 6px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+.lang-toggle button.on { color: var(--accent); }
+.lang-toggle button:not(.on):hover { color: var(--ink); }
+.lang-toggle .slash { color: var(--ink-4); opacity: .6; }
+
+/* big logotype */
+.bigmark {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: clamp(70px, 14vw, 180px);
+  letter-spacing: -0.065em;
+  line-height: 0.85;
+  color: var(--ink-4);
+  padding: 40px 0 24px;
+  border-top: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.bigmark .caret { color: var(--accent); display: inline-block; animation: blink 1.2s steps(2) infinite; }
+
+/* ───────────── Tweaks panel */
+.tweaks {
+  position: fixed;
+  right: 18px; bottom: 18px;
+  z-index: 100;
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px 16px;
+  min-width: 240px;
+  box-shadow: 0 30px 70px -20px rgba(0,0,0,.55);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-2);
+  display: none;
+}
+.tweaks.on { display: block; }
+.tweaks h5 {
+  margin: 0 0 10px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--ink-4);
+  text-transform: uppercase;
+  display: flex; justify-content: space-between;
+}
+.tweaks .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; }
+.tweaks .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.tweaks .seg button { background: transparent; color: var(--ink-3); border: 0; padding: 4px 10px; font-family: var(--mono); font-size: 11px; cursor: pointer; }
+.tweaks .seg button.on { background: var(--accent); color: var(--accent-ink); }
+.tweaks .swatch { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--line); cursor: pointer; }
+.tweaks .swatch.on { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ───────────── responsive */
+@media (max-width: 900px) {
+  .v1-grid, .v3, .devices-row, .install, .section-head { grid-template-columns: 1fr; }
+  .device-stack { max-width: 380px; margin: 30px auto 0; }
+  .phone { position: relative; transform: none; margin: 0 auto; }
+  .tablet { display: none; }
+  .devices-mock { grid-template-columns: 1fr; }
+  .features-grid > .feat { grid-column: span 12 !important; }
+  .usecases { grid-template-columns: repeat(2, 1fr); }
+  .uc:nth-child(2n) { border-right: 0; }
+  .nav-links { display: none; }
+  .foot { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .usecases { grid-template-columns: 1fr; }
+  .uc { border-right: 0; }
+  .statusbar .sep + span:nth-child(4), .statusbar > span:last-child { display: none; }
+}
+
+/* ───────── installer options ───────── */
+.opts-grid {
+  margin-top: 64px;
+  border: 1px solid var(--line);
+  background: var(--bg-1);
+  padding: 36px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
+}
+.opts-head p { color: var(--ink-2); margin-top: 10px; font-size: 14px; line-height: 1.6; }
+.opts-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px dashed var(--line-soft);
+  border-left: 1px dashed var(--line-soft);
+}
+.opt {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 18px;
+  border-right: 1px dashed var(--line-soft);
+  border-bottom: 1px dashed var(--line-soft);
+  font-size: 13px;
+}
+.opt code {
+  font-family: var(--mono);
+  color: var(--accent);
+  white-space: nowrap;
+  min-width: 140px;
+  font-size: 12.5px;
+}
+.opt span { color: var(--ink-2); line-height: 1.45; }
+@media (max-width: 860px) {
+  .opts-grid { grid-template-columns: 1fr; padding: 24px; gap: 24px; }
+  .opts-list { grid-template-columns: 1fr; }
+}
+
+/* ───────── faq groups ───────── */
+.faq-group-label {
+  grid-column: 1 / -1;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 28px 0 12px;
+  border-bottom: 1px solid var(--line);
+  margin-top: 16px;
+}
+.faq-group-label:first-child { margin-top: 0; padding-top: 0; }
+
+
+/* ───── ZH mode: no italics ───── */
+html[lang="zh"] .serif,
+html[lang="zh"] .serif-word,
+html[lang="zh"] em,
+html[lang="zh"] i:not(.plus):not(.traffic i) {
+  font-style: normal !important;
+  font-family: var(--sans) !important;
+}
+html[lang="zh"] h1 .serif,
+html[lang="zh"] h2 .serif,
+html[lang="zh"] h3 .serif {
+  font-family: inherit !important;
+}
+
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ───────── NAV ───────── -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#">
+        <span class="brand-mark">Q</span>
+        <span class="brand-name">quicktui<sup>v2.4</sup></span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features" data-i-html="nav.features"><span class="n">01</span>Features</a>
+        <a href="#action" data-i-html="nav.action"><span class="n">02</span>In&nbsp;Action</a>
+        <a href="#install" data-i-html="nav.install"><span class="n">03</span>Install</a>
+        <a href="#usecases" data-i-html="nav.usecases"><span class="n">04</span>Use&nbsp;Cases</a>
+        <a href="#faq" data-i-html="nav.faq"><span class="n">05</span>FAQ</a>
+      </nav>
+      <div class="nav-right">
+        <div class="lang-toggle" id="langToggle">
+          <button data-lang="en" class="on">EN</button>
+          <span class="slash">/</span>
+          <button data-lang="zh">中文</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">◐</button>
+        <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.nav">Get the App <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- status bar -->
+    <div class="statusbar">
+      <span data-i-html="status.ready"><span class="dot"></span>SESSION / READY</span>
+      <span class="mono">
+        <span>TMUX 3.4</span><span class="sep">·</span>
+        <span>IOS 18+ / IPAD OS</span><span class="sep">·</span>
+        <span>SAFARI · CHROME</span><span class="sep">·</span>
+        <span>UPTIME 99.99%</span>
+      </span>
+    </div>
+
+    <!-- ───────── HERO ───────── -->
     <section class="hero">
-      <div class="hero-content container">
-        <img src="images/logo.webp" alt="QuickTUI Logo" class="hero-logo" decoding="async" />
-        <h1>QuickTUI</h1>
-        <p class="tagline">Your AI Agents, Always Within Reach.</p>
-        <p class="subtitle">A tmux-powered remote terminal manager, built for iPhone, iPad &amp; modern browsers.</p>
-        <a href="#get-started" class="btn-primary">Get Started</a>
+
+      <!-- VARIANT 1 — editorial -->
+      <div class="hero-variant is-active" data-variant="1">
+        <div class="v1-grid v1">
+          <div>
+            <div class="eyebrow" data-i="hero1.eyebrow">§ AI agents, within reach</div>
+            <h1 data-i-html="hero1.h1">Your AI agents,<br><span class="slash">/</span> always <span class="serif-word">within reach</span>.</h1>
+            <p class="sub" data-i="hero1.sub">Claude Code, Aider, or any long-running agent — attach from whichever screen is in your hand. iPhone on the subway, iPad at the café, browser at your desk. Same session, one tap away.</p>
+            <div class="ctas">
+              <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.downloadIos">Download for iOS <span class="arr">→</span></a>
+              <a class="btn" href="#install" data-i="cta.browser">Open in browser</a>
+              <a class="btn" href="#features" data-i-html="cta.learn">Learn more</a>
+            </div>
+          </div>
+          <div>
+            <p class="lede" data-i="hero1.lede">Your agent's session lives on a server that never sleeps, so no matter which device you pick up, it's already there. tmux keeps it alive between attaches.</p>
+            <div class="meta-col">
+              <div class="meta-row"><span class="k" data-i="hero1.k1">Runs</span><span data-i-html="hero1.v1">Claude Code · Aider · OpenHands · long scripts</span></div>
+              <div class="meta-row"><span class="k" data-i="hero1.k2">Attach from</span><span data-i="hero1.v2">iPhone · iPad · Safari / Chrome / Arc / Firefox</span></div>
+              <div class="meta-row"><span class="k" data-i="hero1.k3">Session keeper</span><span data-i="hero1.v3">tmux · persistent across reconnects</span></div>
+              <div class="meta-row"><span class="k" data-i="hero1.k4">Hosting</span><span data-i-html="hero1.v4">self-hosted · zero cloud · your token</span></div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <!-- Features -->
-    <section class="features">
-      <div class="container">
-        <h2 class="section-title">Features</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <svg
-              class="icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="4 17 10 11 4 5"></polyline>
-              <line x1="12" y1="19" x2="20" y2="19"></line>
-            </svg>
-            <h3>Full tmux Power, Unleashed</h3>
-            <p>
-              Sessions, windows, panes, scroll history, copy mode — everything
-              tmux offers, right at your fingertips. Your AI Agents never miss a beat.
-            </p>
+      <!-- VARIANT 2 — centered terminal boot -->
+      <div class="hero-variant v2" data-variant="2">
+        <div class="mark">:: BOOT // QUICKTUI // 0xQT24 ::</div>
+        <h1 data-i-html="hero2.h1">Terminal that <em>follows</em><br>you everywhere.</h1>
+        <p class="tag-en" data-i="hero2.tag">Your AI agents, always within reach. iPhone, iPad, browser — one session across every screen you carry.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.downloadIos">Download for iOS <span class="arr">→</span></a>
+          <a class="btn" href="#action" data-i="cta.seeAction">See it in action</a>
+        </div>
+        <div class="boot">
+          <div><span class="ok">&gt;</span> booting quicktui <span class="dim">(v2.4.1 · arm64)</span></div>
+          <div><span class="ok">&gt;</span> attaching to tmux session <span class="dim">· 7 windows · 3 panes</span></div>
+          <div><span class="ok">&gt;</span> mosh: keepalive ok <span class="dim">· 38ms · jitter 2ms</span></div>
+          <div><span class="ok">&gt;</span> ready. <span class="dim">⌘⇧P to open command palette ▌</span></div>
+        </div>
+      </div>
+
+      <!-- VARIANT 3 — brutalist code -->
+      <div class="hero-variant v3" data-variant="3">
+        <div>
+          <div class="tag">────  TMUX × MOBILE × BROWSER  ────</div>
+          <h1 data-i-html="hero3.h1">Your agents,<br><em>within reach</em> of any screen.</h1>
+          <p class="sub" data-i="hero3.sub">Hand off from laptop to phone to browser without missing a beat. Wherever you are, your agent is one tap away.</p>
+          <div class="ctas">
+            <a class="btn btn-primary" href="#install" data-i-html="cta.getQt">Get QuickTUI <span class="arr">→</span></a>
+            <a class="btn" href="#features" data-i="cta.features">View features</a>
           </div>
-
-          <div class="feature-card">
-            <svg
-              class="icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-              <line x1="12" y1="18" x2="12.01" y2="18"></line>
-            </svg>
-            <h3>Native iOS. No Compromises.</h3>
-            <p>
-              A fluid, responsive tmux experience built specifically for iPhone
-              and iPad. Check on your agents from anywhere — no laptop required.
-            </p>
+        </div>
+        <div class="device-stack">
+          <div class="tablet" aria-hidden="true">
+            <div class="tablet-screen">
+              <div class="tablet-tabs">
+                <div class="tablet-tab active">● prod-api</div>
+                <div class="tablet-tab">logs</div>
+                <div class="tablet-tab">db</div>
+                <div class="tablet-tab">+</div>
+              </div>
+              <div class="term">
+                <div><span class="prompt">ubuntu@prod-api</span>:<span class="path">~/app</span>$ tail -f app.log</div>
+                <div class="com"># streaming 318 req/s</div>
+                <div>[<span class="ok">OK</span>] 200 GET  /v1/agents/44bc <span class="com">12ms</span></div>
+                <div>[<span class="ok">OK</span>] 200 POST /v1/runs       <span class="com">31ms</span></div>
+                <div>[<span class="warn">WN</span>] 429 POST /v1/inference  <span class="com">rate</span></div>
+                <div>[<span class="ok">OK</span>] 200 GET  /v1/health      <span class="com">2ms</span></div>
+                <div>[<span class="ok">OK</span>] 200 GET  /v1/runs/ff12   <span class="com">9ms</span></div>
+                <div class="box"><span class="ok">✓</span> deploy cd4f21 · live · 0 errors</div>
+              </div>
+            </div>
           </div>
-
-          <div class="feature-card">
-            <svg
-              class="icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path
-                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
-              ></path>
-            </svg>
-            <h3>Any Browser. Any Platform. Full Power.</h3>
-            <p>
-              The full QuickTUI experience, right in your browser. Any platform,
-              any device — your agents are always one tab away.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <svg
-              class="icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-              <path d="M16 3h-8l-2 4h12z"></path>
-            </svg>
-            <h3>Built for Terminal Power Users.</h3>
-            <p>
-              A custom quick-access toolbar that speaks tmux. Cut through
-              repetitive keystrokes and keep your AI Agent workflows moving fast.
-            </p>
+          <div class="phone" aria-hidden="true">
+            <div class="phone-screen">
+              <div class="phone-status"><span>9:41</span><span>●●●● 5G</span></div>
+              <div class="term">
+                <div><span class="prompt">~</span> tmux attach -t dev</div>
+                <div><span class="com">[0] dev</span> <span class="ok">[1] api*</span> <span class="com">[2] db</span></div>
+                <div>$ <span class="flag">pnpm</span> dev</div>
+                <div class="com">ready on :3000 · 412ms</div>
+                <div class="box"><span class="ok">▌</span> watching 218 files</div>
+                <div>$ git status</div>
+                <div><span class="ok">nothing to commit</span></div>
+                <div>$ ▌</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Screenshots -->
-    <section class="screenshots">
-      <div class="container">
-        <h2 class="section-title">See It in Action</h2>
-        <div class="screenshots-grid">
-          <div class="screenshot-item">
-            <div class="slideshow" id="iphone-slideshow">
-              <img src="images/iPhone/01-setup-wizard-01.webp" alt="QuickTUI Setup Wizard" class="slide active" decoding="async" />
-              <img src="images/iPhone/02-setup-wizard-02.webp" alt="QuickTUI Setup Wizard" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPhone/03-use-ai-agent-01.webp" alt="QuickTUI AI Agent" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPhone/04-use-ai-agent-02.webp" alt="QuickTUI AI Agent" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPhone/05-accessory-bar-01.webp" alt="QuickTUI Accessory Bar" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPhone/06-shortcuts-01.webp" alt="QuickTUI Shortcuts" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPhone/07-settings-01.webp" alt="QuickTUI Settings" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPhone/08-accessory-bar-02.webp" alt="QuickTUI Accessory Bar" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPhone/09-setup-wizard-03.webp" alt="QuickTUI Setup Wizard" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iphone-frame.svg" alt="" class="phone-frame" />
-            </div>
-            <span class="label">iPhone</span>
+    <!-- big logotype divider -->
+    <div class="bigmark" aria-hidden="true">QUICKTUI<span class="caret">_</span></div>
+
+    <!-- ───────── FEATURES ───────── -->
+    <section id="features" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="f.eyebrow">§ 01 / Features</div>
+          <h2 data-i-html="f.h2">Built for <em>reach</em>, not tutorials.</h2>
+        </div>
+        <div>
+          <p data-i="f.desc">Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.</p>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feat col-8">
+          <div class="idx">F.01</div>
+          <h3 data-i="f01.t">Always attached — you're always within reach</h3>
+          <p data-i="f01.b">Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there — output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)</p>
+          <div class="viz">
+<span class="dim">$</span> tmux ls
+dev     : <span class="hl">7 windows</span> (attached) <span class="dim">· 14d uptime</span>
+api     : 3 windows <span class="dim">· detached</span>
+db      : 2 windows <span class="dim">· detached</span>
+scratch : 1 window  <span class="dim">· detached</span>
           </div>
-          <div class="screenshot-item">
-            <div class="slideshow slideshow-ipad" id="ipad-slideshow">
-              <img src="images/iPad/01-setup-wizard-01.webp" alt="QuickTUI Setup Wizard" class="slide active" decoding="async" />
-              <img src="images/iPad/02-setup-wizard-02.webp" alt="QuickTUI Setup Wizard" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPad/03-use-ai-agent-01.webp" alt="QuickTUI AI Agent" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPad/04-use-ai-agent-02.webp" alt="QuickTUI AI Agent" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPad/05-accessory-bar-01.webp" alt="QuickTUI Accessory Bar" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPad/06-shortcuts-01.webp" alt="QuickTUI Shortcuts" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPad/07-settings-01.webp" alt="QuickTUI Settings" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPad/08-accessory-bar-02.webp" alt="QuickTUI Accessory Bar" class="slide" loading="lazy" decoding="async" />
-              <img src="images/iPad/09-setup-wizard-03.webp" alt="QuickTUI Setup Wizard" class="slide" loading="lazy" decoding="async" />
-              <img src="images/ipad-frame.svg" alt="" class="phone-frame" />
+        </div>
+        <div class="feat col-4">
+          <div class="idx">F.02</div>
+          <h3 data-i="f03.t">QR onboarding in 2 seconds</h3>
+          <p data-i="f03.b">Run `quicktui-server --qrcode` on the server, scan with the iOS app — you are inside your agent's session. No token copy-paste, no IP typing.</p>
+        </div>
+        <div class="feat col-4">
+          <div class="idx">F.03</div>
+          <h3 data-i="f04.t">One truth, every client</h3>
+          <p data-i="f04.b">Windows, panes, zoom, scroll, copy-mode — every client sees the exact same view of what your agents are doing. Switch devices mid-task, the cursor doesn't blink.</p>
+          <div class="viz" style="white-space:pre">
+<span class="dim">session</span>  <span class="hl">claude-code</span>  <span class="dim">· 14d · 7w</span>
+<span class="dim">┌─ 📱</span> iPhone       <span class="hl">pane 0</span>   <span class="dim">✓ live</span>
+<span class="dim">├─ 💻</span> iPad Safari  <span class="hl">pane 0</span>   <span class="dim">✓ live</span>
+<span class="dim">└─ 🖥</span>  browser     <span class="hl">pane 0</span>   <span class="dim">✓ live</span>
+<span class="dim">cursor</span>   col 42  row 18  <span class="hl">· synced</span>
+          </div>
+        </div>
+        <div class="feat col-4">
+          <div class="idx">F.04</div>
+          <h3 data-i="f02.t">Self-hosted, zero cloud</h3>
+          <p data-i="f02.b">Your agents run where you run them — Mac, Linux, or WSL. Your code, your keys, your API quotas stay put. No account, no telemetry, no vendor in the loop.</p>
+          </div>
+        <div class="feat col-4">
+          <div class="idx">F.05</div>
+          <h3 data-i="f05.t">Three ways to get attached</h3>
+          <p data-i-html="f05.b">Add your server via <em style="font-style:normal;color:var(--accent)">Quick Setup</em> (SSH auto-install), <em style="font-style:normal;color:var(--accent)">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.</p>
+          <div class="viz" style="white-space:pre">
+<span class="dim">⌘⇧P&gt;</span> <span class="hl">prod-api</span>
+  ├─ <span class="hl">attach</span>     tmux: dev                    <span class="dim">↵</span>
+  ├─ open       split vertical               <span class="dim">⌘\</span>
+  ├─ run        deploy --env=prod            <span class="dim">▶</span>
+  └─ jump       db  → redis  → logs          <span class="dim">→</span>
+          </div>
+        </div>
+        <div class="feat col-12">
+          <div class="idx">F.06</div>
+          <h3 data-i="f06.t">Runs as a service, forever</h3>
+          <p data-i-html="f06.b">Installed as a user service on macOS launchd & Linux systemd. Self-updates, restarts, survives reboots — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles it all.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── IN ACTION (devices) ───────── -->
+    <section id="action" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="ia.eyebrow">§ 02 / In Action</div>
+          <h2 data-i-html="ia.h2">Within reach on <span class="serif">every</span> screen.</h2>
+        </div>
+        <div>
+          <p data-i="ia.desc">Same session across every device. Peek on your phone during a commute. Steer from iPad at the café. Review in a browser at your desk. Your agent is wherever you are.</p>
+        </div>
+      </div>
+
+      <div class="devices-row">
+        <div class="devices-copy">
+          <div class="eyebrow" style="color:var(--accent)" data-i="ia.badge">■ CONTINUOUS</div>
+          <h3 data-i="ia.h3">Pick up any screen. It's already there.</h3>
+          <p data-i="ia.p">Every client — phone, tablet, browser — is a live window into the same agent session. No reconnect ritual, no scrolling back through logs. Your agent is already waiting on whichever screen you open.</p>
+          <ul>
+            <li><span class="k" data-i="ia.k1">session</span><span class="v" data-i="ia.v1">claude-code · 14d · 7 windows</span></li>
+            <li><span class="k" data-i="ia.k2">roam</span><span class="v" data-i="ia.v2">Wi-Fi → LTE → 5G · seamless</span></li>
+            <li><span class="k" data-i="ia.k3">clients</span><span class="v" data-i="ia.v3">iPhone · iPad · Safari · Chrome</span></li>
+            <li><span class="k" data-i="ia.k4">latency</span><span class="v" data-i="ia.v4">38ms p50 · 72ms p95</span></li>
+          </ul>
+        </div>
+
+        <div class="devices-mock">
+          <div class="phone" style="position:relative; transform:none; max-width:220px;">
+            <div class="phone-screen">
+              <div class="phone-status"><span>14:22</span><span>●●●● LTE</span></div>
+              <div class="term">
+                <div><span class="prompt">~/app</span> $ ssh prod</div>
+                <div class="com">last login: today 09:12</div>
+                <div><span class="prompt">prod</span> $ tmux a -t dev</div>
+                <div class="com">[attached · window 2/7]</div>
+                <div>$ <span class="flag">kubectl</span> get pods</div>
+                <div>web-7d4    <span class="ok">Running</span> 14d</div>
+                <div>api-8c1    <span class="ok">Running</span>  2h</div>
+                <div>worker-a2  <span class="ok">Running</span>  2h</div>
+                <div>redis-0    <span class="ok">Running</span> 14d</div>
+                <div class="box"><span class="ok">▌</span> 4/4 healthy</div>
+                <div>$ ▌</div>
+              </div>
             </div>
-            <span class="label">iPad</span>
+          </div>
+
+          <div class="tablet" style="position:relative; transform:none; width:100%; max-width:none; aspect-ratio:4/2.8;">
+            <div class="tablet-screen">
+              <div class="tablet-tabs">
+                <div class="tablet-tab">● dev</div>
+                <div class="tablet-tab active">● logs</div>
+                <div class="tablet-tab">● db</div>
+                <div class="tablet-tab">● redis</div>
+                <div class="tablet-tab">+</div>
+              </div>
+              <div class="term" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div>
+                  <div class="com"># tail -f access.log</div>
+                  <div>[<span class="ok">200</span>] /v1/runs        12ms</div>
+                  <div>[<span class="ok">200</span>] /v1/agents      19ms</div>
+                  <div>[<span class="ok">200</span>] /v1/health       2ms</div>
+                  <div>[<span class="warn">429</span>] /v1/inference  rate</div>
+                  <div>[<span class="ok">200</span>] /v1/runs/ff12    9ms</div>
+                  <div>[<span class="ok">200</span>] /v1/agents      17ms</div>
+                  <div>[<span class="ok">200</span>] /v1/runs/a31e   11ms</div>
+                  <div>[<span class="ok">200</span>] /v1/agents      22ms</div>
+                </div>
+                <div>
+                  <div class="com"># htop (summary)</div>
+                  <div>cpu     <span class="ok">[‖‖‖‖‖     ]</span> 41%</div>
+                  <div>mem     <span class="ok">[‖‖‖‖‖‖    ]</span> 62%</div>
+                  <div>net ↓   <span class="ok">[‖‖        ]</span> 12MB/s</div>
+                  <div>net ↑   <span class="ok">[‖         ]</span>  3MB/s</div>
+                  <div class="com"># sessions</div>
+                  <div>dev  <span class="ok">●</span>  14d 02:12</div>
+                  <div>api  <span class="ok">●</span>   2h 11:48</div>
+                  <div>db   <span class="ok">●</span>  14d 02:12</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Download & Quick Start -->
-    <section class="download" id="get-started">
-      <div class="container">
-        <h2 class="section-title">Get Started</h2>
-
-<div class="download-group">
-          <h3>Server <span class="download-group-note">Run on your Mac / Linux / Windows WSL</span></h3>
-          <div class="code-block">
-            <pre><span class="command">curl -fsSL https://quicktui.ai/q.sh | sh</span></pre>
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://quicktui.ai/q.sh | sh').then(()=>{this.classList.add('copied');setTimeout(()=>this.classList.remove('copied'),2000)})" title="Copy to clipboard">
-              <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            </button>
-          </div>
-          <p class="uninstall-hint">To uninstall: <code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</code></p>
-          <div class="install-options-hint">
-            <p class="install-options-title">Installer options</p>
-            <table class="install-options">
-              <thead>
-                <tr><th>Option</th><th>Description</th><th>Default</th></tr>
-              </thead>
-              <tbody>
-                <tr><td><code>-y, --yes</code></td><td>Non-interactive mode</td><td></td></tr>
-                <tr><td><code>--token &lt;string&gt;</code></td><td>Set access token</td><td><em>prompted</em></td></tr>
-                <tr><td><code>--addr &lt;address&gt;</code></td><td>Listen address, saved to <code>QUICKTUI_ADDR</code></td><td><code>0.0.0.0</code></td></tr>
-                <tr><td><code>--port &lt;port&gt;</code></td><td>Listen port, saved to <code>QUICKTUI_ADDR</code></td><td><code>8022</code></td></tr>
-                <tr><td><code>--term &lt;value&gt;</code></td><td>TERM for tmux</td><td><code>xterm-256color</code></td></tr>
-                <tr><td><code>--lang &lt;value&gt;</code></td><td>LANG for tmux</td><td><code>en_US.UTF-8</code></td></tr>
-                <tr><td><code>--no-service</code></td><td>Skip background service setup</td><td></td></tr>
-                <tr><td><code>--uninstall</code></td><td>Remove QuickTUI and all related files</td><td></td></tr>
-              </tbody>
-            </table>
-          </div>
+    <!-- ───────── USE CASES ───────── -->
+    <section id="usecases" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="uc.eyebrow">§ 03 / Use Cases</div>
+          <h2 data-i-html="uc.h2">Your agents, <span class="serif">wherever</span> you happen to be.</h2>
         </div>
+        <div>
+          <p data-i="uc.desc">QuickTUI isn't an IDE. It's the seam between the agents humming away on your server and the screen you happen to be holding right now.</p>
+        </div>
+      </div>
 
-        <div class="download-group">
-          <h3>iOS App</h3>
-          <div class="download-buttons">
-            <a href="https://apps.apple.com/app/quicktui/id6761338192" class="btn-download">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
-                />
-              </svg>
-              App Store
-            </a>
-          </div>
+      <div class="usecases">
+        <div class="uc">
+          <div class="glyph">&gt;_</div>
+          <h4 data-i="uc1.t">Steer an agent from your phone</h4>
+          <p data-i="uc1.b">Your agent hit a confirm prompt. You're on the subway. Attach, approve, detach — 10 seconds. It keeps going without you.</p>
+        </div>
+        <div class="uc">
+          <div class="glyph">◈</div>
+          <h4 data-i="uc2.t">iPad as agent cockpit</h4>
+          <p data-i="uc2.b">Magic Keyboard + QuickTUI + a beefy server = a 12" cockpit to supervise Claude Code, Aider, or a multi-hour build. Lightweight client, heavyweight agents.</p>
+        </div>
+        <div class="uc">
+          <div class="glyph">⇄</div>
+          <h4 data-i="uc3.t">Browser from any borrowed device</h4>
+          <p data-i="uc3.b">No install needed. Open the server URL in any modern browser, enter your token once, and you are watching your agents live — from a hotel laptop if you have to.</p>
+        </div>
+        <div class="uc">
+          <div class="glyph">◷</div>
+          <h4 data-i="uc4.t">Long-running jobs without babysitting</h4>
+          <p data-i="uc4.b">Training runs, agent swarms, migrations, builds. Start it, walk away, check in from the couch. Your laptop can sleep — the job can't be bothered.</p>
         </div>
       </div>
     </section>
 
-    <!-- Connect -->
-    <section class="connect" id="connect">
-      <div class="container">
-        <h2 class="section-title">How to Connect</h2>
+    <!-- ───────── INSTALL ───────── -->
+    <section id="install" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="in.eyebrow">§ 04 / Get within reach</div>
+          <h2 data-i-html="in.h2">Three steps from <span class="serif">curl</span> to within reach.</h2>
+        </div>
+        <div>
+          <p data-i="in.desc">Install the server once. From then on, every device you carry — iPhone, iPad, browser — is one tap away from your agent's live session.</p>
+        </div>
+      </div>
 
-        <div class="connect-steps">
-
-          <!-- Step 1 -->
-          <div class="connect-step">
-            <div class="connect-step-num">1</div>
-            <div class="connect-step-body">
-              <div class="connect-step-title">Choose how to add your server</div>
-              <div class="connect-step-desc">
-                <p>On iPhone or iPad, the QuickTUI Setup Wizard supports three paths:</p>
-                <ul style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
-                  <li><strong>Quick Setup</strong> — SSH into your server and install QuickTUI automatically.</li>
-                  <li><strong>Scan QR Code</strong> — run <code>quicktui-server --qrcode</code> on an existing server, then scan it.</li>
-                  <li><strong>Add Existing Server</strong> — enter the server URL and access token manually.</li>
-                </ul>
-                <span class="connect-step-note">In a browser, there is no setup wizard. Open the server URL directly and enter the token when prompted.</span>
-              </div>
-            </div>
+      <div class="install">
+        <div class="install-left">
+          <div class="eyebrow" data-i="in.badge">■ QUICKSTART</div>
+          <h3 data-i="in.h3">Server up in one line.</h3>
+          <p data-i-html="in.p">The installer handles tmux 3.2+ detection, service registration on launchd/systemd, and saves your token to <span class="path">~/.config/quicktui/config</span>.</p>
+          <div class="steps">
+            <div class="step"><span class="n">01</span><div><b data-i="step1.t">Install and start the server.</b><div class="d"><span class="mono" style="color:var(--accent)">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step1.d" style="margin-top:4px">One command detects tmux, installs the binary, registers the service, and saves your token.</div></div></div>
+            <div class="step"><span class="n">02</span><div><b data-i="step2.t">Scan QR Code in App.</b><div class="d" data-i-html="step2.d">Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono" style="color:var(--accent)">+</span> → Scan.</div></div></div>
+            <div class="step"><span class="n">03</span><div><b data-i="step3.t">Or open the browser.</b><div class="d" data-i-html="step3.d">Visit <span class="mono" style="color:var(--accent)">http://&lt;host&gt;:8022</span>, paste your token once.</div></div></div>
           </div>
-
-          <!-- Step 2 -->
-          <div class="connect-step">
-            <div class="connect-step-num">2</div>
-            <div class="connect-step-body">
-              <div class="connect-step-title">Install and start the server</div>
-              <div class="connect-step-desc">
-                <p>If you use <strong>Quick Setup</strong>, the app will SSH into your Mac or Linux server, run the installer, and configure QuickTUI for you.</p>
-                <p>If you install it yourself, run:</p>
-                <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
-                <p>The installer writes <code>~/.config/quicktui/config</code>, then asks whether to register a background service. The default choice is <strong>Yes</strong>. The default listen address is <code>0.0.0.0:8022</code>.</p>
-                <span class="connect-step-note">If you skip service registration, run the exact command printed by the installer. Manual startup uses flags and environment variables directly; it does not automatically load <code>~/.config/quicktui/config</code>.</span>
-              </div>
-            </div>
+        </div>
+        <div class="install-right">
+          <div class="terminal-chrome">
+            <div class="traffic"><i></i><i></i><i></i></div>
+            <div class="ttitle" data-i="in.ttitle">quicktui · install · ~</div>
+            <div class="tabs"><div class="tab on">install</div><div class="tab">--qrcode</div><div class="tab">--check</div></div>
           </div>
-
-          <!-- Step 3 -->
-          <div class="connect-step">
-            <div class="connect-step-num">3</div>
-            <div class="connect-step-body">
-              <div class="connect-step-title">Get your address and token</div>
-              <div class="connect-step-desc">
-                <p>If you are adding an existing server manually, you need the server URL and access token.</p>
-                <p>To find your server's local IP:</p>
-                <pre><code>macOS:  ipconfig getifaddr en0 || ipconfig getifaddr en1
-Linux:  hostname -I | awk '{print $1}'</code></pre>
-                <p>If you are using the background service, you can view the saved token and address with:</p>
-                <pre><code>cat ~/.config/quicktui/config</code></pre>
-                <p>For QR onboarding, just run <code>quicktui-server --qrcode</code> on the server and scan it in the app.</p>
-              </div>
-            </div>
+          <div class="terminal-body">
+            <div><span class="com" data-i="in.c1"># install on macOS / Linux / WSL</span></div>
+            <div><span class="p">$</span> <span class="c">curl -fsSL https://quicktui.ai/q.sh | sh</span></div>
+            <div><span class="ok">✓</span> tmux <span class="hl">3.4</span> <span data-i="in.ok1">detected</span></div>
+            <div><span class="ok">✓</span> <span data-i="in.ok2">service installed</span> · <span class="hl">0.0.0.0:8022</span></div>
+            <div><span class="ok">✓</span> <span data-i="in.ok3">token saved to ~/.config/quicktui/config</span></div>
+            <hr>
+            <div><span class="com" data-i="in.c2"># pair your iPhone / iPad with a QR code</span></div>
+            <div><span class="p">$</span> <span class="c">quicktui-server --qrcode</span></div>
+            <div><span class="ok">▌</span> <span class="com" data-i="in.c3">scan from the QuickTUI iOS app</span></div>
+            <hr>
+            <div><span class="com" data-i="in.c4"># uninstall</span></div>
+            <div><span class="p">$</span> <span class="c">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</span></div>
+            <div><span class="p">$</span> <span class="c">▌</span></div>
           </div>
+        </div>
+      </div>
 
-          <!-- Step 4 -->
-          <div class="connect-step">
-            <div class="connect-step-num">4</div>
-            <div class="connect-step-body">
-              <div class="connect-step-title">Open the app or browser</div>
-              <div class="connect-step-desc">
-                <p>On iPhone or iPad, open the QuickTUI app and choose the setup path that matches your server:</p>
-                <ul style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
-                  <li><strong>Quick Setup</strong> if the server is not installed yet and SSH access is available.</li>
-                  <li><strong>Scan QR Code</strong> if you ran <code>quicktui-server --qrcode</code>.</li>
-                  <li><strong>Add Existing Server</strong> if you already have the server URL and token.</li>
-                </ul>
-                <p>In a browser, navigate to your server URL, for example <code>http://192.168.1.100:8022</code>, then enter the token on first visit.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 5 -->
-          <div class="connect-step">
-            <div class="connect-step-num">5</div>
-            <div class="connect-step-body">
-              <div class="connect-step-title">Connect and manage sessions</div>
-              <div class="connect-step-desc">
-                <p>Tap <strong>Connect</strong>. You will see your tmux sessions. Select an existing one or create a new session with the <strong>New Session</strong> button.</p>
-                <span class="connect-step-note">Connecting over the internet? Use Tailscale, WireGuard, or Cloudflare Tunnel to expose your server safely.</span>
-              </div>
-            </div>
-          </div>
-
+      <!-- Installer options reference (from landing.md) -->
+      <div class="opts-grid">
+        <div class="opts-head">
+          <div class="eyebrow" data-i="opts.badge">■ INSTALLER OPTIONS</div>
+          <p data-i-html="opts.desc">Non-interactive installs, custom ports, environment checks. Pass via <span class="mono">sh -s --</span>:</p>
+        </div>
+        <div class="opts-list">
+          <div class="opt"><code class="mono">-y, --yes</code><span data-i="opt.yes">Non-interactive mode</span></div>
+          <div class="opt"><code class="mono">--token &lt;string&gt;</code><span data-i="opt.token">Set access token (default: prompted)</span></div>
+          <div class="opt"><code class="mono">--addr &lt;address&gt;</code><span data-i="opt.addr">Listen address (default: 0.0.0.0)</span></div>
+          <div class="opt"><code class="mono">--port &lt;port&gt;</code><span data-i="opt.port">Listen port (default: 8022)</span></div>
+          <div class="opt"><code class="mono">--term &lt;value&gt;</code><span data-i="opt.term">TERM for tmux (default: screen-256color)</span></div>
+          <div class="opt"><code class="mono">--lang &lt;value&gt;</code><span data-i="opt.lang">LANG for tmux (default: en_US.UTF-8)</span></div>
+          <div class="opt"><code class="mono">--check</code><span data-i="opt.check">Run environment checks without installing</span></div>
+          <div class="opt"><code class="mono">--no-service</code><span data-i="opt.noservice">Skip background service setup</span></div>
+          <div class="opt"><code class="mono">--uninstall</code><span data-i="opt.uninstall">Remove QuickTUI and all related files</span></div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section class="faq" id="faq">
-      <div class="container">
-        <h2 class="section-title">FAQ</h2>
+    <!-- ───────── FAQ ───────── -->
+    <section id="faq" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="faq.eyebrow">§ 05 / FAQ</div>
+          <h2 data-i-html="faq.h2">Questions &amp; <span class="serif">answers</span>.</h2>
+        </div>
+        <div>
+          <p data-i-html="faq.desc">Grouped by topic, straight from the docs. More answers in the repo — open an issue at <span class="mono" style="color:var(--accent)">github.com/dualface/quicktui</span>.</p>
+        </div>
+      </div>
 
-        <div class="faq-group">
-          <h3 class="faq-group-title">Installation</h3>
+      <div class="faq" id="faqList">
+        <!-- ─── Group: Installation ─── -->
+        <div class="faq-group-label" data-i="faqg.install">Installation</div>
 
-          <details class="faq-item">
-            <summary>Checksum verification failed during install</summary>
-            <div class="faq-answer">
-              <p>This usually means the download was interrupted or corrupted. Try running the installer again. If the problem persists, the release assets may have been updated — wait a few minutes and retry.</p>
-              <p>You can also verify your network connection and ensure nothing is intercepting HTTPS traffic (e.g. a corporate proxy).</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>tmux is not installed or the version is too old</summary>
-            <div class="faq-answer">
-              <p>QuickTUI requires tmux 3.2 or later. The installer can usually install tmux for you. If you want to install or upgrade it yourself:</p>
-              <pre><code>macOS:   brew install tmux
-Ubuntu:  sudo apt install tmux
-CentOS:  sudo yum install tmux</code></pre>
-              <p>If the installer falls back to a prebuilt tmux archive, it will save <code>QUICKTUI_TMUX_BIN</code> in <code>~/.config/quicktui/config</code> so the background service can keep finding that exact binary.</p>
-            </div>
-          </details>
+        <div class="faq-item open">
+          <div class="n">Q.01</div>
+          <div>
+            <div class="q" data-i="q1.q">Checksum verification failed during install.</div>
+            <div class="a" data-i-html="q1.a"><p>Usually the download was interrupted or corrupted — re-run the installer. If it persists, release assets may have just been updated; wait a few minutes and retry.</p><p>Also verify nothing is intercepting HTTPS traffic (e.g. a corporate proxy).</p></div>
+          </div>
+          <div class="plus">+</div>
         </div>
 
-        <div class="faq-group">
-          <h3 class="faq-group-title">Server &amp; Service</h3>
+        <div class="faq-item">
+          <div class="n">Q.02</div>
+          <div>
+            <div class="q" data-i="q2.q">tmux is not installed or the version is too old.</div>
+            <div class="a" data-i-html="q2.a">QuickTUI requires tmux <b>3.2 or later</b>. The installer can install it for you — first via the system package manager (<span class="mono">brew</span>, <span class="mono">apt</span>, <span class="mono">yum</span>, <span class="mono">dnf</span>), else a prebuilt archive unpacked to <span class="path">~/.local/tmux</span>. The absolute tmux path is saved as <span class="path">QUICKTUI_TMUX_BIN</span> so the service can find it.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
 
-          <details class="faq-item">
-            <summary>What can I configure in the config file?</summary>
-            <div class="faq-answer">
-              <p>If you use the background service, its source of truth is <code>~/.config/quicktui/config</code>. The installer writes this file even if you skip service registration, but a manual <code>quicktui-server</code> process does <strong>not</strong> read the config file automatically on normal startup.</p>
-              <pre><code># Access token — required
-QUICKTUI_TOKEN=your-secret-token
+        <div class="faq-item">
+          <div class="n">Q.03</div>
+          <div>
+            <div class="q" data-i="q3.q">What happens when I re-run the installer?</div>
+            <div class="a" data-i-html="q3.a">It detects the existing <span class="path">~/.local/bin/quicktui-server</span> and switches to <b>upgrade mode</b>: stops the service, stages the new binary, sanity-checks <span class="mono">--version</span>, atomically swaps it into place, and rolls back on failure. Your token, address, TERM, LANG and <span class="path">QUICKTUI_TMUX_BIN</span> are preserved.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
 
-# Listen address and port (default: 0.0.0.0:8022)
-QUICKTUI_ADDR=0.0.0.0:8022
+        <!-- ─── Group: Server & Service ─── -->
+        <div class="faq-group-label" data-i="faqg.server">Server & Service</div>
 
-# TERM value passed to tmux (default: xterm-256color)
+        <div class="faq-item">
+          <div class="n">Q.04</div>
+          <div>
+            <div class="q" data-i="q4.q">What can I configure in the config file?</div>
+            <div class="a" data-i-html="q4.a">The service reads <span class="path">~/.config/quicktui/config</span> — a manual <span class="mono">quicktui-server</span> process does <b>not</b>. Keys: <span class="path">QUICKTUI_TOKEN</span>, <span class="path">QUICKTUI_ADDR</span> (default <span class="mono">0.0.0.0:8022</span>), <span class="path">QUICKTUI_TERM</span> (default <span class="mono">screen-256color</span>), <span class="path">QUICKTUI_LANG</span> (default <span class="mono">en_US.UTF-8</span>), optionally <span class="path">QUICKTUI_TMUX_BIN</span>. After editing, restart: <span class="mono">launchctl kickstart -k gui/$(id -u)/ai.quicktui</span> (macOS) or <span class="mono">systemctl --user restart quicktui</span> (Linux).</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="n">Q.05</div>
+          <div>
+            <div class="q" data-i="q5.q">How do server upgrade and restart work?</div>
+            <div class="a" data-i-html="q5.a">Two paths: <b>re-run the installer</b> (atomic swap, rollback on failure, config preserved); or <b>server self-update</b> (caches release checks, downloads the platform binary, replaces the running executable — you must restart the service yourself). Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa. Check status: <span class="mono">quicktui-server --check-upgrade</span>.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="n">Q.06</div>
+          <div>
+            <div class="q" data-i="q6.q">Can I validate the server environment without installing?</div>
+            <div class="a" data-i-html="q6.a">Yes. <span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</span> runs all preflight checks with no downloads or writes: platform / arch, tmux 3.2+, locale, terminfo for TERM, default shell executable, PTY allocation via <span class="mono">script</span>, and a throwaway tmux session. Override values with <span class="mono">--term</span> / <span class="mono">--lang</span>.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="n">Q.07</div>
+          <div>
+            <div class="q" data-i="q7.q">QuickTUI says "token is required".</div>
+            <div class="a" data-i-html="q7.a"><b>Service:</b> ensure <span class="path">~/.config/quicktui/config</span> exists and contains <span class="path">QUICKTUI_TOKEN=…</span>. <b>Manual start:</b> pass <span class="mono">--token</span> or set <span class="path">QUICKTUI_TOKEN</span> in the environment — normal server startup does not read the config file automatically.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="n">Q.08</div>
+          <div>
+            <div class="q" data-i="q8.q">Can't connect — connection refused.</div>
+            <div class="a" data-i-html="q8.a">First check the service: <span class="mono">launchctl print gui/$(id -u)/ai.quicktui</span> (macOS) or <span class="mono">systemctl --user status quicktui</span> (Linux). If you skipped service registration, start the server manually with the same token and address. If it's running, make sure your firewall or tunnel allows the port from <span class="path">QUICKTUI_ADDR</span>.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="n">Q.09</div>
+          <div>
+            <div class="q" data-i-html="q9.q">Text rendering is garbled when <span class="mono">TERM=xterm-ghostty</span>.</div>
+            <div class="a" data-i-html="q9.a"><p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd"><span class="com"># recommended</span>
 QUICKTUI_TERM=xterm-256color
 
-# Locale passed to tmux (default: en_US.UTF-8)
-QUICKTUI_LANG=en_US.UTF-8
-
-# Optional: absolute path to tmux, used when the installer bootstrapped tmux
-QUICKTUI_TMUX_BIN=/Users/you/.local/tmux/tmux</code></pre>
-              <p>After editing the config file, restart the service:</p>
-              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
-systemctl --user restart quicktui                  # Linux</code></pre>
-              <p>If you run <code>quicktui-server</code> manually, pass flags or env vars directly instead:</p>
-              <pre><code>QUICKTUI_TOKEN=your-secret-token \
-QUICKTUI_ADDR=0.0.0.0:8022 \
-~/.local/bin/quicktui-server</code></pre>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>QuickTUI says "token is required"</summary>
-            <div class="faq-answer">
-              <p>There are two common cases:</p>
-              <ul style="margin: 4px 0 0 18px; display: flex; flex-direction: column; gap: 4px;">
-                <li><strong>Background service</strong>: make sure <code>~/.config/quicktui/config</code> exists and contains <code>QUICKTUI_TOKEN=...</code>.</li>
-                <li><strong>Manual start</strong>: pass <code>--token</code> or set <code>QUICKTUI_TOKEN</code> in the environment. Normal server startup does not read the config file automatically.</li>
-              </ul>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>Service was registered but did not start successfully</summary>
-            <div class="faq-answer">
-              <p>The installer now checks whether the service actually becomes reachable after registration. If this step fails, try starting it manually first:</p>
-              <pre><code>launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.quicktui.plist   # macOS
-systemctl --user start quicktui                                             # Linux</code></pre>
-              <p>Then check the logs. Common causes are a missing <code>QUICKTUI_TOKEN</code>, an invalid <code>QUICKTUI_TMUX_BIN</code>, or a <code>QUICKTUI_TERM</code> value that is not available on the server.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>Can't connect — connection refused</summary>
-            <div class="faq-answer">
-              <p>First, verify that the server is running:</p>
-              <pre><code>launchctl print gui/$(id -u)/ai.quicktui   # macOS service
-systemctl --user status quicktui           # Linux service</code></pre>
-              <p>If you skipped service registration, start the server with the same token and address you intend to use, for example:</p>
-              <pre><code>QUICKTUI_TOKEN=your-secret-token \
-QUICKTUI_ADDR=0.0.0.0:8022 \
-~/.local/bin/quicktui-server</code></pre>
-              <p>If the process is running, make sure your firewall or tunnel allows the port from <code>QUICKTUI_ADDR</code>.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>Terminal rendering is broken when using Ghostty</summary>
-            <div class="faq-answer">
-              <p>Ghostty uses <code>TERM=xterm-ghostty</code>. If the server or service should use that terminfo entry too, set:</p>
-              <p>Edit <code>~/.config/quicktui/config</code> and set:</p>
-              <pre><code>QUICKTUI_TERM=xterm-ghostty</code></pre>
-              <p>Then restart the service, or rerun your manual server command with <code>--term xterm-ghostty</code>.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>PTY spawn failed / internal server error when opening a session</summary>
-            <div class="faq-answer">
-              <p>This usually means the server could not launch or attach tmux. Check the logs first:</p>
-              <pre><code>tail -f ~/Library/Logs/QuickTUI/stdout.log ~/Library/Logs/QuickTUI/stderr.log   # macOS service
-journalctl --user -u quicktui -f             # Linux service</code></pre>
-              <p>If the config contains <code>QUICKTUI_TMUX_BIN</code>, it must be an absolute path to a real tmux binary. If the installer added that line for a bundled tmux, leave it intact unless the binary moved.</p>
-              <p>Also verify that <code>QUICKTUI_TERM</code> and <code>QUICKTUI_LANG</code> are valid for the environment where the server is running.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>How do I view server logs?</summary>
-            <div class="faq-answer">
-              <p>If QuickTUI is running as a background service:</p>
-              <pre><code># macOS
-tail -f ~/Library/Logs/QuickTUI/stdout.log ~/Library/Logs/QuickTUI/stderr.log
-
-# Linux
-journalctl --user -u quicktui -f</code></pre>
-              <p>If you started <code>quicktui-server</code> manually, view the output in the terminal where you launched it.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>How do I change the listen address or port?</summary>
-            <div class="faq-answer">
-              <p>If you use the background service, edit <code>~/.config/quicktui/config</code> and update <code>QUICKTUI_ADDR</code>:</p>
-              <pre><code>QUICKTUI_ADDR=0.0.0.0:9000</code></pre>
-              <pre><code>launchctl kickstart -k gui/$(id -u)/ai.quicktui   # macOS
-systemctl --user restart quicktui                  # Linux</code></pre>
-              <p>If you run the server manually, pass the address directly on startup:</p>
-              <pre><code>~/.local/bin/quicktui-server \
-  --token your-secret-token \
-  --addr 0.0.0.0:9000</code></pre>
-              <p>You can also set a different address and port at install time. The installer will save the final value to <code>QUICKTUI_ADDR</code> for service-based setups:</p>
-              <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- --addr 127.0.0.1 --port 9000</code></pre>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>How do I uninstall QuickTUI?</summary>
-            <div class="faq-answer">
-              <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</code></pre>
-              <p>This stops the service when possible and removes the binary, config, known launchd/systemd service files, and logs. It also cleans up leftover service files from partial installs where the binary is already gone.</p>
-            </div>
-          </details>
+<span class="com"># or</span>
+QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term xterm-256color</pre></div>
+          </div>
+          <div class="plus">+</div>
         </div>
 
-        <div class="faq-group">
-          <h3 class="faq-group-title">tmux</h3>
-
-          <details class="faq-item">
-            <summary>My session list is empty</summary>
-            <div class="faq-answer">
-              <p>QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <strong>New Session</strong>, or create one on the server yourself:</p>
-              <pre><code>tmux new-session -s mysession</code></pre>
-            </div>
-          </details>
+        <div class="faq-item">
+          <div class="n">Q.10</div>
+          <div>
+            <div class="q" data-i="q10.q">PTY spawn failed / internal server error when opening a session.</div>
+            <div class="a" data-i-html="q10.a">The server could not launch or attach tmux. Check logs: <span class="mono">tail -f ~/Library/Logs/QuickTUI/stdout.log</span> (macOS) or <span class="mono">journalctl --user -u quicktui -f</span> (Linux). If <span class="path">QUICKTUI_TMUX_BIN</span> is set, it must be an absolute path to a real tmux binary. Also verify <span class="path">QUICKTUI_TERM</span> and <span class="path">QUICKTUI_LANG</span> are valid.</div>
+          </div>
+          <div class="plus">+</div>
         </div>
 
-        <div class="faq-group">
-          <h3 class="faq-group-title">iOS App &amp; Browser</h3>
+        <div class="faq-item">
+          <div class="n">Q.11</div>
+          <div>
+            <div class="q" data-i="q11.q">How do I view server logs?</div>
+            <div class="a" data-i-html="q11.a"><b>macOS:</b> <span class="mono">tail -f ~/Library/Logs/QuickTUI/stdout.log ~/Library/Logs/QuickTUI/stderr.log</span>. <b>Linux:</b> <span class="mono">journalctl --user -u quicktui -f</span>. If you started <span class="mono">quicktui-server</span> manually, output appears in the terminal where you launched it.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
 
-          <details class="faq-item">
-            <summary>What is the access token?</summary>
-            <div class="faq-answer">
-              <p>The access token is a secret you set during installation. It protects your server from unauthorized access. You can find it in <code>~/.config/quicktui/config</code> on your server:</p>
-              <pre><code>cat ~/.config/quicktui/config</code></pre>
-              <p>Enter this token when prompted on first login in the app or browser.</p>
-            </div>
-          </details>
+        <div class="faq-item">
+          <div class="n">Q.12</div>
+          <div>
+            <div class="q" data-i="q12.q">How do I change the listen address or port?</div>
+            <div class="a" data-i-html="q12.a"><b>Service:</b> edit <span class="path">QUICKTUI_ADDR</span> in <span class="path">~/.config/quicktui/config</span>, then restart. <b>Manual:</b> pass <span class="mono">--addr 0.0.0.0:9000</span>. <b>At install time:</b> <span class="mono">curl … | sh -s -- --addr 127.0.0.1 --port 9000</span>.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
 
-          <details class="faq-item">
-            <summary>Can I connect over the internet?</summary>
-            <div class="faq-answer">
-              <p>Yes. You need your server to be reachable from the internet — either via a public IP, a VPN, or a tunnel service such as Tailscale or Cloudflare Tunnel. Make sure the configured port (<code>8022</code> by default) is accessible and your token is kept secret.</p>
-            </div>
-          </details>
+        <div class="faq-item">
+          <div class="n">Q.13</div>
+          <div>
+            <div class="q" data-i="q13.q">How do I uninstall QuickTUI?</div>
+            <div class="a" data-i-html="q13.a"><span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</span> — stops the service, removes the binary, config, known launchd / systemd service files, and logs. Also cleans up leftover service files from partial installs.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
 
-          <details class="faq-item">
-            <summary>The app or browser shows "Session not found"</summary>
-            <div class="faq-answer">
-              <p>This comes directly from the server. It can mean the tmux session was closed or renamed, but it can also mean the tmux server is no longer running or cannot be reached.</p>
-              <p>Refresh the session list, then open an existing session or create a new one.</p>
-            </div>
-          </details>
+        <!-- ─── Group: tmux ─── -->
+        <div class="faq-group-label" data-i="faqg.tmux">tmux</div>
+
+        <div class="faq-item">
+          <div class="n">Q.14</div>
+          <div>
+            <div class="q" data-i="q14.q">My session list is empty.</div>
+            <div class="a" data-i-html="q14.a">QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <b>New Session</b>, or on the server: <span class="mono">tmux new-session -s mysession</span>.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <!-- ─── Group: iOS App & Browser ─── -->
+        <div class="faq-group-label" data-i="faqg.client">iOS App & Browser</div>
+
+        <div class="faq-item">
+          <div class="n">Q.15</div>
+          <div>
+            <div class="q" data-i="q15.q">What is the access token?</div>
+            <div class="a" data-i-html="q15.a">A secret you set during installation — it protects your server from unauthorized access. Find it on your server: <span class="mono">cat ~/.config/quicktui/config</span>. Enter it when prompted on first login in the app or browser.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="n">Q.16</div>
+          <div>
+            <div class="q" data-i="q16.q">Can I connect over the internet?</div>
+            <div class="a" data-i-html="q16.a">Yes. You need the server reachable from the internet — via a public IP, VPN, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. Make sure the configured port (<span class="mono">8022</span> by default) is accessible and your token stays secret.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="n">Q.17</div>
+          <div>
+            <div class="q" data-i="q17.q">The app or browser shows "Session not found".</div>
+            <div class="a" data-i-html="q17.a">This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running. Refresh the session list, then open an existing session or create a new one.</div>
+          </div>
+          <div class="plus">+</div>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <p>&copy; 2026 QuickTUI. All rights reserved.</p>
-        <a href="https://github.com/dualface/quicktui" class="github-link" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
-            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
-          </svg>
-          GitHub
-        </a>
+    <!-- ───────── FOOT ───────── -->
+    <footer class="foot">
+      <div class="left">
+        <span class="brand-mark">Q</span>
+        <span>quicktui.ai</span>
+        <span style="opacity:.5">·</span>
+        <span data-i="foot.tag">© 2026 QuickTUI · All rights reserved.</span>
+      </div>
+      <div class="links">
+        <a href="https://github.com/dualface/quicktui#readme" data-i="foot.docs">Docs</a>
+        <a href="https://apps.apple.com/app/quicktui/id6761338192" data-i="foot.appstore">App Store</a>
+        <a href="https://github.com/dualface/quicktui" data-i="foot.github">GitHub</a>
       </div>
     </footer>
-    <script>
-      (function () {
-        function startSlideshow(id) {
-          var box = document.getElementById(id);
-          if (!box) return;
-          var slides = box.querySelectorAll(".slide");
-          var cur = 0;
-          setInterval(function () {
-            slides[cur].classList.remove("active");
-            cur = (cur + 1) % slides.length;
-            slides[cur].classList.add("active");
-          }, 1500);
-        }
-        startSlideshow("iphone-slideshow");
-        startSlideshow("ipad-slideshow");
-      })();
-    </script>
-  </body>
+
+  </main>
+</div>
+
+<!-- ───────── TWEAKS ───────── -->
+<div class="tweaks" id="tweaks">
+  <h5><span>TWEAKS</span><span style="color:var(--accent)">●</span></h5>
+
+  <div class="row">
+    <span>Theme</span>
+    <div class="seg" data-group="theme">
+      <button data-val="dark" class="on">dark</button>
+      <button data-val="light">light</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <span>Hero</span>
+    <div class="seg" data-group="hero">
+      <button data-val="1" class="on">v1</button>
+      <button data-val="2">v2</button>
+      <button data-val="3">v3</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <span>Accent</span>
+    <div style="display:flex; gap:6px;" data-group="accent">
+      <div class="swatch on" style="background:oklch(0.70 0.19 255)" data-val="255"></div>
+      <div class="swatch" style="background:oklch(0.82 0.22 142)" data-val="142"></div>
+      <div class="swatch" style="background:oklch(0.82 0.17 65)" data-val="65"></div>
+      <div class="swatch" style="background:oklch(0.72 0.22 330)" data-val="330"></div>
+      <div class="swatch" style="background:oklch(0.95 0.005 0)" data-val="0"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ───────────────────────────────────────────────── tweak state
+const DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "dark",
+  "hero": "1",
+  "accentHue": 142,
+  "lang": "en"
+}/*EDITMODE-END*/;
+
+const state = { ...DEFAULTS };
+
+// ───────── i18n dictionary
+const I18N = {
+  // ───── nav
+  "nav.features": { en: `<span class="n">01</span>Features`, zh: `<span class="n">01</span>功能` },
+  "nav.action": { en: `<span class="n">02</span>In&nbsp;Action`, zh: `<span class="n">02</span>实战演示` },
+  "nav.install": { en: `<span class="n">03</span>Install`, zh: `<span class="n">03</span>安装` },
+  "nav.usecases": { en: `<span class="n">04</span>Use&nbsp;Cases`, zh: `<span class="n">04</span>使用场景` },
+  "nav.faq": { en: `<span class="n">05</span>FAQ`, zh: `<span class="n">05</span>常见问题` },
+  "cta.nav": { en: `Get the App <span class="arr">→</span>`, zh: `获取应用 <span class="arr">→</span>` },
+  "cta.downloadIos": { en: `Download for iOS <span class="arr">→</span>`, zh: `下载 iOS 版 <span class="arr">→</span>` },
+  "cta.browser": { en: "Open in browser", zh: "在浏览器中打开" },
+  "cta.learn": { en: `Learn more`, zh: `了解详情` },
+  "cta.seeAction": { en: "See it in action", zh: "查看实时演示" },
+  "cta.getQt": { en: `Get QuickTUI <span class="arr">→</span>`, zh: `获取 QuickTUI <span class="arr">→</span>` },
+  "cta.features": { en: "View features", zh: "查看功能" },
+
+  "status.ready": { en: `<span class="dot"></span>SESSION / READY`, zh: `<span class="dot"></span>会话 / 就绪` },
+
+  // ───── hero1
+  "hero1.eyebrow": { en: "§ AI agents, within reach", zh: "§ AI Agent · 触手可及" },
+  "hero1.h1": { en: `Your AI agents,<br><span class="slash">/</span> always <span class="serif-word">within reach</span>.`, zh: `你的 AI Agent，<br><span class="slash">/</span> 始终<span class="serif-word">触手可及</span>。` },
+  "hero1.sub": { en: "Claude Code, Aider, or any long-running agent — attach from whichever screen is in your hand. iPhone on the subway, iPad at the café, browser at your desk. Same session, one tap away.", zh: "Claude Code、Aider 或任何长时间运行的 Agent — 从你手边那块屏幕随时接入。地铁里的 iPhone、咖啡厅里的 iPad、办公桌前的浏览器。同一会话，一触即达。" },
+  "hero1.lede": { en: "Your agent's session lives on a server that never sleeps, so no matter which device you pick up, it's already there. tmux keeps it alive between attaches.", zh: "Agent 的会话运行在一台永不休眠的服务器上 — 无论你拿起哪块屏幕，它都已经在那里等你。tmux 在两次接入之间始终保活。" },
+  "hero1.k1": { en: "Runs", zh: "运行对象" },
+  "hero1.v1": { en: `Claude Code · Aider · OpenHands · long scripts`, zh: `Claude Code · Aider · OpenHands · 长时间脚本` },
+  "hero1.k2": { en: "Attach from", zh: "接入设备" },
+  "hero1.v2": { en: "iPhone · iPad · Safari / Chrome / Arc / Firefox", zh: "iPhone · iPad · Safari / Chrome / Arc / Firefox" },
+  "hero1.k3": { en: "Session keeper", zh: "会话保活" },
+  "hero1.v3": { en: "tmux · persistent across reconnects", zh: "tmux · 跨重连持续存活" },
+  "hero1.k4": { en: "Hosting", zh: "部署" },
+  "hero1.v4": { en: "self-hosted · zero cloud · your token", zh: "自托管 · 零云端 · 你的 Token" },
+
+  // ───── hero2
+  "hero2.boot": { en: "booting", zh: "启动中" },
+  "hero2.h1": { en: `Terminal that <em>follows</em><br>you everywhere.`, zh: `跟随<em>你</em>的终端，<br>无处不在。` },
+  "hero2.tag": { en: "Your AI agents, always within reach. iPhone, iPad, browser — one session across every screen you carry.", zh: "你的 AI Agent，始终触手可及。iPhone、iPad、浏览器 — 一个会话，跨越你携带的每块屏幕。" },
+
+  // ───── features
+  "f.eyebrow": { en: "§ 01 / Features", zh: "§ 01 / 功能特性" },
+  "f.h2": { en: `Built for <em>reach</em>, not tutorials.`, zh: `为<em>触手可及</em>而设计，而非教程。` },
+  "f.desc": { en: "Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.", zh: "每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让 Agent 在你当下随身的任意设备上触手可及。" },
+
+  "f01.t": { en: "Always attached — you're always within reach", zh: "始终在线 — 你始终触手可及" },
+  "f01.b": { en: "Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there — output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)", zh: "Agent 的会话在两次接入之间持续存活于服务器 — 你在任何设备上打开 QuickTUI，它已在那里等你：输出完整、光标停在你离开的位置。（底层由 tmux 保活 PTY。）" },
+  "f04.t": { en: "One truth, every client", zh: "同一真相，所有客户端" },
+  "f04.b": { en: "Windows, panes, zoom, scroll, copy-mode — every client sees the exact same view of what your agents are doing. Switch devices mid-task, the cursor doesn't blink.", zh: "窗口、面板、缩放、滚动、复制模式 — 每个客户端都看到 Agent 当前状态的同一份视图。任务进行中切换设备，光标毫不闪动。" },
+  "f02.t": { en: "Self-hosted, zero cloud", zh: "自托管 · 零云端" },
+  "f02.b": { en: "Your agents run where you run them — Mac, Linux, or WSL. Your code, your keys, your API quotas stay put. No account, no telemetry, no vendor in the loop.", zh: "Agent 跑在你选的主机上 — Mac、Linux 或 WSL。代码、密钥、API 额度留在原地。无账号、无遥测、无厂商介入。" },
+  "f03.t": { en: "QR onboarding in 2 seconds", zh: "2 秒扫码接入" },
+  "f03.b": { en: "Run `quicktui-server --qrcode` on the server, scan with the iOS app — you are inside your agent's session. No token copy-paste, no IP typing.", zh: "在服务器执行 `quicktui-server --qrcode`，用 iOS App 扫描 — 你已进入 Agent 的会话。无需复制 Token、无需敲 IP。" },
+  "f05.t": { en: "Three ways to get attached", zh: "三种方式即刻接入" },
+  "f05.b": { en: `Add your server via <em style="font-style:normal;color:var(--accent)">Quick Setup</em> (SSH auto-install), <em style="font-style:normal;color:var(--accent)">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em style="font-style:normal;color:var(--accent)">Quick Setup</em>（SSH 自动安装）、<em style="font-style:normal;color:var(--accent)">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
+  "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
+  "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Self-updates, restarts, survives reboots — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles it all.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。自更新、自重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。一条 <span class="mono">q.sh</span> 脚本全部搞定。` },
+  "f07.t": { en: `<span style="color:var(--accent)">Within reach</span> — on whichever screen you're holding.`, zh: `<span style="color:var(--accent)">触手可及</span> — 你手里那块屏幕。` },
+  "f07.b": { en: "Claude Code, Aider, OpenHands, Cursor Background Agents, a 12-hour training run — they stay on a server that never sleeps, so whichever screen you happen to be holding, they're one tap away.", zh: "Claude Code、Aider、OpenHands、Cursor Background Agents、12 小时的训练任务 — 它们留在一台永不休眠的服务器上，所以不论你拿着哪块屏幕，它们都只差一次点击。" },
+
+  // ───── in action
+  "ia.eyebrow": { en: "§ 02 / In Action", zh: "§ 02 / 实战演示" },
+  "ia.h2": { en: `Within reach on <span class="serif">every</span> screen.`, zh: `<span class="serif">每一块</span>屏幕，触手可及。` },
+  "ia.desc": { en: "Same session across every device. Peek on your phone during a commute. Steer from iPad at the café. Review in a browser at your desk. Your agent is wherever you are.", zh: "同一会话，跨越每一块设备。通勤时用手机查看。咖啡厅里用 iPad 接管。办公桌前在浏览器里审阅。你在哪里，Agent 就在哪里。" },
+  "ia.badge": { en: "■ CONTINUOUS", zh: "■ 持续在线" },
+  "ia.h3": { en: "Pick up any screen. It's already there.", zh: "拿起任一屏幕，Agent 已在那里。" },
+  "ia.p": { en: "Every client — phone, tablet, browser — is a live window into the same agent session. No reconnect ritual, no scrolling back through logs. Your agent is already waiting on whichever screen you open.", zh: "每个客户端 — 手机、平板、浏览器 — 都是通往同一 Agent 会话的实时窗口。无需重连仪式、无需翻回日志。Agent 已在你打开的那块屏幕上等你。" },
+  "ia.k1": { en: "session", zh: "会话" },
+  "ia.v1": { en: "claude-code · 14d · 7 windows", zh: "claude-code · 14 天 · 7 个窗口" },
+  "ia.k2": { en: "roam", zh: "漫游" },
+  "ia.v2": { en: "Wi-Fi → LTE → 5G · seamless", zh: "Wi-Fi → LTE → 5G · 无缝切换" },
+  "ia.k3": { en: "clients", zh: "客户端" },
+  "ia.v3": { en: "iPhone · iPad · Safari · Chrome", zh: "iPhone · iPad · Safari · Chrome" },
+  "ia.k4": { en: "latency", zh: "延迟" },
+  "ia.v4": { en: "38ms p50 · 72ms p95", zh: "38ms p50 · 72ms p95" },
+
+  // ───── install
+  "in.eyebrow": { en: "§ 04 / Get within reach", zh: "§ 04 / 进入触手可及的状态" },
+  "in.h2": { en: `Three steps from <span class="serif">curl</span> to within reach.`, zh: `三步：从一条 <span class="serif">curl</span> 命令到触手可及。` },
+  "in.desc": { en: "Install the server once. From then on, every device you carry — iPhone, iPad, browser — is one tap away from your agent's live session.", zh: "安装服务端一次。从此你随身的每一块设备 — iPhone、iPad、浏览器 — 都与 Agent 的实时会话只差一次点击。" },
+  "in.badge": { en: "■ QUICKSTART", zh: "■ 快速上手" },
+  "in.h3": { en: "Server up in one line.", zh: "一行命令启动服务。" },
+  "in.p": { en: `The installer handles tmux 3.2+ detection, service registration on launchd/systemd, and saves your token to <span class="path">~/.config/quicktui/config</span>.`, zh: `安装脚本自动检测 tmux 3.2+、在 launchd/systemd 上注册服务，并将 Token 保存到 <span class="path">~/.config/quicktui/config</span>。` },
+  "step1.t": { en: "Install and start the server.", zh: "安装并启动服务端。" },
+  "step1.d": { en: `One command detects tmux, installs the binary, registers the service, and saves your token.`, zh: `一条命令自动检测 tmux、安装二进制、注册服务、保存 Token。` },
+  "step2.t": { en: "Scan QR Code in App.", zh: "在 App 中扫描二维码。" },
+  "step2.d": { en: `Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono" style="color:var(--accent)">+</span> → Scan.`, zh: `运行 <span class="mono">quicktui-server --qrcode</span>，打开 iOS App，点击 <span class="mono" style="color:var(--accent)">+</span> → 扫描。` },
+  "step3.t": { en: "Or open the browser.", zh: "或打开浏览器。" },
+  "step3.d": { en: `Visit <span class="mono" style="color:var(--accent)">http://&lt;host&gt;:8022</span>, paste your token once.`, zh: `访问 <span class="mono" style="color:var(--accent)">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
+    "in.ttitle": { en: "quicktui · install · ~", zh: "quicktui · install · ~" },
+  "in.c1": { en: "# install on macOS / Linux / WSL", zh: "# 在 macOS / Linux / WSL 上安装" },
+  "in.c2": { en: "# pair your iPhone / iPad with a QR code", zh: "# 用二维码配对 iPhone / iPad" },
+  "in.c3": { en: "scan from the QuickTUI iOS app", zh: "用 QuickTUI iOS App 扫描" },
+  "in.c4": { en: "# uninstall", zh: "# 卸载" },
+  "in.ok1": { en: "detected", zh: "已检测" },
+  "in.ok2": { en: "service installed", zh: "服务已安装" },
+  "in.ok3": { en: "token saved to ~/.config/quicktui/config", zh: "Token 已保存至 ~/.config/quicktui/config" },
+
+  "opts.badge": { en: "■ INSTALLER OPTIONS", zh: "■ 安装脚本参数" },
+  "opts.desc": { en: `Non-interactive installs, custom ports, environment checks. Pass via <span class="mono">sh -s --</span>:`, zh: `非交互式安装、自定义端口、环境检查。通过 <span class="mono">sh -s --</span> 传入：` },
+  "opt.yes": { en: "Non-interactive mode", zh: "非交互模式" },
+  "opt.token": { en: "Set access token (default: prompted)", zh: "设置 access token（默认：交互提示）" },
+  "opt.addr": { en: "Listen address (default: 0.0.0.0)", zh: "监听地址（默认：0.0.0.0）" },
+  "opt.port": { en: "Listen port (default: 8022)", zh: "监听端口（默认：8022）" },
+  "opt.term": { en: "TERM for tmux (default: screen-256color)", zh: "tmux 的 TERM（默认：screen-256color）" },
+  "opt.lang": { en: "LANG for tmux (default: en_US.UTF-8)", zh: "tmux 的 LANG（默认：en_US.UTF-8）" },
+  "opt.check": { en: "Run environment checks without installing", zh: "仅运行环境检查，不安装" },
+  "opt.noservice": { en: "Skip background service setup", zh: "跳过后台服务注册" },
+  "opt.uninstall": { en: "Remove QuickTUI and all related files", zh: "移除 QuickTUI 及所有相关文件" },
+
+  // ───── use cases
+  "uc.eyebrow": { en: "§ 03 / Use Cases", zh: "§ 03 / 使用场景" },
+  "uc.h2": { en: `Your agents, <span class="serif">wherever</span> you happen to be.`, zh: `你在<span class="serif">哪</span>，Agent 就在哪。` },
+  "uc.desc": { en: "QuickTUI isn't an IDE. It's the seam between the agents humming away on your server and the screen you happen to be holding right now.", zh: "QuickTUI 不是 IDE。它是那条纽带 — 连接正在你服务器上默默运行的 Agent，和你此刻正拿着的那块屏幕。" },
+  "uc1.t": { en: "Steer an agent from your phone", zh: "在手机上接管 Agent" },
+  "uc1.b": { en: "Your agent hit a confirm prompt. You're on the subway. Attach, approve, detach — 10 seconds. It keeps going without you.", zh: "Agent 停在一个确认提示上。你正在地铁里。接入、批准、断开 —— 10 秒。它继续往下跑，不需要你守着。" },
+  "uc2.t": { en: "iPad as agent cockpit", zh: "iPad 即 Agent 驾驶舱" },
+  "uc2.b": { en: "Magic Keyboard + QuickTUI + a beefy server = a 12\" cockpit to supervise Claude Code, Aider, or a multi-hour build. Lightweight client, heavyweight agents.", zh: "Magic Keyboard + QuickTUI + 强力服务器 = 一块 12 英寸驾驶舱，用来盯着 Claude Code、Aider 或多小时构建任务。轻量客户端，重量级 Agent。" },
+  "uc3.t": { en: "Browser from any borrowed device", zh: "从任何设备的浏览器接入" },
+  "uc3.b": { en: "No install needed. Open the server URL in any modern browser, enter your token once, and you are watching your agents live — from a hotel laptop if you have to.", zh: "无需安装。在任意现代浏览器中打开服务器 URL，输一次 Token，即可实时看到 Agent 的运行状态 — 哪怕是酒店里借来的笔记本。" },
+  "uc4.t": { en: "Long-running jobs without babysitting", zh: "长时间任务 · 无需值守" },
+  "uc4.b": { en: "Training runs, agent swarms, migrations, builds. Start it, walk away, check in from the couch. Your laptop can sleep — the job can't be bothered.", zh: "训练任务、Agent 群、数据迁移、构建流水线。启动后走开，从沙发上随手查看。笔记本可以休眠 — 任务不会因此停下。" },
+
+  // ───── faq
+  "faq.eyebrow": { en: "§ 05 / FAQ", zh: "§ 05 / 常见问题" },
+  "faq.h2": { en: `Questions &amp; <span class="serif">answers</span>.`, zh: `问题与<span class="serif">答案</span>。` },
+  "faq.desc": { en: `Grouped by topic, straight from the docs. More answers in the repo — open an issue at <span class="mono" style="color:var(--accent)">github.com/dualface/quicktui</span>.`, zh: `按主题分组，均来自官方文档。更多答案请见仓库 — 在 <span class="mono" style="color:var(--accent)">github.com/dualface/quicktui</span> 提 Issue。` },
+
+  "faqg.install": { en: "Installation", zh: "安装" },
+  "faqg.server": { en: "Server & Service", zh: "服务端 · 服务" },
+  "faqg.tmux": { en: "tmux", zh: "tmux" },
+  "faqg.client": { en: "iOS App & Browser", zh: "iOS App 与浏览器" },
+
+  "q1.q": { en: "Checksum verification failed during install.", zh: "安装时校验和验证失败。" },
+  "q1.a": { en: `<p>Usually the download was interrupted or corrupted — re-run the installer. If it persists, release assets may have just been updated; wait a few minutes and retry.</p><p>Also verify nothing is intercepting HTTPS traffic (e.g. a corporate proxy).</p>`, zh: `<p>通常是下载中断或损坏 — 重新运行安装脚本即可。若持续出错，可能是发布资源刚更新，稍等几分钟重试。</p><p>也请检查是否有中间人拦截 HTTPS 流量（例如企业代理）。</p>` },
+
+  "q2.q": { en: "tmux is not installed or the version is too old.", zh: "未安装 tmux 或版本过旧。" },
+  "q2.a": { en: `<p>QuickTUI requires tmux <b>3.2 or later</b>. The installer can install it for you — first via the system package manager (<span class="mono">brew</span>, <span class="mono">apt</span>, <span class="mono">yum</span>, <span class="mono">dnf</span>), else a prebuilt archive unpacked to <span class="path">~/.local/tmux</span>.</p><p>The absolute tmux path is saved as <span class="path">QUICKTUI_TMUX_BIN</span> so the service can find it.</p>`, zh: `<p>QuickTUI 需要 tmux <b>3.2 或更高版本</b>。安装脚本可自动为你安装 — 优先使用系统包管理器（<span class="mono">brew</span>、<span class="mono">apt</span>、<span class="mono">yum</span>、<span class="mono">dnf</span>），否则下载预编译包解压到 <span class="path">~/.local/tmux</span>。</p><p>tmux 的绝对路径会保存为 <span class="path">QUICKTUI_TMUX_BIN</span>，服务端可据此找到。</p>` },
+
+  "q3.q": { en: "What happens when I re-run the installer?", zh: "重新运行安装脚本会发生什么？" },
+  "q3.a": { en: `It detects the existing <span class="path">~/.local/bin/quicktui-server</span> and switches to <b>upgrade mode</b>: stops the service, stages the new binary, sanity-checks <span class="mono">--version</span>, atomically swaps it into place, and rolls back on failure. Your token, address, TERM, LANG and <span class="path">QUICKTUI_TMUX_BIN</span> are preserved.`, zh: `脚本会检测已有的 <span class="path">~/.local/bin/quicktui-server</span>，切换到<b>升级模式</b>：停止服务、暂存新二进制、用 <span class="mono">--version</span> 做合理性检查、原子替换，失败自动回滚。你的 token、地址、TERM、LANG 以及 <span class="path">QUICKTUI_TMUX_BIN</span> 全部保留。` },
+
+  "q4.q": { en: "What can I configure in the config file?", zh: "配置文件里可以配置什么？" },
+  "q4.a": { en: `<p>The service reads <span class="path">~/.config/quicktui/config</span> — a manual <span class="mono">quicktui-server</span> process does <b>not</b>.</p><p>Keys: <span class="path">QUICKTUI_TOKEN</span>, <span class="path">QUICKTUI_ADDR</span> (default <span class="mono">0.0.0.0:8022</span>), <span class="path">QUICKTUI_TERM</span> (default <span class="mono">screen-256color</span>), <span class="path">QUICKTUI_LANG</span> (default <span class="mono">en_US.UTF-8</span>), optionally <span class="path">QUICKTUI_TMUX_BIN</span>.</p><p>After editing, restart the service:</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl kickstart -k gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user restart quicktui</pre>`, zh: `<p>服务会读取 <span class="path">~/.config/quicktui/config</span> — 手动启动的 <span class="mono">quicktui-server</span> 进程<b>不会</b>自动读取。</p><p>键：<span class="path">QUICKTUI_TOKEN</span>、<span class="path">QUICKTUI_ADDR</span>（默认 <span class="mono">0.0.0.0:8022</span>）、<span class="path">QUICKTUI_TERM</span>（默认 <span class="mono">screen-256color</span>）、<span class="path">QUICKTUI_LANG</span>（默认 <span class="mono">en_US.UTF-8</span>），可选 <span class="path">QUICKTUI_TMUX_BIN</span>。</p><p>编辑后重启服务：</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl kickstart -k gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user restart quicktui</pre>` },
+
+  "q5.q": { en: "How do server upgrade and restart work?", zh: "服务端升级与重启如何工作？" },
+  "q5.a": { en: `<p>Two paths:</p><p><b>Re-run the installer</b> — atomic swap, rollback on failure, config preserved.</p><p><b>Server self-update</b> — caches release checks, downloads the platform binary, replaces the running executable. You must restart the service yourself.</p><p>Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa.</p><p>Check status:</p><pre class="cmd">quicktui-server --check-upgrade</pre>`, zh: `<p>两条路径：</p><p><b>重新运行安装脚本</b> — 原子替换、失败回滚、配置保留。</p><p><b>服务端自更新</b> — 缓存发布检查、下载当前平台二进制、替换运行中的可执行文件。需要你自己重启服务。</p><p>升级 / 重启 / 关停相互串行：重启进行中时新升级请求会被拒绝，反之亦然。</p><p>查看状态：</p><pre class="cmd">quicktui-server --check-upgrade</pre>` },
+
+  "q6.q": { en: "Can I validate the server environment without installing?", zh: "可以不安装就验证服务端环境吗？" },
+  "q6.a": { en: `<p>Yes — run all preflight checks with no downloads or writes:</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre><p>It verifies: platform / arch, tmux 3.2+, locale, terminfo for TERM, default shell executable, PTY allocation via <span class="mono">script</span>, and a throwaway tmux session. Override values with <span class="mono">--term</span> / <span class="mono">--lang</span>.</p>`, zh: `<p>可以 — 运行全部预检，不下载也不写入：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre><p>检验项：平台 / 架构、tmux 3.2+、locale、TERM 对应的 terminfo、默认 shell 可执行、通过 <span class="mono">script</span> 分配 PTY、以及一个临时 tmux 会话。用 <span class="mono">--term</span> / <span class="mono">--lang</span> 覆盖检查值。</p>` },
+
+  "q7.q": { en: `QuickTUI says "token is required".`, zh: `QuickTUI 提示"token is required"。` },
+  "q7.a": { en: `<p><b>Service:</b> ensure <span class="path">~/.config/quicktui/config</span> exists and contains:</p><pre class="cmd">QUICKTUI_TOKEN=…</pre><p><b>Manual start:</b> pass <span class="mono">--token</span> or set <span class="path">QUICKTUI_TOKEN</span> in the environment — normal server startup does not read the config file automatically.</p>`, zh: `<p><b>服务方式：</b>确保 <span class="path">~/.config/quicktui/config</span> 存在且包含：</p><pre class="cmd">QUICKTUI_TOKEN=…</pre><p><b>手动启动：</b>传入 <span class="mono">--token</span> 或在环境中设置 <span class="path">QUICKTUI_TOKEN</span> — 普通启动不会自动读取配置文件。</p>` },
+
+  "q8.q": { en: "Can't connect — connection refused.", zh: "无法连接 — connection refused。" },
+  "q8.a": { en: `<p>First check the service:</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl print gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user status quicktui</pre><p>If you skipped service registration, start the server manually with the same token and address. If it's running, make sure your firewall or tunnel allows the port from <span class="path">QUICKTUI_ADDR</span>.</p>`, zh: `<p>先检查服务：</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl print gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user status quicktui</pre><p>若跳过了服务注册，用相同的 token 和地址手动启动服务端。若服务已在运行，请确认防火墙或隧道放通了 <span class="path">QUICKTUI_ADDR</span> 对应的端口。</p>` },
+
+  "q9.q": { en: `Text rendering is garbled when <span class="mono">TERM=xterm-ghostty</span>.`, zh: `当 <span class="mono">TERM=xterm-ghostty</span> 时，文字渲染错乱。` },
+  "q9.a": { en: `<p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd"><span class="com"># recommended</span>
+QUICKTUI_TERM=xterm-256color
+
+<span class="com"># or</span>
+QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term xterm-256color</pre>`, zh: `<p>服务端的 tmux 在 <span class="mono">TERM=xterm-ghostty</span> 下无法正确渲染 — Ghostty 自己的 terminfo 不适用于远端会话里的 tmux。</p><p>改用广泛支持的 TERM。在 <span class="path">~/.config/quicktui/config</span> 中配置：</p><pre class="cmd"><span class="com"># 推荐</span>
+QUICKTUI_TERM=xterm-256color
+
+<span class="com"># 或</span>
+QUICKTUI_TERM=screen-256color</pre><p>然后重启服务。手动启动命令则用：</p><pre class="cmd">--term xterm-256color</pre>` },
+
+  "q10.q": { en: "PTY spawn failed / internal server error when opening a session.", zh: "打开会话时出现 PTY spawn failed / internal server error。" },
+  "q10.a": { en: `<p>The server could not launch or attach tmux. Check logs:</p><pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stdout.log
+
+<span class="com"># Linux</span>
+journalctl --user -u quicktui -f</pre><p>If <span class="path">QUICKTUI_TMUX_BIN</span> is set, it must be an absolute path to a real tmux binary. Also verify <span class="path">QUICKTUI_TERM</span> and <span class="path">QUICKTUI_LANG</span> are valid.</p>`, zh: `<p>服务端无法启动或附加 tmux。查看日志：</p><pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stdout.log
+
+<span class="com"># Linux</span>
+journalctl --user -u quicktui -f</pre><p>若设置了 <span class="path">QUICKTUI_TMUX_BIN</span>，必须是指向真实 tmux 二进制的绝对路径。也请确认 <span class="path">QUICKTUI_TERM</span> 与 <span class="path">QUICKTUI_LANG</span> 有效。</p>` },
+
+  "q11.q": { en: "How do I view server logs?", zh: "如何查看服务端日志？" },
+  "q11.a": { en: `<pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stdout.log \\
+        ~/Library/Logs/QuickTUI/stderr.log
+
+<span class="com"># Linux</span>
+journalctl --user -u quicktui -f</pre><p>If you started <span class="mono">quicktui-server</span> manually, output appears in the terminal where you launched it.</p>`, zh: `<pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stdout.log \\
+        ~/Library/Logs/QuickTUI/stderr.log
+
+<span class="com"># Linux</span>
+journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quicktui-server</span>，输出在你启动它的那个终端。</p>` },
+
+  "q12.q": { en: "How do I change the listen address or port?", zh: "如何修改监听地址或端口？" },
+  "q12.a": { en: `<p><b>Service:</b> edit <span class="path">QUICKTUI_ADDR</span> in <span class="path">~/.config/quicktui/config</span>, then restart.</p><p><b>Manual:</b></p><pre class="cmd">quicktui-server --addr 0.0.0.0:9000</pre><p><b>At install time:</b></p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- \\
+  --addr 127.0.0.1 --port 9000</pre>`, zh: `<p><b>服务方式：</b>编辑 <span class="path">~/.config/quicktui/config</span> 中的 <span class="path">QUICKTUI_ADDR</span>，然后重启。</p><p><b>手动方式：</b></p><pre class="cmd">quicktui-server --addr 0.0.0.0:9000</pre><p><b>安装时：</b></p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- \\
+  --addr 127.0.0.1 --port 9000</pre>` },
+
+  "q13.q": { en: "How do I uninstall QuickTUI?", zh: "如何卸载 QuickTUI？" },
+  "q13.a": { en: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>Stops the service, removes the binary, config, known launchd / systemd service files, and logs. Also cleans up leftover service files from partial installs.</p>`, zh: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>停止服务，删除二进制、配置、已知的 launchd / systemd 服务文件与日志。同时清理残留的部分安装遗留文件。</p>` },
+
+  "q14.q": { en: "My session list is empty.", zh: "会话列表为空。" },
+  "q14.a": { en: `<p>QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <b>New Session</b>, or on the server:</p><pre class="cmd">tmux new-session -s mysession</pre>`, zh: `<p>QuickTUI 显示当前 tmux 会话。若尚无会话，从 App 或浏览器点 <b>New Session</b> 创建，或在服务器上运行：</p><pre class="cmd">tmux new-session -s mysession</pre>` },
+
+  "q15.q": { en: "What is the access token?", zh: "什么是 access token？" },
+  "q15.a": { en: `<p>A secret you set during installation — it protects your server from unauthorized access. Find it on your server:</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>Enter it when prompted on first login in the app or browser.</p>`, zh: `<p>你在安装时设定的密钥 — 用于保护服务器不被未授权访问。在服务器上查看：</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>首次在 App 或浏览器登录时按提示输入。</p>` },
+
+  "q16.q": { en: "Can I connect over the internet?", zh: "可以通过公网连接吗？" },
+  "q16.a": { en: `Yes. You need the server reachable from the internet — via a public IP, VPN, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. Make sure the configured port (<span class="mono">8022</span> by default) is accessible and your token stays secret.`, zh: `可以。需要让服务器可从公网访问 — 通过公网 IP、VPN，或 <b>Tailscale</b>、<b>Cloudflare Tunnel</b> 等隧道。确保配置的端口（默认 <span class="mono">8022</span>）可访问，Token 妥善保密。` },
+
+  "q17.q": { en: `The app or browser shows "Session not found".`, zh: `App 或浏览器提示"Session not found"。` },
+  "q17.a": { en: `<p>This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running.</p><p>Refresh the session list, then open an existing session or create a new one.</p>`, zh: `<p>这是服务端返回的消息 — tmux 会话已关闭或被重命名，或 tmux 服务本身未运行。</p><p>刷新会话列表，然后打开已有会话或新建一个。</p>` },
+
+  "cta.demo": { en: "View live demo", zh: "查看实时演示" },
+  "cta.get": { en: `Get QuickTUI <span class="arr">→</span>`, zh: `获取 QuickTUI <span class="arr">→</span>` },
+  "cta.see": { en: "See features", zh: "查看功能" },
+  "hero3.h1": { en: `Your agents,<br><em>within reach</em> of any screen.`, zh: `你的 Agent，<br>任意屏幕 <em>触手可及</em>。` },
+  "hero3.sub": { en: "Hand off from laptop to phone to browser without missing a beat. Wherever you are, your agent is one tap away.", zh: "从笔记本到手机到浏览器无缝切换。无论你在哪里，Agent 都只差一次点击。" },
+
+  // ───── footer
+  "foot.tag": { en: "© 2026 QuickTUI · All rights reserved.", zh: "© 2026 QuickTUI · 版权所有。" },
+  "foot.docs": { en: "Docs", zh: "文档" },
+  "foot.changelog": { en: "Changelog", zh: "更新日志" },
+  "foot.github": { en: "GitHub", zh: "GitHub" },
+  "foot.appstore": { en: "App Store", zh: "App Store" },
+};
+
+function applyLang(lang) {
+  document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('[data-i]').forEach(el => {
+    const k = el.getAttribute('data-i');
+    if (I18N[k] && I18N[k][lang] !== undefined) el.textContent = I18N[k][lang];
+  });
+  document.querySelectorAll('[data-i-html]').forEach(el => {
+    const k = el.getAttribute('data-i-html');
+    if (I18N[k] && I18N[k][lang] !== undefined) el.innerHTML = I18N[k][lang];
+  });
+  // sync lang toggle UI
+  document.querySelectorAll('#langToggle button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+}
+
+function applyTheme(v) {
+  document.documentElement.setAttribute('data-theme', v);
+  document.getElementById('themeToggle').textContent = v === 'dark' ? '◐' : '◑';
+}
+function applyHero(v) {
+  document.querySelectorAll('.hero-variant').forEach(el => {
+    el.classList.toggle('is-active', el.dataset.variant === String(v));
+  });
+}
+function applyAccent(h) {
+  const hue = Number(h);
+  // hue=0 special-cases to a monochrome (off-white) accent
+  let l, c;
+  if (hue === 0) { l = 0.95; c = 0.005; }
+  else if (hue === 255) { l = 0.70; c = 0.19; }  // logo blue
+  else if (hue === 142) { l = 0.82; c = 0.22; }  // phosphor green
+  else if (hue === 65)  { l = 0.82; c = 0.17; }  // amber
+  else if (hue === 330) { l = 0.72; c = 0.22; }  // magenta
+  else { l = 0.75; c = 0.19; }
+  document.documentElement.style.setProperty('--accent', `oklch(${l} ${c} ${hue})`);
+  document.documentElement.style.setProperty('--accent-glow', `oklch(${l} ${c} ${hue} / 0.35)`);
+  document.documentElement.style.setProperty('--accent-ink', `oklch(0.18 ${Math.min(c, 0.08)} ${hue})`);
+}
+
+applyTheme(state.theme);
+applyHero(state.hero);
+applyAccent(state.accentHue);
+applyLang(state.lang);
+
+// lang toggle
+document.getElementById('langToggle').addEventListener('click', e => {
+  const b = e.target.closest('button[data-lang]');
+  if (!b) return;
+  state.lang = b.dataset.lang;
+  applyLang(state.lang);
+  window.parent.postMessage({type:'__edit_mode_set_keys', edits:{lang: state.lang}}, '*');
+});
+
+// theme toggle in nav
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  state.theme = next;
+  applyTheme(next);
+  // sync tweaks seg
+  document.querySelectorAll('[data-group="theme"] button').forEach(b => b.classList.toggle('on', b.dataset.val === next));
+  window.parent.postMessage({type: '__edit_mode_set_keys', edits: {theme: next}}, '*');
+});
+
+// tweak panel interactions
+document.querySelectorAll('.tweaks [data-group]').forEach(group => {
+  group.addEventListener('click', e => {
+    const btn = e.target.closest('button, .swatch');
+    if (!btn) return;
+    const g = group.dataset.group;
+    group.querySelectorAll('button, .swatch').forEach(b => b.classList.toggle('on', b === btn));
+    const val = btn.dataset.val;
+    if (g === 'theme') { state.theme = val; applyTheme(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{theme:val}}, '*'); }
+    if (g === 'hero')  { state.hero = val; applyHero(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{hero:val}}, '*'); }
+    if (g === 'accent'){ state.accentHue = Number(val); applyAccent(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{accentHue:Number(val)}}, '*'); }
+  });
+});
+
+// FAQ toggles
+// FAQ toggles — ignore clicks inside the answer body so users can select/copy text
+document.querySelectorAll('.faq-item').forEach(it => {
+  it.addEventListener('click', e => {
+    if (e.target.closest('.a')) return;
+    // don't toggle if user was selecting text
+    const sel = window.getSelection();
+    if (sel && sel.toString().length > 0) return;
+    it.classList.toggle('open');
+  });
+});
+
+// edit mode protocol — register listener FIRST
+window.addEventListener('message', e => {
+  const d = e.data || {};
+  if (d.type === '__activate_edit_mode') document.getElementById('tweaks').classList.add('on');
+  if (d.type === '__deactivate_edit_mode') document.getElementById('tweaks').classList.remove('on');
+});
+window.parent.postMessage({type: '__edit_mode_available'}, '*');
+</script>
+</body>
 </html>

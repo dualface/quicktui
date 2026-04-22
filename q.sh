@@ -1238,8 +1238,11 @@ print_success() {
             printf '  Token:            %s' "$(mask_token "$TOKEN")"
             printf '  (Enter the token when prompted on first login)\n'
         fi
-        printf "  %sTip:%s Run %s'quicktui-server --qrcode'%s to display the connection QR code for the iOS app.\n" \
-            "$C_BOLD$C_GREEN" "$C_RESET" "$C_BOLD" "$C_RESET"
+        printf '\n'
+        printf '  ────────── Connect from iOS ──────────\n'
+        printf '    Run  %s%squicktui-server --qrcode%s\n' "$C_BOLD" "$C_GREEN" "$C_RESET"
+        printf '    to display the connection QR code for the iOS app.\n'
+        printf '  ───────────────────────────────────────\n'
     elif [ "$SERVICE_STARTED" = "failed" ]; then
         if [ "$SERVICE_FAILURE_REASON" = "startup" ]; then
             printf 'Service was registered but did not start successfully. Start manually:\n'

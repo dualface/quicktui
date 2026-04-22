@@ -180,7 +180,7 @@ while [ $# -gt 0 ]; do
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
             printf '  --port <port>      Listen port (default: 8022)\n'
-            printf '  --term <value>     TERM for tmux (default: screen-256color)\n'
+            printf '  --term <value>     TERM for tmux (default: xterm-256color, falls back to screen-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
             printf '  --check            Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
@@ -1094,27 +1094,23 @@ write_terminal_config() {
 # ============================================================
 
 collect_terminal_env() {
-    _interactive_lang="${LANG:-en_US.UTF-8}"
+    # Defaults: TERM=xterm-256color, LANG=en_US.UTF-8. Preflight downgrades
+    # to screen-256color / C.UTF-8 respectively if the primaries are not
+    # available on the host.
     if [ -n "$OPT_TERM" ]; then
         TERM_ENV="$OPT_TERM"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TERM" ]; then
         TERM_ENV="$EXISTING_TERM"
     else
-        TERM_ENV="screen-256color"
+        TERM_ENV="xterm-256color"
     fi
 
     if [ -n "$OPT_LANG" ]; then
         LANG_ENV="$OPT_LANG"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_LANG" ]; then
         LANG_ENV="$EXISTING_LANG"
-    elif [ -n "$NON_INTERACTIVE" ]; then
-        LANG_ENV="en_US.UTF-8"
     else
-        printf '\nTerminal environment for tmux:\n'
-        printf '  LANG [%s]: ' "$_interactive_lang"
-        read -r _input </dev/tty || exit 1
-        LANG_ENV="${_input:-$_interactive_lang}"
-        validate_terminal_value "$LANG_ENV" || die "Invalid LANG: '$LANG_ENV'. Use only letters, numbers, dots, underscores, plus, colons, at-signs, and hyphens."
+        LANG_ENV="en_US.UTF-8"
     fi
 
     info "Terminal: TERM=$TERM_ENV, LANG=$LANG_ENV"
@@ -1129,14 +1125,6 @@ configure_service() {
         SERVICE_STARTED="skipped"
         info "Skipped service registration (--no-service)"
         return 0
-    fi
-
-    if [ -z "$NON_INTERACTIVE" ] && [ -z "$EXISTING_SERVICE" ]; then
-        printf '\n'
-        if ! confirm "Would you like to register QuickTUI as a background service?" y; then
-            SERVICE_STARTED="skipped"
-            return 0
-        fi
     fi
 
     # Delegate service registration to the server binary. Capture its output
@@ -1236,13 +1224,14 @@ print_success() {
             printf '  Token:            (unchanged)\n'
         else
             printf '  Token:            %s' "$(mask_token "$TOKEN")"
-            printf '  (Enter the token when prompted on first login)\n'
         fi
         printf '\n'
-        printf '  ────────── Connect from iOS ──────────\n'
-        printf '    Run  %s%squicktui-server --qrcode%s\n' "$C_BOLD" "$C_GREEN" "$C_RESET"
-        printf '    to display the connection QR code for the iOS app.\n'
-        printf '  ───────────────────────────────────────\n'
+        printf '  ---------- Connect from iOS ----------\n'
+        printf '    Run:\n'
+        printf '      %s%s --qrcode%s\n' "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
+        printf '    to display the connection QR code\n'
+        printf '    for the iOS app.\n'
+        printf '  --------------------------------------\n'
     elif [ "$SERVICE_STARTED" = "failed" ]; then
         if [ "$SERVICE_FAILURE_REASON" = "startup" ]; then
             printf 'Service was registered but did not start successfully. Start manually:\n'
@@ -1462,7 +1451,7 @@ elif [ -n "$CHECK_ONLY" ]; then
     detect_existing_install
     detect_platform
     check_tmux
-    TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-screen-256color}}"
+    TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-xterm-256color}}"
     LANG_ENV="${OPT_LANG:-${EXISTING_LANG:-en_US.UTF-8}}"
     preflight_checks || exit 1
 else

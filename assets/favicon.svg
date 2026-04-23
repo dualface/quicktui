@@ -108,6 +108,8 @@
   <rect
      width="1024"
      height="1024"
+     rx="230"
+     ry="230"
      fill="url(#bg)"
      id="rect12"
      x="0"

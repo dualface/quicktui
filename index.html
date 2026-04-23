@@ -244,7 +244,7 @@ body::before {
 .statusbar .sep { opacity: 0.35; margin: 0 10px; }
 
 /* ───────────────────────────────────────────────── HERO */
-.hero { padding: clamp(48px, 8vw, 110px) 0 clamp(40px, 6vw, 80px); position: relative; }
+.hero { padding: clamp(16px, 2.5vw, 36px) 0 clamp(40px, 6vw, 80px); position: relative; }
 
 /* hero-ascii backdrop */
 .hero-ascii {
@@ -266,8 +266,8 @@ body::before {
 .hero-variant.is-active { display: block; }
 
 /* variant 3: brutalist code block */
-.v3 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0, 520px); gap: clamp(40px, 6vw, 80px); align-items: center; }
-.v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; margin-top: clamp(24px, 4vw, 48px); display: block; }
+.v3 { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); align-items: start; }
+.v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; margin-top: 0; display: block; }
 .v3 h1 {
   font-family: var(--mono);
   font-weight: 800;
@@ -285,9 +285,8 @@ body::before {
 /* device preview (right column in v1 & v3) */
 .device-stack {
   position: relative;
-  aspect-ratio: 3 / 4;
   width: 100%;
-  max-width: 460px;
+  max-width: 420px;
   margin-left: auto;
 }
 .phone {
@@ -355,9 +354,8 @@ body::before {
 /* layered tablet behind phone */
 .tablet {
   position: absolute;
-  right: 0; bottom: 0;
-  width: 360px;
-  max-width: 80%;
+  right: -6%; bottom: 6%;
+  width: 70%;
   aspect-ratio: 4 / 3;
   background: #0b0b0b;
   border: 1px solid var(--line);
@@ -367,7 +365,7 @@ body::before {
   transform: rotate(2deg);
   z-index: 0;
 }
-.phone { position: absolute; left: 0; top: 0; z-index: 1; transform: rotate(-3deg); }
+.phone { position: relative; z-index: 1; transform: rotate(-3deg); margin-left: 0; }
 
 .tablet-screen {
   width: 100%; height: 100%;
@@ -808,7 +806,8 @@ html[lang="zh"] body { font-feature-settings: normal; }
 
 /* ───────────── responsive */
 @media (max-width: 900px) {
-  .v3, .devices-row, .install, .section-head { grid-template-columns: 1fr; }
+  .devices-row, .install, .section-head { grid-template-columns: 1fr; }
+  .v3 { grid-template-columns: minmax(0, 1fr) minmax(0, 280px); gap: 24px; }
   .v3 > *, .devices-row > *, .install > *, .section-head > *,
   .install-left, .install-right, .terminal-chrome, .terminal-body,
   .features-grid > .feat, .faq-item, .faq-item > *, .opts-grid, .opts-head { min-width: 0; }
@@ -826,6 +825,7 @@ html[lang="zh"] body { font-feature-settings: normal; }
   .foot { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 520px) {
+  .v3 { grid-template-columns: 1fr; }
   .usecases { grid-template-columns: 1fr; }
   .uc { border-right: 0; }
   .statusbar .sep + span:nth-child(4), .statusbar > span:last-child { display: none; }

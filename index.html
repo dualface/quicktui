@@ -14,9 +14,9 @@
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --serif: 'Instrument Serif', 'Times New Roman', serif;
-  --accent: oklch(0.70 0.19 255);      /* logo blue */
-  --accent-ink: oklch(0.22 0.08 255);
-  --accent-glow: oklch(0.70 0.19 255 / 0.35);
+  --accent: oklch(0.82 0.22 142);      /* phosphor green */
+  --accent-ink: oklch(0.18 0.08 142);
+  --accent-glow: oklch(0.82 0.22 142 / 0.35);
   --radius: 4px;
   --maxw: 1240px;
   --gutter: clamp(20px, 4vw, 48px);
@@ -45,7 +45,7 @@
   --line: oklch(0.84 0.01 255);
   --line-soft: oklch(0.90 0.008 255);
   --chip: oklch(0.95 0.006 95);
-  --accent-ink: oklch(0.18 0.08 255);
+  --accent-ink: oklch(0.18 0.08 142);
   --scan: rgba(0,0,0,0.02);
 }
 
@@ -1500,16 +1500,6 @@ QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual ser
     </div>
   </div>
 
-  <div class="row">
-    <span>Accent</span>
-    <div style="display:flex; gap:6px;" data-group="accent">
-      <div class="swatch on" style="background:oklch(0.70 0.19 255)" data-val="255"></div>
-      <div class="swatch" style="background:oklch(0.82 0.22 142)" data-val="142"></div>
-      <div class="swatch" style="background:oklch(0.82 0.17 65)" data-val="65"></div>
-      <div class="swatch" style="background:oklch(0.72 0.22 330)" data-val="330"></div>
-      <div class="swatch" style="background:oklch(0.95 0.005 0)" data-val="0"></div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -1517,7 +1507,6 @@ QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual ser
 const DEFAULTS = /*EDITMODE-BEGIN*/{
   "theme": "dark",
   "hero": "3",
-  "accentHue": 142,
   "lang": "en"
 }/*EDITMODE-END*/;
 
@@ -1760,24 +1749,9 @@ function applyHero(v) {
     el.classList.toggle('is-active', el.dataset.variant === String(v));
   });
 }
-function applyAccent(h) {
-  const hue = Number(h);
-  // hue=0 special-cases to a monochrome (off-white) accent
-  let l, c;
-  if (hue === 0) { l = 0.95; c = 0.005; }
-  else if (hue === 255) { l = 0.70; c = 0.19; }  // logo blue
-  else if (hue === 142) { l = 0.82; c = 0.22; }  // phosphor green
-  else if (hue === 65)  { l = 0.82; c = 0.17; }  // amber
-  else if (hue === 330) { l = 0.72; c = 0.22; }  // magenta
-  else { l = 0.75; c = 0.19; }
-  document.documentElement.style.setProperty('--accent', `oklch(${l} ${c} ${hue})`);
-  document.documentElement.style.setProperty('--accent-glow', `oklch(${l} ${c} ${hue} / 0.35)`);
-  document.documentElement.style.setProperty('--accent-ink', `oklch(0.18 ${Math.min(c, 0.08)} ${hue})`);
-}
 
 applyTheme(state.theme);
 applyHero(state.hero);
-applyAccent(state.accentHue);
 applyLang(state.lang);
 
 // lang toggle
@@ -1809,7 +1783,6 @@ document.querySelectorAll('.tweaks [data-group]').forEach(group => {
     const val = btn.dataset.val;
     if (g === 'theme') { state.theme = val; applyTheme(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{theme:val}}, '*'); }
     if (g === 'hero')  { state.hero = val; applyHero(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{hero:val}}, '*'); }
-    if (g === 'accent'){ state.accentHue = Number(val); applyAccent(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{accentHue:Number(val)}}, '*'); }
   });
 });
 

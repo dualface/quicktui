@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────── tokens */
 :root {
@@ -17,7 +17,6 @@
   --accent: oklch(0.82 0.22 142);      /* phosphor green */
   --accent-ink: oklch(0.18 0.08 142);
   --accent-glow: oklch(0.82 0.22 142 / 0.35);
-  --radius: 4px;
   --maxw: 1240px;
   --gutter: clamp(20px, 4vw, 48px);
 }
@@ -31,7 +30,6 @@
   --ink-4: oklch(0.40 0.015 255);
   --line: oklch(0.30 0.018 255);
   --line-soft: oklch(0.24 0.016 255);
-  --chip: oklch(0.22 0.018 255);
   --scan: rgba(255,255,255,0.02);
 }
 [data-theme="light"] {
@@ -44,7 +42,6 @@
   --ink-4: oklch(0.68 0.01 255);
   --line: oklch(0.84 0.01 255);
   --line-soft: oklch(0.90 0.008 255);
-  --chip: oklch(0.95 0.006 95);
   --accent-ink: oklch(0.18 0.08 142);
   --scan: rgba(0,0,0,0.02);
 }
@@ -87,8 +84,6 @@ body::before {
   padding: 0 var(--gutter);
 }
 
-.rule { border-top: 1px solid var(--line); }
-.rule-soft { border-top: 1px solid var(--line-soft); }
 
 .mono { font-family: var(--mono); }
 .path {
@@ -171,17 +166,6 @@ body::before {
 
 .nav-right { display: flex; align-items: center; gap: 8px; }
 
-.kbd {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  padding: 3px 7px;
-  border: 1px solid var(--line);
-  border-bottom-width: 2px;
-  border-radius: 4px;
-  color: var(--ink-2);
-  background: var(--bg-1);
-}
-
 .theme-toggle {
   width: 30px; height: 30px;
   display: grid; place-items: center;
@@ -253,22 +237,6 @@ body::before {
 /* ───────────────────────────────────────────────── HERO */
 .hero { padding: clamp(40px, 4.5vw, 64px) 0 clamp(40px, 6vw, 80px); position: relative; }
 
-/* hero-ascii backdrop */
-.hero-ascii {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  font-family: var(--mono);
-  font-size: 11px;
-  line-height: 1.3;
-  color: var(--line);
-  white-space: pre;
-  overflow: hidden;
-  opacity: 0.5;
-  mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
-  -webkit-mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
-}
-
 /* hero: brutalist code block */
 .hero { display: flex; flex-direction: row; align-items: flex-start; gap: clamp(32px, 4vw, 56px); }
 .hero > :first-child { flex: 1 1 0; min-width: 0; }
@@ -285,7 +253,6 @@ body::before {
 }
 .v3 h1 em { font-style: normal; background: var(--accent); color: var(--accent-ink); padding: 0 .15em; line-height: 1.45; white-space: nowrap; }
 .v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
-.v3 .sub-cn { font-family: var(--mono); font-size: 13px; color: var(--ink-4); max-width: 40ch; }
 .v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
 
 /* device preview (right column in v1 & v3) */
@@ -348,7 +315,6 @@ body::before {
 .term .flag { color: #b8c0ff; }
 .term .com { color: #6b7a73; }
 .term .warn { color: #f2c97a; }
-.term .err { color: #f2829a; }
 .term .ok { color: #9ef5a8; }
 .term .box {
   border: 1px solid rgba(158, 245, 168, 0.25);
@@ -426,14 +392,6 @@ body::before {
   max-width: 52ch;
   margin: 0;
 }
-.section-head .sub-cn {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-4);
-  margin-top: 8px;
-  max-width: 48ch;
-}
-
 /* ───────────── features */
 .features-grid {
   display: grid;
@@ -451,7 +409,6 @@ body::before {
   transition: background 180ms ease;
 }
 .feat:hover { background: var(--bg-1); }
-.feat.col-6 { grid-column: span 6; }
 .feat.col-4 { grid-column: span 4; }
 .feat.col-8 { grid-column: span 8; }
 .feat.col-12 { grid-column: span 12; }
@@ -467,12 +424,6 @@ body::before {
   font-size: 22px;
   letter-spacing: -0.02em;
   margin: 14px 0 8px;
-}
-.feat .h-cn {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-3);
-  margin-bottom: 14px;
 }
 .feat p {
   color: var(--ink-2);
@@ -495,18 +446,6 @@ body::before {
 }
 .feat .viz .hl { color: var(--accent); }
 .feat .viz .dim { color: var(--ink-4); }
-
-/* keygraph viz for "connect anywhere" */
-.keyvis {
-  position: relative;
-  height: 160px;
-  margin-top: 22px;
-  border: 1px solid var(--line-soft);
-  border-radius: 4px;
-  background: var(--bg-1);
-  overflow: hidden;
-}
-.keyvis svg { width: 100%; height: 100%; display: block; }
 
 /* ───────────── in-action (devices row) */
 .devices-row {
@@ -536,7 +475,6 @@ body::before {
   margin: 10px 0 10px;
 }
 .devices-copy p { color: var(--ink-2); max-width: 40ch; }
-.devices-copy .p-cn { font-family: var(--mono); font-size: 12px; color: var(--ink-4); margin-top: 10px; }
 .devices-copy ul {
   margin: 26px 0 0;
   padding: 0;
@@ -592,7 +530,6 @@ body::before {
   margin: 32px 0 12px;
   min-height: 3em;
 }
-.uc .h4-cn { font-family: var(--mono); font-size: 11px; color: var(--ink-4); margin-bottom: 10px; }
 .uc p { color: var(--ink-2); font-size: 13px; margin: 0; line-height: 1.55; }
 
 /* ───────────── install */
@@ -683,7 +620,6 @@ body::before {
 .faq-item:hover { opacity: 1; }
 .faq-item .n { font-family: var(--mono); font-size: 12px; color: var(--ink-4); padding-top: 4px; }
 .faq-item .q { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
-.faq-item .q-cn { font-family: var(--mono); font-size: 12px; color: var(--ink-4); margin-top: 4px; font-weight: 400; }
 .faq-item .a { grid-column: 2; color: var(--ink-2); font-size: 14px; line-height: 1.7; max-width: 88ch; margin-top: 14px; display: none; cursor: text; }
 .faq-item.open .a { display: block; }
 .faq-item .a p { margin: 0 0 10px; }
@@ -736,8 +672,6 @@ body::before {
 .foot .links a:hover { color: var(--ink); }
 
 /* ───────────────────────────────────────────────── i18n */
-html[lang="en"] .cn-only { display: none !important; }
-html[lang="zh"] .en-only { display: none !important; }
 html[lang="zh"] body { font-feature-settings: normal; }
 .lang-toggle {
   font-family: var(--mono);
@@ -875,7 +809,6 @@ html[lang="zh"] body { font-feature-settings: normal; }
 
 /* ───── ZH mode: no italics ───── */
 html[lang="zh"] .serif,
-html[lang="zh"] .serif-word,
 html[lang="zh"] em,
 html[lang="zh"] i:not(.plus):not(.traffic i) {
   font-style: normal !important;
@@ -1480,8 +1413,6 @@ const I18N = {
   "f05.b": { en: `Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em class="ac">Quick Setup</em>（SSH 自动安装）、<em class="ac">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
   "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
   "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Self-updates, restarts, survives reboots — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles it all.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。自更新、自重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。一条 <span class="mono">q.sh</span> 脚本全部搞定。` },
-  "f07.t": { en: `<span class="ac">Within reach</span> — on whichever screen you're holding.`, zh: `<span class="ac">近在指尖</span> — 你手里那块屏幕。` },
-  "f07.b": { en: "Claude Code, Aider, OpenHands, Cursor Background Agents, a 12-hour training run — they stay on a server that never sleeps, so whichever screen you happen to be holding, they're one tap away.", zh: "Claude Code、Aider、OpenHands、Cursor Background Agents、12 小时的训练任务 — 它们留在一台永不休眠的服务器上，所以不论你拿着哪块屏幕，它们都一触即达。" },
 
   // ───── in action
   "ia.eyebrow": { en: "§ 02 / In Action", zh: "§ 02 / 实战演示" },
@@ -1657,7 +1588,6 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
 
   // ───── footer
   "foot.tag": { en: "© 2026 · All rights reserved.", zh: "© 2026 · 版权所有。" },
-  "foot.changelog": { en: "Changelog", zh: "更新日志" },
   "foot.github": { en: "GitHub", zh: "GitHub" },
   "foot.appstore": { en: "App Store", zh: "App Store" },
 };

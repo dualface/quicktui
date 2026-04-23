@@ -51,6 +51,7 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+html { overflow-x: clip; }
 body {
   background: var(--bg);
   color: var(--ink);
@@ -60,7 +61,7 @@ body {
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
@@ -354,12 +355,12 @@ body::before {
 
 /* variant 3: brutalist code block */
 .v3 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0, 520px); gap: clamp(40px, 6vw, 80px); align-items: center; }
-.v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; }
+.v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; margin-top: clamp(24px, 4vw, 48px); display: block; }
 .v3 h1 {
   font-family: var(--mono);
   font-weight: 800;
   font-size: clamp(40px, 7vw, 88px);
-  line-height: 1.05;
+  line-height: 1.155;
   letter-spacing: -0.04em;
   margin: 18px 0 24px;
   text-transform: uppercase;
@@ -701,7 +702,7 @@ body::before {
 }
 .install-left .step .n { color: var(--ink-4); }
 .install-left .step b { font-weight: 500; color: var(--ink); }
-.install-left .step .d { color: var(--ink-3); font-size: 11px; margin-top: 2px; }
+.install-left .step .d { color: var(--ink-3); font-size: 11px; margin-top: 2px; overflow-wrap: anywhere; }
 
 .install-right {
   background: var(--bg-1);
@@ -896,6 +897,12 @@ html[lang="zh"] body { font-feature-settings: normal; }
 /* ───────────── responsive */
 @media (max-width: 900px) {
   .v1-grid, .v3, .devices-row, .install, .section-head { grid-template-columns: 1fr; }
+  .v1-grid > *, .v3 > *, .devices-row > *, .install > *, .section-head > *,
+  .install-left, .install-right, .terminal-chrome, .terminal-body,
+  .features-grid > .feat, .faq-item, .faq-item > *, .opts-grid, .opts-head { min-width: 0; }
+  .install-right, .terminal-chrome, .terminal-body { overflow: hidden; }
+  .terminal-chrome .tabs { display: none; }
+  .terminal-body { overflow-x: auto; overflow-wrap: anywhere; word-break: break-word; }
   .device-stack { max-width: 380px; margin: 30px auto 0; }
   .phone { position: relative; transform: none; margin: 0 auto; }
   .tablet { display: none; }
@@ -910,7 +917,11 @@ html[lang="zh"] body { font-feature-settings: normal; }
   .usecases { grid-template-columns: 1fr; }
   .uc { border-right: 0; }
   .statusbar .sep + span:nth-child(4), .statusbar > span:last-child { display: none; }
+  .nav-right .lbl-long { display: none; }
+  .nav-right .lbl-short { display: inline; }
+  .nav-right .btn-primary { padding-left: 12px; padding-right: 12px; }
 }
+.lbl-short { display: none; }
 
 /* ───────── installer options ───────── */
 .opts-grid {
@@ -950,6 +961,8 @@ html[lang="zh"] body { font-feature-settings: normal; }
 @media (max-width: 860px) {
   .opts-grid { grid-template-columns: 1fr; padding: 24px; gap: 24px; }
   .opts-list { grid-template-columns: 1fr; }
+  .opt code { min-width: 0; }
+  .opt span { overflow-wrap: anywhere; }
 }
 
 /* ───────── faq groups ───────── */
@@ -1005,10 +1018,10 @@ html[lang="zh"] h3 .serif {
         <div class="lang-toggle" id="langToggle">
           <button data-lang="en" class="on">EN</button>
           <span class="slash">/</span>
-          <button data-lang="zh">中文</button>
+          <button data-lang="zh">CN</button>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Toggle theme">◐</button>
-        <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.nav">Get the App <span class="arr">→</span></a>
+        <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.nav"><span class="lbl-long">Get the App</span><span class="lbl-short">Get App</span> <span class="arr">→</span></a>
       </div>
     </div>
   </header>
@@ -1074,7 +1087,7 @@ html[lang="zh"] h3 .serif {
       <!-- VARIANT 3 — brutalist code -->
       <div class="hero-variant v3" data-variant="3">
         <div>
-          <div class="tag">────  TMUX × MOBILE × BROWSER  ────</div>
+          <div class="tag">────  DESKTOP × MOBILE × BROWSER  ────</div>
           <h1 data-i-html="hero3.h1">Your agents,<br><em>within reach</em> of any screen.</h1>
           <p class="sub" data-i="hero3.sub">Hand off from laptop to phone to browser without missing a beat. Wherever you are, your agent is one tap away.</p>
           <div class="ctas">
@@ -1633,7 +1646,7 @@ const I18N = {
   "nav.install": { en: `<span class="n">03</span>Install`, zh: `<span class="n">03</span>安装` },
   "nav.usecases": { en: `<span class="n">04</span>Use&nbsp;Cases`, zh: `<span class="n">04</span>使用场景` },
   "nav.faq": { en: `<span class="n">05</span>FAQ`, zh: `<span class="n">05</span>常见问题` },
-  "cta.nav": { en: `Get the App <span class="arr">→</span>`, zh: `获取应用 <span class="arr">→</span>` },
+  "cta.nav": { en: `<span class="lbl-long">Get the App</span><span class="lbl-short">Get App</span> <span class="arr">→</span>`, zh: `<span class="lbl-long">获取应用</span><span class="lbl-short">获取</span> <span class="arr">→</span>` },
   "cta.downloadIos": { en: `Download for iOS <span class="arr">→</span>`, zh: `下载 iOS 版 <span class="arr">→</span>` },
   "cta.browser": { en: "Open in browser", zh: "在浏览器中打开" },
   "cta.learn": { en: `Learn more`, zh: `了解详情` },

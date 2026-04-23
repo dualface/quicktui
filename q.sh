@@ -52,6 +52,7 @@ EXISTING_TMUX_BIN=""
 
 _BG_PID=""
 _STTY_SAVED=""
+_SVC_OUT=""
 cleanup() {
     if [ -n "$_STTY_SAVED" ] && command -v stty > /dev/null 2>&1; then
         stty "$_STTY_SAVED" 2>/dev/null || true
@@ -59,6 +60,7 @@ cleanup() {
     fi
     [ -n "$_BG_PID" ] && kill "$_BG_PID" 2>/dev/null || true
     [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
+    [ -n "$_SVC_OUT" ] && rm -f "$_SVC_OUT" || true
 }
 # INT/TERM traps clear the EXIT trap first so cleanup runs exactly once.
 trap 'trap - EXIT; cleanup; exit 130' INT TERM
@@ -174,7 +176,7 @@ while [ $# -gt 0 ]; do
         -h|--help)
             printf 'Usage: q.sh [OPTIONS]\n\n'
             printf 'Options:\n'
-            printf '  -y, --yes          Non-interactive mode (use defaults)\n'
+            printf '  -y, --yes          Skip prompts; use defaults and auto-accept confirmations\n'
             printf '  --token <string>   Set access token (skip prompt)\n'
             printf '  --rotate-token     Generate a fresh random token (overrides preserved token on upgrade)\n'
             printf '  --no-service       Skip background service registration\n'
@@ -266,6 +268,10 @@ locale_available() {
         locale -a 2>/dev/null | grep -iq "^$(printf '%s\n' "$_value" | sed 's/\./\\./g')$"
 }
 
+terminfo_available() {
+    command -v infocmp > /dev/null 2>&1 && infocmp "$1" > /dev/null 2>&1
+}
+
 require_locale_available() {
     _label="$1"
     _value="$2"
@@ -277,7 +283,7 @@ require_terminfo_available() {
     _label="$1"
     _value="$2"
     command -v infocmp > /dev/null 2>&1 || die "Cannot validate ${_label}: 'infocmp' command not found."
-    infocmp "$_value" > /dev/null 2>&1 || die "Invalid ${_label}: '$_value'. Terminfo entry not found on this system."
+    terminfo_available "$_value" || die "Invalid ${_label}: '$_value'. Terminfo entry not found on this system."
 }
 
 validate_cli_options() {
@@ -343,14 +349,25 @@ validate_existing_config() {
         EXISTING_PORT="$PARSED_PORT"
     fi
 
+    # For TERM/LANG, reject structurally malformed values but treat a
+    # "valid syntax, not installed on this host" situation as a soft miss:
+    # clear the existing value so collect_terminal_env falls back to the
+    # default, mirroring the fresh-install path (preflight_checks also
+    # downgrades when the primary entry is absent).
     if [ -n "$EXISTING_TERM" ]; then
         validate_terminal_value "$EXISTING_TERM" || die "Invalid QUICKTUI_TERM in existing config: '$EXISTING_TERM'"
-        require_terminfo_available "QUICKTUI_TERM in existing config" "$EXISTING_TERM"
+        if ! terminfo_available "$EXISTING_TERM"; then
+            warn "Saved QUICKTUI_TERM='$EXISTING_TERM' is not installed on this host; falling back to default."
+            EXISTING_TERM=""
+        fi
     fi
 
     if [ -n "$EXISTING_LANG" ]; then
         validate_terminal_value "$EXISTING_LANG" || die "Invalid QUICKTUI_LANG in existing config: '$EXISTING_LANG'"
-        require_locale_available "QUICKTUI_LANG in existing config" "$EXISTING_LANG"
+        if command -v locale > /dev/null 2>&1 && ! locale_available "$EXISTING_LANG"; then
+            warn "Saved QUICKTUI_LANG='$EXISTING_LANG' is not available on this host; falling back to default."
+            EXISTING_LANG=""
+        fi
     fi
 }
 
@@ -385,19 +402,20 @@ service_probe_url() {
 
 wait_for_service_ready() {
     # Probe /healthz first (conventional health endpoint), then fall back
-    # to / for servers that only expose a web UI at the root.
+    # to / for servers that only expose a web UI at the root. Bounded to
+    # roughly 40s worst case (15 attempts x 2 paths x 1s timeout + sleeps).
     _probe_base="$(service_probe_url)"
     _probe_base="${_probe_base%/}"
     _attempt=1
-    while [ "$_attempt" -le 20 ]; do
+    while [ "$_attempt" -le 15 ]; do
         for _path in /healthz /; do
             _full="${_probe_base}${_path}"
             if command -v curl > /dev/null 2>&1; then
-                if curl -fsS --max-time 2 "$_full" > /dev/null 2>&1; then
+                if curl -fsS --max-time 1 "$_full" > /dev/null 2>&1; then
                     return 0
                 fi
             elif command -v wget > /dev/null 2>&1; then
-                if wget -q --timeout=2 -O - "$_full" > /dev/null 2>&1; then
+                if wget -q --timeout=1 -O - "$_full" > /dev/null 2>&1; then
                     return 0
                 fi
             else
@@ -569,7 +587,7 @@ install_tmux_from_builds() {
     _tmux_tarball="${_tmux_tmpdir}/tmux.tar.gz"
 
     download "${_tmux_base_url}/${_tmux_filename}" "$_tmux_tarball" "Downloading tmux ${_tmux_ver}..." || \
-        { rm -rf "$_tmux_tmpdir"; die "Failed to download tmux binary."; }
+        { rm -rf "$_tmux_tmpdir"; die "Failed to download tmux binary from ${_tmux_base_url}/${_tmux_filename}."; }
 
     if [ -n "$_expected_sha" ]; then
         _actual_sha="$(normalize_sha256 "$(sha256_file "$_tmux_tarball")")"
@@ -650,6 +668,26 @@ _find_tmux() {
     return 1
 }
 
+# Parse `tmux -V` output into _maj/_min. Returns non-zero on unparseable
+# input. Callers should use result in numeric comparisons only.
+_parse_tmux_major_minor() {
+    _bin="$1"
+    [ -x "$_bin" ] || return 1
+    _ver="$("$_bin" -V 2>/dev/null | sed 's/tmux //')"
+    _maj="$(printf '%s\n' "$_ver" | cut -d. -f1)"
+    _min="$(printf '%s\n' "$_ver" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')"
+    case "$_maj" in ''|*[!0-9]*) return 1 ;; esac
+    case "$_min" in ''|*[!0-9]*) return 1 ;; esac
+    return 0
+}
+
+_tmux_at_least_3_2() {
+    _parse_tmux_major_minor "$1" || return 1
+    [ "$_maj" -gt 3 ] && return 0
+    [ "$_maj" -eq 3 ] && [ "$_min" -ge 2 ] && return 0
+    return 1
+}
+
 safe_existing_tmux_bin() {
     _tmux_bin="$1"
     [ -n "$_tmux_bin" ] || return 1
@@ -687,17 +725,18 @@ check_tmux() {
     fi
 
     _tmux_bin="$(_find_tmux)"
-    _tmux_version="$("$_tmux_bin" -V 2>/dev/null | sed 's/tmux //')"
-    _major="$(echo "$_tmux_version" | cut -d. -f1)"
-    _minor="$(echo "$_tmux_version" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')"
-    [ -n "$_major" ] && [ -n "$_minor" ] || die "Could not parse tmux version from '$_tmux_bin -V' output: '$_tmux_version'."
+    _parse_tmux_major_minor "$_tmux_bin" || die "Could not parse tmux version from '$_tmux_bin -V'."
+    # Display full version string (e.g. "3.2a") instead of the parsed M.N
+    # pair so patch letters from `tmux -V` survive.
+    _tmux_version="$("$_tmux_bin" -V 2>/dev/null | sed 's/^tmux //')"
+    [ -n "$_tmux_version" ] || _tmux_version="${_maj}.${_min}"
 
     if [ -n "$EXISTING_TMUX_BIN" ] && ! safe_existing_tmux_bin "$EXISTING_TMUX_BIN"; then
         warn "Ignoring untrusted QUICKTUI_TMUX_BIN from existing config."
         EXISTING_TMUX_BIN=""
     fi
 
-    if [ "$_major" -lt 3 ] || { [ "$_major" -eq 3 ] && [ "$_minor" -lt 2 ]; }; then
+    if ! _tmux_at_least_3_2 "$_tmux_bin"; then
         warn "tmux $_tmux_version detected, but QuickTUI requires tmux 3.2 or later."
         if ! confirm "Continue anyway? (some features may not work)"; then
             exit 1
@@ -709,11 +748,7 @@ check_tmux() {
     # Record explicit path when tmux is NOT in $PATH
     if [ -n "$INSTALLED_TMUX_BIN" ]; then
         TMUX_BIN_CONFIG="$INSTALLED_TMUX_BIN"
-    elif [ -n "$EXISTING_TMUX_BIN" ] && _existing_ver="$("$EXISTING_TMUX_BIN" -V 2>/dev/null | sed 's/tmux //')" && \
-         _ex_major="$(echo "$_existing_ver" | cut -d. -f1)" && \
-         _ex_minor="$(echo "$_existing_ver" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')" && \
-         [ "$_ex_major" -ge 3 ] 2>/dev/null && \
-         { [ "$_ex_major" -gt 3 ] || [ "$_ex_minor" -ge 2 ]; }; then
+    elif [ -n "$EXISTING_TMUX_BIN" ] && _tmux_at_least_3_2 "$EXISTING_TMUX_BIN"; then
         TMUX_BIN_CONFIG="$EXISTING_TMUX_BIN"
     elif command -v tmux > /dev/null 2>&1; then
         TMUX_BIN_CONFIG=""
@@ -733,13 +768,13 @@ download_binary() {
 
     printf '  Temp dir:  %s\n' "$DOWNLOAD_TMPDIR"
     download "${QUICKTUI_RELEASES}/${BINARY_NAME}" "$_binary_path" "Downloading QuickTUI (${BINARY_NAME})..." || \
-        die "Failed to download binary. Check your internet connection and try again."
+        die "Failed to download binary from ${QUICKTUI_RELEASES}/${BINARY_NAME}. Check your internet connection and try again."
 
     _file_size="$(du -sh "$_binary_path" 2>/dev/null | cut -f1)"
     printf '  File size: %s\n' "${_file_size:-unknown}"
 
     download "${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256" "$_sha256_path" "Downloading checksum..." || \
-        die "Failed to download checksum file."
+        die "Failed to download checksum file from ${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256."
 
     printf '  Verifying checksum...\n'
     _expected_hash="$(normalize_sha256 "$(awk '{print $1}' "${_sha256_path}")")"
@@ -828,9 +863,11 @@ list_processes_for_binary() {
     _binary="$1"
     _binary_base="${_binary##*/}"
     _self_uid="$(id -u)"
-    # Filter by numeric uid (usernames get truncated to 8 chars on older
-    # Linux procps). Force full command lines with -ww so argv[1] isn't
-    # clipped at the terminal width when the installer runs in a pipeline.
+    _self_user="$(id -un 2>/dev/null || printf '%s\n' "$_self_uid")"
+    # Force full command lines with -ww so argv[1] isn't clipped by the
+    # terminal width when the installer runs in a pipeline. Some ps
+    # implementations print `uid=` as a name (BusyBox) rather than a number;
+    # the awk check accepts either.
     # Match rules:
     #   1. argv[0] equals the full install path, or
     #   2. argv[0] basename equals our binary basename, or
@@ -846,13 +883,14 @@ list_processes_for_binary() {
     } | awk \
         -v self="$$" \
         -v uid="$_self_uid" \
+        -v uname="$_self_user" \
         -v target_abs="$_binary" \
         -v target_base="$_binary_base" '
         {
             pid=$1
             usr=$2
             if (pid == self) next
-            if (usr != uid) next
+            if (usr != uid && usr != uname) next
             argv0=$3
             if (argv0 == target_abs) { print pid; next }
             n=split(argv0, parts, "/")
@@ -1151,14 +1189,17 @@ configure_service() {
     # Delegate service registration to the server binary. Capture its output
     # so we can suppress the QR-code reminder line (q.sh re-emits it under
     # "Getting started" in print_success with its own colorization).
-    _svc_out="$(mktemp)"
+    # _SVC_OUT is tracked by the cleanup trap so it is removed even if we
+    # are interrupted between mktemp and the rm below.
+    _SVC_OUT="$(mktemp)"
     _svc_rc=0
     "$INSTALL_PATH" --install-service \
         --addr "${LISTEN_ADDR}:${LISTEN_PORT}" \
         --term "$TERM_ENV" \
-        --lang "$LANG_ENV" > "$_svc_out" 2>&1 || _svc_rc=$?
-    awk '/--qrcode/ { next } { print }' "$_svc_out"
-    rm -f "$_svc_out"
+        --lang "$LANG_ENV" > "$_SVC_OUT" 2>&1 || _svc_rc=$?
+    awk '/--qrcode/ { next } { print }' "$_SVC_OUT"
+    rm -f "$_SVC_OUT"
+    _SVC_OUT=""
 
     if [ "$_svc_rc" -eq 0 ]; then
         if wait_for_service_ready; then

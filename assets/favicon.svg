@@ -1,4 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect x="0" y="0" width="32" height="32" rx="7" ry="7" fill="oklch(0.82 0.22 142)"></rect>
-  <text x="16" y="22.5" text-anchor="middle" font-family="ui-monospace, &#39;JetBrains Mono&#39;, Menlo, monospace" font-weight="800" font-size="22" fill="#0a0d12">Q</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C3FDC8"></stop>
+      <stop offset="0.22" stop-color="#9DF59E"></stop>
+      <stop offset="0.5" stop-color="#5DD85D"></stop>
+      <stop offset="0.78" stop-color="#3CBB2D"></stop>
+      <stop offset="1" stop-color="#1F8005"></stop>
+    </linearGradient>
+    <radialGradient id="cap" cx="0.5" cy="-0.05" r="0.55">
+      <stop offset="0" stop-color="rgba(255,255,255,0.85)"></stop>
+      <stop offset="0.35" stop-color="rgba(255,255,255,0.25)"></stop>
+      <stop offset="1" stop-color="rgba(255,255,255,0)"></stop>
+    </radialGradient>
+    <radialGradient id="floor" cx="0.5" cy="1.05" r="0.6">
+      <stop offset="0" stop-color="rgba(0,40,0,0.35)"></stop>
+      <stop offset="1" stop-color="rgba(0,40,0,0)"></stop>
+    </radialGradient>
+    <radialGradient id="vg" cx="0.5" cy="0.5" r="0.75">
+      <stop offset="0.65" stop-color="rgba(0,0,0,0)"></stop>
+      <stop offset="1" stop-color="rgba(0,0,0,0.18)"></stop>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"></rect>
+  <rect width="1024" height="1024" fill="url(#floor)"></rect>
+  <g fill="none" stroke="#0F2A10" stroke-width="110" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="420" cy="500" r="165"></circle>
+    <line x1="585" y1="335" x2="585" y2="760"></line>
+  </g>
+  <rect width="1024" height="1024" fill="url(#cap)"></rect>
+  <rect width="1024" height="1024" fill="url(#vg)"></rect>
 </svg>

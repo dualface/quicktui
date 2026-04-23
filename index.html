@@ -413,7 +413,7 @@ body::before {
   margin: 18px 0 0;
   text-wrap: balance;
 }
-.section-head h2 em { font-style: normal; color: var(--accent); }
+.section-head h2 em { font-style: normal; color: var(--accent); white-space: nowrap; }
 .section-head h2 .serif { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 .section-head p {
   font-size: 16px;
@@ -1534,7 +1534,7 @@ const I18N = {
   // ───── features
   "f.eyebrow": { en: "§ 01 / Features", zh: "§ 01 / 功能特性" },
   "f.h2": { en: `Built for <em>reach</em>.`, zh: `为<em>随手可用</em>而生。` },
-  "f.desc": { en: "Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.", zh: "每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让 Agent 在你当下随身的任一设备上随手即得。" },
+  "f.desc": { en: "Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.", zh: "每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让你的 Agent 随手即得。" },
 
   "f01.t": { en: "Always attached — you're always within reach", zh: "始终在线 — Agent 随时就位" },
   "f01.b": { en: "Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there — output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)", zh: "Agent 的会话在两次接入之间持续存活于服务器 — 你在任何设备上打开 QuickTUI，它已在那里等你：输出完整、光标停在你离开的位置。（底层由 tmux 保活 PTY。）" },

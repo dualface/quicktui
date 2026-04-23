@@ -269,13 +269,10 @@ body::before {
   -webkit-mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
 }
 
-.hero-variant { display: none; }
-.hero-variant.is-active { display: block; }
-
-/* variant 3: brutalist code block */
-.hero-variant.v3 { display: flex; flex-direction: row; align-items: flex-start; gap: clamp(32px, 4vw, 56px); }
-.hero-variant.v3 > :first-child { flex: 1 1 0; min-width: 0; }
-.hero-variant.v3 > .device-stack { flex: 0 0 auto; }
+/* hero: brutalist code block */
+.hero { display: flex; flex-direction: row; align-items: flex-start; gap: clamp(32px, 4vw, 56px); }
+.hero > :first-child { flex: 1 1 0; min-width: 0; }
+.hero > .device-stack { flex: 0 0 auto; }
 .v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; margin-top: 0; display: block; }
 .v3 h1 {
   font-family: var(--mono);
@@ -781,43 +778,11 @@ html[lang="zh"] body { font-feature-settings: normal; }
 }
 .bigmark .caret { color: var(--accent); display: inline-block; animation: blink 1.2s steps(2) infinite; }
 
-/* ───────────── Tweaks panel */
-.tweaks {
-  position: fixed;
-  right: 18px; bottom: 18px;
-  z-index: 100;
-  background: var(--bg-1);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 14px 16px 16px;
-  min-width: 240px;
-  box-shadow: 0 30px 70px -20px rgba(0,0,0,.55);
-  font-family: var(--mono);
-  font-size: 11.5px;
-  color: var(--ink-2);
-  display: none;
-}
-.tweaks.on { display: block; }
-.tweaks h5 {
-  margin: 0 0 10px;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  color: var(--ink-4);
-  text-transform: uppercase;
-  display: flex; justify-content: space-between;
-}
-.tweaks .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; }
-.tweaks .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-.tweaks .seg button { background: transparent; color: var(--ink-3); border: 0; padding: 4px 10px; font-family: var(--mono); font-size: 11px; cursor: pointer; }
-.tweaks .seg button.on { background: var(--accent); color: var(--accent-ink); }
-.tweaks .swatch { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--line); cursor: pointer; }
-.tweaks .swatch.on { outline: 2px solid var(--ink); outline-offset: 2px; }
-
 /* ───────────── responsive */
 @media (max-width: 900px) {
   .devices-row, .install, .section-head { grid-template-columns: 1fr; }
-  .hero-variant.v3 { gap: 24px; }
-  .hero-variant.v3 > .device-stack { max-width: 280px; }
+  .hero { gap: 24px; }
+  .hero > .device-stack { max-width: 280px; }
   .v3 > *, .devices-row > *, .install > *, .section-head > *,
   .install-left, .install-right, .terminal-chrome, .terminal-body,
   .features-grid > .feat, .faq-item, .faq-item > *, .opts-grid, .opts-head { min-width: 0; }
@@ -835,7 +800,7 @@ html[lang="zh"] body { font-feature-settings: normal; }
   .foot { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 520px) {
-  .hero-variant.v3 { flex-direction: column; }
+  .hero { flex-direction: column; }
   .usecases { grid-template-columns: 1fr; }
   .uc { border-right: 0; }
   .statusbar .sep + span:nth-child(4), .statusbar > span:last-child { display: none; }
@@ -970,7 +935,7 @@ html[lang="zh"] h3 .serif {
     <section class="hero">
 
       <!-- VARIANT 3 — brutalist code -->
-      <div class="hero-variant v3 is-active" data-variant="3">
+      <div class="hero v3">
         <div>
           <div class="tag">────  DESKTOP × MOBILE × BROWSER  ────</div>
           <h1 data-i-html="hero3.h1">Your agents,<br><em>within reach</em> of any screen.</h1>
@@ -1479,38 +1444,8 @@ QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual ser
   </main>
 </div>
 
-<!-- ───────── TWEAKS ───────── -->
-<div class="tweaks" id="tweaks">
-  <h5><span>TWEAKS</span><span style="color:var(--accent)">●</span></h5>
-
-  <div class="row">
-    <span>Theme</span>
-    <div class="seg" data-group="theme">
-      <button data-val="dark" class="on">dark</button>
-      <button data-val="light">light</button>
-    </div>
-  </div>
-
-  <div class="row">
-    <span>Hero</span>
-    <div class="seg" data-group="hero">
-      <button data-val="1" class="on">v1</button>
-      <button data-val="2">v2</button>
-      <button data-val="3">v3</button>
-    </div>
-  </div>
-
-</div>
-
 <script>
-// ───────────────────────────────────────────────── tweak state
-const DEFAULTS = /*EDITMODE-BEGIN*/{
-  "theme": "dark",
-  "hero": "3",
-  "lang": "en"
-}/*EDITMODE-END*/;
-
-const state = { ...DEFAULTS };
+const state = { theme: "dark", lang: "en" };
 
 // ───────── i18n dictionary
 const I18N = {
@@ -1744,14 +1679,8 @@ function applyTheme(v) {
   document.documentElement.setAttribute('data-theme', v);
   document.getElementById('themeToggle').textContent = v === 'dark' ? '◐' : '◑';
 }
-function applyHero(v) {
-  document.querySelectorAll('.hero-variant').forEach(el => {
-    el.classList.toggle('is-active', el.dataset.variant === String(v));
-  });
-}
 
 applyTheme(state.theme);
-applyHero(state.hero);
 applyLang(state.lang);
 
 // lang toggle
@@ -1760,7 +1689,6 @@ document.getElementById('langToggle').addEventListener('click', e => {
   if (!b) return;
   state.lang = b.dataset.lang;
   applyLang(state.lang);
-  window.parent.postMessage({type:'__edit_mode_set_keys', edits:{lang: state.lang}}, '*');
 });
 
 // theme toggle in nav
@@ -1768,25 +1696,8 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   state.theme = next;
   applyTheme(next);
-  // sync tweaks seg
-  document.querySelectorAll('[data-group="theme"] button').forEach(b => b.classList.toggle('on', b.dataset.val === next));
-  window.parent.postMessage({type: '__edit_mode_set_keys', edits: {theme: next}}, '*');
 });
 
-// tweak panel interactions
-document.querySelectorAll('.tweaks [data-group]').forEach(group => {
-  group.addEventListener('click', e => {
-    const btn = e.target.closest('button, .swatch');
-    if (!btn) return;
-    const g = group.dataset.group;
-    group.querySelectorAll('button, .swatch').forEach(b => b.classList.toggle('on', b === btn));
-    const val = btn.dataset.val;
-    if (g === 'theme') { state.theme = val; applyTheme(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{theme:val}}, '*'); }
-    if (g === 'hero')  { state.hero = val; applyHero(val); window.parent.postMessage({type:'__edit_mode_set_keys', edits:{hero:val}}, '*'); }
-  });
-});
-
-// FAQ toggles
 // FAQ toggles — ignore clicks inside the answer body so users can select/copy text
 document.querySelectorAll('.faq-item').forEach(it => {
   it.addEventListener('click', e => {
@@ -1797,14 +1708,6 @@ document.querySelectorAll('.faq-item').forEach(it => {
     it.classList.toggle('open');
   });
 });
-
-// edit mode protocol — register listener FIRST
-window.addEventListener('message', e => {
-  const d = e.data || {};
-  if (d.type === '__activate_edit_mode') document.getElementById('tweaks').classList.add('on');
-  if (d.type === '__deactivate_edit_mode') document.getElementById('tweaks').classList.remove('on');
-});
-window.parent.postMessage({type: '__edit_mode_available'}, '*');
 </script>
 </body>
 </html>

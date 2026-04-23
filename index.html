@@ -222,6 +222,13 @@ body::before {
 }
 .btn .arr { transition: transform 160ms ease; }
 .btn:hover .arr { transform: translateX(2px); }
+.btn-xl {
+  font-size: 15px;
+  padding: 16px 28px;
+  border-radius: 10px;
+  letter-spacing: 0.01em;
+}
+.btn-xl .arr { font-size: 18px; }
 
 /* ───────────────────────────────────────────────── status bar */
 .statusbar {
@@ -969,8 +976,8 @@ html[lang="zh"] h3 .serif {
           <h1 data-i-html="hero3.h1">Your agents,<br><em>within reach</em> of any screen.</h1>
           <p class="sub" data-i="hero3.sub">Hand off from laptop to phone to browser without missing a beat. Wherever you are, your agent is one tap away.</p>
           <div class="ctas">
-            <a class="btn btn-primary" href="#install" data-i-html="cta.getQt">Get QuickTUI <span class="arr">→</span></a>
-            <a class="btn" href="#features" data-i="cta.features">View features</a>
+            <a class="btn btn-primary btn-xl" href="#install" data-i-html="cta.getQt">Get QuickTUI <span class="arr">→</span></a>
+            <a class="btn btn-xl" href="#features" data-i="cta.features">View features</a>
           </div>
         </div>
         <div class="device-stack">
@@ -1212,6 +1219,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         </div>
         <div>
           <p data-i="in.desc">Install the server once. From then on, every device you carry — iPhone, iPad, browser — is one tap away from your agent's live session.</p>
+          <a class="btn btn-primary btn-xl" href="https://apps.apple.com/app/quicktui/id6761338192" style="margin-top:22px" data-i-html="in.cta">Get the App <span class="arr">→</span></a>
         </div>
       </div>
 
@@ -1571,6 +1579,7 @@ const I18N = {
   "in.eyebrow": { en: "§ 04 / Get within reach", zh: "§ 04 / 即刻接入" },
   "in.h2": { en: `Three steps from <span class="serif">curl</span> to within reach.`, zh: `三步：从一条 <span class="serif">curl</span> 命令到随用随到。` },
   "in.desc": { en: "Install the server once. From then on, every device you carry — iPhone, iPad, browser — is one tap away from your agent's live session.", zh: "安装服务端一次。从此你随身的每一块设备 — iPhone、iPad、浏览器 — 都与 Agent 的实时会话只差一次点击。" },
+  "in.cta": { en: `Get the App <span class="arr">→</span>`, zh: `获取应用 <span class="arr">→</span>` },
   "in.badge": { en: "■ QUICKSTART", zh: "■ 快速上手" },
   "in.h3": { en: "Server up in one line.", zh: "一行命令启动服务。" },
   "in.p": { en: `The installer handles tmux 3.2+ detection, service registration on launchd/systemd, and saves your token to <span class="path">~/.config/quicktui/config</span>.`, zh: `安装脚本自动检测 tmux 3.2+、在 launchd/systemd 上注册服务，并将 Token 保存到 <span class="path">~/.config/quicktui/config</span>。` },

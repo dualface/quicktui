@@ -244,7 +244,7 @@ body::before {
 .statusbar .sep { opacity: 0.35; margin: 0 10px; }
 
 /* ───────────────────────────────────────────────── HERO */
-.hero { padding: clamp(16px, 2.5vw, 36px) 0 clamp(40px, 6vw, 80px); position: relative; }
+.hero { padding: clamp(40px, 4.5vw, 64px) 0 clamp(40px, 6vw, 80px); position: relative; }
 
 /* hero-ascii backdrop */
 .hero-ascii {
@@ -266,7 +266,9 @@ body::before {
 .hero-variant.is-active { display: block; }
 
 /* variant 3: brutalist code block */
-.v3 { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); align-items: start; }
+.hero-variant.v3 { display: flex; flex-direction: row; align-items: flex-start; gap: clamp(32px, 4vw, 56px); }
+.hero-variant.v3 > :first-child { flex: 1 1 0; min-width: 0; }
+.hero-variant.v3 > .device-stack { flex: 0 0 auto; }
 .v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; margin-top: 0; display: block; }
 .v3 h1 {
   font-family: var(--mono);
@@ -277,7 +279,7 @@ body::before {
   margin: 18px 0 24px;
   text-transform: uppercase;
 }
-.v3 h1 em { font-style: normal; background: var(--accent); color: var(--accent-ink); padding: 0 .15em; line-height: 1.45; }
+.v3 h1 em { font-style: normal; background: var(--accent); color: var(--accent-ink); padding: 0 .15em; line-height: 1.45; white-space: nowrap; }
 .v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
 .v3 .sub-cn { font-family: var(--mono); font-size: 13px; color: var(--ink-4); max-width: 40ch; }
 .v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
@@ -807,7 +809,8 @@ html[lang="zh"] body { font-feature-settings: normal; }
 /* ───────────── responsive */
 @media (max-width: 900px) {
   .devices-row, .install, .section-head { grid-template-columns: 1fr; }
-  .v3 { grid-template-columns: minmax(0, 1fr) minmax(0, 280px); gap: 24px; }
+  .hero-variant.v3 { gap: 24px; }
+  .hero-variant.v3 > .device-stack { max-width: 280px; }
   .v3 > *, .devices-row > *, .install > *, .section-head > *,
   .install-left, .install-right, .terminal-chrome, .terminal-body,
   .features-grid > .feat, .faq-item, .faq-item > *, .opts-grid, .opts-head { min-width: 0; }
@@ -825,7 +828,7 @@ html[lang="zh"] body { font-feature-settings: normal; }
   .foot { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 520px) {
-  .v3 { grid-template-columns: 1fr; }
+  .hero-variant.v3 { flex-direction: column; }
   .usecases { grid-template-columns: 1fr; }
   .uc { border-right: 0; }
   .statusbar .sep + span:nth-child(4), .statusbar > span:last-child { display: none; }
@@ -1522,9 +1525,6 @@ const I18N = {
   "nav.usecases": { en: `<span class="n">04</span>Use&nbsp;Cases`, zh: `<span class="n">04</span>使用场景` },
   "nav.faq": { en: `<span class="n">05</span>FAQ`, zh: `<span class="n">05</span>常见问题` },
   "cta.nav": { en: `<span class="lbl-long">Get the App</span><span class="lbl-short">Get App</span> <span class="arr">→</span>`, zh: `<span class="lbl-long">获取应用</span><span class="lbl-short">获取</span> <span class="arr">→</span>` },
-  "cta.downloadIos": { en: `Download for iOS <span class="arr">→</span>`, zh: `下载 iOS 版 <span class="arr">→</span>` },
-  "cta.browser": { en: "Open in browser", zh: "在浏览器中打开" },
-  "cta.learn": { en: `Learn more`, zh: `了解详情` },
   "cta.getQt": { en: `Get QuickTUI <span class="arr">→</span>`, zh: `获取 QuickTUI <span class="arr">→</span>` },
   "cta.features": { en: "View features", zh: "查看功能" },
 
@@ -1533,10 +1533,10 @@ const I18N = {
 
   // ───── features
   "f.eyebrow": { en: "§ 01 / Features", zh: "§ 01 / 功能特性" },
-  "f.h2": { en: `Built for <em>reach</em>, not tutorials.`, zh: `为<em>触手可及</em>而设计，而非教程。` },
-  "f.desc": { en: "Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.", zh: "每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让 Agent 在你当下随身的任意设备上触手可及。" },
+  "f.h2": { en: `Built for <em>reach</em>.`, zh: `为<em>随手可用</em>而生。` },
+  "f.desc": { en: "Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.", zh: "每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让 Agent 在你当下随身的任一设备上随手即得。" },
 
-  "f01.t": { en: "Always attached — you're always within reach", zh: "始终在线 — 你始终触手可及" },
+  "f01.t": { en: "Always attached — you're always within reach", zh: "始终在线 — Agent 随时就位" },
   "f01.b": { en: "Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there — output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)", zh: "Agent 的会话在两次接入之间持续存活于服务器 — 你在任何设备上打开 QuickTUI，它已在那里等你：输出完整、光标停在你离开的位置。（底层由 tmux 保活 PTY。）" },
   "f04.t": { en: "One truth, every client", zh: "同一真相，所有客户端" },
   "f04.b": { en: "Windows, panes, zoom, scroll, copy-mode — every client sees the exact same view of what your agents are doing. Switch devices mid-task, the cursor doesn't blink.", zh: "窗口、面板、缩放、滚动、复制模式 — 每个客户端都看到 Agent 当前状态的同一份视图。任务进行中切换设备，光标毫不闪动。" },
@@ -1548,12 +1548,12 @@ const I18N = {
   "f05.b": { en: `Add your server via <em style="font-style:normal;color:var(--accent)">Quick Setup</em> (SSH auto-install), <em style="font-style:normal;color:var(--accent)">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em style="font-style:normal;color:var(--accent)">Quick Setup</em>（SSH 自动安装）、<em style="font-style:normal;color:var(--accent)">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
   "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
   "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Self-updates, restarts, survives reboots — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles it all.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。自更新、自重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。一条 <span class="mono">q.sh</span> 脚本全部搞定。` },
-  "f07.t": { en: `<span style="color:var(--accent)">Within reach</span> — on whichever screen you're holding.`, zh: `<span style="color:var(--accent)">触手可及</span> — 你手里那块屏幕。` },
-  "f07.b": { en: "Claude Code, Aider, OpenHands, Cursor Background Agents, a 12-hour training run — they stay on a server that never sleeps, so whichever screen you happen to be holding, they're one tap away.", zh: "Claude Code、Aider、OpenHands、Cursor Background Agents、12 小时的训练任务 — 它们留在一台永不休眠的服务器上，所以不论你拿着哪块屏幕，它们都只差一次点击。" },
+  "f07.t": { en: `<span style="color:var(--accent)">Within reach</span> — on whichever screen you're holding.`, zh: `<span style="color:var(--accent)">近在指尖</span> — 你手里那块屏幕。` },
+  "f07.b": { en: "Claude Code, Aider, OpenHands, Cursor Background Agents, a 12-hour training run — they stay on a server that never sleeps, so whichever screen you happen to be holding, they're one tap away.", zh: "Claude Code、Aider、OpenHands、Cursor Background Agents、12 小时的训练任务 — 它们留在一台永不休眠的服务器上，所以不论你拿着哪块屏幕，它们都一触即达。" },
 
   // ───── in action
   "ia.eyebrow": { en: "§ 02 / In Action", zh: "§ 02 / 实战演示" },
-  "ia.h2": { en: `Within reach on <span class="serif">every</span> screen.`, zh: `<span class="serif">每一块</span>屏幕，触手可及。` },
+  "ia.h2": { en: `Within reach on <span class="serif">every</span> screen.`, zh: `<span class="serif">每一块</span>屏幕，皆是入口。` },
   "ia.desc": { en: "Same session across every device. Peek on your phone during a commute. Steer from iPad at the café. Review in a browser at your desk. Your agent is wherever you are.", zh: "同一会话，跨越每一块设备。通勤时用手机查看。咖啡厅里用 iPad 接管。办公桌前在浏览器里审阅。你在哪里，Agent 就在哪里。" },
   "ia.badge": { en: "■ CONTINUOUS", zh: "■ 持续在线" },
   "ia.h3": { en: "Pick up any screen. It's already there.", zh: "拿起任一屏幕，Agent 已在那里。" },
@@ -1568,8 +1568,8 @@ const I18N = {
   "ia.v4": { en: "38ms p50 · 72ms p95", zh: "38ms p50 · 72ms p95" },
 
   // ───── install
-  "in.eyebrow": { en: "§ 04 / Get within reach", zh: "§ 04 / 进入触手可及的状态" },
-  "in.h2": { en: `Three steps from <span class="serif">curl</span> to within reach.`, zh: `三步：从一条 <span class="serif">curl</span> 命令到触手可及。` },
+  "in.eyebrow": { en: "§ 04 / Get within reach", zh: "§ 04 / 即刻接入" },
+  "in.h2": { en: `Three steps from <span class="serif">curl</span> to within reach.`, zh: `三步：从一条 <span class="serif">curl</span> 命令到随用随到。` },
   "in.desc": { en: "Install the server once. From then on, every device you carry — iPhone, iPad, browser — is one tap away from your agent's live session.", zh: "安装服务端一次。从此你随身的每一块设备 — iPhone、iPad、浏览器 — 都与 Agent 的实时会话只差一次点击。" },
   "in.badge": { en: "■ QUICKSTART", zh: "■ 快速上手" },
   "in.h3": { en: "Server up in one line.", zh: "一行命令启动服务。" },
@@ -1610,7 +1610,7 @@ const I18N = {
   "uc2.t": { en: "iPad as agent cockpit", zh: "iPad 即 Agent 驾驶舱" },
   "uc2.b": { en: "Magic Keyboard + QuickTUI + a beefy server = a 12\" cockpit to supervise Claude Code, Aider, or a multi-hour build. Lightweight client, heavyweight agents.", zh: "Magic Keyboard + QuickTUI + 强力服务器 = 一块 12 英寸驾驶舱，用来盯着 Claude Code、Aider 或多小时构建任务。轻量客户端，重量级 Agent。" },
   "uc3.t": { en: "Browser from any borrowed device", zh: "从任何设备的浏览器接入" },
-  "uc3.b": { en: "No install needed. Open the server URL in any modern browser, enter your token once, and you are watching your agents live — from a hotel laptop if you have to.", zh: "无需安装。在任意现代浏览器中打开服务器 URL，输一次 Token，即可实时看到 Agent 的运行状态 — 哪怕是酒店里借来的笔记本。" },
+  "uc3.b": { en: "No install needed. Open the server URL in any modern browser, enter your token once, and you are watching your agents live — from a hotel laptop if you have to.", zh: "无需安装。在任意现代浏览器中打开服务器 URL，输入一次 Token，即可实时查看 Agent 的运行状态 — 哪怕是酒店里借来的笔记本。" },
   "uc4.t": { en: "Long-running jobs without babysitting", zh: "长时间任务 · 无需值守" },
   "uc4.b": { en: "Training runs, agent swarms, migrations, builds. Start it, walk away, check in from the couch. Your laptop can sleep — the job can't be bothered.", zh: "训练任务、Agent 群、数据迁移、构建流水线。启动后走开，从沙发上随手查看。笔记本可以休眠 — 任务不会因此停下。" },
 
@@ -1719,11 +1719,8 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
   "q17.q": { en: `The app or browser shows "Session not found".`, zh: `App 或浏览器提示"Session not found"。` },
   "q17.a": { en: `<p>This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running.</p><p>Refresh the session list, then open an existing session or create a new one.</p>`, zh: `<p>这是服务端返回的消息 — tmux 会话已关闭或被重命名，或 tmux 服务本身未运行。</p><p>刷新会话列表，然后打开已有会话或新建一个。</p>` },
 
-  "cta.demo": { en: "View live demo", zh: "查看实时演示" },
-  "cta.get": { en: `Get QuickTUI <span class="arr">→</span>`, zh: `获取 QuickTUI <span class="arr">→</span>` },
-  "cta.see": { en: "See features", zh: "查看功能" },
-  "hero3.h1": { en: `Your agents,<br><em>within reach</em> of any screen.`, zh: `你的 Agent，<br>任意屏幕 <em>触手可及</em>。` },
-  "hero3.sub": { en: "Hand off from laptop to phone to browser without missing a beat. Wherever you are, your agent is one tap away.", zh: "从笔记本到手机到浏览器无缝切换。无论你在哪里，Agent 都只差一次点击。" },
+  "hero3.h1": { en: `Your agents,<br><em>within reach</em> of any screen.`, zh: `你的 Agent，<br>任一屏幕，<em>触手可及</em>。` },
+  "hero3.sub": { en: "Hand off from laptop to phone to browser without missing a beat. Wherever you are, your agent is one tap away.", zh: "在笔记本、手机、浏览器之间无缝切换。无论你身在何处，Agent 都一触即达。" },
 
   // ───── footer
   "foot.tag": { en: "© 2026 · All rights reserved.", zh: "© 2026 · 版权所有。" },

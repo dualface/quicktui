@@ -262,97 +262,8 @@ body::before {
   -webkit-mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
 }
 
-/* variant 1: editorial */
 .hero-variant { display: none; }
 .hero-variant.is-active { display: block; }
-
-.v1-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: clamp(40px, 6vw, 80px);
-  align-items: end;
-}
-.v1 h1 {
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: clamp(44px, 8.2vw, 112px);
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  margin: 22px 0 0;
-  text-wrap: balance;
-}
-.v1 h1 .slash { color: var(--accent); }
-.v1 h1 .serif-word { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; }
-.v1 .sub-cn {
-  font-family: var(--mono);
-  font-size: 14px;
-  color: var(--ink-3);
-  margin-top: 22px;
-  max-width: 46ch;
-  line-height: 1.65;
-}
-.v1 .lede {
-  font-size: 18px;
-  color: var(--ink-2);
-  max-width: 44ch;
-  margin: 0 0 28px;
-  line-height: 1.55;
-}
-.v1 .ctas { display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
-.v1 .meta-col {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-3);
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2px;
-  padding-bottom: 10px;
-}
-.v1 .meta-row {
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 18px;
-  padding: 12px 0;
-  border-bottom: 1px dashed var(--line-soft);
-}
-.v1 .meta-row b { color: var(--ink); font-weight: 500; }
-.v1 .meta-row .k { color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.06em; font-size: 10.5px; }
-
-/* variant 2: centered terminal boot */
-.v2 { text-align: center; position: relative; }
-.v2 .mark {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--accent);
-  letter-spacing: 0.2em;
-}
-.v2 h1 {
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: clamp(52px, 9.5vw, 148px);
-  line-height: 0.9;
-  letter-spacing: -0.055em;
-  margin: 18px 0 14px;
-}
-.v2 h1 .u { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 6px; text-underline-offset: 10px; }
-.v2 .tag-en { font-size: 20px; color: var(--ink-2); max-width: 52ch; margin: 24px auto 8px; }
-.v2 .tag-cn { font-family: var(--mono); font-size: 13px; color: var(--ink-4); max-width: 40ch; margin: 0 auto; }
-.v2 .ctas { display: flex; gap: 10px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
-.v2 .boot {
-  max-width: 640px;
-  margin: 40px auto 0;
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-3);
-  background: var(--bg-1);
-  border: 1px solid var(--line-soft);
-  border-radius: 6px;
-  padding: 14px 18px;
-  line-height: 1.8;
-}
-.v2 .boot .ok { color: var(--accent); }
-.v2 .boot .dim { color: var(--ink-4); }
 
 /* variant 3: brutalist code block */
 .v3 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0, 520px); gap: clamp(40px, 6vw, 80px); align-items: center; }
@@ -897,8 +808,8 @@ html[lang="zh"] body { font-feature-settings: normal; }
 
 /* ───────────── responsive */
 @media (max-width: 900px) {
-  .v1-grid, .v3, .devices-row, .install, .section-head { grid-template-columns: 1fr; }
-  .v1-grid > *, .v3 > *, .devices-row > *, .install > *, .section-head > *,
+  .v3, .devices-row, .install, .section-head { grid-template-columns: 1fr; }
+  .v3 > *, .devices-row > *, .install > *, .section-head > *,
   .install-left, .install-right, .terminal-chrome, .terminal-body,
   .features-grid > .feat, .faq-item, .faq-item > *, .opts-grid, .opts-head { min-width: 0; }
   .install-right, .terminal-chrome, .terminal-body { overflow: hidden; }
@@ -1048,50 +959,8 @@ html[lang="zh"] h3 .serif {
     <!-- ───────── HERO ───────── -->
     <section class="hero">
 
-      <!-- VARIANT 1 — editorial -->
-      <div class="hero-variant is-active" data-variant="1">
-        <div class="v1-grid v1">
-          <div>
-            <div class="eyebrow" data-i="hero1.eyebrow">§ AI agents, within reach</div>
-            <h1 data-i-html="hero1.h1">Your AI agents,<br><span class="slash">/</span> always <span class="serif-word">within reach</span>.</h1>
-            <p class="sub" data-i="hero1.sub">Claude Code, Aider, or any long-running agent — attach from whichever screen is in your hand. iPhone on the subway, iPad at the café, browser at your desk. Same session, one tap away.</p>
-            <div class="ctas">
-              <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.downloadIos">Download for iOS <span class="arr">→</span></a>
-              <a class="btn" href="#install" data-i="cta.browser">Open in browser</a>
-              <a class="btn" href="#features" data-i-html="cta.learn">Learn more</a>
-            </div>
-          </div>
-          <div>
-            <p class="lede" data-i="hero1.lede">Your agent's session lives on a server that never sleeps, so no matter which device you pick up, it's already there. tmux keeps it alive between attaches.</p>
-            <div class="meta-col">
-              <div class="meta-row"><span class="k" data-i="hero1.k1">Runs</span><span data-i-html="hero1.v1">Claude Code · Aider · OpenHands · long scripts</span></div>
-              <div class="meta-row"><span class="k" data-i="hero1.k2">Attach from</span><span data-i="hero1.v2">iPhone · iPad · Safari / Chrome / Arc / Firefox</span></div>
-              <div class="meta-row"><span class="k" data-i="hero1.k3">Session keeper</span><span data-i="hero1.v3">tmux · persistent across reconnects</span></div>
-              <div class="meta-row"><span class="k" data-i="hero1.k4">Hosting</span><span data-i-html="hero1.v4">self-hosted · zero cloud · your token</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VARIANT 2 — centered terminal boot -->
-      <div class="hero-variant v2" data-variant="2">
-        <div class="mark">:: BOOT // QUICKTUI // 0xQT24 ::</div>
-        <h1 data-i-html="hero2.h1">Terminal that <em>follows</em><br>you everywhere.</h1>
-        <p class="tag-en" data-i="hero2.tag">Your AI agents, always within reach. iPhone, iPad, browser — one session across every screen you carry.</p>
-        <div class="ctas">
-          <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.downloadIos">Download for iOS <span class="arr">→</span></a>
-          <a class="btn" href="#action" data-i="cta.seeAction">See it in action</a>
-        </div>
-        <div class="boot">
-          <div><span class="ok">&gt;</span> booting quicktui <span class="dim">(v1.1.1 · arm64)</span></div>
-          <div><span class="ok">&gt;</span> attaching to tmux session <span class="dim">· 7 windows · 3 panes</span></div>
-          <div><span class="ok">&gt;</span> mosh: keepalive ok <span class="dim">· 38ms · jitter 2ms</span></div>
-          <div><span class="ok">&gt;</span> ready. <span class="dim">⌘⇧P to open command palette ▌</span></div>
-        </div>
-      </div>
-
       <!-- VARIANT 3 — brutalist code -->
-      <div class="hero-variant v3" data-variant="3">
+      <div class="hero-variant v3 is-active" data-variant="3">
         <div>
           <div class="tag">────  DESKTOP × MOBILE × BROWSER  ────</div>
           <h1 data-i-html="hero3.h1">Your agents,<br><em>within reach</em> of any screen.</h1>
@@ -1637,7 +1506,7 @@ QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual ser
 // ───────────────────────────────────────────────── tweak state
 const DEFAULTS = /*EDITMODE-BEGIN*/{
   "theme": "dark",
-  "hero": "1",
+  "hero": "3",
   "accentHue": 142,
   "lang": "en"
 }/*EDITMODE-END*/;
@@ -1656,30 +1525,11 @@ const I18N = {
   "cta.downloadIos": { en: `Download for iOS <span class="arr">→</span>`, zh: `下载 iOS 版 <span class="arr">→</span>` },
   "cta.browser": { en: "Open in browser", zh: "在浏览器中打开" },
   "cta.learn": { en: `Learn more`, zh: `了解详情` },
-  "cta.seeAction": { en: "See it in action", zh: "查看实时演示" },
   "cta.getQt": { en: `Get QuickTUI <span class="arr">→</span>`, zh: `获取 QuickTUI <span class="arr">→</span>` },
   "cta.features": { en: "View features", zh: "查看功能" },
 
   "status.ready": { en: `<span class="dot"></span>SESSION / READY`, zh: `<span class="dot"></span>会话 / 就绪` },
 
-  // ───── hero1
-  "hero1.eyebrow": { en: "§ AI agents, within reach", zh: "§ AI Agent · 触手可及" },
-  "hero1.h1": { en: `Your AI agents,<br><span class="slash">/</span> always <span class="serif-word">within reach</span>.`, zh: `你的 AI Agent，<br><span class="slash">/</span> 始终<span class="serif-word">触手可及</span>。` },
-  "hero1.sub": { en: "Claude Code, Aider, or any long-running agent — attach from whichever screen is in your hand. iPhone on the subway, iPad at the café, browser at your desk. Same session, one tap away.", zh: "Claude Code、Aider 或任何长时间运行的 Agent — 从你手边那块屏幕随时接入。地铁里的 iPhone、咖啡厅里的 iPad、办公桌前的浏览器。同一会话，一触即达。" },
-  "hero1.lede": { en: "Your agent's session lives on a server that never sleeps, so no matter which device you pick up, it's already there. tmux keeps it alive between attaches.", zh: "Agent 的会话运行在一台永不休眠的服务器上 — 无论你拿起哪块屏幕，它都已经在那里等你。tmux 在两次接入之间始终保活。" },
-  "hero1.k1": { en: "Runs", zh: "运行对象" },
-  "hero1.v1": { en: `Claude Code · Aider · OpenHands · long scripts`, zh: `Claude Code · Aider · OpenHands · 长时间脚本` },
-  "hero1.k2": { en: "Attach from", zh: "接入设备" },
-  "hero1.v2": { en: "iPhone · iPad · Safari / Chrome / Arc / Firefox", zh: "iPhone · iPad · Safari / Chrome / Arc / Firefox" },
-  "hero1.k3": { en: "Session keeper", zh: "会话保活" },
-  "hero1.v3": { en: "tmux · persistent across reconnects", zh: "tmux · 跨重连持续存活" },
-  "hero1.k4": { en: "Hosting", zh: "部署" },
-  "hero1.v4": { en: "self-hosted · zero cloud · your token", zh: "自托管 · 零云端 · 你的 Token" },
-
-  // ───── hero2
-  "hero2.boot": { en: "booting", zh: "启动中" },
-  "hero2.h1": { en: `Terminal that <em>follows</em><br>you everywhere.`, zh: `跟随<em>你</em>的终端，<br>无处不在。` },
-  "hero2.tag": { en: "Your AI agents, always within reach. iPhone, iPad, browser — one session across every screen you carry.", zh: "你的 AI Agent，始终触手可及。iPhone、iPad、浏览器 — 一个会话，跨越你携带的每块屏幕。" },
 
   // ───── features
   "f.eyebrow": { en: "§ 01 / Features", zh: "§ 01 / 功能特性" },

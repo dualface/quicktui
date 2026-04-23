@@ -109,6 +109,13 @@ normalize_sha256() {
     printf '%s\n' "$1" | sed 's/^sha256://; y/ABCDEF/abcdef/'
 }
 
+# Dies with a clear explanation when /dev/tty cannot be opened for reading.
+# Any `read ... </dev/tty` must route through this helper instead of
+# `exit 1`, otherwise containers without /dev/tty get a silent failure.
+die_no_tty() {
+    die "Cannot read from /dev/tty (no controlling terminal). Re-run with -y plus CLI options (--token / --addr / --port) to avoid prompts."
+}
+
 sha256_file() {
     _path="$1"
     if command -v sha256sum > /dev/null 2>&1; then
@@ -182,7 +189,7 @@ while [ $# -gt 0 ]; do
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
             printf '  --port <port>      Listen port (default: 8022)\n'
-            printf '  --term <value>     TERM for tmux (default: xterm-256color, falls back to screen-256color)\n'
+            printf '  --term <value>     TERM for tmux (default xterm-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
             printf '  --check            Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
@@ -207,7 +214,7 @@ confirm() {
         _hint="[y/N]"
     fi
     printf '%s %s ' "$_prompt" "$_hint"
-    read -r _answer </dev/tty || exit 1
+    read -r _answer </dev/tty || die_no_tty
     case "$_answer" in
         [Yy]*) return 0 ;;
         [Nn]*) return 1 ;;
@@ -668,21 +675,24 @@ _find_tmux() {
     return 1
 }
 
-# Parse `tmux -V` output into _maj/_min. Returns non-zero on unparseable
-# input. Callers should use result in numeric comparisons only.
+# Parse `tmux -V` output into two numeric tokens on stdout ("major minor").
+# Returns non-zero on unparseable input. Callers capture via command
+# substitution so there are no shared globals to clobber across calls.
 _parse_tmux_major_minor() {
     _bin="$1"
     [ -x "$_bin" ] || return 1
-    _ver="$("$_bin" -V 2>/dev/null | sed 's/tmux //')"
-    _maj="$(printf '%s\n' "$_ver" | cut -d. -f1)"
-    _min="$(printf '%s\n' "$_ver" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')"
-    case "$_maj" in ''|*[!0-9]*) return 1 ;; esac
-    case "$_min" in ''|*[!0-9]*) return 1 ;; esac
-    return 0
+    _ver="$("$_bin" -V 2>/dev/null | sed 's/^tmux //')"
+    _p_maj="$(printf '%s\n' "$_ver" | cut -d. -f1)"
+    _p_min="$(printf '%s\n' "$_ver" | cut -d. -f2 | cut -d- -f1 | sed 's/[^0-9].*//')"
+    case "$_p_maj" in ''|*[!0-9]*) return 1 ;; esac
+    case "$_p_min" in ''|*[!0-9]*) return 1 ;; esac
+    printf '%s %s\n' "$_p_maj" "$_p_min"
 }
 
 _tmux_at_least_3_2() {
-    _parse_tmux_major_minor "$1" || return 1
+    _parsed="$(_parse_tmux_major_minor "$1")" || return 1
+    _maj="${_parsed%% *}"
+    _min="${_parsed##* }"
     [ "$_maj" -gt 3 ] && return 0
     [ "$_maj" -eq 3 ] && [ "$_min" -ge 2 ] && return 0
     return 1
@@ -725,11 +735,9 @@ check_tmux() {
     fi
 
     _tmux_bin="$(_find_tmux)"
-    _parse_tmux_major_minor "$_tmux_bin" || die "Could not parse tmux version from '$_tmux_bin -V'."
-    # Display full version string (e.g. "3.2a") instead of the parsed M.N
-    # pair so patch letters from `tmux -V` survive.
+    _parse_tmux_major_minor "$_tmux_bin" > /dev/null || die "Could not parse tmux version from '$_tmux_bin -V'."
+    # Preserve the full version string including any patch letter.
     _tmux_version="$("$_tmux_bin" -V 2>/dev/null | sed 's/^tmux //')"
-    [ -n "$_tmux_version" ] || _tmux_version="${_maj}.${_min}"
 
     if [ -n "$EXISTING_TMUX_BIN" ] && ! safe_existing_tmux_bin "$EXISTING_TMUX_BIN"; then
         warn "Ignoring untrusted QUICKTUI_TMUX_BIN from existing config."
@@ -1017,10 +1025,14 @@ validate_token() {
 
 generate_random_token_value() {
     if command -v openssl > /dev/null 2>&1; then
-        TOKEN="$(openssl rand -hex 32)"
+        TOKEN="$(openssl rand -hex 32 2>/dev/null)"
     else
-        TOKEN="$(head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n')"
+        TOKEN="$(head -c 32 /dev/urandom 2>/dev/null | od -A n -t x1 2>/dev/null | tr -d ' \n')"
     fi
+    # Belt-and-suspenders: a silent failure from openssl or /dev/urandom
+    # would otherwise produce an empty token that bypasses validate_token
+    # on the non-interactive / rotate-token paths.
+    validate_token "$TOKEN" || die "Failed to generate a random token (openssl and /dev/urandom both unavailable or failed)."
 }
 
 configure_token() {
@@ -1041,7 +1053,7 @@ configure_token() {
         printf '  [1] Generate a random token automatically  [default]\n'
         printf '  [2] Enter my own token\n'
         printf 'Enter choice [1]: '
-        read -r _choice </dev/tty || exit 1
+        read -r _choice </dev/tty || die_no_tty
         _choice="${_choice:-1}"
 
         case "$_choice" in
@@ -1069,7 +1081,7 @@ configure_token() {
                         _STTY_SAVED=""
                         printf '\n'
                     fi
-                    exit 1
+                    die_no_tty
                 }
                 if [ -n "$_echo_suppressed" ]; then
                     stty "$_STTY_SAVED" </dev/tty 2>/dev/null || true
@@ -1110,7 +1122,7 @@ configure_network() {
     else
         _default_addr="${EXISTING_ADDR:-0.0.0.0}"
         printf '\nListen address [default: %s]: ' "$_default_addr"
-        read -r LISTEN_ADDR </dev/tty || exit 1
+        read -r LISTEN_ADDR </dev/tty || die_no_tty
         LISTEN_ADDR="${LISTEN_ADDR:-$_default_addr}"
         validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
     fi
@@ -1124,7 +1136,7 @@ configure_network() {
     else
         _default_port="${EXISTING_PORT:-8022}"
         printf 'Port [default: %s]: ' "$_default_port"
-        read -r LISTEN_PORT </dev/tty || exit 1
+        read -r LISTEN_PORT </dev/tty || die_no_tty
         LISTEN_PORT="${LISTEN_PORT:-$_default_port}"
         validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
     fi
@@ -1197,7 +1209,10 @@ configure_service() {
         --addr "${LISTEN_ADDR}:${LISTEN_PORT}" \
         --term "$TERM_ENV" \
         --lang "$LANG_ENV" > "$_SVC_OUT" 2>&1 || _svc_rc=$?
-    awk '/--qrcode/ { next } { print }' "$_SVC_OUT"
+    # Drop ONLY the server's QR-code reminder line so we can re-emit it
+    # under "Getting started" with our own formatting. Any other line that
+    # happens to mention --qrcode (e.g. an error message) still shows.
+    awk '/Run .*--qrcode.* to display the connection QR code/ { next } { print }' "$_SVC_OUT"
     rm -f "$_SVC_OUT"
     _SVC_OUT=""
 
@@ -1432,12 +1447,22 @@ preflight_checks() {
         _preflight_warnings=$((_preflight_warnings + 1))
     fi
 
+    # `script` has incompatible CLI grammars across implementations:
+    #   - util-linux (most Linux distros): `script -qc 'cmd' file`
+    #   - busybox (Alpine): `script [-q] file -c 'cmd'`
+    #   - BSD / macOS: `script [-q] file utility [args...]`
+    # Try each in turn so a host with a different flavour doesn't get a
+    # misleading "Cannot allocate a PTY" warning.
+    _pty_ok=""
     if [ "$PLATFORM" = "darwin" ]; then
-        _pty_ok=""
         script -q /dev/null sh -c 'exit 0' < /dev/null > /dev/null 2>&1 && _pty_ok=1
     else
-        _pty_ok=""
-        script -qc 'exit 0' /dev/null < /dev/null > /dev/null 2>&1 && _pty_ok=1
+        if script -qc 'exit 0' /dev/null < /dev/null > /dev/null 2>&1 || \
+           script -q /dev/null -c 'exit 0' < /dev/null > /dev/null 2>&1 || \
+           script /dev/null -c 'exit 0' < /dev/null > /dev/null 2>&1 || \
+           script -q /dev/null sh -c 'exit 0' < /dev/null > /dev/null 2>&1; then
+            _pty_ok=1
+        fi
     fi
     if [ -n "$_pty_ok" ]; then
         info "PTY allocation OK"

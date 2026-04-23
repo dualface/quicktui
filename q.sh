@@ -758,28 +758,49 @@ download_binary() {
 # Step 3.5: Stop existing service before replacing binary
 # ============================================================
 
-stop_existing_service() {
-    _binary="${HOME}/.local/bin/quicktui-server"
+# Stop the currently running service but keep the registration files
+# (launchd plist / systemd unit) intact so that install_binary's rollback
+# path can use restart_existing_service to bring the old service back.
+# Used by install_binary during upgrade.
+stop_service_keep_registration() {
     _os="$(uname -s)"
     _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
     _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
 
-    # Try server binary's own uninstall-service first
-    if [ -f "$_binary" ]; then
-        "$_binary" --uninstall-service 2>/dev/null || true
-    fi
-
-    # Belt-and-suspenders: also stop via OS service manager
     if [ "$_os" = "Darwin" ]; then
         if [ -f "$_launchd_plist" ]; then
             launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
                 launchctl unload "$_launchd_plist" >/dev/null 2>&1 || true
         fi
     else
-        if [ -f "$_systemd_service" ]; then
-            if command -v systemctl > /dev/null 2>&1; then
-                systemctl --user stop quicktui >/dev/null 2>&1 || true
-            fi
+        if [ -f "$_systemd_service" ] && command -v systemctl > /dev/null 2>&1; then
+            systemctl --user stop quicktui >/dev/null 2>&1 || true
+        fi
+    fi
+    info "Stopped existing service"
+}
+
+# Stop the running service AND unregister it (server's --uninstall-service
+# removes plist / systemd unit, followed by OS-level teardown as a
+# belt-and-suspenders). Used during --uninstall.
+stop_and_unregister_service() {
+    _binary="${HOME}/.local/bin/quicktui-server"
+    _os="$(uname -s)"
+    _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
+    _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
+
+    if [ -f "$_binary" ]; then
+        "$_binary" --uninstall-service 2>/dev/null || true
+    fi
+
+    if [ "$_os" = "Darwin" ]; then
+        if [ -f "$_launchd_plist" ]; then
+            launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
+                launchctl unload "$_launchd_plist" >/dev/null 2>&1 || true
+        fi
+    else
+        if [ -f "$_systemd_service" ] && command -v systemctl > /dev/null 2>&1; then
+            systemctl --user stop quicktui >/dev/null 2>&1 || true
         fi
     fi
     info "Stopped existing service"
@@ -895,7 +916,7 @@ install_binary() {
     mkdir -p "${HOME}/.local/bin"
 
     if [ -n "$IS_UPGRADE" ]; then
-        stop_existing_service
+        stop_service_keep_registration
         stop_binary_processes "$INSTALL_PATH"
     fi
 
@@ -1156,6 +1177,9 @@ configure_service() {
     else
         SERVICE_STARTED="failed"
         SERVICE_FAILURE_REASON="registration"
+        # Compensating uninstall in case --install-service left partial
+        # state on disk (idempotent).
+        "$INSTALL_PATH" --uninstall-service >/dev/null 2>&1 || true
         warn "Service registration failed. You can retry manually:"
         warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
     fi
@@ -1277,7 +1301,7 @@ uninstall() {
 
     # Stop and unregister service
     if [ -f "$_binary" ]; then
-        stop_existing_service
+        stop_and_unregister_service
         _removed=1
     fi
 

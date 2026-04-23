@@ -111,6 +111,22 @@ normalize_sha256() {
     printf '%s\n' "$1" | sed 's/^sha256://; y/ABCDEF/abcdef/'
 }
 
+# Dies unless the given value looks like a bare 64-char lowercase hex
+# digest. Use after fetching `.sha256` artifacts from the network so an
+# HTML 404 body ("<!doctype html...") surfaces a clear "checksum file is
+# not a digest" error instead of an opaque "checksum mismatch".
+assert_valid_sha256() {
+    _value="$1"
+    _context="$2"
+    case "$_value" in
+        *[!0-9a-f]*|'')
+            die "${_context} does not look like a SHA-256 digest (got: '$_value')."
+            ;;
+    esac
+    [ "${#_value}" -eq 64 ] || \
+        die "${_context} has wrong length (expected 64 hex chars, got ${#_value})."
+}
+
 # Dies with a clear explanation after a failed `read ... </dev/tty`.
 # Tries to distinguish the no-tty case (container without /dev/tty) from
 # a plain EOF (user hit Ctrl-D to cancel) so the error message matches
@@ -151,6 +167,10 @@ while [ $# -gt 0 ]; do
             OPT_TOKEN="$2"
             shift 2
             ;;
+        --token=*)
+            OPT_TOKEN="${1#--token=}"
+            shift
+            ;;
         --rotate-token)
             OPT_ROTATE_TOKEN="1"
             shift
@@ -164,10 +184,18 @@ while [ $# -gt 0 ]; do
             OPT_TERM="$2"
             shift 2
             ;;
+        --term=*)
+            OPT_TERM="${1#--term=}"
+            shift
+            ;;
         --lang)
             [ $# -ge 2 ] || die "Missing value for $1"
             OPT_LANG="$2"
             shift 2
+            ;;
+        --lang=*)
+            OPT_LANG="${1#--lang=}"
+            shift
             ;;
         --check)
             CHECK_ONLY="1"
@@ -178,10 +206,18 @@ while [ $# -gt 0 ]; do
             OPT_ADDR="$2"
             shift 2
             ;;
+        --addr=*)
+            OPT_ADDR="${1#--addr=}"
+            shift
+            ;;
         --port)
             [ $# -ge 2 ] || die "Missing value for $1"
             OPT_PORT="$2"
             shift 2
+            ;;
+        --port=*)
+            OPT_PORT="${1#--port=}"
+            shift
             ;;
         --uninstall)
             UNINSTALL="1"
@@ -192,7 +228,7 @@ while [ $# -gt 0 ]; do
             printf 'Options:\n'
             printf '  -y, --yes          Skip prompts; use defaults and auto-accept confirmations\n'
             printf '  --token <string>   Set access token (skip prompt)\n'
-            printf '  --rotate-token     Generate a fresh random token (overrides preserved token on upgrade)\n'
+            printf '  --rotate-token     Generate a fresh random token (overrides saved token)\n'
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
             printf '  --port <port>      Listen port (default: 8022)\n'
@@ -201,6 +237,18 @@ while [ $# -gt 0 ]; do
             printf '  --check            Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
             printf '  -h, --help         Show this help\n'
+            printf '\n'
+            printf 'Environment:\n'
+            printf '  NO_COLOR                      Disable ANSI color when set\n'
+            printf '  QUICKTUI_RELEASES             Base URL for server binary + sha256\n'
+            printf '  TMUX_BUILDS_VERSION           Override pinned tmux-builds version\n'
+            printf '  TMUX_BUILDS_SHA256            Expected SHA-256 for the tmux tarball\n'
+            printf '  TMUX_BUILDS_RELEASES          Base URL for tmux tarball\n'
+            printf '  TMUX_BUILDS_ALLOW_UNVERIFIED  Set to 1 to skip tmux checksum (unsafe)\n'
+            printf '\n'
+            printf 'Example (override tmux via a piped install):\n'
+            printf '  curl -fsSL https://quicktui.ai/q.sh \\\n'
+            printf '    | TMUX_BUILDS_VERSION=3.7 TMUX_BUILDS_SHA256=<hex> sh\n'
             exit 0
             ;;
         *)
@@ -208,6 +256,13 @@ while [ $# -gt 0 ]; do
             ;;
     esac
 done
+
+# Mutually exclusive dispatch flags — checked here instead of in
+# validate_cli_options so the UNINSTALL path (which does not call
+# validate_cli_options) also rejects the combination.
+if [ -n "$UNINSTALL" ] && [ -n "$CHECK_ONLY" ]; then
+    die "--uninstall and --check are mutually exclusive."
+fi
 
 confirm() {
     _prompt="$1"
@@ -389,6 +444,11 @@ validate_port() {
     _port="$1"
     case "$_port" in
         ''|*[!0-9]*)
+            return 1
+            ;;
+        # Reject leading zeros so dash/busybox don't reinterpret "010" as
+        # octal 8 in the numeric comparison below.
+        0[0-9]*)
             return 1
             ;;
     esac
@@ -585,6 +645,7 @@ install_tmux_from_builds() {
     _expected_sha=""
     if [ -n "${TMUX_BUILDS_SHA256:-}" ]; then
         _expected_sha="$(normalize_sha256 "$TMUX_BUILDS_SHA256")"
+        assert_valid_sha256 "$_expected_sha" "TMUX_BUILDS_SHA256"
     elif [ "$_tmux_ver" = "$TMUX_BUILDS_DEFAULT_VERSION" ]; then
         _expected_sha="$(tmux_builds_pinned_sha256 "$_tmux_os" "$_tmux_arch" || true)"
         [ -n "$_expected_sha" ] || die "No pinned tmux checksum for ${_tmux_os}-${_tmux_arch}. Set TMUX_BUILDS_VERSION and TMUX_BUILDS_SHA256 explicitly, or TMUX_BUILDS_ALLOW_UNVERIFIED=1 to bypass at your own risk."
@@ -793,6 +854,7 @@ download_binary() {
 
     printf '  Verifying checksum...\n'
     _expected_hash="$(normalize_sha256 "$(awk '{print $1}' "${_sha256_path}")")"
+    assert_valid_sha256 "$_expected_hash" "Checksum file at ${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256"
     _actual_hash="$(normalize_sha256 "$(sha256_file "$_binary_path")")"
     [ "$_actual_hash" = "$_expected_hash" ] || {
         rm -rf "$DOWNLOAD_TMPDIR"

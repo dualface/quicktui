@@ -62,8 +62,10 @@ cleanup() {
     [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
     [ -n "$_SVC_OUT" ] && rm -f "$_SVC_OUT" || true
 }
-# INT/TERM traps clear the EXIT trap first so cleanup runs exactly once.
-trap 'trap - EXIT; cleanup; exit 130' INT TERM
+# Signal traps clear the EXIT trap first so cleanup runs exactly once.
+# HUP/QUIT are trapped alongside INT/TERM so tmpdirs do not leak when an
+# ssh session disconnects or the user sends SIGQUIT mid-install.
+trap 'trap - EXIT; cleanup; exit 130' INT TERM HUP QUIT
 trap cleanup EXIT
 
 # ============================================================
@@ -109,11 +111,16 @@ normalize_sha256() {
     printf '%s\n' "$1" | sed 's/^sha256://; y/ABCDEF/abcdef/'
 }
 
-# Dies with a clear explanation when /dev/tty cannot be opened for reading.
-# Any `read ... </dev/tty` must route through this helper instead of
-# `exit 1`, otherwise containers without /dev/tty get a silent failure.
+# Dies with a clear explanation after a failed `read ... </dev/tty`.
+# Tries to distinguish the no-tty case (container without /dev/tty) from
+# a plain EOF (user hit Ctrl-D to cancel) so the error message matches
+# what the user actually did.
 die_no_tty() {
-    die "Cannot read from /dev/tty (no controlling terminal). Re-run with -y plus CLI options (--token / --addr / --port) to avoid prompts."
+    if [ -c /dev/tty ] && { : </dev/tty; } 2>/dev/null; then
+        die "Input cancelled."
+    else
+        die "Cannot read from /dev/tty (no controlling terminal). Re-run with -y plus CLI options (--token / --addr / --port) to avoid prompts."
+    fi
 }
 
 sha256_file() {
@@ -1003,6 +1010,10 @@ install_binary() {
             ;;
     esac
 
+    # Remove the downloaded staging dir now that its contents have been
+    # cp'd into place; clearing the global afterwards prevents the EXIT
+    # trap from trying to remove the same path a second time.
+    rm -rf "$DOWNLOAD_TMPDIR"
     DOWNLOAD_TMPDIR=""
     info "Installed to $INSTALL_PATH"
 }

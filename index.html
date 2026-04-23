@@ -418,6 +418,7 @@ body::before {
   text-wrap: balance;
 }
 .section-head h2 em { font-style: normal; color: var(--accent); white-space: nowrap; }
+.ac { color: var(--accent); font-style: normal; }
 .section-head h2 .serif { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 .section-head p {
   font-size: 16px;
@@ -1038,7 +1039,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         <div class="feat col-4">
           <div class="idx">F.05</div>
           <h3 data-i="f05.t">Three ways to get attached</h3>
-          <p data-i-html="f05.b">Add your server via <em style="font-style:normal;color:var(--accent)">Quick Setup</em> (SSH auto-install), <em style="font-style:normal;color:var(--accent)">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.</p>
+          <p data-i-html="f05.b">Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.</p>
           <div class="viz" style="white-space:pre">
 <span class="dim">⌘⇧P&gt;</span> <span class="hl">prod-api</span>
   ├─ <span class="hl">attach</span>     tmux: dev                    <span class="dim">↵</span>
@@ -1069,7 +1070,7 @@ scratch : 1 window  <span class="dim">· detached</span>
 
       <div class="devices-row">
         <div class="devices-copy">
-          <div class="eyebrow" style="color:var(--accent)" data-i="ia.badge">■ CONTINUOUS</div>
+          <div class="eyebrow ac" data-i="ia.badge">■ CONTINUOUS</div>
           <h3 data-i="ia.h3">Pick up any screen. It's already there.</h3>
           <p data-i="ia.p">Every client — phone, tablet, browser — is a live window into the same agent session. No reconnect ritual, no scrolling back through logs. Your agent is already waiting on whichever screen you open.</p>
           <ul>
@@ -1194,9 +1195,9 @@ scratch : 1 window  <span class="dim">· detached</span>
           <h3 data-i="in.h3">Server up in one line.</h3>
           <p data-i-html="in.p">The installer handles tmux 3.2+ detection, service registration on launchd/systemd, and saves your token to <span class="path">~/.config/quicktui/config</span>.</p>
           <div class="steps">
-            <div class="step"><span class="n">01</span><div><b data-i="step1.t">Install and start the server.</b><div class="d"><span class="mono" style="color:var(--accent)">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step1.d" style="margin-top:4px">One command detects tmux, installs the binary, registers the service, and saves your token.</div></div></div>
-            <div class="step"><span class="n">02</span><div><b data-i="step2.t">Scan QR Code in App.</b><div class="d" data-i-html="step2.d">Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono" style="color:var(--accent)">+</span> → Scan.</div></div></div>
-            <div class="step"><span class="n">03</span><div><b data-i="step3.t">Or open the browser.</b><div class="d" data-i-html="step3.d">Visit <span class="mono" style="color:var(--accent)">http://&lt;host&gt;:8022</span>, paste your token once.</div></div></div>
+            <div class="step"><span class="n">01</span><div><b data-i="step1.t">Install and start the server.</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step1.d" style="margin-top:4px">One command detects tmux, installs the binary, registers the service, and saves your token.</div></div></div>
+            <div class="step"><span class="n">02</span><div><b data-i="step2.t">Scan QR Code in App.</b><div class="d" data-i-html="step2.d">Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono ac">+</span> → Scan.</div></div></div>
+            <div class="step"><span class="n">03</span><div><b data-i="step3.t">Or open the browser.</b><div class="d" data-i-html="step3.d">Visit <span class="mono ac">http://&lt;host&gt;:8022</span>, paste your token once.</div></div></div>
           </div>
         </div>
         <div class="install-right">
@@ -1251,7 +1252,7 @@ scratch : 1 window  <span class="dim">· detached</span>
           <h2 data-i-html="faq.h2">Questions &amp; <span class="serif">answers</span>.</h2>
         </div>
         <div>
-          <p data-i-html="faq.desc">Grouped by topic, straight from the docs. More answers in the repo — open an issue at <span class="mono" style="color:var(--accent)">github.com/dualface/quicktui</span>.</p>
+          <p data-i-html="faq.desc">Grouped by topic, straight from the docs. More answers in the repo — open an issue at <span class="mono ac">github.com/dualface/quicktui</span>.</p>
         </div>
       </div>
 
@@ -1476,10 +1477,10 @@ const I18N = {
   "f03.t": { en: "QR onboarding in 2 seconds", zh: "2 秒扫码接入" },
   "f03.b": { en: "Run `quicktui-server --qrcode` on the server, scan with the iOS app — you are inside your agent's session. No token copy-paste, no IP typing.", zh: "在服务器执行 `quicktui-server --qrcode`，用 iOS App 扫描 — 你已进入 Agent 的会话。无需复制 Token、无需敲 IP。" },
   "f05.t": { en: "Three ways to get attached", zh: "三种方式即刻接入" },
-  "f05.b": { en: `Add your server via <em style="font-style:normal;color:var(--accent)">Quick Setup</em> (SSH auto-install), <em style="font-style:normal;color:var(--accent)">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em style="font-style:normal;color:var(--accent)">Quick Setup</em>（SSH 自动安装）、<em style="font-style:normal;color:var(--accent)">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
+  "f05.b": { en: `Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em class="ac">Quick Setup</em>（SSH 自动安装）、<em class="ac">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
   "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
   "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Self-updates, restarts, survives reboots — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles it all.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。自更新、自重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。一条 <span class="mono">q.sh</span> 脚本全部搞定。` },
-  "f07.t": { en: `<span style="color:var(--accent)">Within reach</span> — on whichever screen you're holding.`, zh: `<span style="color:var(--accent)">近在指尖</span> — 你手里那块屏幕。` },
+  "f07.t": { en: `<span class="ac">Within reach</span> — on whichever screen you're holding.`, zh: `<span class="ac">近在指尖</span> — 你手里那块屏幕。` },
   "f07.b": { en: "Claude Code, Aider, OpenHands, Cursor Background Agents, a 12-hour training run — they stay on a server that never sleeps, so whichever screen you happen to be holding, they're one tap away.", zh: "Claude Code、Aider、OpenHands、Cursor Background Agents、12 小时的训练任务 — 它们留在一台永不休眠的服务器上，所以不论你拿着哪块屏幕，它们都一触即达。" },
 
   // ───── in action
@@ -1509,9 +1510,9 @@ const I18N = {
   "step1.t": { en: "Install and start the server.", zh: "安装并启动服务端。" },
   "step1.d": { en: `One command detects tmux, installs the binary, registers the service, and saves your token.`, zh: `一条命令自动检测 tmux、安装二进制、注册服务、保存 Token。` },
   "step2.t": { en: "Scan QR Code in App.", zh: "在 App 中扫描二维码。" },
-  "step2.d": { en: `Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono" style="color:var(--accent)">+</span> → Scan.`, zh: `运行 <span class="mono">quicktui-server --qrcode</span>，打开 iOS App，点击 <span class="mono" style="color:var(--accent)">+</span> → 扫描。` },
+  "step2.d": { en: `Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono ac">+</span> → Scan.`, zh: `运行 <span class="mono">quicktui-server --qrcode</span>，打开 iOS App，点击 <span class="mono ac">+</span> → 扫描。` },
   "step3.t": { en: "Or open the browser.", zh: "或打开浏览器。" },
-  "step3.d": { en: `Visit <span class="mono" style="color:var(--accent)">http://&lt;host&gt;:8022</span>, paste your token once.`, zh: `访问 <span class="mono" style="color:var(--accent)">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
+  "step3.d": { en: `Visit <span class="mono ac">http://&lt;host&gt;:8022</span>, paste your token once.`, zh: `访问 <span class="mono ac">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
     "in.ttitle": { en: "quicktui · install · ~", zh: "quicktui · install · ~" },
   "in.c1": { en: "# install on macOS / Linux / WSL", zh: "# 在 macOS / Linux / WSL 上安装" },
   "in.c2": { en: "# pair your iPhone / iPad with a QR code", zh: "# 用二维码配对 iPhone / iPad" },
@@ -1549,7 +1550,7 @@ const I18N = {
   // ───── faq
   "faq.eyebrow": { en: "§ 05 / FAQ", zh: "§ 05 / 常见问题" },
   "faq.h2": { en: `Questions &amp; <span class="serif">answers</span>.`, zh: `问题与<span class="serif">答案</span>。` },
-  "faq.desc": { en: `Grouped by topic, straight from the docs. More answers in the repo — open an issue at <span class="mono" style="color:var(--accent)">github.com/dualface/quicktui</span>.`, zh: `按主题分组，均来自官方文档。更多答案请见仓库 — 在 <span class="mono" style="color:var(--accent)">github.com/dualface/quicktui</span> 提 Issue。` },
+  "faq.desc": { en: `Grouped by topic, straight from the docs. More answers in the repo — open an issue at <span class="mono ac">github.com/dualface/quicktui</span>.`, zh: `按主题分组，均来自官方文档。更多答案请见仓库 — 在 <span class="mono ac">github.com/dualface/quicktui</span> 提 Issue。` },
 
   "faqg.install": { en: "Installation", zh: "安装" },
   "faqg.server": { en: "Server & Service", zh: "服务端 · 服务" },

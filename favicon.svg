@@ -4,15 +4,20 @@
    width="1024"
    height="1024"
    version="1.1"
-   id="svg15"
-   sodipodi:docname="favicon.svg"
+   id="svg2"
+   sodipodi:docname="logo_v2_c_flat_invert.svg"
+   inkscape:export-filename="logo_v2_c_flat_invert.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
   <sodipodi:namedview
-     id="namedview15"
+     id="namedview2"
      pagecolor="#505050"
      bordercolor="#ffffff"
      borderopacity="1"
@@ -21,122 +26,47 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:zoom="0.71191406"
-     inkscape:cx="511.29767"
+     inkscape:cx="512"
      inkscape:cy="511.29767"
-     inkscape:window-width="3045"
+     inkscape:window-width="2030"
      inkscape:window-height="1237"
      inkscape:window-x="0"
      inkscape:window-y="31"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg15" />
-  <defs
-     id="defs12">
-    <linearGradient
-       id="bg"
-       x1="0"
-       y1="0"
-       x2="0"
-       y2="1">
-      <stop
-         offset="0"
-         stop-color="#C3FDC8"
-         id="stop1" />
-      <stop
-         offset="0.22"
-         stop-color="#9DF59E"
-         id="stop2" />
-      <stop
-         offset="0.5"
-         stop-color="#5DD85D"
-         id="stop3" />
-      <stop
-         offset="0.78"
-         stop-color="#3CBB2D"
-         id="stop4" />
-      <stop
-         offset="1"
-         stop-color="#1F8005"
-         id="stop5" />
-    </linearGradient>
-    <radialGradient
-       id="cap"
-       cx="0.5"
-       cy="-0.05"
-       r="0.55">
-      <stop
-         offset="0"
-         stop-color="rgba(255,255,255,0.85)"
-         id="stop6" />
-      <stop
-         offset="0.35"
-         stop-color="rgba(255,255,255,0.25)"
-         id="stop7" />
-      <stop
-         offset="1"
-         stop-color="rgba(255,255,255,0)"
-         id="stop8" />
-    </radialGradient>
-    <radialGradient
-       id="floor"
-       cx="0.5"
-       cy="1.05"
-       r="0.6">
-      <stop
-         offset="0"
-         stop-color="rgba(0,40,0,0.35)"
-         id="stop9" />
-      <stop
-         offset="1"
-         stop-color="rgba(0,40,0,0)"
-         id="stop10" />
-    </radialGradient>
-    <radialGradient
-       id="vg"
-       cx="0.5"
-       cy="0.5"
-       r="0.75">
-      <stop
-         offset="0.65"
-         stop-color="rgba(0,0,0,0)"
-         id="stop11" />
-      <stop
-         offset="1"
-         stop-color="rgba(0,0,0,0.18)"
-         id="stop12" />
-    </radialGradient>
-  </defs>
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
   <rect
      width="1024"
      height="1024"
-     rx="230"
-     ry="230"
-     fill="url(#bg)"
-     id="rect12"
-     x="0"
-     y="0"
-     style="display:inline" />
+     fill="#3DDC84"
+     id="rect1" />
   <g
-     id="g15"
-     transform="translate(94.112483,-7.0233196)">
-    <g
-       fill="none"
-       stroke="#0f2a10"
-       stroke-width="110"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       id="g13"
-       style="display:inline">
-      <circle
-         cx="420"
-         cy="500"
-         r="165"
-         id="circle13" />
-      <line
-         x1="585"
-         y1="335"
-         x2="585"
-         y2="760"
-         id="line13" />
-    </g>
+     fill="none"
+     stroke="#0F2A10"
+     stroke-width="66"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     id="g1">
+    <polyline
+       points="210,378 360,518 210,658"
+       id="polyline1" />
+    <circle
+       cx="715"
+       cy="463"
+       r="105"
+       id="circle1" />
+    <line
+       x1="820"
+       y1="393"
+       x2="820"
+       y2="658"
+       id="line1" />
   </g>
+  <rect
+     x="420"
+     y="638"
+     width="150"
+     height="36"
+     rx="18"
+     fill="#0F2A10"
+     id="rect2" />
 </svg>

@@ -9,6 +9,7 @@ umask 077
 
 QUICKTUI_REPO="dualface/quicktui"
 QUICKTUI_RELEASES="${QUICKTUI_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/latest/download}"
+QUICKTUI_RELEASES_API="${QUICKTUI_RELEASES_API:-https://api.github.com/repos/${QUICKTUI_REPO}/releases?per_page=100}"
 QUICKTUI_CONFIG_DIR="${HOME}/.config/quicktui"
 QUICKTUI_CONFIG_FILE="${QUICKTUI_CONFIG_DIR}/config"
 
@@ -21,6 +22,7 @@ OPT_ADDR=""
 OPT_PORT=""
 OPT_TERM=""
 OPT_LANG=""
+PREVIEW_RELEASE=""
 UNINSTALL=""
 CHECK_ONLY=""
 
@@ -201,6 +203,10 @@ while [ $# -gt 0 ]; do
             CHECK_ONLY="1"
             shift
             ;;
+        --preview)
+            PREVIEW_RELEASE="1"
+            shift
+            ;;
         --addr)
             [ $# -ge 2 ] || die "Missing value for $1"
             OPT_ADDR="$2"
@@ -232,8 +238,9 @@ while [ $# -gt 0 ]; do
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
             printf '  --port <port>      Listen port (default: 8022)\n'
-            printf '  --term <value>     TERM for tmux (default xterm-256color)\n'
+            printf '  --term <value>     TERM for tmux (default screen-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
+            printf '  --preview          Install the latest GitHub preview release\n'
             printf '  --check            Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
             printf '  -h, --help         Show this help\n'
@@ -241,6 +248,7 @@ while [ $# -gt 0 ]; do
             printf 'Environment:\n'
             printf '  NO_COLOR                      Disable ANSI color when set\n'
             printf '  QUICKTUI_RELEASES             Base URL for server binary + sha256\n'
+            printf '  QUICKTUI_RELEASES_API         GitHub releases API URL for --preview\n'
             printf '  TMUX_BUILDS_VERSION           Override pinned tmux-builds version\n'
             printf '  TMUX_BUILDS_SHA256            Expected SHA-256 for the tmux tarball\n'
             printf '  TMUX_BUILDS_RELEASES          Base URL for tmux tarball\n'
@@ -262,6 +270,9 @@ done
 # validate_cli_options) also rejects the combination.
 if [ -n "$UNINSTALL" ] && [ -n "$CHECK_ONLY" ]; then
     die "--uninstall and --check are mutually exclusive."
+fi
+if [ -n "$UNINSTALL" ] && [ -n "$PREVIEW_RELEASE" ]; then
+    die "--uninstall and --preview are mutually exclusive."
 fi
 
 confirm() {
@@ -291,12 +302,12 @@ validate_listen_addr() {
     _addr="$1"
     [ -n "$_addr" ] || return 1
     case "$_addr" in
-        *[!A-Za-z0-9.:\-\[\]]*) return 1 ;;
-    esac
-    # IPv6 brackets must be balanced and wrap the whole value.
-    case "$_addr" in
-        \[*\]) return 0 ;;
-        \[*|*\]) return 1 ;;
+        *[!A-Za-z0-9.\-]*)
+            return 1
+            ;;
+        *:*)
+            return 1
+            ;;
     esac
     # Dotted-quad candidate: require exactly four numeric octets 0-255.
     case "$_addr" in
@@ -392,8 +403,7 @@ parse_addr_port() {
 
     case "$_value" in
         \[*\]:*)
-            PARSED_ADDR="$(printf '%s\n' "$_value" | sed 's/\]:[0-9][0-9]*$/]/')"
-            PARSED_PORT="$(printf '%s\n' "$_value" | sed 's/.*\]://')"
+            return 1
             ;;
         *:*)
             PARSED_ADDR="${_value%:*}"
@@ -462,14 +472,6 @@ service_probe_url() {
         0.0.0.0)
             _probe_host="127.0.0.1"
             ;;
-        "::"|"[::]")
-            _probe_host="[::1]"
-            ;;
-        \[*\])
-            ;;
-        *:*)
-            _probe_host="[$_probe_host]"
-            ;;
     esac
     printf 'http://%s:%s/\n' "$_probe_host" "$LISTEN_PORT"
 }
@@ -531,6 +533,106 @@ download() {
     _BG_PID=""
     printf '\r\033[K'
     return $_dl_rc
+}
+
+parse_preview_asset_urls() {
+    _json_file="$1"
+    _binary_name="$2"
+    awk -v bin="$_binary_name" '
+        BEGIN {
+            depth = 0
+            in_release = 0
+            in_assets = 0
+            is_preview = 0
+            is_draft = 0
+            current_name = ""
+            binary_url = ""
+            sha_url = ""
+        }
+
+        function json_string_value(line,    value) {
+            value = line
+            sub(/^[^:]*:[[:space:]]*"/, "", value)
+            sub(/",?[[:space:]]*$/, "", value)
+            gsub(/\\"/, "\"", value)
+            gsub(/\\\\/, "\\", value)
+            return value
+        }
+
+        function reset_release() {
+            in_release = 1
+            in_assets = 0
+            is_preview = 0
+            is_draft = 0
+            current_name = ""
+            binary_url = ""
+            sha_url = ""
+        }
+
+        {
+            copy = $0
+            opens = gsub(/\{/, "", copy)
+            copy = $0
+            closes = gsub(/\}/, "", copy)
+            if (!in_release && depth == 0 && $0 ~ /^[[:space:]]*\{[[:space:]]*$/) {
+                reset_release()
+            }
+        }
+
+        in_release && /"draft"[[:space:]]*:[[:space:]]*true/ {
+            is_draft = 1
+        }
+
+        in_release && /"prerelease"[[:space:]]*:[[:space:]]*true/ {
+            is_preview = 1
+        }
+
+        in_release && /"assets"[[:space:]]*:/ {
+            in_assets = 1
+        }
+
+        in_release && in_assets && /"name"[[:space:]]*:/ {
+            current_name = json_string_value($0)
+        }
+
+        in_release && in_assets && /"browser_download_url"[[:space:]]*:/ {
+            if (!is_draft && is_preview) {
+                url = json_string_value($0)
+                if (current_name == bin) binary_url = url
+                if (current_name == bin ".sha256") sha_url = url
+                if (binary_url != "" && sha_url != "") {
+                    print binary_url
+                    print sha_url
+                    exit 0
+                }
+            }
+            current_name = ""
+        }
+
+        {
+            depth += opens - closes
+            if (in_release && in_assets && depth == 1 && $0 ~ /^[[:space:]]*\],?[[:space:]]*$/) {
+                in_assets = 0
+            }
+            if (in_release && depth <= 0) {
+                in_release = 0
+                in_assets = 0
+                depth = 0
+            }
+        }
+    ' "$_json_file"
+}
+
+resolve_preview_asset_urls() {
+    _json_path="${DOWNLOAD_TMPDIR}/releases.json"
+    download "$QUICKTUI_RELEASES_API" "$_json_path" "Finding latest preview release..." || \
+        die "Failed to query preview releases from ${QUICKTUI_RELEASES_API}."
+
+    _asset_urls="$(parse_preview_asset_urls "$_json_path" "$BINARY_NAME")"
+    PREVIEW_BINARY_URL="$(printf '%s\n' "$_asset_urls" | sed -n '1p')"
+    PREVIEW_SHA256_URL="$(printf '%s\n' "$_asset_urls" | sed -n '2p')"
+    [ -n "$PREVIEW_BINARY_URL" ] && [ -n "$PREVIEW_SHA256_URL" ] || \
+        die "No preview release asset found for ${BINARY_NAME} and ${BINARY_NAME}.sha256."
 }
 
 
@@ -843,18 +945,27 @@ download_binary() {
     _sha256_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}.sha256"
 
     printf '  Temp dir:  %s\n' "$DOWNLOAD_TMPDIR"
-    download "${QUICKTUI_RELEASES}/${BINARY_NAME}" "$_binary_path" "Downloading QuickTUI (${BINARY_NAME})..." || \
-        die "Failed to download binary from ${QUICKTUI_RELEASES}/${BINARY_NAME}. Check your internet connection and try again."
+    if [ -n "$PREVIEW_RELEASE" ]; then
+        resolve_preview_asset_urls
+        _binary_url="$PREVIEW_BINARY_URL"
+        _sha256_url="$PREVIEW_SHA256_URL"
+    else
+        _binary_url="${QUICKTUI_RELEASES}/${BINARY_NAME}"
+        _sha256_url="${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256"
+    fi
+
+    download "$_binary_url" "$_binary_path" "Downloading QuickTUI (${BINARY_NAME})..." || \
+        die "Failed to download binary from ${_binary_url}. Check your internet connection and try again."
 
     _file_size="$(du -sh "$_binary_path" 2>/dev/null | cut -f1)"
     printf '  File size: %s\n' "${_file_size:-unknown}"
 
-    download "${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256" "$_sha256_path" "Downloading checksum..." || \
-        die "Failed to download checksum file from ${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256."
+    download "$_sha256_url" "$_sha256_path" "Downloading checksum..." || \
+        die "Failed to download checksum file from ${_sha256_url}."
 
     printf '  Verifying checksum...\n'
     _expected_hash="$(normalize_sha256 "$(awk '{print $1}' "${_sha256_path}")")"
-    assert_valid_sha256 "$_expected_hash" "Checksum file at ${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256"
+    assert_valid_sha256 "$_expected_hash" "Checksum file at ${_sha256_url}"
     _actual_hash="$(normalize_sha256 "$(sha256_file "$_binary_path")")"
     [ "$_actual_hash" = "$_expected_hash" ] || {
         rm -rf "$DOWNLOAD_TMPDIR"
@@ -1238,15 +1349,14 @@ write_terminal_config() {
 # ============================================================
 
 collect_terminal_env() {
-    # Defaults: TERM=xterm-256color, LANG=en_US.UTF-8. Preflight downgrades
-    # to screen-256color / C.UTF-8 respectively if the primaries are not
-    # available on the host.
+    # Defaults: TERM=screen-256color, LANG=en_US.UTF-8. Preflight downgrades
+    # LANG to C.UTF-8 if the primary locale is not available on the host.
     if [ -n "$OPT_TERM" ]; then
         TERM_ENV="$OPT_TERM"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TERM" ]; then
         TERM_ENV="$EXISTING_TERM"
     else
-        TERM_ENV="xterm-256color"
+        TERM_ENV="screen-256color"
     fi
 
     if [ -n "$OPT_LANG" ]; then
@@ -1614,7 +1724,7 @@ elif [ -n "$CHECK_ONLY" ]; then
     detect_existing_install
     detect_platform
     check_tmux
-    TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-xterm-256color}}"
+    TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-screen-256color}}"
     LANG_ENV="${OPT_LANG:-${EXISTING_LANG:-en_US.UTF-8}}"
     preflight_checks || exit 1
 else

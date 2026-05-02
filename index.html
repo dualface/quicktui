@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>QuickTUI — tmux-powered remote terminal for iPhone, iPad & browsers</title>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#111820" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -831,13 +834,13 @@ html[lang="zh"] h3 .serif {
     <div class="wrap nav-inner">
       <a class="brand" href="#">
         <span class="brand-mark">q</span>
-        <span class="brand-name">quicktui<sup>v1.1</sup></span>
+        <span class="brand-name">quicktui<sup>v1</sup></span>
       </a>
       <nav class="nav-links">
         <a href="#features" data-i-html="nav.features"><span class="n">01</span>Features</a>
         <a href="#action" data-i-html="nav.action"><span class="n">02</span>In&nbsp;Action</a>
-        <a href="#install" data-i-html="nav.install"><span class="n">03</span>Install</a>
-        <a href="#usecases" data-i-html="nav.usecases"><span class="n">04</span>Use&nbsp;Cases</a>
+        <a href="#usecases" data-i-html="nav.usecases"><span class="n">03</span>Use&nbsp;Cases</a>
+        <a href="#install" data-i-html="nav.install"><span class="n">04</span>Install</a>
         <a href="#faq" data-i-html="nav.faq"><span class="n">05</span>FAQ</a>
       </nav>
       <div class="nav-right">
@@ -858,10 +861,10 @@ html[lang="zh"] h3 .serif {
     <div class="statusbar">
       <span data-i-html="status.ready"><span class="dot"></span>SESSION / READY</span>
       <span class="mono">
-        <span>TMUX 3.4</span><span class="sep">·</span>
-        <span>IOS 18+ / IPAD OS</span><span class="sep">·</span>
+        <span>TMUX 3.2+</span><span class="sep">·</span>
+        <span>iOS 16.4+ / iPadOS</span><span class="sep">·</span>
         <span>SAFARI · CHROME</span><span class="sep">·</span>
-        <span>UPTIME 99.99%</span>
+        <span>LAUNCHD · SYSTEMD</span>
       </span>
     </div>
 
@@ -984,7 +987,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         <div class="feat col-12">
           <div class="idx">F.06</div>
           <h3 data-i="f06.t">Runs as a service, forever</h3>
-          <p data-i-html="f06.b">Installed as a user service on macOS launchd & Linux systemd. Self-updates, restarts, survives reboots — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles it all.</p>
+          <p data-i-html="f06.b">Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles install and service registration.</p>
         </div>
       </div>
     </section>
@@ -1010,7 +1013,7 @@ scratch : 1 window  <span class="dim">· detached</span>
             <li><span class="k" data-i="ia.k1">session</span><span class="v" data-i="ia.v1">claude-code · 14d · 7 windows</span></li>
             <li><span class="k" data-i="ia.k2">roam</span><span class="v" data-i="ia.v2">Wi-Fi → LTE → 5G · seamless</span></li>
             <li><span class="k" data-i="ia.k3">clients</span><span class="v" data-i="ia.v3">iPhone · iPad · Safari · Chrome</span></li>
-            <li><span class="k" data-i="ia.k4">latency</span><span class="v" data-i="ia.v4">38ms p50 · 72ms p95</span></li>
+            <li><span class="k" data-i="ia.k4">transport</span><span class="v" data-i="ia.v4">HTTP API · WebSocket</span></li>
           </ul>
         </div>
 
@@ -1166,10 +1169,12 @@ scratch : 1 window  <span class="dim">· detached</span>
         <div class="opts-list">
           <div class="opt"><code class="mono">-y, --yes</code><span data-i="opt.yes">Non-interactive mode</span></div>
           <div class="opt"><code class="mono">--token &lt;string&gt;</code><span data-i="opt.token">Set access token (default: prompted)</span></div>
-          <div class="opt"><code class="mono">--addr &lt;address&gt;</code><span data-i="opt.addr">Listen address (default: 0.0.0.0)</span></div>
+          <div class="opt"><code class="mono">--rotate-token</code><span data-i="opt.rotate">Generate a fresh random token</span></div>
+          <div class="opt"><code class="mono">--addr &lt;address&gt;</code><span data-i="opt.addr">Listen address, IPv4/hostname only (default: 0.0.0.0)</span></div>
           <div class="opt"><code class="mono">--port &lt;port&gt;</code><span data-i="opt.port">Listen port (default: 8022)</span></div>
           <div class="opt"><code class="mono">--term &lt;value&gt;</code><span data-i="opt.term">TERM for tmux (default: screen-256color)</span></div>
           <div class="opt"><code class="mono">--lang &lt;value&gt;</code><span data-i="opt.lang">LANG for tmux (default: en_US.UTF-8)</span></div>
+          <div class="opt"><code class="mono">--preview</code><span data-i="opt.preview">Install the latest GitHub preview release</span></div>
           <div class="opt"><code class="mono">--check</code><span data-i="opt.check">Run environment checks without installing</span></div>
           <div class="opt"><code class="mono">--no-service</code><span data-i="opt.noservice">Skip background service setup</span></div>
           <div class="opt"><code class="mono">--uninstall</code><span data-i="opt.uninstall">Remove QuickTUI and all related files</span></div>
@@ -1206,7 +1211,7 @@ scratch : 1 window  <span class="dim">· detached</span>
           <div class="n">Q.02</div>
           <div>
             <div class="q" data-i="q2.q">tmux is not installed or the version is too old.</div>
-            <div class="a" data-i-html="q2.a">QuickTUI requires tmux <b>3.2 or later</b>. The installer can install it for you — first via the system package manager (<span class="mono">brew</span>, <span class="mono">apt</span>, <span class="mono">yum</span>, <span class="mono">dnf</span>), else a prebuilt archive unpacked to <span class="path">~/.local/tmux</span>. The absolute tmux path is saved as <span class="path">QUICKTUI_TMUX_BIN</span> so the service can find it.</div>
+            <div class="a" data-i-html="q2.a">QuickTUI requires tmux <b>3.2 or later</b>. The installer can install it for you — first via the system package manager (<span class="mono">brew</span>, <span class="mono">apt</span>, <span class="mono">yum</span>, <span class="mono">dnf</span>), else a prebuilt archive unpacked to <span class="path">~/.local/tmux</span>. When tmux is not discoverable from the service PATH, the installer saves <span class="path">QUICKTUI_TMUX_BIN</span>.</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1236,7 +1241,7 @@ scratch : 1 window  <span class="dim">· detached</span>
           <div class="n">Q.05</div>
           <div>
             <div class="q" data-i="q5.q">How do server upgrade and restart work?</div>
-            <div class="a" data-i-html="q5.a">Two paths: <b>re-run the installer</b> (atomic swap, rollback on failure, config preserved); or <b>server self-update</b> (caches release checks, downloads the platform binary, replaces the running executable — you must restart the service yourself). Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa. Check status: <span class="mono">quicktui-server --check-upgrade</span>.</div>
+            <div class="a" data-i-html="q5.a">Two paths: <b>re-run the installer</b> (atomic swap, rollback on failure, config preserved); or <b>server self-update</b> (cached release checks, platform download, binary replacement). Self-update does not auto-restart; restart from the app/browser, call <span class="mono">POST /api/restart</span>, or restart the service. Update / restart / shutdown are serialized. Check status: <span class="mono">quicktui-server --check-upgrade</span>.</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1272,11 +1277,7 @@ scratch : 1 window  <span class="dim">· detached</span>
           <div class="n">Q.09</div>
           <div>
             <div class="q" data-i-html="q9.q">Text rendering is garbled when <span class="mono">TERM=xterm-ghostty</span>.</div>
-            <div class="a" data-i-html="q9.a"><p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd"><span class="com"># recommended</span>
-QUICKTUI_TERM=xterm-256color
-
-<span class="com"># or</span>
-QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term xterm-256color</pre></div>
+            <div class="a" data-i-html="q9.a"><p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd">QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term screen-256color</pre></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1303,7 +1304,7 @@ QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual ser
           <div class="n">Q.12</div>
           <div>
             <div class="q" data-i="q12.q">How do I change the listen address or port?</div>
-            <div class="a" data-i-html="q12.a"><b>Service:</b> edit <span class="path">QUICKTUI_ADDR</span> in <span class="path">~/.config/quicktui/config</span>, then restart. <b>Manual:</b> pass <span class="mono">--addr 0.0.0.0:9000</span>. <b>At install time:</b> <span class="mono">curl … | sh -s -- --addr 127.0.0.1 --port 9000</span>.</div>
+            <div class="a" data-i-html="q12.a"><b>Service:</b> edit <span class="path">QUICKTUI_ADDR</span> in <span class="path">~/.config/quicktui/config</span>, then restart. <b>Manual:</b> pass <span class="mono">--addr 0.0.0.0:9000</span>. <b>At install time:</b> <span class="mono">curl … | sh -s -- --addr 127.0.0.1 --port 9000</span>. The installer accepts IPv4 addresses or hostnames, not IPv6 literals.</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1386,8 +1387,8 @@ const I18N = {
   // ───── nav
   "nav.features": { en: `<span class="n">01</span>Features`, zh: `<span class="n">01</span>功能` },
   "nav.action": { en: `<span class="n">02</span>In&nbsp;Action`, zh: `<span class="n">02</span>实战演示` },
-  "nav.install": { en: `<span class="n">03</span>Install`, zh: `<span class="n">03</span>安装` },
-  "nav.usecases": { en: `<span class="n">04</span>Use&nbsp;Cases`, zh: `<span class="n">04</span>使用场景` },
+  "nav.usecases": { en: `<span class="n">03</span>Use&nbsp;Cases`, zh: `<span class="n">03</span>使用场景` },
+  "nav.install": { en: `<span class="n">04</span>Install`, zh: `<span class="n">04</span>安装` },
   "nav.faq": { en: `<span class="n">05</span>FAQ`, zh: `<span class="n">05</span>常见问题` },
   "cta.nav": { en: `<span class="lbl-long">Get the App</span><span class="lbl-short">Get App</span> <span class="arr">→</span>`, zh: `<span class="lbl-long">获取应用</span><span class="lbl-short">获取</span> <span class="arr">→</span>` },
   "cta.getQt": { en: `Get QuickTUI <span class="arr">→</span>`, zh: `获取 QuickTUI <span class="arr">→</span>` },
@@ -1412,7 +1413,7 @@ const I18N = {
   "f05.t": { en: "Three ways to get attached", zh: "三种方式即刻接入" },
   "f05.b": { en: `Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em class="ac">Quick Setup</em>（SSH 自动安装）、<em class="ac">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
   "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
-  "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Self-updates, restarts, survives reboots — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles it all.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。自更新、自重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。一条 <span class="mono">q.sh</span> 脚本全部搞定。` },
+  "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles install and service registration.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。<span class="mono">q.sh</span> 负责安装与服务注册。` },
 
   // ───── in action
   "ia.eyebrow": { en: "§ 02 / In Action", zh: "§ 02 / 实战演示" },
@@ -1427,8 +1428,8 @@ const I18N = {
   "ia.v2": { en: "Wi-Fi → LTE → 5G · seamless", zh: "Wi-Fi → LTE → 5G · 无缝切换" },
   "ia.k3": { en: "clients", zh: "客户端" },
   "ia.v3": { en: "iPhone · iPad · Safari · Chrome", zh: "iPhone · iPad · Safari · Chrome" },
-  "ia.k4": { en: "latency", zh: "延迟" },
-  "ia.v4": { en: "38ms p50 · 72ms p95", zh: "38ms p50 · 72ms p95" },
+  "ia.k4": { en: "transport", zh: "传输" },
+  "ia.v4": { en: "HTTP API · WebSocket", zh: "HTTP API · WebSocket" },
 
   // ───── install
   "in.eyebrow": { en: "§ 04 / Get within reach", zh: "§ 04 / 即刻接入" },
@@ -1457,10 +1458,12 @@ const I18N = {
   "opts.desc": { en: `Non-interactive installs, custom ports, environment checks. Pass via <span class="mono">sh -s --</span>:`, zh: `非交互式安装、自定义端口、环境检查。通过 <span class="mono">sh -s --</span> 传入：` },
   "opt.yes": { en: "Non-interactive mode", zh: "非交互模式" },
   "opt.token": { en: "Set access token (default: prompted)", zh: "设置 access token（默认：交互提示）" },
-  "opt.addr": { en: "Listen address (default: 0.0.0.0)", zh: "监听地址（默认：0.0.0.0）" },
+  "opt.rotate": { en: "Generate a fresh random token", zh: "生成新的随机 access token" },
+  "opt.addr": { en: "Listen address, IPv4/hostname only (default: 0.0.0.0)", zh: "监听地址，仅 IPv4/主机名（默认：0.0.0.0）" },
   "opt.port": { en: "Listen port (default: 8022)", zh: "监听端口（默认：8022）" },
   "opt.term": { en: "TERM for tmux (default: screen-256color)", zh: "tmux 的 TERM（默认：screen-256color）" },
   "opt.lang": { en: "LANG for tmux (default: en_US.UTF-8)", zh: "tmux 的 LANG（默认：en_US.UTF-8）" },
+  "opt.preview": { en: "Install the latest GitHub preview release", zh: "安装最新 GitHub preview 版本" },
   "opt.check": { en: "Run environment checks without installing", zh: "仅运行环境检查，不安装" },
   "opt.noservice": { en: "Skip background service setup", zh: "跳过后台服务注册" },
   "opt.uninstall": { en: "Remove QuickTUI and all related files", zh: "移除 QuickTUI 及所有相关文件" },
@@ -1492,7 +1495,7 @@ const I18N = {
   "q1.a": { en: `<p>Usually the download was interrupted or corrupted — re-run the installer. If it persists, release assets may have just been updated; wait a few minutes and retry.</p><p>Also verify nothing is intercepting HTTPS traffic (e.g. a corporate proxy).</p>`, zh: `<p>通常是下载中断或损坏 — 重新运行安装脚本即可。若持续出错，可能是发布资源刚更新，稍等几分钟重试。</p><p>也请检查是否有中间人拦截 HTTPS 流量（例如企业代理）。</p>` },
 
   "q2.q": { en: "tmux is not installed or the version is too old.", zh: "未安装 tmux 或版本过旧。" },
-  "q2.a": { en: `<p>QuickTUI requires tmux <b>3.2 or later</b>. The installer can install it for you — first via the system package manager (<span class="mono">brew</span>, <span class="mono">apt</span>, <span class="mono">yum</span>, <span class="mono">dnf</span>), else a prebuilt archive unpacked to <span class="path">~/.local/tmux</span>.</p><p>The absolute tmux path is saved as <span class="path">QUICKTUI_TMUX_BIN</span> so the service can find it.</p>`, zh: `<p>QuickTUI 需要 tmux <b>3.2 或更高版本</b>。安装脚本可自动为你安装 — 优先使用系统包管理器（<span class="mono">brew</span>、<span class="mono">apt</span>、<span class="mono">yum</span>、<span class="mono">dnf</span>），否则下载预编译包解压到 <span class="path">~/.local/tmux</span>。</p><p>tmux 的绝对路径会保存为 <span class="path">QUICKTUI_TMUX_BIN</span>，服务端可据此找到。</p>` },
+  "q2.a": { en: `<p>QuickTUI requires tmux <b>3.2 or later</b>. The installer can install it for you — first via the system package manager (<span class="mono">brew</span>, <span class="mono">apt</span>, <span class="mono">yum</span>, <span class="mono">dnf</span>), else a prebuilt archive unpacked to <span class="path">~/.local/tmux</span>.</p><p>When tmux is not discoverable from the service PATH, the installer saves <span class="path">QUICKTUI_TMUX_BIN</span>.</p>`, zh: `<p>QuickTUI 需要 tmux <b>3.2 或更高版本</b>。安装脚本可自动为你安装 — 优先使用系统包管理器（<span class="mono">brew</span>、<span class="mono">apt</span>、<span class="mono">yum</span>、<span class="mono">dnf</span>），否则下载预编译包解压到 <span class="path">~/.local/tmux</span>。</p><p>当服务 PATH 找不到 tmux 时，安装脚本会保存 <span class="path">QUICKTUI_TMUX_BIN</span>。</p>` },
 
   "q3.q": { en: "What happens when I re-run the installer?", zh: "重新运行安装脚本会发生什么？" },
   "q3.a": { en: `It detects the existing <span class="path">~/.local/bin/quicktui-server</span> and switches to <b>upgrade mode</b>: stops the service, stages the new binary, sanity-checks <span class="mono">--version</span>, atomically swaps it into place, and rolls back on failure. Your token, address, TERM, LANG and <span class="path">QUICKTUI_TMUX_BIN</span> are preserved.`, zh: `脚本会检测已有的 <span class="path">~/.local/bin/quicktui-server</span>，切换到<b>升级模式</b>：停止服务、暂存新二进制、用 <span class="mono">--version</span> 做合理性检查、原子替换，失败自动回滚。你的 token、地址、TERM、LANG 以及 <span class="path">QUICKTUI_TMUX_BIN</span> 全部保留。` },
@@ -1509,7 +1512,7 @@ launchctl kickstart -k gui/$(id -u)/ai.quicktui
 systemctl --user restart quicktui</pre>` },
 
   "q5.q": { en: "How do server upgrade and restart work?", zh: "服务端升级与重启如何工作？" },
-  "q5.a": { en: `<p>Two paths:</p><p><b>Re-run the installer</b> — atomic swap, rollback on failure, config preserved.</p><p><b>Server self-update</b> — caches release checks, downloads the platform binary, replaces the running executable. You must restart the service yourself.</p><p>Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa.</p><p>Check status:</p><pre class="cmd">quicktui-server --check-upgrade</pre>`, zh: `<p>两条路径：</p><p><b>重新运行安装脚本</b> — 原子替换、失败回滚、配置保留。</p><p><b>服务端自更新</b> — 缓存发布检查、下载当前平台二进制、替换运行中的可执行文件。需要你自己重启服务。</p><p>升级 / 重启 / 关停相互串行：重启进行中时新升级请求会被拒绝，反之亦然。</p><p>查看状态：</p><pre class="cmd">quicktui-server --check-upgrade</pre>` },
+  "q5.a": { en: `<p>Two paths:</p><p><b>Re-run the installer</b> — atomic swap, rollback on failure, config preserved.</p><p><b>Server self-update</b> — cached release checks, platform download, binary replacement. Self-update does not auto-restart; restart from the app/browser, call <span class="mono">POST /api/restart</span>, or restart the service.</p><p>Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa.</p><p>Check status:</p><pre class="cmd">quicktui-server --check-upgrade</pre>`, zh: `<p>两条路径：</p><p><b>重新运行安装脚本</b> — 原子替换、失败回滚、配置保留。</p><p><b>服务端自更新</b> — 使用缓存发布检查、下载当前平台二进制、替换可执行文件。自更新不会自动重启；可在 App/浏览器重启、调用 <span class="mono">POST /api/restart</span>，或重启系统服务。</p><p>升级 / 重启 / 关停相互串行：重启进行中时新升级请求会被拒绝，反之亦然。</p><p>查看状态：</p><pre class="cmd">quicktui-server --check-upgrade</pre>` },
 
   "q6.q": { en: "Can I validate the server environment without installing?", zh: "可以不安装就验证服务端环境吗？" },
   "q6.a": { en: `<p>Yes — run all preflight checks with no downloads or writes:</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre><p>It verifies: platform / arch, tmux 3.2+, locale, terminfo for TERM, default shell executable, PTY allocation via <span class="mono">script</span>, and a throwaway tmux session. Override values with <span class="mono">--term</span> / <span class="mono">--lang</span>.</p>`, zh: `<p>可以 — 运行全部预检，不下载也不写入：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre><p>检验项：平台 / 架构、tmux 3.2+、locale、TERM 对应的 terminfo、默认 shell 可执行、通过 <span class="mono">script</span> 分配 PTY、以及一个临时 tmux 会话。用 <span class="mono">--term</span> / <span class="mono">--lang</span> 覆盖检查值。</p>` },
@@ -1529,15 +1532,7 @@ launchctl print gui/$(id -u)/ai.quicktui
 systemctl --user status quicktui</pre><p>若跳过了服务注册，用相同的 token 和地址手动启动服务端。若服务已在运行，请确认防火墙或隧道放通了 <span class="path">QUICKTUI_ADDR</span> 对应的端口。</p>` },
 
   "q9.q": { en: `Text rendering is garbled when <span class="mono">TERM=xterm-ghostty</span>.`, zh: `当 <span class="mono">TERM=xterm-ghostty</span> 时，文字渲染错乱。` },
-  "q9.a": { en: `<p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd"><span class="com"># recommended</span>
-QUICKTUI_TERM=xterm-256color
-
-<span class="com"># or</span>
-QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term xterm-256color</pre>`, zh: `<p>服务端的 tmux 在 <span class="mono">TERM=xterm-ghostty</span> 下无法正确渲染 — Ghostty 自己的 terminfo 不适用于远端会话里的 tmux。</p><p>改用广泛支持的 TERM。在 <span class="path">~/.config/quicktui/config</span> 中配置：</p><pre class="cmd"><span class="com"># 推荐</span>
-QUICKTUI_TERM=xterm-256color
-
-<span class="com"># 或</span>
-QUICKTUI_TERM=screen-256color</pre><p>然后重启服务。手动启动命令则用：</p><pre class="cmd">--term xterm-256color</pre>` },
+  "q9.a": { en: `<p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd">QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term screen-256color</pre>`, zh: `<p>服务端的 tmux 在 <span class="mono">TERM=xterm-ghostty</span> 下无法正确渲染 — Ghostty 自己的 terminfo 不适用于远端会话里的 tmux。</p><p>改用广泛支持的 TERM。在 <span class="path">~/.config/quicktui/config</span> 中配置：</p><pre class="cmd">QUICKTUI_TERM=screen-256color</pre><p>然后重启服务。手动启动命令则用：</p><pre class="cmd">--term screen-256color</pre>` },
 
   "q10.q": { en: "PTY spawn failed / internal server error when opening a session.", zh: "打开会话时出现 PTY spawn failed / internal server error。" },
   "q10.a": { en: `<p>The server could not launch or attach tmux. Check logs:</p><pre class="cmd"><span class="com"># macOS</span>
@@ -1565,8 +1560,8 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
 
   "q12.q": { en: "How do I change the listen address or port?", zh: "如何修改监听地址或端口？" },
   "q12.a": { en: `<p><b>Service:</b> edit <span class="path">QUICKTUI_ADDR</span> in <span class="path">~/.config/quicktui/config</span>, then restart.</p><p><b>Manual:</b></p><pre class="cmd">quicktui-server --addr 0.0.0.0:9000</pre><p><b>At install time:</b></p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- \\
-  --addr 127.0.0.1 --port 9000</pre>`, zh: `<p><b>服务方式：</b>编辑 <span class="path">~/.config/quicktui/config</span> 中的 <span class="path">QUICKTUI_ADDR</span>，然后重启。</p><p><b>手动方式：</b></p><pre class="cmd">quicktui-server --addr 0.0.0.0:9000</pre><p><b>安装时：</b></p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- \\
-  --addr 127.0.0.1 --port 9000</pre>` },
+  --addr 127.0.0.1 --port 9000</pre><p>The installer accepts IPv4 addresses or hostnames, not IPv6 literals.</p>`, zh: `<p><b>服务方式：</b>编辑 <span class="path">~/.config/quicktui/config</span> 中的 <span class="path">QUICKTUI_ADDR</span>，然后重启。</p><p><b>手动方式：</b></p><pre class="cmd">quicktui-server --addr 0.0.0.0:9000</pre><p><b>安装时：</b></p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- \\
+  --addr 127.0.0.1 --port 9000</pre><p>安装脚本接受 IPv4 地址或主机名，不接受 IPv6 字面量。</p>` },
 
   "q13.q": { en: "How do I uninstall QuickTUI?", zh: "如何卸载 QuickTUI？" },
   "q13.a": { en: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>Stops the service, removes the binary, config, known launchd / systemd service files, and logs. Also cleans up leftover service files from partial installs.</p>`, zh: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>停止服务，删除二进制、配置、已知的 launchd / systemd 服务文件与日志。同时清理残留的部分安装遗留文件。</p>` },

@@ -1318,11 +1318,29 @@ scratch : 1 window  <span class="dim">· detached</span>
           <div class="plus">+</div>
         </div>
 
+        <div class="faq-item" id="q-tcc-macos">
+          <div class="n">Q.14</div>
+          <div>
+            <div class="q" data-i="q14tcc.q">macOS file browser hangs on Desktop / Documents / Downloads.</div>
+            <div class="a" data-i-html="q14tcc.a"><p>macOS protects <b>Desktop</b>, <b>Documents</b>, <b>Downloads</b>, iCloud Drive, and other system folders via TCC (Transparency, Consent, Control). The QuickTUI service runs as a background <span class="mono">launchd</span> agent and cannot trigger the system consent dialog, so accesses to those folders hang silently until the request times out.</p><p><b>Fix — grant Full Disk Access to the server binary:</b></p><ol><li>Open <b>System Settings</b> → <b>Privacy &amp; Security</b> → <b>Full Disk Access</b>.</li><li>Click the <b>+</b> button. In the file picker, press <span class="mono">Cmd+Shift+G</span> and enter <span class="path">~/.local/bin</span>, then select <span class="path">quicktui-server</span>.</li><li>Make sure the toggle next to <span class="mono">quicktui-server</span> is <b>enabled</b>.</li><li>Back in the QuickTUI client, tap <b>Recheck</b> on the warning banner. No service restart needed.</li></ol><p>If <b>Recheck</b> still fails, restart the service:</p><pre class="cmd">launchctl kickstart -k gui/$(id -u)/ai.quicktui</pre><p><b>Why no consent dialog appears:</b> macOS only shows the TCC consent prompt for processes launched with a UI context (Finder, Terminal, Dock). Background <span class="mono">launchd</span> agents have no UI, so the prompt is never displayed and the OS silently blocks until manually authorized.</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
+        <div class="faq-item" id="q-permission-linux">
+          <div class="n">Q.15</div>
+          <div>
+            <div class="q" data-i="q15perm.q">Linux file browser shows "permission denied" or returns 403.</div>
+            <div class="a" data-i-html="q15perm.a"><p>The QuickTUI server runs under your user (typically systemd <span class="mono">--user</span>) and can only read paths your user has POSIX read+execute on. Common causes:</p><ul><li><b>Mode bits.</b> Files mode <span class="mono">0600</span> / dirs mode <span class="mono">0700</span> are unreadable to anyone but the owner. Check with <span class="mono">ls -ld /path</span>.</li><li><b>Parent directory missing <span class="mono">x</span> bit.</b> Even if the target file is world-readable, the server can't traverse into it without execute permission on every ancestor directory.</li><li><b>POSIX ACL.</b> <span class="mono">getfacl /path</span> may show an explicit deny entry that overrides mode bits.</li><li><b>Wrong user.</b> If you started the server with <span class="mono">sudo</span> once and switched back, residual files may be owned by root. <span class="mono">stat /path</span> shows the owner.</li><li><b>SELinux (RHEL / Fedora / Rocky).</b> Even with correct mode, MAC may block access. Check with <span class="mono">ausearch -m AVC -ts recent</span> or <span class="mono">getenforce</span>. Temporarily test with <span class="mono">setenforce 0</span> (do not leave permissive in production).</li><li><b>AppArmor / Snap confinement (Ubuntu).</b> If you installed <span class="mono">quicktui-server</span> via snap, it can't read files outside the snap home. The recommended install path is <span class="path">~/.local/bin/quicktui-server</span> (no confinement).</li><li><b>Mount options.</b> A mount with <span class="mono">noexec</span> or read-only flags may surface as EACCES on some operations. Check <span class="mono">findmnt /path</span>.</li></ul><p><b>Fix steps:</b></p><ol><li>Run <span class="mono">ls -ld /full/path/to/dir</span> on the failing path <b>and every parent</b>. Confirm the user running quicktui-server has <span class="mono">r-x</span> on dirs and <span class="mono">r--</span> on files.</li><li>Identify which user the service runs as: <span class="mono">systemctl --user show quicktui -p MainPID</span>, then <span class="mono">ps -o user= -p &lt;PID&gt;</span>.</li><li>Adjust permissions: <span class="mono">chmod o+rx /path</span> for shared paths, or use ACLs (<span class="mono">setfacl -m u:&lt;user&gt;:rx /path</span>) for selective access.</li><li>If SELinux blocks access, add a file context label or use <span class="mono">audit2allow</span> to generate a policy module — see your distro's SELinux docs.</li><li>Tap <b>Recheck</b> in the client. No service restart required.</li></ol><p>If still failing, check logs: <span class="mono">journalctl --user -u quicktui -f</span> while reproducing.</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
         <!-- ─── Group: tmux ─── -->
         <div class="faq-group-label" data-i="faqg.tmux">tmux</div>
 
         <div class="faq-item">
-          <div class="n">Q.14</div>
+          <div class="n">Q.16</div>
           <div>
             <div class="q" data-i="q14.q">My session list is empty.</div>
             <div class="a" data-i-html="q14.a">QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <b>New Session</b>, or on the server: <span class="mono">tmux new-session -s mysession</span>.</div>
@@ -1334,7 +1352,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         <div class="faq-group-label" data-i="faqg.client">iOS App & Browser</div>
 
         <div class="faq-item">
-          <div class="n">Q.15</div>
+          <div class="n">Q.17</div>
           <div>
             <div class="q" data-i="q15.q">What is the access token?</div>
             <div class="a" data-i-html="q15.a">A secret you set during installation — it protects your server from unauthorized access. Find it on your server: <span class="mono">cat ~/.config/quicktui/config</span>. Enter it when prompted on first login in the app or browser.</div>
@@ -1343,7 +1361,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         </div>
 
         <div class="faq-item">
-          <div class="n">Q.16</div>
+          <div class="n">Q.18</div>
           <div>
             <div class="q" data-i="q16.q">Can I connect over the internet?</div>
             <div class="a" data-i-html="q16.a">Yes. You need the server reachable from the internet — via a public IP, VPN, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. Make sure the configured port (<span class="mono">8022</span> by default) is accessible and your token stays secret.</div>
@@ -1352,7 +1370,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         </div>
 
         <div class="faq-item">
-          <div class="n">Q.17</div>
+          <div class="n">Q.19</div>
           <div>
             <div class="q" data-i="q17.q">The app or browser shows "Session not found".</div>
             <div class="a" data-i-html="q17.a">This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running. Refresh the session list, then open an existing session or create a new one.</div>
@@ -1566,6 +1584,18 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
   "q13.q": { en: "How do I uninstall QuickTUI?", zh: "如何卸载 QuickTUI？" },
   "q13.a": { en: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>Stops the service, removes the binary, config, known launchd / systemd service files, and logs. Also cleans up leftover service files from partial installs.</p>`, zh: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>停止服务，删除二进制、配置、已知的 launchd / systemd 服务文件与日志。同时清理残留的部分安装遗留文件。</p>` },
 
+  "q14tcc.q": { en: `macOS file browser hangs on Desktop / Documents / Downloads.`, zh: `macOS 文件浏览器访问 桌面 / 文稿 / 下载 等目录会卡住。` },
+  "q14tcc.a": {
+    en: `<p>macOS protects <b>Desktop</b>, <b>Documents</b>, <b>Downloads</b>, iCloud Drive, and other system folders via TCC (Transparency, Consent, Control). The QuickTUI service runs as a background <span class="mono">launchd</span> agent and cannot trigger the system consent dialog, so accesses to those folders hang silently until the request times out.</p><p><b>Fix — grant Full Disk Access to the server binary:</b></p><ol><li>Open <b>System Settings</b> → <b>Privacy &amp; Security</b> → <b>Full Disk Access</b>.</li><li>Click the <b>+</b> button. In the file picker, press <span class="mono">Cmd+Shift+G</span> and enter <span class="path">~/.local/bin</span>, then select <span class="path">quicktui-server</span>.</li><li>Make sure the toggle next to <span class="mono">quicktui-server</span> is <b>enabled</b>.</li><li>Back in the QuickTUI client, tap <b>Recheck</b> on the warning banner. No service restart needed.</li></ol><p>If <b>Recheck</b> still fails, restart the service:</p><pre class="cmd">launchctl kickstart -k gui/$(id -u)/ai.quicktui</pre><p><b>Why no consent dialog appears:</b> macOS only shows the TCC consent prompt for processes launched with a UI context (Finder, Terminal, Dock). Background <span class="mono">launchd</span> agents have no UI, so the prompt is never displayed and the OS silently blocks until manually authorized.</p>`,
+    zh: `<p>macOS 通过 TCC（隐私权限子系统）保护 <b>桌面</b>、<b>文稿</b>、<b>下载</b>、iCloud Drive 等系统目录。QuickTUI 服务以后台 <span class="mono">launchd</span> agent 形式运行，无 UI 上下文，无法触发系统授权弹窗，因此访问这些目录会静默挂起直到请求超时。</p><p><b>解决方法 — 给 server 二进制加完全磁盘访问权限：</b></p><ol><li>打开 <b>系统设置</b> → <b>隐私与安全性</b> → <b>完全磁盘访问</b>。</li><li>点 <b>+</b> 号。在文件选择器中按 <span class="mono">Cmd+Shift+G</span>，输入 <span class="path">~/.local/bin</span>，选中 <span class="path">quicktui-server</span>。</li><li>确保 <span class="mono">quicktui-server</span> 旁边的开关已<b>启用</b>。</li><li>回到 QuickTUI 客户端，点警告条上的 <b>已授权, 重测</b>。无需重启服务。</li></ol><p>若 <b>重测</b> 仍然失败，重启服务：</p><pre class="cmd">launchctl kickstart -k gui/$(id -u)/ai.quicktui</pre><p><b>为什么没有自动授权弹窗：</b> macOS 仅对带 UI 上下文的进程（Finder、终端、Dock 启动的 App）显示 TCC 授权弹窗。后台 <span class="mono">launchd</span> agent 无 UI，授权弹窗永远不会显示，系统会静默拒绝直到用户手动加白名单。</p>`,
+  },
+
+  "q15perm.q": { en: `Linux file browser shows "permission denied" or returns 403.`, zh: `Linux 文件浏览器提示 "permission denied" 或返回 403。` },
+  "q15perm.a": {
+    en: `<p>The QuickTUI server runs under your user (typically systemd <span class="mono">--user</span>) and can only read paths your user has POSIX read+execute on. Common causes:</p><ul><li><b>Mode bits.</b> Files mode <span class="mono">0600</span> / dirs mode <span class="mono">0700</span> are unreadable to anyone but the owner. Check with <span class="mono">ls -ld /path</span>.</li><li><b>Parent directory missing <span class="mono">x</span> bit.</b> Even if the target file is world-readable, the server can't traverse into it without execute permission on every ancestor directory.</li><li><b>POSIX ACL.</b> <span class="mono">getfacl /path</span> may show an explicit deny entry that overrides mode bits.</li><li><b>Wrong user.</b> If you started the server with <span class="mono">sudo</span> once and switched back, residual files may be owned by root. <span class="mono">stat /path</span> shows the owner.</li><li><b>SELinux (RHEL / Fedora / Rocky).</b> Even with correct mode, MAC may block access. Check with <span class="mono">ausearch -m AVC -ts recent</span> or <span class="mono">getenforce</span>. Temporarily test with <span class="mono">setenforce 0</span> (do not leave permissive in production).</li><li><b>AppArmor / Snap confinement (Ubuntu).</b> If you installed <span class="mono">quicktui-server</span> via snap, it can't read files outside the snap home. The recommended install path is <span class="path">~/.local/bin/quicktui-server</span> (no confinement).</li><li><b>Mount options.</b> A mount with <span class="mono">noexec</span> or read-only flags may surface as EACCES on some operations. Check <span class="mono">findmnt /path</span>.</li></ul><p><b>Fix steps:</b></p><ol><li>Run <span class="mono">ls -ld /full/path/to/dir</span> on the failing path <b>and every parent</b>. Confirm the user running quicktui-server has <span class="mono">r-x</span> on dirs and <span class="mono">r--</span> on files.</li><li>Identify which user the service runs as: <span class="mono">systemctl --user show quicktui -p MainPID</span>, then <span class="mono">ps -o user= -p &lt;PID&gt;</span>.</li><li>Adjust permissions: <span class="mono">chmod o+rx /path</span> for shared paths, or use ACLs (<span class="mono">setfacl -m u:&lt;user&gt;:rx /path</span>) for selective access.</li><li>If SELinux blocks access, add a file context label or use <span class="mono">audit2allow</span> to generate a policy module — see your distro's SELinux docs.</li><li>Tap <b>Recheck</b> in the client. No service restart required.</li></ol><p>If still failing, check logs: <span class="mono">journalctl --user -u quicktui -f</span> while reproducing.</p>`,
+    zh: `<p>QuickTUI 服务以你当前用户（通常是 systemd <span class="mono">--user</span>）身份运行，只能读到该用户拥有 POSIX 读+执行权限的路径。常见原因：</p><ul><li><b>权限位。</b> 文件 <span class="mono">0600</span> / 目录 <span class="mono">0700</span> 模式只有所有者能读。用 <span class="mono">ls -ld /path</span> 检查。</li><li><b>父目录缺少 <span class="mono">x</span> 位。</b> 即使目标文件 world-readable，server 也需要每一级祖先目录有 execute 权限才能 traverse。</li><li><b>POSIX ACL。</b> <span class="mono">getfacl /path</span> 可能显示显式 deny 条目覆盖了普通权限位。</li><li><b>用户错误。</b> 如果某次用 <span class="mono">sudo</span> 启动过 server，后又切回普通用户，残留文件可能 root 所有。<span class="mono">stat /path</span> 看 owner。</li><li><b>SELinux（RHEL / Fedora / Rocky）。</b> 即便权限位正确，MAC 也可能拦截。用 <span class="mono">ausearch -m AVC -ts recent</span> 或 <span class="mono">getenforce</span> 检查。临时测试用 <span class="mono">setenforce 0</span>（生产环境不要长期 permissive）。</li><li><b>AppArmor / Snap 隔离（Ubuntu）。</b> 若你用 snap 安装 <span class="mono">quicktui-server</span>，它读不到 snap home 之外的文件。推荐安装路径是 <span class="path">~/.local/bin/quicktui-server</span>（无 confinement）。</li><li><b>挂载选项。</b> <span class="mono">noexec</span> 或只读挂载在某些操作上会表现为 EACCES。用 <span class="mono">findmnt /path</span> 检查。</li></ul><p><b>排查步骤：</b></p><ol><li>对失败路径<b>及每一级父目录</b>跑 <span class="mono">ls -ld /full/path/to/dir</span>。确认 server 运行用户对目录有 <span class="mono">r-x</span>，对文件有 <span class="mono">r--</span>。</li><li>确认服务运行用户：<span class="mono">systemctl --user show quicktui -p MainPID</span>，再 <span class="mono">ps -o user= -p &lt;PID&gt;</span>。</li><li>调权限：<span class="mono">chmod o+rx /path</span>（共享路径），或用 ACL <span class="mono">setfacl -m u:&lt;user&gt;:rx /path</span>（选择性授权）。</li><li>SELinux 拦截时，加文件 context label 或用 <span class="mono">audit2allow</span> 生成策略模块 — 参考你的发行版 SELinux 文档。</li><li>客户端点 <b>已授权, 重测</b>。无需重启服务。</li></ol><p>仍失败时复现操作并查看日志：<span class="mono">journalctl --user -u quicktui -f</span>。</p>`,
+  },
+
   "q14.q": { en: "My session list is empty.", zh: "会话列表为空。" },
   "q14.a": { en: `<p>QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <b>New Session</b>, or on the server:</p><pre class="cmd">tmux new-session -s mysession</pre>`, zh: `<p>QuickTUI 显示当前 tmux 会话。若尚无会话，从 App 或浏览器点 <b>New Session</b> 创建，或在服务器上运行：</p><pre class="cmd">tmux new-session -s mysession</pre>` },
 
@@ -1634,6 +1664,30 @@ document.querySelectorAll('.faq-item').forEach(it => {
     it.classList.toggle('open');
   });
 });
+
+// FAQ deeplinks — clients (web / iOS / q.sh installer) link to specific FAQ
+// items via fragment anchors like #q-tcc-macos. Open the matching item and
+// scroll it into view on initial load and on subsequent hash changes.
+function openFaqByHash() {
+  const hash = (location.hash || '').replace(/^#/, '');
+  if (!hash) return;
+  const target = document.getElementById(hash);
+  if (!target || !target.classList.contains('faq-item')) return;
+  document.querySelectorAll('.faq-item.open').forEach(it => {
+    if (it !== target) it.classList.remove('open');
+  });
+  target.classList.add('open');
+  // 等下一帧 layout 完成再滚, 避免 sticky nav 遮挡上沿.
+  requestAnimationFrame(() => {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+window.addEventListener('hashchange', openFaqByHash);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', openFaqByHash);
+} else {
+  openFaqByHash();
+}
 </script>
 </body>
 </html>

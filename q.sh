@@ -1521,6 +1521,17 @@ print_success() {
     printf '\n'
     printf 'iOS App:\n'
     printf '  App Store:  https://apps.apple.com/app/quicktui/id6761338192\n'
+
+    # File-browser access hint. Different OS, different cause; both end up at the
+    # same client-side banner pointing to the matching FAQ anchor on quicktui.ai.
+    case "$(uname -s)" in
+        Darwin)
+            printf '\nmacOS: file browser may need Full Disk Access for ~/Desktop, ~/Documents, ~/Downloads — see https://quicktui.ai/#q-tcc-macos\n'
+            ;;
+        Linux)
+            printf '\nLinux: file browser is restricted to paths the service user can read (POSIX / SELinux / AppArmor) — see https://quicktui.ai/#q-permission-linux\n'
+            ;;
+    esac
     printf '\n'
 }
 

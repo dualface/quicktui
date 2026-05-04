@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "stable": {
+    "tag": "20260410-05",
+    "release_url": "https://github.com/dualface/quicktui/releases/tag/20260410-05",
+    "assets": [
+      "quicktui-server-darwin-amd64",
+      "quicktui-server-darwin-arm64",
+      "quicktui-server-linux-amd64",
+      "quicktui-server-linux-arm64"
+    ],
+    "published_at": "2026-04-10T10:42:57Z"
+  },
+  "preview": {
+    "tag": "server-preview-20260504-140245-fec5a5dc",
+    "release_url": "https://github.com/dualface/quicktui/releases/tag/server-preview-20260504-140245-fec5a5dc",
+    "assets": [
+      "quicktui-server-darwin-amd64",
+      "quicktui-server-darwin-arm64",
+      "quicktui-server-linux-amd64",
+      "quicktui-server-linux-arm64"
+    ],
+    "published_at": "2026-05-04T06:02:58Z"
+  }
+}

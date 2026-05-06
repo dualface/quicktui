@@ -1348,11 +1348,20 @@ scratch : 1 window  <span class="dim">· detached</span>
           <div class="plus">+</div>
         </div>
 
+        <div class="faq-item" id="q-tmux-tui-fullscreen">
+          <div class="n">Q.17</div>
+          <div>
+            <div class="q" data-i="qtuifs.q">tmux scrollback shows duplicated / misaligned text after running Claude Code.</div>
+            <div class="a" data-i-html="qtuifs.a">Symptom and fix.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
         <!-- ─── Group: iOS App & Browser ─── -->
         <div class="faq-group-label" data-i="faqg.client">iOS App & Browser</div>
 
         <div class="faq-item">
-          <div class="n">Q.17</div>
+          <div class="n">Q.18</div>
           <div>
             <div class="q" data-i="q15.q">What is the access token?</div>
             <div class="a" data-i-html="q15.a">A secret you set during installation — it protects your server from unauthorized access. Find it on your server: <span class="mono">cat ~/.config/quicktui/config</span>. Enter it when prompted on first login in the app or browser.</div>
@@ -1361,7 +1370,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         </div>
 
         <div class="faq-item">
-          <div class="n">Q.18</div>
+          <div class="n">Q.19</div>
           <div>
             <div class="q" data-i="q16.q">Can I connect over the internet?</div>
             <div class="a" data-i-html="q16.a">Yes. You need the server reachable from the internet — via a public IP, VPN, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. Make sure the configured port (<span class="mono">8022</span> by default) is accessible and your token stays secret.</div>
@@ -1370,7 +1379,7 @@ scratch : 1 window  <span class="dim">· detached</span>
         </div>
 
         <div class="faq-item">
-          <div class="n">Q.19</div>
+          <div class="n">Q.20</div>
           <div>
             <div class="q" data-i="q17.q">The app or browser shows "Session not found".</div>
             <div class="a" data-i-html="q17.a">This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running. Refresh the session list, then open an existing session or create a new one.</div>
@@ -1398,7 +1407,45 @@ scratch : 1 window  <span class="dim">· detached</span>
 </div>
 
 <script>
-const state = { theme: "dark", lang: "en" };
+const LANG_STORAGE_KEY = 'quicktui.lang';
+const SUPPORTED_LANGS = ['en', 'zh'];
+
+function normalizeLang(value) {
+  const lang = String(value || '').toLowerCase();
+  if (lang === 'zh' || lang.startsWith('zh-')) return 'zh';
+  if (lang === 'en' || lang.startsWith('en-')) return 'en';
+  return null;
+}
+
+function getStoredLang() {
+  try {
+    const stored = localStorage.getItem(LANG_STORAGE_KEY);
+    return SUPPORTED_LANGS.includes(stored) ? stored : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function detectBrowserLang() {
+  const langs = navigator.languages && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language];
+  for (const lang of langs) {
+    const normalized = normalizeLang(lang);
+    if (normalized) return normalized;
+  }
+  return 'en';
+}
+
+function saveLang(lang) {
+  try {
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+  } catch (_) {
+    // Private browsing / disabled storage: keep the in-memory choice only.
+  }
+}
+
+const state = { theme: "dark", lang: getStoredLang() || detectBrowserLang() };
 
 // ───────── i18n dictionary
 const I18N = {
@@ -1598,6 +1645,11 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
 
   "q14.q": { en: "My session list is empty.", zh: "会话列表为空。" },
   "q14.a": { en: `<p>QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <b>New Session</b>, or on the server:</p><pre class="cmd">tmux new-session -s mysession</pre>`, zh: `<p>QuickTUI 显示当前 tmux 会话。若尚无会话，从 App 或浏览器点 <b>New Session</b> 创建，或在服务器上运行：</p><pre class="cmd">tmux new-session -s mysession</pre>` },
+  "qtuifs.q": { en: "tmux scrollback shows duplicated / misaligned text after running Claude Code.", zh: "在 tmux 里跑 Claude Code 一段时间后，scrollback 出现重复或错位的文字。" },
+  "qtuifs.a": {
+    en: `<p><b>Symptom.</b> After interacting with Claude Code (or similar TUI tools like OpenAI Codex CLI, aider) inside a tmux pane, scrolling back through tmux history shows duplicated frames, misaligned columns, or fragments of older render passes. Restarting the QuickTUI server does <b>not</b> fix the desktop tmux side — only <span class="mono">tmux clear-history</span> clears it.</p><p><b>Cause.</b> Claude Code's TUI is built on the <b>Ink</b> rendering library. When the rendered region exceeds the terminal viewport (or on every full-viewport repaint), Ink's render loop emits <span class="mono">CSI 3 J</span> ("Erase Saved Lines") and re-paints the whole screen on the <b>main</b> screen buffer — without DECSET 2026 (synchronized output) bracketing. tmux processes the partial frames and writes them into pane scrollback. Subsequent SIGWINCH / resize events compound this: each intermediate width pushes another stale frame into history. Upstream tracking issues:</p><ul><li><a href="https://github.com/anthropics/claude-code/issues/29937" target="_blank" rel="noopener noreferrer">#29937 — Terminal rendering corruption in tmux</a></li><li><a href="https://github.com/anthropics/claude-code/issues/49086" target="_blank" rel="noopener noreferrer">#49086 — Resize duplicates banner/content in scrollback</a></li><li><a href="https://github.com/anthropics/claude-code/issues/37283" target="_blank" rel="noopener noreferrer">#37283 — TUI flicker / missing DECSET 2026</a></li></ul><p><b>Fix.</b> Run Claude Code in <b>fullscreen mode</b> — it switches to the <b>alternate</b> screen buffer (like vim / htop) and never touches scrollback. Requires <b>Claude Code v2.1.89+</b>:</p><pre class="cmd">/tui fullscreen</pre><p>Versions <b>v2.1.89 — v2.1.109</b> use the environment variable instead:</p><pre class="cmd">CLAUDE_CODE_NO_FLICKER=1 claude</pre><p><b>Recovering existing corrupted scrollback.</b> The garbled bytes are already inside tmux's pane history; only clearing it removes them:</p><pre class="cmd">tmux clear-history</pre><p>Then re-launch Claude Code in fullscreen mode to prevent recurrence. The QuickTUI client also pops a hint banner the first time you select a pane that is running Claude Code (or another known TUI tool) on the main screen.</p>`,
+    zh: `<p><b>现象。</b>在 tmux pane 里使用 Claude Code（或同类 TUI 工具如 OpenAI Codex CLI、aider）一段时间后，向上滚动 tmux 历史会看到重复的帧、错位的列，或旧渲染的碎片。重启 QuickTUI 服务端 <b>不能</b> 让桌面 tmux 自愈，只有 <span class="mono">tmux clear-history</span> 才能清掉。</p><p><b>原因。</b>Claude Code 的 TUI 基于 <b>Ink</b> 渲染库。当渲染区域超过 viewport（或满屏重绘时），Ink 的 render loop 会在 <b>主屏</b> 上发送 <span class="mono">CSI 3 J</span>（"擦除滚动条历史"）并重绘整屏 — 且没有 DECSET 2026（同步输出）包裹。tmux 把这些半截帧写进 pane scrollback。后续每次 SIGWINCH / 改尺寸会再叠加一份。上游 issue：</p><ul><li><a href="https://github.com/anthropics/claude-code/issues/29937" target="_blank" rel="noopener noreferrer">#29937 — Terminal rendering corruption in tmux</a></li><li><a href="https://github.com/anthropics/claude-code/issues/49086" target="_blank" rel="noopener noreferrer">#49086 — Resize duplicates banner/content in scrollback</a></li><li><a href="https://github.com/anthropics/claude-code/issues/37283" target="_blank" rel="noopener noreferrer">#37283 — TUI flicker / missing DECSET 2026</a></li></ul><p><b>解决方法。</b>用 <b>fullscreen 模式</b>跑 Claude Code — 切到 <b>alternate</b> screen buffer（和 vim / htop 一样），完全不动 scrollback。需要 <b>Claude Code v2.1.89+</b>：</p><pre class="cmd">/tui fullscreen</pre><p><b>v2.1.89 — v2.1.109</b> 版本用环境变量代替：</p><pre class="cmd">CLAUDE_CODE_NO_FLICKER=1 claude</pre><p><b>清掉已经污染的 scrollback。</b>烂字节已经在 tmux 内存里，只能整段清掉：</p><pre class="cmd">tmux clear-history</pre><p>然后用 fullscreen 模式重启 Claude Code 防止再次发生。QuickTUI 客户端在你选择运行了 Claude Code（或其他已知 main-screen TUI 工具）的 pane 时也会弹一条提示条。</p>`
+  },
 
   "q15.q": { en: "What is the access token?", zh: "什么是 access token？" },
   "q15.a": { en: `<p>A secret you set during installation — it protects your server from unauthorized access. Find it on your server:</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>Enter it when prompted on first login in the app or browser.</p>`, zh: `<p>你在安装时设定的密钥 — 用于保护服务器不被未授权访问。在服务器上查看：</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>首次在 App 或浏览器登录时按提示输入。</p>` },
@@ -1645,6 +1697,7 @@ document.getElementById('langToggle').addEventListener('click', e => {
   if (!b) return;
   state.lang = b.dataset.lang;
   applyLang(state.lang);
+  saveLang(state.lang);
 });
 
 // theme toggle in nav

@@ -8,12 +8,28 @@
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta name="theme-color" content="#111820" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) {
+    theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#111820' : '#f8f7f2');
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────── tokens */
 :root {
+  color-scheme: dark light;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --serif: 'Instrument Serif', 'Times New Roman', serif;
@@ -24,6 +40,7 @@
   --gutter: clamp(20px, 4vw, 48px);
 }
 [data-theme="dark"] {
+  color-scheme: dark;
   --bg: oklch(0.145 0.012 255);
   --bg-1: oklch(0.175 0.015 255);
   --bg-2: oklch(0.21 0.018 255);
@@ -36,6 +53,7 @@
   --scan: rgba(255,255,255,0.02);
 }
 [data-theme="light"] {
+  color-scheme: light;
   --bg: oklch(0.985 0.003 95);
   --bg-1: oklch(0.97 0.005 95);
   --bg-2: oklch(0.94 0.007 95);
@@ -45,7 +63,9 @@
   --ink-4: oklch(0.68 0.01 255);
   --line: oklch(0.84 0.01 255);
   --line-soft: oklch(0.90 0.008 255);
-  --accent-ink: oklch(0.18 0.08 142);
+  --accent: oklch(0.44 0.17 145);
+  --accent-ink: oklch(0.98 0.01 145);
+  --accent-glow: oklch(0.44 0.17 145 / 0.20);
   --scan: rgba(0,0,0,0.02);
 }
 
@@ -143,7 +163,7 @@ body::before {
   border-radius: 5px;
   background: var(--accent);
   display: grid; place-items: center;
-  color: #0a0d12;
+  color: var(--accent-ink);
   font-weight: 800;
   font-size: 13px;
   box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
@@ -1408,7 +1428,9 @@ scratch : 1 window  <span class="dim">· detached</span>
 
 <script>
 const LANG_STORAGE_KEY = 'quicktui.lang';
+const THEME_STORAGE_KEY = 'quicktui.theme';
 const SUPPORTED_LANGS = ['en', 'zh'];
+const SUPPORTED_THEMES = ['dark', 'light'];
 
 function normalizeLang(value) {
   const lang = String(value || '').toLowerCase();
@@ -1445,7 +1467,28 @@ function saveLang(lang) {
   }
 }
 
-const state = { theme: "dark", lang: getStoredLang() || detectBrowserLang() };
+function getStoredTheme() {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    return SUPPORTED_THEMES.includes(stored) ? stored : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function detectSystemTheme() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+
+function saveTheme(theme) {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (_) {
+    // Private browsing / disabled storage: keep the in-memory choice only.
+  }
+}
+
+const state = { theme: getStoredTheme() || detectSystemTheme(), lang: getStoredLang() || detectBrowserLang() };
 
 // ───────── i18n dictionary
 const I18N = {
@@ -1686,6 +1729,8 @@ function applyLang(lang) {
 function applyTheme(v) {
   document.documentElement.setAttribute('data-theme', v);
   document.getElementById('themeToggle').textContent = v === 'dark' ? '◐' : '◑';
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', v === 'dark' ? '#111820' : '#f8f7f2');
 }
 
 applyTheme(state.theme);
@@ -1705,7 +1750,22 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   state.theme = next;
   applyTheme(next);
+  saveTheme(next);
 });
+
+if (window.matchMedia) {
+  const themeQuery = window.matchMedia('(prefers-color-scheme: light)');
+  const onThemePreferenceChange = e => {
+    if (getStoredTheme()) return;
+    state.theme = e.matches ? 'light' : 'dark';
+    applyTheme(state.theme);
+  };
+  if (themeQuery.addEventListener) {
+    themeQuery.addEventListener('change', onThemePreferenceChange);
+  } else if (themeQuery.addListener) {
+    themeQuery.addListener(onThemePreferenceChange);
+  }
+}
 
 // FAQ toggles — ignore clicks inside the answer body so users can select/copy text
 document.querySelectorAll('.faq-item').forEach(it => {

@@ -1400,6 +1400,9 @@ configure_service() {
     _SVC_OUT=""
 
     if [ "$_svc_rc" -eq 0 ]; then
+        if [ "$PLATFORM" = "linux" ] && command -v loginctl > /dev/null 2>&1; then
+            loginctl enable-linger 2>/dev/null || true
+        fi
         if wait_for_service_ready; then
             SERVICE_STARTED="yes"
         else

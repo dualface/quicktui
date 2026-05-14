@@ -557,14 +557,12 @@ body::before {
 
 /* ───────────── install */
 .install {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 0;
+  display: block;
   border: 1px solid var(--line);
   border-radius: 6px;
   overflow: hidden;
 }
-.install-left { padding: clamp(28px, 4vw, 48px); border-right: 1px solid var(--line); }
+.install-left { padding: clamp(28px, 4vw, 48px); }
 .install-left h3 { font-family: var(--mono); font-size: 24px; font-weight: 600; letter-spacing: -0.025em; margin: 12px 0 12px; }
 .install-left p { color: var(--ink-2); margin: 0 0 18px; max-width: 42ch; }
 .install-left .steps { display: grid; gap: 10px; margin-top: 14px; }
@@ -580,52 +578,6 @@ body::before {
 .install-left .step .n { color: var(--ink-4); }
 .install-left .step b { font-weight: 500; color: var(--ink); }
 .install-left .step .d { color: var(--ink-3); font-size: 11px; margin-top: 2px; overflow-wrap: anywhere; }
-
-.install-right {
-  background: var(--bg-1);
-  padding: 0;
-  display: flex; flex-direction: column;
-}
-.terminal-chrome {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--line-soft);
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink-3);
-}
-.terminal-chrome .traffic {
-  display: flex; gap: 6px;
-}
-.terminal-chrome .traffic i {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--ink-4); opacity: .35;
-  display: block;
-}
-.terminal-chrome .traffic i:nth-child(1) { background: #ed6a5e; opacity: .8; }
-.terminal-chrome .traffic i:nth-child(2) { background: #f4c152; opacity: .8; }
-.terminal-chrome .traffic i:nth-child(3) { background: #62c554; opacity: .8; }
-.terminal-chrome .ttitle { margin-left: 8px; color: var(--ink-3); }
-.terminal-chrome .tabs { margin-left: auto; display: flex; gap: 4px; }
-.terminal-chrome .tab { padding: 2px 8px; border: 1px solid var(--line-soft); border-radius: 3px; color: var(--ink-4); font-size: 10px; }
-.terminal-chrome .tab.on { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 30%, var(--line)); }
-
-.terminal-body {
-  padding: 18px 20px;
-  font-family: var(--mono);
-  font-size: 13px;
-  line-height: 1.75;
-  flex: 1;
-  color: var(--ink-2);
-  overflow: auto;
-}
-.terminal-body .p { color: var(--accent); }
-.terminal-body .c { color: var(--ink); }
-.terminal-body .com { color: var(--ink-4); }
-.terminal-body .ok { color: var(--accent); }
-.terminal-body .warn { color: #f2c97a; }
-.terminal-body .hl { color: #7db8ff; }
-.terminal-body hr { border: 0; border-top: 1px dashed var(--line-soft); margin: 10px 0; }
 
 /* ───────────── FAQ */
 .faq {
@@ -738,15 +690,12 @@ html[lang="zh"] body { font-feature-settings: normal; }
 
 /* ───────────── responsive */
 @media (max-width: 900px) {
-  .devices-row, .install, .section-head { grid-template-columns: 1fr; }
+  .devices-row, .section-head { grid-template-columns: 1fr; }
   .hero { gap: 24px; }
   .hero > .device-stack { max-width: 280px; }
   .v3 > *, .devices-row > *, .install > *, .section-head > *,
-  .install-left, .install-right, .terminal-chrome, .terminal-body,
+  .install-left,
   .features-grid > .feat, .faq-item, .faq-item > *, .opts-grid, .opts-head { min-width: 0; }
-  .install-right, .terminal-chrome, .terminal-body { overflow: hidden; }
-  .terminal-chrome .tabs { display: none; }
-  .terminal-body { overflow-x: auto; overflow-wrap: anywhere; word-break: break-word; }
   .device-stack { max-width: 380px; margin: 30px auto 0; }
   .phone { position: relative; transform: none; margin: 0 auto; }
   .tablet { display: none; }
@@ -1136,47 +1085,42 @@ scratch : 1 window  <span class="dim">· detached</span>
     <section id="install" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="in.eyebrow">§ 04 / Get within reach</div>
-          <h2 data-i-html="in.h2">Three steps from <span class="serif">curl</span> to within reach.</h2>
+          <div class="eyebrow" data-i="in.eyebrow">§ 04 / Get started</div>
+          <h2 data-i-html="in.h2">From <span class="serif">install</span> to daily driving.</h2>
         </div>
         <div>
-          <p data-i="in.desc">Install the server once. From then on, every device you carry — iPhone, iPad, browser — is one tap away from your agent's live session.</p>
+          <p data-i="in.desc">Two ways to install the server, then the gestures you'll actually use on phone and iPad every day.</p>
           <a class="btn btn-primary btn-xl" href="https://apps.apple.com/app/quicktui/id6761338192" style="margin-top:22px" data-i-html="in.cta">Get the App <span class="arr">→</span></a>
         </div>
       </div>
 
       <div class="install">
         <div class="install-left">
-          <div class="eyebrow" data-i="in.badge">■ QUICKSTART</div>
-          <h3 data-i="in.h3">Server up in one line.</h3>
-          <p data-i-html="in.p">The installer handles tmux 3.2+ detection, service registration on launchd/systemd, and saves your token to <span class="path">~/.config/quicktui/config</span>.</p>
+          <div class="eyebrow" data-i="in.badge">■ INSTALL</div>
+          <h3 data-i="in.h3">Two paths to your server.</h3>
+          <p data-i-html="in.p">If you can SSH to the box, the iOS app installs the server for you. If not, run one line on the server itself. Either way, the installer detects tmux 3.2+, registers a launchd / systemd service, and saves your token to <span class="path">~/.config/quicktui/config</span>.</p>
           <div class="steps">
-            <div class="step"><span class="n">01</span><div><b data-i="step1.t">Install and start the server.</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step1.d" style="margin-top:4px">One command detects tmux, installs the binary, registers the service, and saves your token.</div></div></div>
-            <div class="step"><span class="n">02</span><div><b data-i="step2.t">Scan QR Code in App.</b><div class="d" data-i-html="step2.d">Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono ac">+</span> → Scan.</div></div></div>
-            <div class="step"><span class="n">03</span><div><b data-i="step3.t">Or open the browser.</b><div class="d" data-i-html="step3.d">Visit <span class="mono ac">http://&lt;host&gt;:8022</span>, paste your token once.</div></div></div>
+            <div class="step"><span class="n">01</span><div><b data-i="step1.t">SSH-capable server → App wizard.</b><div class="d" data-i="step1.d">Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.</div></div></div>
+            <div class="step"><span class="n">02</span><div><b data-i="step2.t">No SSH? Run on the server.</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step2.d" style="margin-top:4px">Copy that one line to the server's terminal and run it. Done in under a minute.</div></div></div>
+            <div class="step"><span class="n">03</span><div><b data-i="step3.t">Pair the app, or open a browser.</b><div class="d" data-i-html="step3.d">On the server, run <span class="mono">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan. Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.</div></div></div>
           </div>
         </div>
-        <div class="install-right">
-          <div class="terminal-chrome">
-            <div class="traffic"><i></i><i></i><i></i></div>
-            <div class="ttitle" data-i="in.ttitle">quicktui · install · ~</div>
-            <div class="tabs"><div class="tab on">install</div><div class="tab">--qrcode</div><div class="tab">--check</div></div>
-          </div>
-          <div class="terminal-body">
-            <div><span class="com" data-i="in.c1"># install on macOS / Linux / WSL</span></div>
-            <div><span class="p">$</span> <span class="c">curl -fsSL https://quicktui.ai/q.sh | sh</span></div>
-            <div><span class="ok">✓</span> tmux <span class="hl">3.4</span> <span data-i="in.ok1">detected</span></div>
-            <div><span class="ok">✓</span> <span data-i="in.ok2">service installed</span> · <span class="hl">0.0.0.0:8022</span></div>
-            <div><span class="ok">✓</span> <span data-i="in.ok3">token saved to ~/.config/quicktui/config</span></div>
-            <hr>
-            <div><span class="com" data-i="in.c2"># pair your iPhone / iPad with a QR code</span></div>
-            <div><span class="p">$</span> <span class="c">quicktui-server --qrcode</span></div>
-            <div><span class="ok">▌</span> <span class="com" data-i="in.c3">scan from the QuickTUI iOS app</span></div>
-            <hr>
-            <div><span class="com" data-i="in.c4"># uninstall</span></div>
-            <div><span class="p">$</span> <span class="c">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</span></div>
-            <div><span class="p">$</span> <span class="c">▌</span></div>
-          </div>
+      </div>
+
+      <!-- Gestures cheat sheet -->
+      <div class="opts-grid">
+        <div class="opts-head">
+          <div class="eyebrow" data-i="gest.badge">■ GESTURES</div>
+          <p data-i="gest.desc">How you actually drive the terminal from a phone or iPad. A few of these are swappable in Settings if you prefer single- and double-finger flipped.</p>
+        </div>
+        <div class="opts-list">
+          <div class="opt"><code class="mono">1-finger double-tap</code><span data-i="gest.tab">Send Tab</span></div>
+          <div class="opt"><code class="mono">2-finger double-tap</code><span data-i="gest.enter">Send Enter</span></div>
+          <div class="opt"><code class="mono">1-finger swipe ↕</code><span data-i="gest.scroll">Scroll history</span></div>
+          <div class="opt"><code class="mono">1-finger swipe ↔</code><span data-i="gest.win">Switch tmux window</span></div>
+          <div class="opt"><code class="mono">2-finger swipe</code><span data-i="gest.arrow">Arrow keys</span></div>
+          <div class="opt"><code class="mono">3-finger swipe ←</code><span data-i="gest.bs">Backspace</span></div>
+          <div class="opt"><code class="mono">3-finger swipe ↑</code><span data-i="gest.switcher">Open session switcher</span></div>
         </div>
       </div>
 
@@ -1540,27 +1484,29 @@ const I18N = {
   "ia.v4": { en: "HTTP API · WebSocket", zh: "HTTP API · WebSocket" },
 
   // ───── install
-  "in.eyebrow": { en: "§ 04 / Get within reach", zh: "§ 04 / 即刻接入" },
-  "in.h2": { en: `Three steps from <span class="serif">curl</span> to within reach.`, zh: `三步：从一条 <span class="serif">curl</span> 命令到随用随到。` },
-  "in.desc": { en: "Install the server once. From then on, every device you carry — iPhone, iPad, browser — is one tap away from your agent's live session.", zh: "安装服务端一次。从此你随身的每一块设备 — iPhone、iPad、浏览器 — 都与 Agent 的实时会话只差一次点击。" },
+  "in.eyebrow": { en: "§ 04 / Get started", zh: "§ 04 / 上手指南" },
+  "in.h2": { en: `From <span class="serif">install</span> to daily driving.`, zh: `从<span class="serif">安装</span>到日常使用。` },
+  "in.desc": { en: "Two ways to install the server, then the gestures you'll actually use on phone and iPad every day.", zh: "两种方式装好服务端，再加上手机和 iPad 上每天都会用到的手势速查表。" },
   "in.cta": { en: `Get the App <span class="arr">→</span>`, zh: `获取应用 <span class="arr">→</span>` },
-  "in.badge": { en: "■ QUICKSTART", zh: "■ 快速上手" },
-  "in.h3": { en: "Server up in one line.", zh: "一行命令启动服务。" },
-  "in.p": { en: `The installer handles tmux 3.2+ detection, service registration on launchd/systemd, and saves your token to <span class="path">~/.config/quicktui/config</span>.`, zh: `安装脚本自动检测 tmux 3.2+、在 launchd/systemd 上注册服务，并将 Token 保存到 <span class="path">~/.config/quicktui/config</span>。` },
-  "step1.t": { en: "Install and start the server.", zh: "安装并启动服务端。" },
-  "step1.d": { en: `One command detects tmux, installs the binary, registers the service, and saves your token.`, zh: `一条命令自动检测 tmux、安装二进制、注册服务、保存 Token。` },
-  "step2.t": { en: "Scan QR Code in App.", zh: "在 App 中扫描二维码。" },
-  "step2.d": { en: `Run <span class="mono">quicktui-server --qrcode</span>, open the iOS app, tap <span class="mono ac">+</span> → Scan.`, zh: `运行 <span class="mono">quicktui-server --qrcode</span>，打开 iOS App，点击 <span class="mono ac">+</span> → 扫描。` },
-  "step3.t": { en: "Or open the browser.", zh: "或打开浏览器。" },
-  "step3.d": { en: `Visit <span class="mono ac">http://&lt;host&gt;:8022</span>, paste your token once.`, zh: `访问 <span class="mono ac">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
-    "in.ttitle": { en: "quicktui · install · ~", zh: "quicktui · install · ~" },
-  "in.c1": { en: "# install on macOS / Linux / WSL", zh: "# 在 macOS / Linux / WSL 上安装" },
-  "in.c2": { en: "# pair your iPhone / iPad with a QR code", zh: "# 用二维码配对 iPhone / iPad" },
-  "in.c3": { en: "scan from the QuickTUI iOS app", zh: "用 QuickTUI iOS App 扫描" },
-  "in.c4": { en: "# uninstall", zh: "# 卸载" },
-  "in.ok1": { en: "detected", zh: "已检测" },
-  "in.ok2": { en: "service installed", zh: "服务已安装" },
-  "in.ok3": { en: "token saved to ~/.config/quicktui/config", zh: "Token 已保存至 ~/.config/quicktui/config" },
+  "in.badge": { en: "■ INSTALL", zh: "■ 安装" },
+  "in.h3": { en: "Two paths to your server.", zh: "两种方式装好服务端。" },
+  "in.p": { en: `If you can SSH to the box, the iOS app installs the server for you. If not, run one line on the server itself. Either way, the installer detects tmux 3.2+, registers a launchd / systemd service, and saves your token to <span class="path">~/.config/quicktui/config</span>.`, zh: `如果机器能 SSH 登录，iOS App 内的向导帮你装好服务端。不能 SSH 的话，到机器上跑一行 curl 也行。两种方式都会自动检测 tmux 3.2+，注册 launchd / systemd 服务，并把 Token 写入 <span class="path">~/.config/quicktui/config</span>。` },
+  "step1.t": { en: "SSH-capable server → App wizard.", zh: "能 SSH 的机器 → App 向导。" },
+  "step1.d": { en: `Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.`, zh: `在 iOS App 里添加服务器，选"快速设置"，填入 SSH 凭据。App 自动帮你装好服务端，全程不用开终端。` },
+  "step2.t": { en: "No SSH? Run on the server.", zh: "不能 SSH？直接到机器上跑。" },
+  "step2.d": { en: `Copy that one line to the server's terminal and run it. Done in under a minute.`, zh: `把上面那行命令复制到服务器终端运行即可。一分钟搞定。` },
+  "step3.t": { en: "Pair the app, or open a browser.", zh: "配对 App，或用浏览器。" },
+  "step3.d": { en: `On the server, run <span class="mono">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan. Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.`, zh: `在服务器运行 <span class="mono">quicktui-server --qrcode</span>，然后在 App 里点 <span class="mono ac">+</span> → 扫描。浏览器用户：访问 <span class="mono ac">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
+
+  "gest.badge": { en: "■ GESTURES", zh: "■ 手势操作" },
+  "gest.desc": { en: "How you actually drive the terminal from a phone or iPad. A few of these are swappable in Settings if you prefer single- and double-finger flipped.", zh: "在手机或 iPad 上驾驭终端的方式。部分单指 / 双指动作可以在设置里互换。" },
+  "gest.tab": { en: "Send Tab", zh: "输入 Tab" },
+  "gest.enter": { en: "Send Enter", zh: "输入 Enter" },
+  "gest.scroll": { en: "Scroll history", zh: "滚动历史" },
+  "gest.win": { en: "Switch tmux window", zh: "切换 tmux window" },
+  "gest.arrow": { en: "Arrow keys", zh: "方向键" },
+  "gest.bs": { en: "Backspace", zh: "Backspace" },
+  "gest.switcher": { en: "Open session switcher", zh: "打开会话 Switcher" },
 
   "opts.badge": { en: "■ INSTALLER OPTIONS", zh: "■ 安装脚本参数" },
   "opts.desc": { en: `Non-interactive installs, custom ports, environment checks. Pass via <span class="mono">sh -s --</span>:`, zh: `非交互式安装、自定义端口、环境检查。通过 <span class="mono">sh -s --</span> 传入：` },

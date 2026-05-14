@@ -615,21 +615,6 @@ html[lang="zh"] body { font-feature-settings: normal; }
 .lang-toggle button:not(.on):hover { color: var(--ink); }
 .lang-toggle .slash { color: var(--ink-4); opacity: .6; }
 
-/* big logotype */
-.bigmark {
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: clamp(70px, 14vw, 180px);
-  letter-spacing: -0.065em;
-  line-height: 0.85;
-  color: var(--ink-4);
-  padding: 40px 0 24px;
-  border-top: 1px solid var(--line);
-  white-space: nowrap;
-  overflow: hidden;
-  text-transform: uppercase;
-}
-.bigmark .caret { color: var(--accent); display: inline-block; animation: blink 1.2s steps(2) infinite; }
 
 /* ───────────── responsive */
 @media (max-width: 900px) {
@@ -791,9 +776,6 @@ html[lang="zh"] h3 .serif {
         </div>
       </div>
     </section>
-
-    <!-- big logotype divider -->
-    <div class="bigmark" aria-hidden="true">QUICKTUI<span class="caret">_</span></div>
 
     <!-- ───────── FEATURES ───────── -->
     <section id="features" class="section">

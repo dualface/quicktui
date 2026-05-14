@@ -277,6 +277,39 @@ body::before {
 .v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
 .v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
 
+/* ───────────────────────────────────────────────── hero showcase */
+.hero-shot-wrap {
+  display: flex;
+  justify-content: center;
+  padding: clamp(48px, 7vw, 96px) var(--gutter);
+  border-top: 1px solid var(--line);
+}
+.hero-shot {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 9 / 19;
+  background: var(--bg-2);
+  border: 1px dashed var(--line);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-4);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  padding: 16px;
+  overflow: hidden;
+}
+.hero-shot.has-img {
+  padding: 0;
+  border: none;
+  background: none;
+  aspect-ratio: auto;
+}
+.hero-shot img { max-width: 100%; height: auto; display: block; border-radius: 24px; }
+
 /* ───────────────────────────────────────────────── sections */
 .section {
   padding: clamp(72px, 10vw, 140px) 0;
@@ -777,6 +810,11 @@ html[lang="zh"] h3 .serif {
       </div>
     </section>
 
+    <!-- ───────── Hero showcase screenshot ───────── -->
+    <div class="hero-shot-wrap">
+      <div class="hero-shot has-img"><img src="images/usage/hero.png" alt="QuickTUI on iPhone" loading="lazy"></div>
+    </div>
+
     <!-- ───────── FEATURES ───────── -->
     <section id="features" class="section">
       <div class="section-head">
@@ -947,6 +985,13 @@ html[lang="zh"] h3 .serif {
               <p data-i="usage.switcher.b">Three-finger swipe up to summon the session switcher. Jump between tmux sessions and windows, even across different servers, in one tap.</p>
             </div>
             <div class="usage-shot has-img"><img src="images/usage/switcher.png" alt="Session switcher" loading="lazy"></div>
+          </div>
+          <div class="usage-item">
+            <div class="usage-text">
+              <h4 data-i="usage.files.t">File Browser</h4>
+              <p data-i="usage.files.b">Browse and preview files on the server without leaving the app. Tap a file to view, grab a path, or download for later. Each pane remembers the last folder you visited.</p>
+            </div>
+            <div class="usage-shot has-img"><img src="images/usage/file-browser.png" alt="File browser" loading="lazy"></div>
           </div>
         </div>
       </div>
@@ -1353,6 +1398,8 @@ const I18N = {
   "usage.palette.b": { en: "Quick launcher for terminal commands. Searchable, folder-organized, with a recent list. Slash commands send Enter automatically.", zh: "终端命令的快速启动器。可搜索，按文件夹分组，有最近使用列表。斜杠命令自动按回车。" },
   "usage.switcher.t": { en: "Switcher", zh: "切换器" },
   "usage.switcher.b": { en: "Three-finger swipe up to summon the session switcher. Jump between tmux sessions and windows, even across different servers, in one tap.", zh: "三指上滑唤出会话切换器。在 tmux session、window 之间快速跳转，跨服务器也行，一指搞定。" },
+  "usage.files.t": { en: "File Browser", zh: "文件浏览器" },
+  "usage.files.b": { en: "Browse and preview files on the server without leaving the app. Tap a file to view, grab a path, or download for later. Each pane remembers the last folder you visited.", zh: "在 App 内浏览和预览服务器上的文件，不用切应用。点文件直接看，抓路径，或下载到本地。每个 pane 记住上次浏览的位置。" },
 
   "gest.badge": { en: "■ GESTURES", zh: "■ 手势操作" },
   "gest.desc": { en: "How you actually drive the terminal from a phone or iPad. A few of these are swappable in Settings if you prefer single- and double-finger flipped.", zh: "在手机或 iPad 上驾驭终端的方式。部分单指 / 双指动作可以在设置里互换。" },

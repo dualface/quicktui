@@ -472,10 +472,7 @@ body::before {
 
 /* ───────────── in-action (devices row) */
 .devices-row {
-  display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 40px;
-  align-items: center;
+  display: block;
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: clamp(28px, 4vw, 60px);
@@ -497,7 +494,7 @@ body::before {
   letter-spacing: -0.03em;
   margin: 10px 0 10px;
 }
-.devices-copy p { color: var(--ink-2); max-width: 40ch; }
+.devices-copy p { color: var(--ink-2); font-size: 17px; line-height: 1.6; }
 .devices-copy ul {
   margin: 26px 0 0;
   padding: 0;
@@ -1052,63 +1049,6 @@ scratch : 1 window  <span class="dim">· detached</span>
             <li><span class="k" data-i="ia.k3">clients</span><span class="v" data-i="ia.v3">iPhone · iPad · Safari · Chrome</span></li>
             <li><span class="k" data-i="ia.k4">transport</span><span class="v" data-i="ia.v4">HTTP API · WebSocket</span></li>
           </ul>
-        </div>
-
-        <div class="devices-mock">
-          <div class="phone" style="position:relative; transform:none; max-width:220px;">
-            <div class="phone-screen">
-              <div class="phone-status"><span>14:22</span><span>●●●● LTE</span></div>
-              <div class="term">
-                <div><span class="prompt">~/app</span> $ ssh prod</div>
-                <div class="com">last login: today 09:12</div>
-                <div><span class="prompt">prod</span> $ tmux a -t dev</div>
-                <div class="com">[attached · window 2/7]</div>
-                <div>$ <span class="flag">kubectl</span> get pods</div>
-                <div>web-7d4    <span class="ok">Running</span> 14d</div>
-                <div>api-8c1    <span class="ok">Running</span>  2h</div>
-                <div>worker-a2  <span class="ok">Running</span>  2h</div>
-                <div>redis-0    <span class="ok">Running</span> 14d</div>
-                <div class="box"><span class="ok">▌</span> 4/4 healthy</div>
-                <div>$ ▌</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="tablet" style="position:relative; transform:none; width:100%; max-width:none; aspect-ratio:4/2.8;">
-            <div class="tablet-screen">
-              <div class="tablet-tabs">
-                <div class="tablet-tab">● dev</div>
-                <div class="tablet-tab active">● logs</div>
-                <div class="tablet-tab">● db</div>
-                <div class="tablet-tab">● redis</div>
-                <div class="tablet-tab">+</div>
-              </div>
-              <div class="term" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div>
-                  <div class="com"># tail -f access.log</div>
-                  <div>[<span class="ok">200</span>] /v1/runs        12ms</div>
-                  <div>[<span class="ok">200</span>] /v1/agents      19ms</div>
-                  <div>[<span class="ok">200</span>] /v1/health       2ms</div>
-                  <div>[<span class="warn">429</span>] /v1/inference  rate</div>
-                  <div>[<span class="ok">200</span>] /v1/runs/ff12    9ms</div>
-                  <div>[<span class="ok">200</span>] /v1/agents      17ms</div>
-                  <div>[<span class="ok">200</span>] /v1/runs/a31e   11ms</div>
-                  <div>[<span class="ok">200</span>] /v1/agents      22ms</div>
-                </div>
-                <div>
-                  <div class="com"># htop (summary)</div>
-                  <div>cpu     <span class="ok">[‖‖‖‖‖     ]</span> 41%</div>
-                  <div>mem     <span class="ok">[‖‖‖‖‖‖    ]</span> 62%</div>
-                  <div>net ↓   <span class="ok">[‖‖        ]</span> 12MB/s</div>
-                  <div>net ↑   <span class="ok">[‖         ]</span>  3MB/s</div>
-                  <div class="com"># sessions</div>
-                  <div>dev  <span class="ok">●</span>  14d 02:12</div>
-                  <div>api  <span class="ok">●</span>   2h 11:48</div>
-                  <div>db   <span class="ok">●</span>  14d 02:12</div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

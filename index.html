@@ -277,13 +277,7 @@ body::before {
 .v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
 .v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
 
-/* ───────────────────────────────────────────────── hero showcase */
-.hero-shot-wrap {
-  display: flex;
-  justify-content: center;
-  padding: clamp(48px, 7vw, 96px) var(--gutter);
-  border-top: 1px solid var(--line);
-}
+/* ───────────────────────────────────────────────── hero showcase (inline right column) */
 .hero-shot {
   width: 100%;
   max-width: 320px;
@@ -309,6 +303,7 @@ body::before {
   aspect-ratio: auto;
 }
 .hero-shot img { max-width: 100%; height: auto; display: block; border-radius: 24px; }
+.hero > .hero-shot { flex: 0 0 auto; }
 
 /* ───────────────────────────────────────────────── sections */
 .section {
@@ -807,13 +802,9 @@ html[lang="zh"] h3 .serif {
             <a class="btn btn-xl" href="#features" data-i="cta.features">View features</a>
           </div>
         </div>
+        <div class="hero-shot has-img"><img src="images/usage/hero.png" alt="QuickTUI on iPhone" loading="lazy"></div>
       </div>
     </section>
-
-    <!-- ───────── Hero showcase screenshot ───────── -->
-    <div class="hero-shot-wrap">
-      <div class="hero-shot has-img"><img src="images/usage/hero.png" alt="QuickTUI on iPhone" loading="lazy"></div>
-    </div>
 
     <!-- ───────── FEATURES ───────── -->
     <section id="features" class="section">

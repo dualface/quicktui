@@ -263,7 +263,6 @@ body::before {
 /* hero: brutalist code block */
 .hero { display: flex; flex-direction: row; align-items: flex-start; gap: clamp(32px, 4vw, 56px); }
 .hero > :first-child { flex: 1 1 0; min-width: 0; }
-.hero > .device-stack { flex: 0 0 auto; }
 .v3 .tag { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.2em; margin-top: 0; display: block; }
 .v3 h1 {
   font-family: var(--mono);
@@ -277,113 +276,6 @@ body::before {
 .v3 h1 em { font-style: normal; background: var(--accent); color: var(--accent-ink); padding: 0 .15em; line-height: 1.45; white-space: nowrap; }
 .v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
 .v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
-
-/* device preview (right column in v1 & v3) */
-.device-stack {
-  position: relative;
-  width: 100%;
-  max-width: 420px;
-  margin-left: auto;
-}
-.phone {
-  width: 100%;
-  max-width: 260px;
-  aspect-ratio: 9 / 19;
-  background: #000;
-  border-radius: 36px;
-  border: 1px solid var(--line);
-  padding: 8px;
-  position: relative;
-  box-shadow:
-    0 30px 80px -20px rgba(0,0,0,.6),
-    0 0 0 1px oklch(1 0 0 / 0.03) inset;
-}
-.phone::before {
-  content: "";
-  position: absolute;
-  top: 10px; left: 50%; transform: translateX(-50%);
-  width: 70px; height: 16px;
-  background: #000;
-  border-radius: 20px;
-  z-index: 2;
-}
-.phone-screen {
-  width: 100%; height: 100%;
-  background: #0a0f0a;
-  border-radius: 30px;
-  overflow: hidden;
-  position: relative;
-  display: flex; flex-direction: column;
-}
-.phone-status {
-  display: flex; justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 9px;
-  color: #d9f7dc;
-  padding: 14px 20px 8px;
-}
-
-/* terminal content (shared) */
-.term {
-  flex: 1;
-  font-family: var(--mono);
-  font-size: 10px;
-  line-height: 1.55;
-  padding: 10px 12px;
-  color: #cfe9d3;
-  overflow: hidden;
-}
-.term .prompt { color: var(--accent); }
-.term .path { color: #7db8ff; }
-.term .flag { color: #b8c0ff; }
-.term .com { color: #6b7a73; }
-.term .warn { color: #f2c97a; }
-.term .ok { color: #9ef5a8; }
-.term .box {
-  border: 1px solid rgba(158, 245, 168, 0.25);
-  padding: 6px 8px;
-  margin: 6px 0;
-  border-radius: 2px;
-}
-
-/* layered tablet behind phone */
-.tablet {
-  position: absolute;
-  right: -6%; bottom: 6%;
-  width: 70%;
-  aspect-ratio: 4 / 3;
-  background: #0b0b0b;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 10px;
-  box-shadow: 0 30px 70px -20px rgba(0,0,0,.55);
-  transform: rotate(2deg);
-  z-index: 0;
-}
-.phone { position: relative; z-index: 1; transform: rotate(-3deg); margin-left: 0; }
-
-.tablet-screen {
-  width: 100%; height: 100%;
-  background: #0a0f0a;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex; flex-direction: column;
-}
-.tablet-tabs {
-  display: flex;
-  background: #111;
-  padding: 4px 6px 0;
-  gap: 2px;
-  border-bottom: 1px solid #1a1a1a;
-}
-.tablet-tab {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: #808880;
-  padding: 4px 10px;
-  border-radius: 4px 4px 0 0;
-}
-.tablet-tab.active { background: #0a0f0a; color: var(--accent); border: 1px solid #1a1a1a; border-bottom: 0; }
 
 /* ───────────────────────────────────────────────── sections */
 .section {
@@ -455,20 +347,6 @@ body::before {
   margin: 0;
   max-width: 48ch;
 }
-.feat .viz {
-  margin-top: 22px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink-3);
-  background: var(--bg-1);
-  border: 1px solid var(--line-soft);
-  border-radius: 4px;
-  padding: 12px 14px;
-  line-height: 1.8;
-  overflow: hidden;
-}
-.feat .viz .hl { color: var(--accent); }
-.feat .viz .dim { color: var(--ink-4); }
 
 /* ───────────── in-action (devices row) */
 .devices-row {
@@ -757,14 +635,9 @@ html[lang="zh"] body { font-feature-settings: normal; }
 @media (max-width: 900px) {
   .devices-row, .section-head { grid-template-columns: 1fr; }
   .hero { gap: 24px; }
-  .hero > .device-stack { max-width: 280px; }
   .v3 > *, .devices-row > *, .install > *, .section-head > *,
   .install-left,
   .features-grid > .feat, .faq-item, .faq-item > *, .opts-grid, .opts-head { min-width: 0; }
-  .device-stack { max-width: 380px; margin: 30px auto 0; }
-  .phone { position: relative; transform: none; margin: 0 auto; }
-  .tablet { display: none; }
-  .devices-mock { grid-template-columns: 1fr; }
   .features-grid > .feat { grid-column: span 12 !important; }
   .usecases { grid-template-columns: repeat(2, 1fr); }
   .uc:nth-child(2n) { border-right: 0; }
@@ -916,43 +789,6 @@ html[lang="zh"] h3 .serif {
             <a class="btn btn-xl" href="#features" data-i="cta.features">View features</a>
           </div>
         </div>
-        <div class="device-stack">
-          <div class="tablet" aria-hidden="true">
-            <div class="tablet-screen">
-              <div class="tablet-tabs">
-                <div class="tablet-tab active">● prod-api</div>
-                <div class="tablet-tab">logs</div>
-                <div class="tablet-tab">db</div>
-                <div class="tablet-tab">+</div>
-              </div>
-              <div class="term">
-                <div><span class="prompt">ubuntu@prod-api</span>:<span class="path">~/app</span>$ tail -f app.log</div>
-                <div class="com"># streaming 318 req/s</div>
-                <div>[<span class="ok">OK</span>] 200 GET  /v1/agents/44bc <span class="com">12ms</span></div>
-                <div>[<span class="ok">OK</span>] 200 POST /v1/runs       <span class="com">31ms</span></div>
-                <div>[<span class="warn">WN</span>] 429 POST /v1/inference  <span class="com">rate</span></div>
-                <div>[<span class="ok">OK</span>] 200 GET  /v1/health      <span class="com">2ms</span></div>
-                <div>[<span class="ok">OK</span>] 200 GET  /v1/runs/ff12   <span class="com">9ms</span></div>
-                <div class="box"><span class="ok">✓</span> deploy cd4f21 · live · 0 errors</div>
-              </div>
-            </div>
-          </div>
-          <div class="phone" aria-hidden="true">
-            <div class="phone-screen">
-              <div class="phone-status"><span>9:41</span><span>●●●● 5G</span></div>
-              <div class="term">
-                <div><span class="prompt">~</span> tmux attach -t dev</div>
-                <div><span class="com">[0] dev</span> <span class="ok">[1] api*</span> <span class="com">[2] db</span></div>
-                <div>$ <span class="flag">pnpm</span> dev</div>
-                <div class="com">ready on :3000 · 412ms</div>
-                <div class="box"><span class="ok">▌</span> watching 218 files</div>
-                <div>$ git status</div>
-                <div><span class="ok">nothing to commit</span></div>
-                <div>$ ▌</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -976,13 +812,6 @@ html[lang="zh"] h3 .serif {
           <div class="idx">F.01</div>
           <h3 data-i="f01.t">Always attached — you're always within reach</h3>
           <p data-i="f01.b">Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there — output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)</p>
-          <div class="viz">
-<span class="dim">$</span> tmux ls
-dev     : <span class="hl">7 windows</span> (attached) <span class="dim">· 14d uptime</span>
-api     : 3 windows <span class="dim">· detached</span>
-db      : 2 windows <span class="dim">· detached</span>
-scratch : 1 window  <span class="dim">· detached</span>
-          </div>
         </div>
         <div class="feat col-4">
           <div class="idx">F.02</div>
@@ -993,13 +822,6 @@ scratch : 1 window  <span class="dim">· detached</span>
           <div class="idx">F.03</div>
           <h3 data-i="f04.t">One truth, every client</h3>
           <p data-i="f04.b">Windows, panes, zoom, scroll, copy-mode — every client sees the exact same view of what your agents are doing. Switch devices mid-task, the cursor doesn't blink.</p>
-          <div class="viz" style="white-space:pre">
-<span class="dim">session</span>  <span class="hl">claude-code</span>  <span class="dim">· 14d · 7w</span>
-<span class="dim">┌─ 📱</span> iPhone       <span class="hl">pane 0</span>   <span class="dim">✓ live</span>
-<span class="dim">├─ 💻</span> iPad Safari  <span class="hl">pane 0</span>   <span class="dim">✓ live</span>
-<span class="dim">└─ 🖥</span>  browser     <span class="hl">pane 0</span>   <span class="dim">✓ live</span>
-<span class="dim">cursor</span>   col 42  row 18  <span class="hl">· synced</span>
-          </div>
         </div>
         <div class="feat col-4">
           <div class="idx">F.04</div>
@@ -1010,13 +832,6 @@ scratch : 1 window  <span class="dim">· detached</span>
           <div class="idx">F.05</div>
           <h3 data-i="f05.t">Three ways to get attached</h3>
           <p data-i-html="f05.b">Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.</p>
-          <div class="viz" style="white-space:pre">
-<span class="dim">⌘⇧P&gt;</span> <span class="hl">prod-api</span>
-  ├─ <span class="hl">attach</span>     tmux: dev                    <span class="dim">↵</span>
-  ├─ open       split vertical               <span class="dim">⌘\</span>
-  ├─ run        deploy --env=prod            <span class="dim">▶</span>
-  └─ jump       db  → redis  → logs          <span class="dim">→</span>
-          </div>
         </div>
         <div class="feat col-12">
           <div class="idx">F.06</div>

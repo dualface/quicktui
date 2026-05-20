@@ -1538,10 +1538,17 @@ print_success() {
         fi
         printf '\n'
         printf '  ---------- Connect from iOS ----------\n'
-        printf '    Run:\n'
-        printf '      %s%s --qrcode%s\n' "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
-        printf '    to display the connection QR code\n'
-        printf '    for the iOS app.\n'
+        if [ -z "$NON_INTERACTIVE" ]; then
+            printf '\n'
+            "$INSTALL_PATH" --qrcode 2>/dev/null || \
+                printf '    Run %s%s --qrcode%s to display the QR code.\n' \
+                    "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
+        else
+            printf '    Run:\n'
+            printf '      %s%s --qrcode%s\n' "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
+            printf '    to display the connection QR code\n'
+            printf '    for the iOS app.\n'
+        fi
         printf '  --------------------------------------\n'
     elif [ "$SERVICE_STARTED" = "failed" ]; then
         if [ "$SERVICE_FAILURE_REASON" = "startup" ]; then

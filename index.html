@@ -267,15 +267,130 @@ body::before {
 .v3 h1 {
   font-family: var(--mono);
   font-weight: 800;
-  font-size: clamp(40px, 7vw, 88px);
+  font-size: clamp(28.8px, 5.04vw, 63.36px);
   line-height: 1.155;
   letter-spacing: -0.04em;
   margin: 18px 0 24px;
   text-transform: uppercase;
 }
+html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
 .v3 h1 em { font-style: normal; background: var(--accent); color: var(--accent-ink); padding: 0 .15em; line-height: 1.45; white-space: nowrap; }
 .v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
 .v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+
+/* ───────────── hero install: prominent one-line install */
+.hero-install {
+  margin: 28px 0 0;
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--accent) 6%, var(--bg-1));
+  box-shadow: 0 0 0 4px var(--accent-glow);
+  padding: 18px 20px;
+  max-width: 640px;
+  position: relative;
+}
+.hero-install .hi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 10px;
+  flex-wrap: wrap;
+}
+.hero-install .hi-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-install .hi-tabs {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.hero-install .hi-tab {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.hero-install .hi-tab + .hi-tab { border-left: 1px solid var(--line); }
+.hero-install .hi-tab:hover { color: var(--ink); }
+.hero-install .hi-tab.on { background: var(--accent); color: var(--accent-ink); }
+.hero-install .hi-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 15px;
+}
+.hero-install .hi-row .cmd { flex: 1; color: var(--ink); overflow-x: auto; white-space: nowrap; min-width: 0; }
+.hero-install .hi-row .cmd .ac { color: var(--accent); }
+.hero-install .cmd-variant { display: none; }
+.hero-install .cmd-variant.on { display: inline; }
+.hero-install .hi-row .copy {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 140ms ease;
+  flex-shrink: 0;
+}
+.hero-install .hi-row .copy:hover { color: var(--accent); border-color: var(--accent); }
+.hero-install .hi-row .copy.copied { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.hero-install .hi-note {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-4);
+  margin: 8px 2px 0;
+  min-height: 1em;
+}
+@media (max-width: 520px) {
+  .hero-install { padding: 14px 14px; max-width: 100%; }
+  .hero-install .hi-row {
+    padding: 10px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .hero-install .hi-row .cmd {
+    flex: 1 1 100%;
+    white-space: normal;
+    word-break: break-all;
+    overflow-x: visible;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .hero-install .hi-row .copy {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+  .hero-install .hi-tab { font-size: 9.5px; padding: 4px 8px; }
+}
 
 /* ───────────────────────────────────────────────── hero showcase (inline right column) */
 .hero-shot {
@@ -795,10 +910,27 @@ html[lang="zh"] h3 .serif {
       <div class="hero v3">
         <div>
           <div class="tag">────  REMOTE CONTROL FOR AI CODING AGENTS  ────</div>
-          <h1 data-i-html="hero3.h1">Coding agents run on your Mac.<br><em>You run them<br>from<br>your phone.</em></h1>
+          <h1 data-i-html="hero3.h1">Coding agents run on your Mac.<br><em>You run them<br>from your phone.</em></h1>
           <p class="sub" data-i="hero3.sub">Claude Code, Codex, Aider, Cursor Agent — keep them moving when you step away from the desk. Attach from anywhere, approve in seconds, walk away.</p>
+          <div class="hero-install">
+            <div class="hi-head">
+              <div class="hi-label" data-i="hero.install.label">▌ Install on your server · one line</div>
+              <div class="hi-tabs" role="tablist">
+                <button type="button" class="hi-tab on" data-region="global" role="tab" aria-selected="true">Global</button>
+                <button type="button" class="hi-tab" data-region="cn" role="tab" aria-selected="false">CN</button>
+              </div>
+            </div>
+            <div class="hi-row">
+              <span class="cmd">
+                <span class="cmd-variant on" data-region="global" data-copy="curl -fsSL https://quicktui.ai/q.sh | sh"><span class="ac">curl</span> -fsSL https://quicktui.ai/q.sh | <span class="ac">sh</span></span>
+                <span class="cmd-variant" data-region="cn" data-copy="curl -fsSL https://dl.twotwobear.cn/q.sh | sh"><span class="ac">curl</span> -fsSL https://dl.twotwobear.cn/q.sh | <span class="ac">sh</span></span>
+              </span>
+              <button type="button" class="copy" data-i="hero.install.copy">Copy</button>
+            </div>
+            <div class="hi-note" data-i="hero.install.note.global">Default mirror · GitHub Releases via Cloudflare.</div>
+          </div>
           <div class="ctas">
-            <a class="btn btn-primary btn-xl" href="#install" data-i-html="cta.getQt">Get QuickTUI <span class="arr">→</span></a>
+            <a class="btn btn-primary btn-xl" href="#install" data-i-html="cta.getQt">How to use <span class="arr">→</span></a>
             <a class="btn btn-xl" href="#features" data-i="cta.features">View features</a>
           </div>
         </div>
@@ -936,7 +1068,8 @@ html[lang="zh"] h3 .serif {
           <div class="steps">
             <div class="step"><span class="n">01</span><div><b data-i="step1.t">SSH-capable server → App wizard.</b><div class="d" data-i="step1.d">Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.</div></div></div>
             <div class="step"><span class="n">02</span><div><b data-i="step2.t">No SSH? Run on the server.</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step2.d" style="margin-top:4px">Copy that one line to the server's terminal and run it. Done in under a minute.</div></div></div>
-            <div class="step"><span class="n">03</span><div><b data-i="step3.t">Pair the app, or open a browser.</b><div class="d" data-i-html="step3.d">On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.</div></div></div>
+            <div class="step"><span class="n">03</span><div><b data-i="step-cn.t">Mainland China mirror.</b><div class="d"><span class="mono ac">curl -fsSL https://dl.twotwobear.cn/q.sh | sh</span></div><div class="d" data-i="step-cn.d" style="margin-top:4px">This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.twotwobear.cn/q.sh to use OSS-backed automatic updates.</div></div></div>
+            <div class="step"><span class="n">04</span><div><b data-i="step3.t">Pair the app, or open a browser.</b><div class="d" data-i-html="step3.d">On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.</div></div></div>
           </div>
         </div>
       </div>
@@ -1016,7 +1149,7 @@ html[lang="zh"] h3 .serif {
           <div class="opt"><code class="mono">--rotate-token</code><span data-i="opt.rotate">Generate a fresh random token</span></div>
           <div class="opt"><code class="mono">--addr &lt;address&gt;</code><span data-i="opt.addr">Listen address, IPv4/hostname only (default: 0.0.0.0)</span></div>
           <div class="opt"><code class="mono">--port &lt;port&gt;</code><span data-i="opt.port">Listen port (default: 8022)</span></div>
-          <div class="opt"><code class="mono">--term &lt;value&gt;</code><span data-i="opt.term">TERM for tmux (default: screen-256color)</span></div>
+          <div class="opt"><code class="mono">--term &lt;value&gt;</code><span data-i="opt.term">TERM for tmux (default: xterm-256color)</span></div>
           <div class="opt"><code class="mono">--lang &lt;value&gt;</code><span data-i="opt.lang">LANG for tmux (default: en_US.UTF-8)</span></div>
           <div class="opt"><code class="mono">--preview</code><span data-i="opt.preview">Install the latest GitHub preview release</span></div>
           <div class="opt"><code class="mono">--check</code><span data-i="opt.check">Run environment checks without installing</span></div>
@@ -1076,7 +1209,7 @@ html[lang="zh"] h3 .serif {
           <div class="n">Q.04</div>
           <div>
             <div class="q" data-i="q4.q">What can I configure in the config file?</div>
-            <div class="a" data-i-html="q4.a">The service reads <span class="path">~/.config/quicktui/config</span> — a manual <span class="mono">quicktui-server</span> process does <b>not</b>. Keys: <span class="path">QUICKTUI_TOKEN</span>, <span class="path">QUICKTUI_ADDR</span> (default <span class="mono">0.0.0.0:8022</span>), <span class="path">QUICKTUI_TERM</span> (default <span class="mono">screen-256color</span>), <span class="path">QUICKTUI_LANG</span> (default <span class="mono">en_US.UTF-8</span>), optionally <span class="path">QUICKTUI_TMUX_BIN</span>. After editing, restart: <span class="mono">launchctl kickstart -k gui/$(id -u)/ai.quicktui</span> (macOS) or <span class="mono">systemctl --user restart quicktui</span> (Linux).</div>
+            <div class="a" data-i-html="q4.a">The service reads <span class="path">~/.config/quicktui/config</span> — a manual <span class="mono">quicktui-server</span> process does <b>not</b>. Keys: <span class="path">QUICKTUI_TOKEN</span>, <span class="path">QUICKTUI_ADDR</span> (default <span class="mono">0.0.0.0:8022</span>), <span class="path">QUICKTUI_TERM</span> (default <span class="mono">xterm-256color</span>), <span class="path">QUICKTUI_LANG</span> (default <span class="mono">en_US.UTF-8</span>), optionally <span class="path">QUICKTUI_TMUX_BIN</span>. After editing, restart: <span class="mono">launchctl kickstart -k gui/$(id -u)/ai.quicktui</span> (macOS) or <span class="mono">systemctl --user restart quicktui</span> (Linux).</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1121,7 +1254,7 @@ html[lang="zh"] h3 .serif {
           <div class="n">Q.09</div>
           <div>
             <div class="q" data-i-html="q9.q">Text rendering is garbled when <span class="mono">TERM=xterm-ghostty</span>.</div>
-            <div class="a" data-i-html="q9.a"><p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd">QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term screen-256color</pre></div>
+            <div class="a" data-i-html="q9.a"><p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd">QUICKTUI_TERM=xterm-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term xterm-256color</pre></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1323,8 +1456,12 @@ const I18N = {
   "nav.install": { en: `<span class="n">04</span>Install`, zh: `<span class="n">04</span>安装` },
   "nav.faq": { en: `<span class="n">05</span>FAQ`, zh: `<span class="n">05</span>常见问题` },
   "cta.nav": { en: `<span class="lbl-long">Get the App</span><span class="lbl-short">Get App</span> <span class="arr">→</span>`, zh: `<span class="lbl-long">获取应用</span><span class="lbl-short">获取</span> <span class="arr">→</span>` },
-  "cta.getQt": { en: `Get QuickTUI <span class="arr">→</span>`, zh: `获取 QuickTUI <span class="arr">→</span>` },
+  "cta.getQt": { en: `How to use <span class="arr">→</span>`, zh: `如何使用 <span class="arr">→</span>` },
   "cta.features": { en: "View features", zh: "查看功能" },
+  "hero.install.label": { en: "▌ Install on your server · one line", zh: "▌ 服务器一行装好" },
+  "hero.install.copy": { en: "Copy", zh: "复制" },
+  "hero.install.note.global": { en: "Default mirror · GitHub Releases via Cloudflare.", zh: "默认镜像 · 经 Cloudflare 的 GitHub Releases。" },
+  "hero.install.note.cn": { en: "Mainland China mirror · Aliyun OSS-backed, faster from CN networks.", zh: "中国大陆镜像 · 阿里云 OSS, 中国大陆访问更快。" },
 
   "status.ready": { en: `<span class="dot"></span>SESSION / READY`, zh: `<span class="dot"></span>会话 / 就绪` },
 
@@ -1375,6 +1512,8 @@ const I18N = {
   "step1.d": { en: `Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.`, zh: `在 iOS App 里添加服务器，选"快速设置"，填入 SSH 凭据。App 自动帮你装好服务端，全程不用开终端。` },
   "step2.t": { en: "No SSH? Run on the server.", zh: "不能 SSH？直接到机器上跑。" },
   "step2.d": { en: `Copy that one line to the server's terminal and run it. Done in under a minute.`, zh: `把上面那行命令复制到服务器终端运行即可。一分钟搞定。` },
+  "step-cn.t": { en: "Mainland China mirror.", zh: "中国大陆镜像入口。" },
+  "step-cn.d": { en: "This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.twotwobear.cn/q.sh to use OSS-backed automatic updates.", zh: "这是面向中国大陆用户的并列入口。已通过 quicktui.ai/q.sh 安装的服务不会自动迁移; 重新执行 dl.twotwobear.cn/q.sh 后才会走 OSS 自动更新。" },
   "step3.t": { en: "Pair the app, or open a browser.", zh: "配对 App，或用浏览器。" },
   "step3.d": { en: `On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.`, zh: `在服务器运行 <span class="mono ac">quicktui-server --qrcode</span>，然后在 App 里点 <span class="mono ac">+</span> → 扫描。<br>浏览器用户：访问 <span class="mono ac">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
 
@@ -1416,7 +1555,7 @@ const I18N = {
   "opt.rotate": { en: "Generate a fresh random token", zh: "生成新的随机 access token" },
   "opt.addr": { en: "Listen address, IPv4/hostname only (default: 0.0.0.0)", zh: "监听地址，仅 IPv4/主机名（默认：0.0.0.0）" },
   "opt.port": { en: "Listen port (default: 8022)", zh: "监听端口（默认：8022）" },
-  "opt.term": { en: "TERM for tmux (default: screen-256color)", zh: "tmux 的 TERM（默认：screen-256color）" },
+  "opt.term": { en: "TERM for tmux (default: xterm-256color)", zh: "tmux 的 TERM（默认：xterm-256color）" },
   "opt.lang": { en: "LANG for tmux (default: en_US.UTF-8)", zh: "tmux 的 LANG（默认：en_US.UTF-8）" },
   "opt.preview": { en: "Install the latest GitHub preview release", zh: "安装最新 GitHub preview 版本" },
   "opt.check": { en: "Run environment checks without installing", zh: "仅运行环境检查，不安装" },
@@ -1456,11 +1595,11 @@ const I18N = {
   "q3.a": { en: `It detects the existing <span class="path">~/.local/bin/quicktui-server</span> and switches to <b>upgrade mode</b>: stops the service, stages the new binary, sanity-checks <span class="mono">--version</span>, atomically swaps it into place, and rolls back on failure. Your token, address, TERM, LANG and <span class="path">QUICKTUI_TMUX_BIN</span> are preserved.`, zh: `脚本会检测已有的 <span class="path">~/.local/bin/quicktui-server</span>，切换到<b>升级模式</b>：停止服务、暂存新二进制、用 <span class="mono">--version</span> 做合理性检查、原子替换，失败自动回滚。你的 token、地址、TERM、LANG 以及 <span class="path">QUICKTUI_TMUX_BIN</span> 全部保留。` },
 
   "q4.q": { en: "What can I configure in the config file?", zh: "配置文件里可以配置什么？" },
-  "q4.a": { en: `<p>The service reads <span class="path">~/.config/quicktui/config</span> — a manual <span class="mono">quicktui-server</span> process does <b>not</b>.</p><p>Keys: <span class="path">QUICKTUI_TOKEN</span>, <span class="path">QUICKTUI_ADDR</span> (default <span class="mono">0.0.0.0:8022</span>), <span class="path">QUICKTUI_TERM</span> (default <span class="mono">screen-256color</span>), <span class="path">QUICKTUI_LANG</span> (default <span class="mono">en_US.UTF-8</span>), optionally <span class="path">QUICKTUI_TMUX_BIN</span>.</p><p>After editing, restart the service:</p><pre class="cmd"><span class="com"># macOS</span>
+  "q4.a": { en: `<p>The service reads <span class="path">~/.config/quicktui/config</span> — a manual <span class="mono">quicktui-server</span> process does <b>not</b>.</p><p>Keys: <span class="path">QUICKTUI_TOKEN</span>, <span class="path">QUICKTUI_ADDR</span> (default <span class="mono">0.0.0.0:8022</span>), <span class="path">QUICKTUI_TERM</span> (default <span class="mono">xterm-256color</span>), <span class="path">QUICKTUI_LANG</span> (default <span class="mono">en_US.UTF-8</span>), optionally <span class="path">QUICKTUI_TMUX_BIN</span>.</p><p>After editing, restart the service:</p><pre class="cmd"><span class="com"># macOS</span>
 launchctl kickstart -k gui/$(id -u)/ai.quicktui
 
 <span class="com"># Linux</span>
-systemctl --user restart quicktui</pre>`, zh: `<p>服务会读取 <span class="path">~/.config/quicktui/config</span> — 手动启动的 <span class="mono">quicktui-server</span> 进程<b>不会</b>自动读取。</p><p>键：<span class="path">QUICKTUI_TOKEN</span>、<span class="path">QUICKTUI_ADDR</span>（默认 <span class="mono">0.0.0.0:8022</span>）、<span class="path">QUICKTUI_TERM</span>（默认 <span class="mono">screen-256color</span>）、<span class="path">QUICKTUI_LANG</span>（默认 <span class="mono">en_US.UTF-8</span>），可选 <span class="path">QUICKTUI_TMUX_BIN</span>。</p><p>编辑后重启服务：</p><pre class="cmd"><span class="com"># macOS</span>
+systemctl --user restart quicktui</pre>`, zh: `<p>服务会读取 <span class="path">~/.config/quicktui/config</span> — 手动启动的 <span class="mono">quicktui-server</span> 进程<b>不会</b>自动读取。</p><p>键：<span class="path">QUICKTUI_TOKEN</span>、<span class="path">QUICKTUI_ADDR</span>（默认 <span class="mono">0.0.0.0:8022</span>）、<span class="path">QUICKTUI_TERM</span>（默认 <span class="mono">xterm-256color</span>）、<span class="path">QUICKTUI_LANG</span>（默认 <span class="mono">en_US.UTF-8</span>），可选 <span class="path">QUICKTUI_TMUX_BIN</span>。</p><p>编辑后重启服务：</p><pre class="cmd"><span class="com"># macOS</span>
 launchctl kickstart -k gui/$(id -u)/ai.quicktui
 
 <span class="com"># Linux</span>
@@ -1487,7 +1626,7 @@ launchctl print gui/$(id -u)/ai.quicktui
 systemctl --user status quicktui</pre><p>若跳过了服务注册，用相同的 token 和地址手动启动服务端。若服务已在运行，请确认防火墙或隧道放通了 <span class="path">QUICKTUI_ADDR</span> 对应的端口。</p>` },
 
   "q9.q": { en: `Text rendering is garbled when <span class="mono">TERM=xterm-ghostty</span>.`, zh: `当 <span class="mono">TERM=xterm-ghostty</span> 时，文字渲染错乱。` },
-  "q9.a": { en: `<p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd">QUICKTUI_TERM=screen-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term screen-256color</pre>`, zh: `<p>服务端的 tmux 在 <span class="mono">TERM=xterm-ghostty</span> 下无法正确渲染 — Ghostty 自己的 terminfo 不适用于远端会话里的 tmux。</p><p>改用广泛支持的 TERM。在 <span class="path">~/.config/quicktui/config</span> 中配置：</p><pre class="cmd">QUICKTUI_TERM=screen-256color</pre><p>然后重启服务。手动启动命令则用：</p><pre class="cmd">--term screen-256color</pre>` },
+  "q9.a": { en: `<p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd">QUICKTUI_TERM=xterm-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term xterm-256color</pre>`, zh: `<p>服务端的 tmux 在 <span class="mono">TERM=xterm-ghostty</span> 下无法正确渲染 — Ghostty 自己的 terminfo 不适用于远端会话里的 tmux。</p><p>改用广泛支持的 TERM。在 <span class="path">~/.config/quicktui/config</span> 中配置：</p><pre class="cmd">QUICKTUI_TERM=xterm-256color</pre><p>然后重启服务。手动启动命令则用：</p><pre class="cmd">--term xterm-256color</pre>` },
 
   "q10.q": { en: "PTY spawn failed / internal server error when opening a session.", zh: "打开会话时出现 PTY spawn failed / internal server error。" },
   "q10.a": { en: `<p>The server could not launch or attach tmux. Check logs:</p><pre class="cmd"><span class="com"># macOS</span>
@@ -1550,7 +1689,7 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
   "q17.q": { en: `The app or browser shows "Session not found".`, zh: `App 或浏览器提示"Session not found"。` },
   "q17.a": { en: `<p>This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running.</p><p>Refresh the session list, then open an existing session or create a new one.</p>`, zh: `<p>这是服务端返回的消息 — tmux 会话已关闭或被重命名，或 tmux 服务本身未运行。</p><p>刷新会话列表，然后打开已有会话或新建一个。</p>` },
 
-  "hero3.h1": { en: `Coding agents run on your Mac.<br><em>You run them<br>from<br>your phone.</em>`, zh: `AI 编程 Agent 在 Mac 上跑，<br><em>你在手机上控</em>。` },
+  "hero3.h1": { en: `Coding agents run on your Mac.<br><em>You run them<br>from your phone.</em>`, zh: `AI 编程 Agent<br>在 Mac 上跑，<br><em>你在手机上控</em>。` },
   "hero3.sub": { en: "Claude Code, Codex, Aider, Cursor Agent — keep them moving when you step away from the desk. Attach from anywhere, approve in seconds, walk away.", zh: "Claude Code、Codex、Aider、Cursor Agent — 离开座位也别让它们空转。随时接入，秒级确认，转身走人。" },
 
   // ───── footer
@@ -1613,6 +1752,60 @@ if (window.matchMedia) {
     themeQuery.addListener(onThemePreferenceChange);
   }
 }
+
+// Hero install: region tabs + copy
+document.querySelectorAll('.hero-install').forEach(box => {
+  const tabs = box.querySelectorAll('.hi-tab');
+  const variants = box.querySelectorAll('.cmd-variant');
+  const note = box.querySelector('.hi-note');
+  const copyBtn = box.querySelector('.copy');
+
+  const setRegion = region => {
+    tabs.forEach(t => {
+      const on = t.getAttribute('data-region') === region;
+      t.classList.toggle('on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    variants.forEach(v => v.classList.toggle('on', v.getAttribute('data-region') === region));
+    if (note) {
+      const key = 'hero.install.note.' + region;
+      note.setAttribute('data-i', key);
+      const lang = document.documentElement.lang || 'en';
+      if (I18N[key] && I18N[key][lang] !== undefined) note.textContent = I18N[key][lang];
+    }
+  };
+  tabs.forEach(t => t.addEventListener('click', () => setRegion(t.getAttribute('data-region'))));
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const active = box.querySelector('.cmd-variant.on');
+      const text = active ? active.getAttribute('data-copy') : '';
+      if (!text) return;
+      const lang = document.documentElement.lang || 'en';
+      const label = (I18N['hero.install.copy'] && I18N['hero.install.copy'][lang]) || copyBtn.textContent;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        copyBtn.classList.add('copied');
+        copyBtn.textContent = lang === 'zh' ? '已复制' : 'Copied';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.textContent = label;
+        }, 1400);
+      } catch (_) { /* ignore */ }
+    });
+  }
+});
 
 // FAQ toggles — ignore clicks inside the answer body so users can select/copy text
 document.querySelectorAll('.faq-item').forEach(it => {

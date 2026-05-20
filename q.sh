@@ -8,8 +8,22 @@ umask 077
 # ============================================================
 
 QUICKTUI_REPO="dualface/quicktui"
-QUICKTUI_RELEASES="${QUICKTUI_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/latest/download}"
-QUICKTUI_RELEASES_API="${QUICKTUI_RELEASES_API:-https://api.github.com/repos/${QUICKTUI_REPO}/releases?per_page=100}"
+QUICKTUI_RELEASES_ENV_SET="${QUICKTUI_RELEASES+x}"
+QUICKTUI_RELEASES_ENV_VALUE="${QUICKTUI_RELEASES:-}"
+QUICKTUI_RELEASES_API_ENV_SET="${QUICKTUI_RELEASES_API+x}"
+QUICKTUI_RELEASES_API_ENV_VALUE="${QUICKTUI_RELEASES_API:-}"
+QUICKTUI_GITHUB_BASE_ENV_SET="${QUICKTUI_GITHUB_BASE+x}"
+QUICKTUI_GITHUB_BASE_ENV_VALUE="${QUICKTUI_GITHUB_BASE:-}"
+TMUX_BUILDS_RELEASES_ENV_SET="${TMUX_BUILDS_RELEASES+x}"
+TMUX_BUILDS_RELEASES_ENV_VALUE="${TMUX_BUILDS_RELEASES:-}"
+QUICKTUI_RELEASES="https://github.com/${QUICKTUI_REPO}/releases/latest/download"
+QUICKTUI_RELEASES_API="https://api.github.com/repos/${QUICKTUI_REPO}/releases?per_page=100"
+QUICKTUI_GITHUB_BASE="https://github.com/${QUICKTUI_REPO}"
+TMUX_BUILDS_RELEASES="https://github.com/tmux/tmux-builds/releases/download/v"
+[ -n "$QUICKTUI_RELEASES_ENV_SET" ] && QUICKTUI_RELEASES="$QUICKTUI_RELEASES_ENV_VALUE"
+[ -n "$QUICKTUI_RELEASES_API_ENV_SET" ] && QUICKTUI_RELEASES_API="$QUICKTUI_RELEASES_API_ENV_VALUE"
+[ -n "$QUICKTUI_GITHUB_BASE_ENV_SET" ] && QUICKTUI_GITHUB_BASE="$QUICKTUI_GITHUB_BASE_ENV_VALUE"
+[ -n "$TMUX_BUILDS_RELEASES_ENV_SET" ] && TMUX_BUILDS_RELEASES="$TMUX_BUILDS_RELEASES_ENV_VALUE"
 QUICKTUI_CONFIG_DIR="${HOME}/.config/quicktui"
 QUICKTUI_CONFIG_FILE="${QUICKTUI_CONFIG_DIR}/config"
 
@@ -23,6 +37,7 @@ OPT_PORT=""
 OPT_TERM=""
 OPT_LANG=""
 PREVIEW_RELEASE=""
+OPT_SERVER_RELEASE=""
 UNINSTALL=""
 CHECK_ONLY=""
 
@@ -207,6 +222,15 @@ while [ $# -gt 0 ]; do
             PREVIEW_RELEASE="1"
             shift
             ;;
+        --server-release)
+            [ $# -ge 2 ] || die "Missing value for $1"
+            OPT_SERVER_RELEASE="$2"
+            shift 2
+            ;;
+        --server-release=*)
+            OPT_SERVER_RELEASE="${1#--server-release=}"
+            shift
+            ;;
         --addr)
             [ $# -ge 2 ] || die "Missing value for $1"
             OPT_ADDR="$2"
@@ -238,20 +262,22 @@ while [ $# -gt 0 ]; do
             printf '  --no-service       Skip background service registration\n'
             printf '  --addr <address>   Listen address (default: 0.0.0.0)\n'
             printf '  --port <port>      Listen port (default: 8022)\n'
-            printf '  --term <value>     TERM for tmux (default screen-256color)\n'
+            printf '  --term <value>     TERM for tmux (default xterm-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
             printf '  --preview          Install the latest GitHub preview release\n'
+            printf '  --server-release <tag>  Install a specific server release tag (e.g. 20260518-01)\n'
             printf '  --check            Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
             printf '  -h, --help         Show this help\n'
             printf '\n'
             printf 'Environment:\n'
             printf '  NO_COLOR                      Disable ANSI color when set\n'
-            printf '  QUICKTUI_RELEASES             Base URL for server binary + sha256\n'
-            printf '  QUICKTUI_RELEASES_API         GitHub releases API URL for --preview\n'
+            printf '  QUICKTUI_RELEASES             Base URL for server binary + sha256 (default: %s)\n' "$QUICKTUI_RELEASES"
+            printf '  QUICKTUI_RELEASES_API         GitHub releases API URL for --preview (default: %s)\n' "$QUICKTUI_RELEASES_API"
+            printf '  QUICKTUI_GITHUB_BASE          Base URL for --server-release tag downloads (default: %s)\n' "$QUICKTUI_GITHUB_BASE"
             printf '  TMUX_BUILDS_VERSION           Override pinned tmux-builds version\n'
             printf '  TMUX_BUILDS_SHA256            Expected SHA-256 for the tmux tarball\n'
-            printf '  TMUX_BUILDS_RELEASES          Base URL for tmux tarball\n'
+            printf '  TMUX_BUILDS_RELEASES          Base URL for tmux tarball (default: %s)\n' "$TMUX_BUILDS_RELEASES"
             printf '  TMUX_BUILDS_ALLOW_UNVERIFIED  Set to 1 to skip tmux checksum (unsafe)\n'
             printf '\n'
             printf 'Example (override tmux via a piped install):\n'
@@ -273,6 +299,20 @@ if [ -n "$UNINSTALL" ] && [ -n "$CHECK_ONLY" ]; then
 fi
 if [ -n "$UNINSTALL" ] && [ -n "$PREVIEW_RELEASE" ]; then
     die "--uninstall and --preview are mutually exclusive."
+fi
+if [ -n "$UNINSTALL" ] && [ -n "$OPT_SERVER_RELEASE" ]; then
+    die "--uninstall and --server-release are mutually exclusive."
+fi
+if [ -n "$PREVIEW_RELEASE" ] && [ -n "$OPT_SERVER_RELEASE" ]; then
+    die "--preview and --server-release are mutually exclusive."
+fi
+if [ -n "$OPT_SERVER_RELEASE" ]; then
+    case "$OPT_SERVER_RELEASE" in
+        '' | *[!A-Za-z0-9._-]*)
+            die "Invalid --server-release tag: '$OPT_SERVER_RELEASE'. Only letters, digits, dot, underscore, and dash are allowed."
+            ;;
+    esac
+    QUICKTUI_RELEASES="${QUICKTUI_GITHUB_BASE}/releases/download/${OPT_SERVER_RELEASE}"
 fi
 
 confirm() {
@@ -758,7 +798,11 @@ install_tmux_from_builds() {
         warn "Downloading unpinned tmux $_tmux_ver without checksum verification (TMUX_BUILDS_ALLOW_UNVERIFIED=1)."
     fi
 
-    _tmux_base_url="${TMUX_BUILDS_RELEASES:-https://github.com/tmux/tmux-builds/releases/download/v${_tmux_ver}}"
+    if [ -n "$TMUX_BUILDS_RELEASES_ENV_SET" ]; then
+        _tmux_base_url="$TMUX_BUILDS_RELEASES"
+    else
+        _tmux_base_url="${TMUX_BUILDS_RELEASES}${_tmux_ver}"
+    fi
     _tmux_filename="tmux-${_tmux_ver}-${_tmux_os}-${_tmux_arch}.tar.gz"
     _tmux_tmpdir="$(mktemp -d)"
     _tmux_tarball="${_tmux_tmpdir}/tmux.tar.gz"
@@ -1286,6 +1330,7 @@ configure_token() {
     printf 'QUICKTUI_TOKEN=%s\n' "$TOKEN" > "$QUICKTUI_CONFIG_FILE"
     chmod 600 "$QUICKTUI_CONFIG_FILE"
     info "Config saved to $QUICKTUI_CONFIG_FILE"
+    # QUICKTUI_CN_SERVICE_ENV_ANCHOR
 }
 
 # ============================================================
@@ -1349,14 +1394,14 @@ write_terminal_config() {
 # ============================================================
 
 collect_terminal_env() {
-    # Defaults: TERM=screen-256color, LANG=en_US.UTF-8. Preflight downgrades
+    # Defaults: TERM=xterm-256color, LANG=en_US.UTF-8. Preflight downgrades
     # LANG to C.UTF-8 if the primary locale is not available on the host.
     if [ -n "$OPT_TERM" ]; then
         TERM_ENV="$OPT_TERM"
     elif [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_TERM" ]; then
         TERM_ENV="$EXISTING_TERM"
     else
-        TERM_ENV="screen-256color"
+        TERM_ENV="xterm-256color"
     fi
 
     if [ -n "$OPT_LANG" ]; then
@@ -1628,8 +1673,8 @@ preflight_checks() {
         if infocmp "$TERM_ENV" > /dev/null 2>&1; then
             info "Terminfo $TERM_ENV found"
         else
-            warn "Terminfo entry for \"$TERM_ENV\" not found, falling back to screen-256color."
-            TERM_ENV="screen-256color"
+            warn "Terminfo entry for \"$TERM_ENV\" not found, falling back to xterm-256color."
+            TERM_ENV="xterm-256color"
         fi
     else
         printf '    - Terminfo check skipped (infocmp command not found)\n'
@@ -1738,7 +1783,7 @@ elif [ -n "$CHECK_ONLY" ]; then
     detect_existing_install
     detect_platform
     check_tmux
-    TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-screen-256color}}"
+    TERM_ENV="${OPT_TERM:-${EXISTING_TERM:-xterm-256color}}"
     LANG_ENV="${OPT_LANG:-${EXISTING_LANG:-en_US.UTF-8}}"
     preflight_checks || exit 1
 else

@@ -272,7 +272,7 @@ while [ $# -gt 0 ]; do
             printf '\n'
             printf 'Environment:\n'
             printf '  NO_COLOR                      Disable ANSI color when set\n'
-            printf '  QUICKTUI_RELEASES             Base URL for server binary + sha256 (default: %s)\n' "$QUICKTUI_RELEASES"
+            printf '  QUICKTUI_RELEASES             Base URL for server binary/assets (default: %s)\n' "$QUICKTUI_RELEASES"
             printf '  QUICKTUI_RELEASES_API         GitHub releases API URL for --preview (default: %s)\n' "$QUICKTUI_RELEASES_API"
             printf '  QUICKTUI_GITHUB_BASE          Base URL for --server-release tag downloads (default: %s)\n' "$QUICKTUI_GITHUB_BASE"
             printf '  TMUX_BUILDS_VERSION           Override pinned tmux-builds version\n'
@@ -548,6 +548,7 @@ download() {
     _url="$1"
     _dest="$2"
     _msg="${3:-Downloading}"
+    printf '  URL: %s\n' "$_url"
     # Start silent download in background
     if command -v curl > /dev/null 2>&1; then
         curl -fsSL "$_url" -o "$_dest" &
@@ -588,6 +589,8 @@ parse_preview_asset_urls() {
             current_name = ""
             binary_url = ""
             sha_url = ""
+            gzip_url = ""
+            gzip_sha_url = ""
         }
 
         function json_string_value(line,    value) {
@@ -607,6 +610,8 @@ parse_preview_asset_urls() {
             current_name = ""
             binary_url = ""
             sha_url = ""
+            gzip_url = ""
+            gzip_sha_url = ""
         }
 
         {
@@ -640,11 +645,8 @@ parse_preview_asset_urls() {
                 url = json_string_value($0)
                 if (current_name == bin) binary_url = url
                 if (current_name == bin ".sha256") sha_url = url
-                if (binary_url != "" && sha_url != "") {
-                    print binary_url
-                    print sha_url
-                    exit 0
-                }
+                if (current_name == bin ".gz") gzip_url = url
+                if (current_name == bin ".gz.sha256") gzip_sha_url = url
             }
             current_name = ""
         }
@@ -655,6 +657,13 @@ parse_preview_asset_urls() {
                 in_assets = 0
             }
             if (in_release && depth <= 0) {
+                if (!is_draft && is_preview && binary_url != "" && sha_url != "") {
+                    print binary_url
+                    print sha_url
+                    print gzip_url
+                    print gzip_sha_url
+                    exit 0
+                }
                 in_release = 0
                 in_assets = 0
                 depth = 0
@@ -671,8 +680,35 @@ resolve_preview_asset_urls() {
     _asset_urls="$(parse_preview_asset_urls "$_json_path" "$BINARY_NAME")"
     PREVIEW_BINARY_URL="$(printf '%s\n' "$_asset_urls" | sed -n '1p')"
     PREVIEW_SHA256_URL="$(printf '%s\n' "$_asset_urls" | sed -n '2p')"
+    PREVIEW_GZIP_URL="$(printf '%s\n' "$_asset_urls" | sed -n '3p')"
+    PREVIEW_GZIP_SHA256_URL="$(printf '%s\n' "$_asset_urls" | sed -n '4p')"
     [ -n "$PREVIEW_BINARY_URL" ] && [ -n "$PREVIEW_SHA256_URL" ] || \
         die "No preview release asset found for ${BINARY_NAME} and ${BINARY_NAME}.sha256."
+}
+
+download_verified_file() {
+    _download_url="$1"
+    _download_sha256_url="$2"
+    _download_dest="$3"
+    _download_sha_dest="$4"
+    _download_label="$5"
+
+    download "$_download_url" "$_download_dest" "Downloading QuickTUI (${_download_label})..." || return 1
+
+    _file_size="$(du -sh "$_download_dest" 2>/dev/null | cut -f1)"
+    printf '  File size: %s\n' "${_file_size:-unknown}"
+
+    download "$_download_sha256_url" "$_download_sha_dest" "Downloading checksum..." || return 1
+
+    printf '  Verifying checksum...\n'
+    _expected_hash="$(normalize_sha256 "$(awk '{print $1}' "${_download_sha_dest}")")"
+    assert_valid_sha256 "$_expected_hash" "Checksum file at ${_download_sha256_url}"
+    _actual_hash="$(normalize_sha256 "$(sha256_file "$_download_dest")")"
+    [ "$_actual_hash" = "$_expected_hash" ] || {
+        rm -rf "$DOWNLOAD_TMPDIR"
+        die "Checksum verification failed. The downloaded file may be corrupted."
+    }
+    return 0
 }
 
 
@@ -987,34 +1023,41 @@ download_binary() {
     DOWNLOAD_TMPDIR="$(mktemp -d)"
     _binary_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}"
     _sha256_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}.sha256"
+    _gzip_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}.gz"
+    _gzip_sha256_path="${DOWNLOAD_TMPDIR}/${BINARY_NAME}.gz.sha256"
 
     printf '  Temp dir:  %s\n' "$DOWNLOAD_TMPDIR"
     if [ -n "$PREVIEW_RELEASE" ]; then
         resolve_preview_asset_urls
         _binary_url="$PREVIEW_BINARY_URL"
         _sha256_url="$PREVIEW_SHA256_URL"
+        _gzip_url="$PREVIEW_GZIP_URL"
+        _gzip_sha256_url="$PREVIEW_GZIP_SHA256_URL"
     else
         _binary_url="${QUICKTUI_RELEASES}/${BINARY_NAME}"
         _sha256_url="${QUICKTUI_RELEASES}/${BINARY_NAME}.sha256"
+        _gzip_url="${QUICKTUI_RELEASES}/${BINARY_NAME}.gz"
+        _gzip_sha256_url="${QUICKTUI_RELEASES}/${BINARY_NAME}.gz.sha256"
     fi
 
-    download "$_binary_url" "$_binary_path" "Downloading QuickTUI (${BINARY_NAME})..." || \
-        die "Failed to download binary from ${_binary_url}. Check your internet connection and try again."
+    _downloaded_gzip=""
+    if command -v gzip > /dev/null 2>&1 && [ -n "$_gzip_url" ] && [ -n "$_gzip_sha256_url" ]; then
+        if download_verified_file "$_gzip_url" "$_gzip_sha256_url" "$_gzip_path" "$_gzip_sha256_path" "${BINARY_NAME}.gz"; then
+            printf '  Decompressing QuickTUI...\n'
+            gzip -dc "$_gzip_path" > "$_binary_path" || {
+                rm -rf "$DOWNLOAD_TMPDIR"
+                die "Failed to decompress ${_gzip_url}."
+            }
+            _downloaded_gzip="1"
+        else
+            warn "Compressed binary unavailable; falling back to uncompressed download."
+        fi
+    fi
 
-    _file_size="$(du -sh "$_binary_path" 2>/dev/null | cut -f1)"
-    printf '  File size: %s\n' "${_file_size:-unknown}"
-
-    download "$_sha256_url" "$_sha256_path" "Downloading checksum..." || \
-        die "Failed to download checksum file from ${_sha256_url}."
-
-    printf '  Verifying checksum...\n'
-    _expected_hash="$(normalize_sha256 "$(awk '{print $1}' "${_sha256_path}")")"
-    assert_valid_sha256 "$_expected_hash" "Checksum file at ${_sha256_url}"
-    _actual_hash="$(normalize_sha256 "$(sha256_file "$_binary_path")")"
-    [ "$_actual_hash" = "$_expected_hash" ] || {
-        rm -rf "$DOWNLOAD_TMPDIR"
-        die "Checksum verification failed. The downloaded file may be corrupted."
-    }
+    if [ -z "$_downloaded_gzip" ]; then
+        download_verified_file "$_binary_url" "$_sha256_url" "$_binary_path" "$_sha256_path" "$BINARY_NAME" || \
+            die "Failed to download binary from ${_binary_url}. Check your internet connection and try again."
+    fi
 
     chmod +x "$_binary_path"
     DOWNLOADED_BINARY="$_binary_path"

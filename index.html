@@ -1350,7 +1350,7 @@ html[lang="zh"] h3 .serif {
           <div class="n">Q.19</div>
           <div>
             <div class="q" data-i="q16.q">Can I connect over the internet?</div>
-            <div class="a" data-i-html="q16.a">Yes. You need the server reachable from the internet — via a public IP, VPN, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. Make sure the configured port (<span class="mono">8022</span> by default) is accessible and your token stays secret.</div>
+            <div class="a" data-i-html="q16.a">Yes. You need the server reachable from the internet — via a public IP, VPN, reverse proxy, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. QuickTUI itself speaks plain HTTP on <span class="mono">8022</span>; if you use Cloudflare Tunnel, point the tunnel service to <span class="mono">http://127.0.0.1:8022</span> and use the public HTTPS hostname in the app, usually without an explicit port. <span class="mono">:443</span> is equivalent; do not use <span class="mono">:8022</span> on the public HTTPS URL.</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1684,7 +1684,7 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
   "q15.a": { en: `<p>A secret you set during installation — it protects your server from unauthorized access. Find it on your server:</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>Enter it when prompted on first login in the app or browser.</p>`, zh: `<p>你在安装时设定的密钥 — 用于保护服务器不被未授权访问。在服务器上查看：</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>首次在 App 或浏览器登录时按提示输入。</p>` },
 
   "q16.q": { en: "Can I connect over the internet?", zh: "可以通过公网连接吗？" },
-  "q16.a": { en: `Yes. You need the server reachable from the internet — via a public IP, VPN, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. Make sure the configured port (<span class="mono">8022</span> by default) is accessible and your token stays secret.`, zh: `可以。需要让服务器可从公网访问 — 通过公网 IP、VPN，或 <b>Tailscale</b>、<b>Cloudflare Tunnel</b> 等隧道。确保配置的端口（默认 <span class="mono">8022</span>）可访问，Token 妥善保密。` },
+  "q16.a": { en: `Yes. You need the server reachable from the internet — via a public IP, VPN, reverse proxy, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. QuickTUI itself speaks plain HTTP on <span class="mono">8022</span>; if you use Cloudflare Tunnel, point the tunnel service to <span class="mono">http://127.0.0.1:8022</span> and use the public HTTPS hostname in the app, usually without an explicit port. <span class="mono">:443</span> is equivalent; do not use <span class="mono">:8022</span> on the public HTTPS URL. Keep your token secret.`, zh: `可以。需要让服务器可从公网访问 — 通过公网 IP、VPN、反向代理，或 <b>Tailscale</b>、<b>Cloudflare Tunnel</b> 等隧道。QuickTUI 本身在 <span class="mono">8022</span> 跑明文 HTTP；如果使用 Cloudflare Tunnel，tunnel service 填 <span class="mono">http://127.0.0.1:8022</span>，App 里填公网 HTTPS 域名，通常不写端口；<span class="mono">:443</span> 等价可用。公网 HTTPS 地址不要写 <span class="mono">:8022</span>。Token 妥善保密。` },
 
   "q17.q": { en: `The app or browser shows "Session not found".`, zh: `App 或浏览器提示"Session not found"。` },
   "q17.a": { en: `<p>This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running.</p><p>Refresh the session list, then open an existing session or create a new one.</p>`, zh: `<p>这是服务端返回的消息 — tmux 会话已关闭或被重命名，或 tmux 服务本身未运行。</p><p>刷新会话列表，然后打开已有会话或新建一个。</p>` },

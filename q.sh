@@ -54,7 +54,6 @@ LISTEN_PORT=""
 DOWNLOADED_BINARY=""
 DOWNLOAD_TMPDIR=""
 SERVICE_STARTED=""
-SERVICE_FAILURE_REASON=""
 IS_UPGRADE=""
 TMUX_BIN_CONFIG=""
 INSTALLED_TMUX_BIN=""
@@ -264,7 +263,7 @@ while [ $# -gt 0 ]; do
             printf '  --port <port>      Listen port (default: 8022)\n'
             printf '  --term <value>     TERM for tmux (default xterm-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
-            printf '  --preview          Install the latest GitHub preview release\n'
+            printf '  --preview          Install the latest server2 preview release\n'
             printf '  --server-release <tag>  Install a specific server release tag (e.g. 20260518-01)\n'
             printf '  --check            Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
@@ -506,44 +505,6 @@ validate_port() {
     [ "$_port" -ge 1 ] && [ "$_port" -le 65535 ]
 }
 
-service_probe_url() {
-    _probe_host="$LISTEN_ADDR"
-    case "$_probe_host" in
-        0.0.0.0)
-            _probe_host="127.0.0.1"
-            ;;
-    esac
-    printf 'http://%s:%s/\n' "$_probe_host" "$LISTEN_PORT"
-}
-
-wait_for_service_ready() {
-    # Probe /healthz first (conventional health endpoint), then fall back
-    # to / for servers that only expose a web UI at the root. Bounded to
-    # roughly 40s worst case (15 attempts x 2 paths x 1s timeout + sleeps).
-    _probe_base="$(service_probe_url)"
-    _probe_base="${_probe_base%/}"
-    _attempt=1
-    while [ "$_attempt" -le 15 ]; do
-        for _path in /healthz /; do
-            _full="${_probe_base}${_path}"
-            if command -v curl > /dev/null 2>&1; then
-                if curl -fsS --max-time 1 "$_full" > /dev/null 2>&1; then
-                    return 0
-                fi
-            elif command -v wget > /dev/null 2>&1; then
-                if wget -q --timeout=1 -O - "$_full" > /dev/null 2>&1; then
-                    return 0
-                fi
-            else
-                return 1
-            fi
-        done
-        sleep 0.5
-        _attempt=$((_attempt + 1))
-    done
-    return 1
-}
-
 download() {
     _url="$1"
     _dest="$2"
@@ -586,6 +547,7 @@ parse_preview_asset_urls() {
             in_assets = 0
             is_preview = 0
             is_draft = 0
+            release_tag = ""
             current_name = ""
             binary_url = ""
             sha_url = ""
@@ -607,11 +569,16 @@ parse_preview_asset_urls() {
             in_assets = 0
             is_preview = 0
             is_draft = 0
+            release_tag = ""
             current_name = ""
             binary_url = ""
             sha_url = ""
             gzip_url = ""
             gzip_sha_url = ""
+        }
+
+        function is_server2_preview_tag(value) {
+            return value ~ /^server2-preview-/
         }
 
         {
@@ -632,6 +599,10 @@ parse_preview_asset_urls() {
             is_preview = 1
         }
 
+        in_release && /"tag_name"[[:space:]]*:/ {
+            release_tag = json_string_value($0)
+        }
+
         in_release && /"assets"[[:space:]]*:/ {
             in_assets = 1
         }
@@ -641,7 +612,7 @@ parse_preview_asset_urls() {
         }
 
         in_release && in_assets && /"browser_download_url"[[:space:]]*:/ {
-            if (!is_draft && is_preview) {
+            if (!is_draft && is_preview && is_server2_preview_tag(release_tag)) {
                 url = json_string_value($0)
                 if (current_name == bin) binary_url = url
                 if (current_name == bin ".sha256") sha_url = url
@@ -657,7 +628,7 @@ parse_preview_asset_urls() {
                 in_assets = 0
             }
             if (in_release && depth <= 0) {
-                if (!is_draft && is_preview && binary_url != "" && sha_url != "") {
+                if (!is_draft && is_preview && is_server2_preview_tag(release_tag) && binary_url != "" && sha_url != "") {
                     print binary_url
                     print sha_url
                     print gzip_url
@@ -1491,25 +1462,10 @@ configure_service() {
         if [ "$PLATFORM" = "linux" ] && command -v loginctl > /dev/null 2>&1; then
             loginctl enable-linger 2>/dev/null || true
         fi
-        if wait_for_service_ready; then
-            SERVICE_STARTED="yes"
-        else
-            SERVICE_STARTED="failed"
-            SERVICE_FAILURE_REASON="startup"
-            warn "Service was registered but did not become reachable at $(service_probe_url)"
-            # Roll back the half-registered service so the user does not end
-            # up with a stale service unit that will not start.
-            "$INSTALL_PATH" --uninstall-service >/dev/null 2>&1 || true
-            warn "Rolled back the failed service registration."
-            warn "You can retry manually:"
-            warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
-        fi
+        SERVICE_STARTED="yes"
     else
         SERVICE_STARTED="failed"
-        SERVICE_FAILURE_REASON="registration"
-        # Compensating uninstall in case --install-service left partial
-        # state on disk (idempotent).
-        "$INSTALL_PATH" --uninstall-service >/dev/null 2>&1 || true
+        warn "Service files were left in place if registration wrote any partial state."
         warn "Service registration failed. You can retry manually:"
         warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
     fi
@@ -1594,16 +1550,8 @@ print_success() {
         fi
         printf '  --------------------------------------\n'
     elif [ "$SERVICE_STARTED" = "failed" ]; then
-        if [ "$SERVICE_FAILURE_REASON" = "startup" ]; then
-            printf 'Service was registered but did not start successfully. Start manually:\n'
-        else
-            printf 'Service registration failed. Start manually:\n'
-        fi
-        if [ "$PLATFORM" = "darwin" ]; then
-            printf '  launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.quicktui.plist\n'
-        else
-            printf '  systemctl --user start quicktui\n'
-        fi
+        printf 'Service registration failed. Retry registration:\n'
+        printf '  %s --install-service --addr %s:%s\n' "$INSTALL_PATH" "$LISTEN_ADDR" "$LISTEN_PORT"
         if [ -n "$IS_UPGRADE" ] && [ "$TOKEN" = "$EXISTING_TOKEN" ]; then
             printf '  Token:            (unchanged)\n'
         else

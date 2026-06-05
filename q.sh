@@ -38,6 +38,7 @@ OPT_TERM=""
 OPT_LANG=""
 PREVIEW_RELEASE=""
 OPT_SERVER_RELEASE=""
+REQUIRE_SERVER2=""
 UNINSTALL=""
 CHECK_ONLY=""
 
@@ -65,18 +66,49 @@ EXISTING_ADDR_RAW=""
 EXISTING_TERM=""
 EXISTING_LANG=""
 EXISTING_TMUX_BIN=""
+EXISTING_VERSION=""
+EXISTING_CHANNEL=""
 
 _BG_PID=""
 _STTY_SAVED=""
 _SVC_OUT=""
+# install_binary transaction state. Cleanup uses these to roll back a
+# partial binary swap when the script dies from a signal (HUP / INT /
+# TERM / QUIT) between the backup `mv` and the final success. Without
+# this rollback, an SSH disconnect mid-install would leave the user
+# with no binary at all and a stopped service.
+_INSTALL_TX_ACTIVE=""
+_INSTALL_TX_PATH=""
+_INSTALL_TX_STAGED=""
+_INSTALL_TX_BACKUP=""
+_CONFIG_TMP=""
 cleanup() {
     if [ -n "$_STTY_SAVED" ] && command -v stty > /dev/null 2>&1; then
-        stty "$_STTY_SAVED" 2>/dev/null || true
+        stty "$_STTY_SAVED" </dev/tty 2>/dev/null || true
         _STTY_SAVED=""
     fi
     [ -n "$_BG_PID" ] && kill "$_BG_PID" 2>/dev/null || true
     [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
     [ -n "$_SVC_OUT" ] && rm -f "$_SVC_OUT" || true
+    [ -n "$_CONFIG_TMP" ] && rm -f "$_CONFIG_TMP" || true
+    if [ -n "$_INSTALL_TX_ACTIVE" ]; then
+        # Best-effort rollback. Errors from supervisor restart are
+        # surfaced to stderr but not propagated — we are already in
+        # an exit handler.
+        [ -n "$_INSTALL_TX_PATH" ] && rm -f "$_INSTALL_TX_PATH" 2>/dev/null
+        [ -n "$_INSTALL_TX_STAGED" ] && rm -f "$_INSTALL_TX_STAGED" 2>/dev/null
+        if [ -n "$_INSTALL_TX_BACKUP" ] && [ -f "$_INSTALL_TX_BACKUP" ]; then
+            mv "$_INSTALL_TX_BACKUP" "$_INSTALL_TX_PATH" 2>/dev/null || true
+            if [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_SERVICE" ]; then
+                restart_existing_service 2>/dev/null \
+                    || printf 'Warning: original service did not restart on rollback; run `%s --install-service` manually.\n' "$_INSTALL_TX_PATH" >&2
+            fi
+        fi
+        _INSTALL_TX_ACTIVE=""
+        _INSTALL_TX_PATH=""
+        _INSTALL_TX_STAGED=""
+        _INSTALL_TX_BACKUP=""
+    fi
 }
 # Signal traps clear the EXIT trap first so cleanup runs exactly once.
 # HUP/QUIT are trapped alongside INT/TERM so tmpdirs do not leak when an
@@ -148,7 +180,7 @@ assert_valid_sha256() {
 # a plain EOF (user hit Ctrl-D to cancel) so the error message matches
 # what the user actually did.
 die_no_tty() {
-    if [ -c /dev/tty ] && { : </dev/tty; } 2>/dev/null; then
+    if [ -c /dev/tty ] && ( : </dev/tty ) 2>/dev/null; then
         die "Input cancelled."
     else
         die "Cannot read from /dev/tty (no controlling terminal). Re-run with -y plus CLI options (--token / --addr / --port) to avoid prompts."
@@ -221,6 +253,15 @@ while [ $# -gt 0 ]; do
             PREVIEW_RELEASE="1"
             shift
             ;;
+        --required-version-2)
+            # Opt in to the server2 channel. Without this flag, q.sh
+            # refuses to install any binary whose --version output
+            # contains "server2" (preview or release). The check is
+            # post-install with rollback so the previous binary is
+            # restored if a misaligned tag slips through.
+            REQUIRE_SERVER2="1"
+            shift
+            ;;
         --server-release)
             [ $# -ge 2 ] || die "Missing value for $1"
             OPT_SERVER_RELEASE="$2"
@@ -263,8 +304,9 @@ while [ $# -gt 0 ]; do
             printf '  --port <port>      Listen port (default: 8022)\n'
             printf '  --term <value>     TERM for tmux (default xterm-256color)\n'
             printf '  --lang <value>     LANG for tmux (default: en_US.UTF-8)\n'
-            printf '  --preview          Install the latest server2 preview release\n'
-            printf '  --server-release <tag>  Install a specific server release tag (e.g. 20260518-01)\n'
+            printf '  --preview          Install the latest preview release (requires --required-version-2 while the server channel has no preview line)\n'
+            printf '  --server-release <tag>  Install a specific server release tag (e.g. 20260518-01 for stable, or server2-preview-... with --required-version-2)\n'
+            printf '  --required-version-2  Opt in to the server2 channel (asserts the installed binary --version contains a tag of the form server2-*)\n'
             printf '  --check            Run environment checks without installing\n'
             printf '  --uninstall        Remove QuickTUI and all related files\n'
             printf '  -h, --help         Show this help\n'
@@ -307,11 +349,28 @@ if [ -n "$PREVIEW_RELEASE" ] && [ -n "$OPT_SERVER_RELEASE" ]; then
 fi
 if [ -n "$OPT_SERVER_RELEASE" ]; then
     case "$OPT_SERVER_RELEASE" in
+        server-*)
+            # Monorepo git tag is `server-YYYYMMDD-NN`, but the GitHub
+            # release tag on dualface/quicktui drops the `server-` prefix.
+            # Reject the prefixed form so users do not 404 on copy-paste.
+            die "Invalid --server-release tag: '$OPT_SERVER_RELEASE'. Drop the 'server-' prefix (pass 'YYYYMMDD-NN' from the GitHub release, not the monorepo git tag)."
+            ;;
         '' | *[!A-Za-z0-9._-]*)
             die "Invalid --server-release tag: '$OPT_SERVER_RELEASE'. Only letters, digits, dot, underscore, and dash are allowed."
             ;;
     esac
     QUICKTUI_RELEASES="${QUICKTUI_GITHUB_BASE}/releases/download/${OPT_SERVER_RELEASE}"
+fi
+
+# `--preview` today only resolves the server2 preview channel because
+# publish.sh emits no `server-preview-*` tags. Make the user opt in
+# explicitly via `--required-version-2` so a server preview line can
+# be added later without quietly changing the meaning of `--preview`.
+# Skip the gate for `--check` because that path runs environment
+# probes without downloading or installing anything; the channel flag
+# combinations have no effect there.
+if [ -n "$PREVIEW_RELEASE" ] && [ -z "$REQUIRE_SERVER2" ] && [ -z "$CHECK_ONLY" ]; then
+    die "--preview currently resolves only the server2 preview channel; re-run with --required-version-2 to confirm, or drop --preview to install the stable release."
 fi
 
 confirm() {
@@ -348,8 +407,12 @@ validate_listen_addr() {
             return 1
             ;;
     esac
-    # Dotted-quad candidate: require exactly four numeric octets 0-255.
+    # Numeric dotted-quad candidate: require exactly four octets 0-255.
+    # Hostnames may also contain three or more dots, so only enter this
+    # branch when the value is made solely of digits and dots.
     case "$_addr" in
+        *[!0-9.]*)
+            ;;
         *.*.*.*)
             _rest="$_addr"
             _o1="${_rest%%.*}"; _rest="${_rest#*.}"
@@ -509,12 +572,31 @@ download() {
     _url="$1"
     _dest="$2"
     _msg="${3:-Downloading}"
+    # Refuse anything that is not an https:// or http:// URL. Without
+    # the scheme guard, a malicious or misconfigured env var (e.g.
+    # QUICKTUI_RELEASES="--config /etc/passwd ...") could be picked up
+    # by curl/wget as a flag string. Pairing the guard with `--` makes
+    # leading dashes impossible to abuse even if the scheme check is
+    # bypassed by future refactors.
+    case "$_url" in
+        # https / http for production. file:// is allowed because
+        # tests use local fixtures and a tampered env var can at worst
+        # copy local content into the download tmpdir, where the
+        # subsequent sha256 check rejects it.
+        https://*|http://*|file://*) ;;
+        '')
+            die "Download URL is empty."
+            ;;
+        *)
+            die "Refusing to download from non-http(s)/file URL: '$_url'"
+            ;;
+    esac
     printf '  URL: %s\n' "$_url"
     # Start silent download in background
     if command -v curl > /dev/null 2>&1; then
-        curl -fsSL "$_url" -o "$_dest" &
+        curl -fsSL -o "$_dest" -- "$_url" &
     elif command -v wget > /dev/null 2>&1; then
-        wget -q "$_url" -O "$_dest" &
+        wget -q -O "$_dest" -- "$_url" &
     else
         die "Neither curl nor wget found. Please install one and retry."
     fi
@@ -577,7 +659,13 @@ parse_preview_asset_urls() {
             gzip_sha_url = ""
         }
 
-        function is_server2_preview_tag(value) {
+        function is_preview_tag(value) {
+            # Only the server2 channel currently publishes prereleases.
+            # The --preview path is gated on --required-version-2 in
+            # the shell layer above, so by the time the awk filter
+            # runs the caller has already opted in. Keep the regex
+            # strict so a stray prerelease (e.g. a one-off draft) is
+            # not silently treated as a server2 build.
             return value ~ /^server2-preview-/
         }
 
@@ -612,7 +700,7 @@ parse_preview_asset_urls() {
         }
 
         in_release && in_assets && /"browser_download_url"[[:space:]]*:/ {
-            if (!is_draft && is_preview && is_server2_preview_tag(release_tag)) {
+            if (!is_draft && is_preview && is_preview_tag(release_tag)) {
                 url = json_string_value($0)
                 if (current_name == bin) binary_url = url
                 if (current_name == bin ".sha256") sha_url = url
@@ -628,7 +716,7 @@ parse_preview_asset_urls() {
                 in_assets = 0
             }
             if (in_release && depth <= 0) {
-                if (!is_draft && is_preview && is_server2_preview_tag(release_tag) && binary_url != "" && sha_url != "") {
+                if (!is_draft && is_preview && is_preview_tag(release_tag) && binary_url != "" && sha_url != "") {
                     print binary_url
                     print sha_url
                     print gzip_url
@@ -705,8 +793,16 @@ detect_existing_install() {
     _existing_binary="${HOME}/.local/bin/quicktui-server"
     if [ -f "$_existing_binary" ]; then
         IS_UPGRADE="1"
-        _old_version="$("$_existing_binary" --version 2>/dev/null || echo "unknown")"
-        info "Existing installation detected ($_old_version)"
+        EXISTING_VERSION="$("$_existing_binary" --version 2>/dev/null || echo "unknown")"
+        # Channel of the installed binary, used by main() to gate the
+        # cross-channel upgrade confirm. Match `server2-` (same shape
+        # as check_binary_channel) so a future `server2-YYYYMMDD-NN`
+        # stable tag is still classified as the server2 channel.
+        case "$EXISTING_VERSION" in
+            *server2-*) EXISTING_CHANNEL="server2" ;;
+            *) EXISTING_CHANNEL="stable" ;;
+        esac
+        info "Existing installation detected ($EXISTING_VERSION)"
     fi
 
     if [ -f "$QUICKTUI_CONFIG_FILE" ]; then
@@ -1019,6 +1115,26 @@ download_binary() {
                 rm -rf "$DOWNLOAD_TMPDIR"
                 die "Failed to decompress ${_gzip_url}."
             }
+            # Cross-check the decompressed payload against the raw
+            # `.sha256` artifact (M1). Without this step, the gzip path
+            # only proves that the .gz file matches its own digest —
+            # if `quicktui-server` and `quicktui-server.gz` were ever
+            # built or signed from different sources, the swap would
+            # be undetectable. Fall back gracefully when the raw
+            # `.sha256` is not published.
+            if [ -n "$_sha256_url" ]; then
+                if download "$_sha256_url" "$_sha256_path" "Downloading raw checksum..."; then
+                    _expected_raw="$(normalize_sha256 "$(awk '{print $1}' "$_sha256_path")")"
+                    assert_valid_sha256 "$_expected_raw" "Checksum file at ${_sha256_url}"
+                    _actual_raw="$(normalize_sha256 "$(sha256_file "$_binary_path")")"
+                    if [ "$_actual_raw" != "$_expected_raw" ]; then
+                        rm -rf "$DOWNLOAD_TMPDIR"
+                        die "Decompressed binary digest does not match ${_sha256_url}. Compressed and raw artifacts disagree."
+                    fi
+                else
+                    warn "Could not fetch raw checksum from ${_sha256_url}; trusting .gz digest only."
+                fi
+            fi
             _downloaded_gzip="1"
         else
             warn "Compressed binary unavailable; falling back to uncompressed download."
@@ -1043,83 +1159,174 @@ download_binary() {
 # (launchd plist / systemd unit) intact so that install_binary's rollback
 # path can use restart_existing_service to bring the old service back.
 # Used by install_binary during upgrade.
+# Treats "service was not loaded" or "no supervisor available" as
+# success — the goal is "service is not running afterwards", so a
+# pre-existing not-loaded state, or an environment where the supervisor
+# itself cannot be reached (CI containers without systemd-user / a
+# real launchd domain), already satisfies that. Any other failure
+# aborts: leaving an old supervisor alive while replacing the binary
+# risks the OS restarting the stopped process mid-swap.
+_supervisor_stop_err_is_benign() {
+    case "$1" in
+        *"No such process"*|\
+        *"could not find"*|\
+        *"Could not find"*|\
+        *"not loaded"*|\
+        *"could not be found"*|\
+        *"not be found"*|\
+        *"not currently loaded"*|\
+        *"Failed to connect to bus"*|\
+        *"Failed to connect to system bus"*|\
+        *"Failed to connect to user bus"*|\
+        *"Failed to get D-Bus connection"*|\
+        *"No medium found"*|\
+        *"Could not connect to bootstrap server"*|\
+        *"Bootstrap not available"*)
+            return 0
+            ;;
+    esac
+    return 1
+}
+
 stop_service_keep_registration() {
     _os="$(uname -s)"
     _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
     _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
+    _stopped=""
 
     if [ "$_os" = "Darwin" ]; then
         if [ -f "$_launchd_plist" ]; then
-            launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
-                launchctl unload "$_launchd_plist" >/dev/null 2>&1 || true
+            _err="$(launchctl bootout "gui/$(id -u)" "$_launchd_plist" 2>&1)"
+            _rc=$?
+            if [ "$_rc" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err"; then
+                _err2="$(launchctl unload "$_launchd_plist" 2>&1)"
+                _rc2=$?
+                if [ "$_rc2" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err2"; then
+                    die "Failed to stop launchd service before binary replacement: $_err2"
+                fi
+            fi
+            _stopped=1
         fi
     else
         if [ -f "$_systemd_service" ] && command -v systemctl > /dev/null 2>&1; then
-            systemctl --user stop quicktui >/dev/null 2>&1 || true
+            _err="$(systemctl --user stop quicktui 2>&1)"
+            _rc=$?
+            if [ "$_rc" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err"; then
+                die "Failed to stop systemd service before binary replacement: $_err"
+            fi
+            _stopped=1
         fi
     fi
-    info "Stopped existing service"
-}
-
-# Stop the running service AND unregister it (server's --uninstall-service
-# removes plist / systemd unit, followed by OS-level teardown as a
-# belt-and-suspenders). Used during --uninstall.
-stop_and_unregister_service() {
-    _binary="${HOME}/.local/bin/quicktui-server"
-    _os="$(uname -s)"
-    _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
-    _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
-
-    if [ -f "$_binary" ]; then
-        "$_binary" --uninstall-service 2>/dev/null || true
+    if [ -n "$_stopped" ]; then
+        info "Stopped existing service"
     fi
-
-    if [ "$_os" = "Darwin" ]; then
-        if [ -f "$_launchd_plist" ]; then
-            launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
-                launchctl unload "$_launchd_plist" >/dev/null 2>&1 || true
-        fi
-    else
-        if [ -f "$_systemd_service" ] && command -v systemctl > /dev/null 2>&1; then
-            systemctl --user stop quicktui >/dev/null 2>&1 || true
-        fi
-    fi
-    info "Stopped existing service"
+    # Explicit success: the `[ -n "$_stopped" ] && info ...` idiom
+    # exits with status 1 when `_stopped` is empty, which `set -e`
+    # propagates and kills the installer mid-flight when stopping
+    # was not needed (e.g. the previous install was --no-service).
+    return 0
 }
 
 # Restart a service unit that was previously registered (used during
 # install rollback so the user is not left with a stopped service).
+# Returns 0 if restart succeeded (or no registration file existed),
+# 1 if a registration file existed but the supervisor refused. The
+# caller turns a failure into a hard error so the user is not silently
+# left with a stopped service after a binary rollback.
 restart_existing_service() {
     _os="$(uname -s)"
     _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
     _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
     if [ "$_os" = "Darwin" ]; then
         if [ -f "$_launchd_plist" ]; then
-            launchctl bootstrap "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 || \
-                launchctl load "$_launchd_plist" >/dev/null 2>&1 || true
+            launchctl bootstrap "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 && return 0
+            launchctl load "$_launchd_plist" >/dev/null 2>&1 && return 0
+            return 1
         fi
     else
         if [ -f "$_systemd_service" ] && command -v systemctl > /dev/null 2>&1; then
-            systemctl --user start quicktui >/dev/null 2>&1 || true
+            systemctl --user start quicktui >/dev/null 2>&1 || return 1
         fi
     fi
+    return 0
 }
 
+# Print one pid per line for every running process whose executable is
+# our installed quicktui-server (M4 + L1). The old implementation parsed
+# `ps` argv0 by whitespace and accepted a basename match, which:
+#   1. Could not handle install paths containing spaces (argv0 string
+#      split by `ps` field delimiter), and
+#   2. Killed unrelated `quicktui-server` builds in other directories
+#      owned by the same user (CI matrix, developer worktrees).
+# Linux exposes the kernel-resolved exe path via `/proc/<pid>/exe`,
+# which is immune to argv tampering. macOS has no /proc, so we use
+# `lsof -p <pid>` to read the `txt` (text-segment / executable) entry.
 list_processes_for_binary() {
     _binary="$1"
-    _binary_base="${_binary##*/}"
     _self_uid="$(id -u)"
     _self_user="$(id -un 2>/dev/null || printf '%s\n' "$_self_uid")"
-    # Force full command lines with -ww so argv[1] isn't clipped by the
-    # terminal width when the installer runs in a pipeline. Some ps
-    # implementations print `uid=` as a name (BusyBox) rather than a number;
-    # the awk check accepts either.
-    # Match rules:
-    #   1. argv[0] equals the full install path, or
-    #   2. argv[0] basename equals our binary basename, or
-    #   3. argv[0] is a known shell interpreter AND argv[1] equals the
-    #      full install path (no basename fallback on this branch, to
-    #      avoid false positives like `grep quicktui-server`).
+    _os="$(uname -s)"
+
+    if [ "$_os" = "Linux" ] && [ -d /proc ]; then
+        # /proc/<pid>/exe symlink points at the kernel-known executable
+        # path. Filter by uid first to avoid permission errors when
+        # readlink'ing other users' /proc entries (those return EACCES
+        # silently under `2>/dev/null`).
+        for _pid_dir in /proc/[0-9]*; do
+            [ -d "$_pid_dir" ] || continue
+            _pid="${_pid_dir##*/}"
+            [ "$_pid" = "$$" ] && continue
+            _uid_line="$(grep '^Uid:' "$_pid_dir/status" 2>/dev/null || true)"
+            [ -n "$_uid_line" ] || continue
+            _pid_uid="$(printf '%s\n' "$_uid_line" | awk '{print $2}')"
+            [ "$_pid_uid" = "$_self_uid" ] || continue
+            _exe="$(readlink "$_pid_dir/exe" 2>/dev/null || true)"
+            if [ "$_exe" = "$_binary" ]; then
+                printf '%s\n' "$_pid"
+                continue
+            fi
+            # Shell-launched scripts: /proc/<pid>/exe symlinks to the
+            # interpreter (e.g. /bin/sh), not the script path. Check
+            # /proc/<pid>/cmdline (NUL-separated argv) and match when
+            # argv[0] is a known shell and argv[1] equals the install
+            # path. tr converts NUL to newline so awk can split.
+            case "$_exe" in
+                */sh|*/bash|*/dash|*/zsh|*/ksh)
+                    _argv1="$(tr '\0' '\n' < "$_pid_dir/cmdline" 2>/dev/null \
+                        | sed -n '2p')"
+                    [ "$_argv1" = "$_binary" ] && printf '%s\n' "$_pid"
+                    ;;
+            esac
+        done
+        return 0
+    fi
+
+    # macOS / other Unix without /proc. lsof reports the executable for
+    # each pid; field `txt` is the text-segment file. Tolerate lsof
+    # absence by falling through to argv0 full-path match (no basename
+    # fallback — M4: avoid killing unrelated builds).
+    if command -v lsof > /dev/null 2>&1; then
+        ps -axww -o pid=,uid= 2>/dev/null | awk \
+            -v self="$$" -v uid="$_self_uid" -v uname="$_self_user" \
+            '{ pid=$1; usr=$2;
+               if (pid == self) next;
+               if (usr != uid && usr != uname) next;
+               print pid }' \
+        | while IFS= read -r _pid; do
+            [ -n "$_pid" ] || continue
+            # `lsof -p <pid> -d txt -F n` prints `n<path>` for txt
+            # descriptors. The first match is the executable.
+            _exe="$(lsof -p "$_pid" -d txt -F n 2>/dev/null \
+                | awk '/^n/ { sub(/^n/, ""); print; exit }')"
+            [ "$_exe" = "$_binary" ] && printf '%s\n' "$_pid"
+        done
+        return 0
+    fi
+
+    # Last-resort: ps argv0 full-path match. Basename fallback removed
+    # so unrelated `quicktui-server` builds elsewhere on the same
+    # account survive. Paths containing whitespace will not match,
+    # which is intentional: better to miss than to mis-kill.
     {
         if ps -axww -o pid= -o uid= -o command= > /dev/null 2>&1; then
             ps -axww -o pid= -o uid= -o command=
@@ -1130,18 +1337,15 @@ list_processes_for_binary() {
         -v self="$$" \
         -v uid="$_self_uid" \
         -v uname="$_self_user" \
-        -v target_abs="$_binary" \
-        -v target_base="$_binary_base" '
+        -v target_abs="$_binary" '
         {
-            pid=$1
-            usr=$2
+            pid=$1; usr=$2
             if (pid == self) next
             if (usr != uid && usr != uname) next
             argv0=$3
             if (argv0 == target_abs) { print pid; next }
             n=split(argv0, parts, "/")
             argv0_base=parts[n]
-            if (argv0_base == target_base) { print pid; next }
             if (argv0_base == "sh" || argv0_base == "bash" || \
                 argv0_base == "dash" || argv0_base == "zsh" || \
                 argv0_base == "ksh") {
@@ -1193,14 +1397,85 @@ stop_binary_processes() {
 # Step 4: Install binary
 # ============================================================
 
+# check_binary_channel asserts the installed binary matches the
+# requested channel. The shell layer already rejects --preview without
+# --required-version-2, but the stable channel still resolves via
+# `releases/latest` which could be repointed to a server2 build before
+# q.sh is updated. Catching the mismatch post-install (with rollback)
+# avoids the "I asked for stable and got server2" surprise.
+# Returns 0 on match, 1 with CHANNEL_ERR populated on mismatch.
+check_binary_channel() {
+    _bin="$1"
+    _ver="$("$_bin" --version 2>/dev/null || true)"
+    CHANNEL_ERR=""
+    # Match `server2-` with a trailing hyphen so the substring covers
+    # `server2-preview-...` and any future `server2-YYYYMMDD-NN` tag
+    # without colliding on a hypothetical `server2x` or version-string
+    # value that just happens to embed the letters "server2".
+    case "$_ver" in
+        *server2-*)
+            if [ -z "$REQUIRE_SERVER2" ]; then
+                CHANNEL_ERR="Installed binary advertises server2 (--version: '$_ver'). Re-run with --required-version-2 to opt in to the server2 channel, or use --server-release <tag> to pin a stable tag."
+                return 1
+            fi
+            ;;
+        *)
+            if [ -n "$REQUIRE_SERVER2" ]; then
+                CHANNEL_ERR="Installed binary does not advertise server2 (--version: '$_ver'). The server2 channel has no matching release yet; pair --required-version-2 with --preview, or drop --required-version-2."
+                return 1
+            fi
+            ;;
+    esac
+    return 0
+}
+
+# Rollback helper shared by all install_binary failure branches. Calls
+# restart_existing_service when an upgrade had a registered service so
+# the user is not left with a stopped supervisor after a rollback.
+# `die`s on supervisor restart failure (H3) — the operator must know
+# the original service is now offline.
+install_binary_rollback() {
+    _msg="$1"
+    rm -f "$INSTALL_PATH"
+    rm -f "$_INSTALL_TX_STAGED" 2>/dev/null || true
+    if [ -f "$_INSTALL_TX_BACKUP" ]; then
+        mv "$_INSTALL_TX_BACKUP" "$INSTALL_PATH" || true
+        if [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_SERVICE" ]; then
+            if ! restart_existing_service; then
+                # Binary restored, but supervisor refused. Tx is now
+                # half-rolled-back: report both errors so the user is
+                # not silently left with a stopped service.
+                _INSTALL_TX_ACTIVE=""
+                die "${_msg} Original binary restored, but original service failed to restart. Run 'launchctl bootstrap gui/\$(id -u) ${HOME}/Library/LaunchAgents/ai.quicktui.plist' (macOS) or 'systemctl --user start quicktui' (Linux) manually."
+            fi
+        fi
+    fi
+    _INSTALL_TX_ACTIVE=""
+    die "$_msg"
+}
+
 install_binary() {
     INSTALL_PATH="${HOME}/.local/bin/quicktui-server"
-    _staged_path="${HOME}/.local/bin/.quicktui-server.new.$$"
-    _backup_path="${HOME}/.local/bin/.quicktui-server.backup.$$"
     mkdir -p "${HOME}/.local/bin"
+    # mktemp eliminates the $$-predictable staging path so a co-tenant
+    # cannot pre-stage a symlink at the same name (M3). The bin dir is
+    # owned by the user and umask 077 limits exposure further.
+    _staged_path="$(mktemp "${HOME}/.local/bin/.quicktui-server.new.XXXXXX")"
+    _backup_path="$(mktemp -u "${HOME}/.local/bin/.quicktui-server.backup.XXXXXX")"
 
     if [ -n "$IS_UPGRADE" ]; then
         stop_service_keep_registration
+        # stop_binary_processes terminates ANY process whose argv[0]
+        # matches $INSTALL_PATH. The service was already asked to stop
+        # above, but it may not have exited yet, and manually-launched
+        # sessions (started outside the system service) will also be
+        # killed. If the binary swap rolls back below,
+        # restart_existing_service only restores the launchd / systemd
+        # unit — non-service processes are not respawned. Warn once so
+        # the user knows to re-run any manual sessions afterwards.
+        if list_processes_for_binary "$INSTALL_PATH" 2>/dev/null | grep -q .; then
+            warn "Stopping any remaining $INSTALL_PATH processes. Manually-launched sessions will not be restarted automatically; re-run them after the upgrade if needed."
+        fi
         stop_binary_processes "$INSTALL_PATH"
     fi
 
@@ -1210,32 +1485,44 @@ install_binary() {
         rm -f "$_staged_path"
         die "Binary replacement failed: staged binary at $_staged_path is not functional."
     fi
+
+    # Begin transaction. Cleanup trap now knows to restore _backup_path
+    # if the script dies between here and the matching `_INSTALL_TX_ACTIVE=""`
+    # below — signal arriving mid-mv would otherwise leave no binary.
+    _INSTALL_TX_ACTIVE="1"
+    _INSTALL_TX_PATH="$INSTALL_PATH"
+    _INSTALL_TX_STAGED="$_staged_path"
+    _INSTALL_TX_BACKUP="$_backup_path"
+
     if [ -f "$INSTALL_PATH" ]; then
         mv "$INSTALL_PATH" "$_backup_path"
     fi
     if ! mv "$_staged_path" "$INSTALL_PATH"; then
-        if [ -f "$_backup_path" ]; then
-            mv "$_backup_path" "$INSTALL_PATH" || true
-            [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_SERVICE" ] && restart_existing_service
-        fi
-        rm -f "$_staged_path"
-        die "Binary replacement failed: could not move new binary into place."
+        install_binary_rollback "Binary replacement failed: could not move new binary into place."
     fi
 
     if ! "$INSTALL_PATH" --version > /dev/null 2>&1; then
-        rm -f "$INSTALL_PATH"
-        if [ -f "$_backup_path" ]; then
-            mv "$_backup_path" "$INSTALL_PATH" || true
-            [ -n "$IS_UPGRADE" ] && [ -n "$EXISTING_SERVICE" ] && restart_existing_service
-        fi
-        die "Binary replacement failed: new binary at $INSTALL_PATH is not functional."
+        install_binary_rollback "Binary replacement failed: new binary at $INSTALL_PATH is not functional."
+    fi
+
+    # Channel guard. Roll back to the previous binary if --version
+    # disagrees with --required-version-2. Runs BEFORE the backup is
+    # cleared so the rollback path can mv the old binary back into
+    # place exactly as the functional-check branch above does.
+    if ! check_binary_channel "$INSTALL_PATH"; then
+        install_binary_rollback "$CHANNEL_ERR"
     fi
 
     rm -f "$_backup_path"
+    # Transaction committed. Cleanup trap stops trying to roll back.
+    _INSTALL_TX_ACTIVE=""
+    _INSTALL_TX_PATH=""
+    _INSTALL_TX_STAGED=""
+    _INSTALL_TX_BACKUP=""
     case ":${PATH}:" in
         *":${HOME}/.local/bin:"*) ;;
         *)
-            warn "~/.local/bin is not in your PATH."
+            warn "\$HOME/.local/bin is not in your PATH."
             printf '  Add this to your shell config (~/.bashrc, ~/.zshrc, etc.):\n'
             printf '    export PATH="$HOME/.local/bin:$PATH"\n\n'
             ;;
@@ -1341,9 +1628,15 @@ configure_token() {
 
     mkdir -p "$QUICKTUI_CONFIG_DIR"
     chmod 700 "$QUICKTUI_CONFIG_DIR"
-    printf 'QUICKTUI_TOKEN=%s\n' "$TOKEN" > "$QUICKTUI_CONFIG_FILE"
-    chmod 600 "$QUICKTUI_CONFIG_FILE"
-    info "Config saved to $QUICKTUI_CONFIG_FILE"
+    # Atomic write: stage all config fields in a same-dir 0600 tempfile
+    # and rename into place at the end of write_terminal_config. Writing
+    # straight to $QUICKTUI_CONFIG_FILE truncated an existing file
+    # before chmod could narrow its mode, exposing the token to other
+    # users during the gap (H5).
+    _CONFIG_TMP="$(mktemp "${QUICKTUI_CONFIG_DIR}/.config.XXXXXX")"
+    chmod 600 "$_CONFIG_TMP"
+    printf 'QUICKTUI_TOKEN=%s\n' "$TOKEN" > "$_CONFIG_TMP"
+    info "Config staged at $_CONFIG_TMP"
     # QUICKTUI_CN_SERVICE_ENV_ANCHOR
 }
 
@@ -1387,7 +1680,7 @@ configure_network() {
     validate_listen_addr "$LISTEN_ADDR" || die "Invalid listen address: '$LISTEN_ADDR'"
     validate_port "$LISTEN_PORT" || die "Invalid port: '$LISTEN_PORT'. Please enter a number between 1 and 65535."
 
-    printf 'QUICKTUI_ADDR=%s:%s\n' "$LISTEN_ADDR" "$LISTEN_PORT" >> "$QUICKTUI_CONFIG_FILE"
+    printf 'QUICKTUI_ADDR=%s:%s\n' "$LISTEN_ADDR" "$LISTEN_PORT" >> "$_CONFIG_TMP"
     info "Listen address: ${LISTEN_ADDR}:${LISTEN_PORT}"
 }
 
@@ -1396,11 +1689,16 @@ configure_network() {
 # ============================================================
 
 write_terminal_config() {
-    printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$QUICKTUI_CONFIG_FILE"
-    printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$QUICKTUI_CONFIG_FILE"
+    printf 'QUICKTUI_TERM=%s\n' "$TERM_ENV" >> "$_CONFIG_TMP"
+    printf 'QUICKTUI_LANG=%s\n' "$LANG_ENV" >> "$_CONFIG_TMP"
     if [ -n "$TMUX_BIN_CONFIG" ]; then
-        printf 'QUICKTUI_TMUX_BIN=%s\n' "$TMUX_BIN_CONFIG" >> "$QUICKTUI_CONFIG_FILE"
+        printf 'QUICKTUI_TMUX_BIN=%s\n' "$TMUX_BIN_CONFIG" >> "$_CONFIG_TMP"
     fi
+    # Commit the staged config atomically. After this point cleanup
+    # no longer needs to remove the tmpfile.
+    mv "$_CONFIG_TMP" "$QUICKTUI_CONFIG_FILE"
+    _CONFIG_TMP=""
+    info "Config saved to $QUICKTUI_CONFIG_FILE"
 }
 
 # ============================================================
@@ -1454,7 +1752,12 @@ configure_service() {
     # Drop ONLY the server's QR-code reminder line so we can re-emit it
     # under "Getting started" with our own formatting. Any other line that
     # happens to mention --qrcode (e.g. an error message) still shows.
-    awk '/Run .*--qrcode.* to display the connection QR code/ { next } { print }' "$_SVC_OUT"
+    # Anchor to the literal `'quicktui-server --qrcode'` token that
+    # svcinstall.go emits so an unrelated future log line that happens
+    # to mention `--qrcode` (e.g. a config-update notice) is still
+    # printed. If the server-side string changes, update both this
+    # filter and the corresponding contract note in website/AGENTS.md.
+    awk "/'quicktui-server --qrcode' to display the connection QR code/ { next } { print }" "$_SVC_OUT"
     rm -f "$_SVC_OUT"
     _SVC_OUT=""
 
@@ -1463,10 +1766,21 @@ configure_service() {
             loginctl enable-linger 2>/dev/null || true
         fi
         SERVICE_STARTED="yes"
+        # `--install-service` returning 0 means the unit file was written
+        # and the supervisor accepted the load; it does NOT prove the
+        # process is serving HTTP yet. q.sh used to probe /v2/healthz but
+        # that gate was removed while v2 routes remain preview-stage.
+        # Surface a brief verification hint so users have a recovery path
+        # if the URL printed under "Getting started" refuses connections.
+        if [ "$PLATFORM" = "darwin" ]; then
+            warn "Service registered. If the browser URL refuses connections, check ~/Library/Logs/QuickTUI/."
+        else
+            warn "Service registered. If the browser URL refuses connections, check 'journalctl --user -u quicktui'."
+        fi
     else
         SERVICE_STARTED="failed"
-        warn "Service files were left in place if registration wrote any partial state."
-        warn "Service registration failed. You can retry manually:"
+        warn "Service registration failed. If a unit file was written, re-run with --uninstall before retrying."
+        warn "Retry registration manually:"
         warn "  $INSTALL_PATH --install-service --addr ${LISTEN_ADDR}:${LISTEN_PORT}"
     fi
 }
@@ -1487,6 +1801,29 @@ print_manual_start_command() {
     printf '%s\n' "$(shell_quote "$INSTALL_PATH")"
 }
 
+print_native_qrcode() {
+    # Probe /dev/tty in a subshell so a failed redirect (dash kills the
+    # parent shell on the brace-group form) cannot abort the installer.
+    if [ -c /dev/tty ] && ( : </dev/tty ) 2>/dev/null; then
+        "$INSTALL_PATH" --list-addr --qrcode </dev/tty
+    else
+        "$INSTALL_PATH" --list-addr --qrcode
+    fi
+}
+
+print_interactive_qrcode() {
+    if print_native_qrcode; then
+        return 0
+    fi
+
+    # Native flow failed (no candidate addrs, abort, etc.). Avoid
+    # popping a second address-selection UI on top of the one the
+    # server already showed; print a static fallback command users
+    # can rerun on demand.
+    printf '    Run %s%s --list-addr --qrcode%s to display the QR code.\n' \
+        "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
+}
+
 # ============================================================
 # Step 9: Print success message
 # ============================================================
@@ -1498,7 +1835,7 @@ mask_token() {
     _t="$1"
     _len="${#_t}"
     if [ "$_len" -le 8 ]; then
-        printf '%s\n' "$_t"
+        printf '•••• (full value stored in %s)\n' "$QUICKTUI_CONFIG_FILE"
     else
         _last4="${_t#"${_t%????}"}"
         printf '••••%s (full value stored in %s)\n' "$_last4" "$QUICKTUI_CONFIG_FILE"
@@ -1539,12 +1876,15 @@ print_success() {
         printf '  ---------- Connect from iOS ----------\n'
         if [ -z "$NON_INTERACTIVE" ]; then
             printf '\n'
-            "$INSTALL_PATH" --qrcode 2>/dev/null || \
-                printf '    Run %s%s --qrcode%s to display the QR code.\n' \
-                    "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
+            print_interactive_qrcode
         else
+            # `quicktui-server --qrcode` alone needs an explicit --addr
+            # (qrconnect.Print does not fall back to ~/.config/quicktui
+            # /config). Use the IP we already computed for the browser
+            # URL so a copy-paste produces a scannable QR immediately.
             printf '    Run:\n'
-            printf '      %s%s --qrcode%s\n' "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
+            printf '      %s%s --qrcode --addr %s:%s%s\n' \
+                "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$_ip" "$LISTEN_PORT" "$C_RESET"
             printf '    to display the connection QR code\n'
             printf '    for the iOS app.\n'
         fi
@@ -1595,21 +1935,33 @@ uninstall() {
     _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
     _systemd_link="${HOME}/.config/systemd/user/default.target.wants/quicktui.service"
 
-    # Stop and unregister service
+    # Server-managed teardown (only possible if the binary still
+    # exists; --uninstall-service is what removes any state the server
+    # itself wrote, e.g. log files or extra defaults).
     if [ -f "$_binary" ]; then
-        stop_and_unregister_service
+        "$_binary" --uninstall-service 2>/dev/null || true
         _removed=1
     fi
 
-    # Remove service files
+    # Supervisor teardown runs whether or not the binary is on disk.
+    # Without this M5 fix, deleting the binary first (or replacing it
+    # with a broken one) left an orphaned launchd / systemd unit alive
+    # that kept restarting the missing executable.
     if [ "$_os" = "Darwin" ]; then
         if [ -f "$_launchd_plist" ]; then
+            launchctl bootout "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 \
+                || launchctl unload "$_launchd_plist" >/dev/null 2>&1 \
+                || true
             rm -f "$_launchd_plist"
             info "Removed: $_launchd_plist"
             _removed=1
         fi
     else
         if [ -f "$_systemd_service" ] || [ -L "$_systemd_link" ]; then
+            if command -v systemctl > /dev/null 2>&1; then
+                systemctl --user stop quicktui >/dev/null 2>&1 || true
+                systemctl --user disable quicktui >/dev/null 2>&1 || true
+            fi
             rm -f "$_systemd_link"
             rm -f "$_systemd_service"
             if command -v systemctl > /dev/null 2>&1; then
@@ -1760,6 +2112,29 @@ main() {
     else
         printf '\n%sQuickTUI Installer%s\n\n' "$C_BOLD" "$C_RESET"
     fi
+    # Cross-channel switch: surface the swap before downloading
+    # anything. Two directions:
+    #   1. stable installed + `--preview`  -> stable to preview
+    #   2. server2 installed (preview) + no `--required-version-2`
+    #      -> server2 to stable (the channel guard will roll the
+    #      install back, but warn the user upfront so the abort is
+    #      not surprising).
+    # Saved config (token/addr/term/lang) is reused as-is in both
+    # directions; preview/stable schema compatibility is not
+    # guaranteed.
+    if [ -n "$IS_UPGRADE" ] && [ "$EXISTING_CHANNEL" = "stable" ] && [ -n "$PREVIEW_RELEASE" ]; then
+        warn "--preview will replace the stable install with a server2 preview build."
+        warn "Existing config (token/addr/term/lang) will be reused; preview/stable schema compatibility is not guaranteed."
+        if ! confirm "Continue switching to the preview channel?" n; then
+            exit 1
+        fi
+    elif [ -n "$IS_UPGRADE" ] && [ "$EXISTING_CHANNEL" = "server2" ] && [ -z "$REQUIRE_SERVER2" ]; then
+        warn "Existing install advertises server2 (${EXISTING_VERSION}); the requested channel is stable."
+        warn "Without --required-version-2 the channel guard will roll back to the previous binary post-install."
+        if ! confirm "Continue switching to the stable channel?" n; then
+            exit 1
+        fi
+    fi
     detect_platform
     check_tmux
     collect_terminal_env
@@ -1771,11 +2146,27 @@ main() {
     write_terminal_config
     configure_service
     print_success
+    # Service registration is on by default. A failure is reported via
+    # print_success's "Service registration failed" block, but the
+    # process must also exit non-zero so CI / automation does not treat
+    # a partial install as success (H2). --no-service users opt out of
+    # registration, so SERVICE_STARTED="skipped" still exits 0.
+    if [ "$SERVICE_STARTED" = "failed" ]; then
+        exit 1
+    fi
 }
 
 if [ -n "$UNINSTALL" ]; then
+    # `--required-version-2` only affects download / channel-guard
+    # logic. Surface a warn instead of silently swallowing the flag
+    # so users do not assume the channel is being verified during
+    # removal.
+    [ -n "$REQUIRE_SERVER2" ] && warn "--required-version-2 has no effect with --uninstall; ignoring."
     uninstall
 elif [ -n "$CHECK_ONLY" ]; then
+    # Same rationale as the --uninstall path: --check runs
+    # environment probes only.
+    [ -n "$REQUIRE_SERVER2" ] && warn "--required-version-2 has no effect with --check; ignoring."
     validate_cli_options
     validate_cli_terminal_overrides
     detect_existing_install

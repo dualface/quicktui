@@ -377,7 +377,7 @@ confirm() {
     _prompt="$1"
     _default="${2:-n}"
     if [ -n "$NON_INTERACTIVE" ]; then
-        [ "$_default" = "y" ] && return 0 || return 1
+        return 0
     fi
     if [ "$_default" = "y" ]; then
         _hint="[Y/n]"
@@ -1301,32 +1301,49 @@ list_processes_for_binary() {
         return 0
     fi
 
-    # macOS / other Unix without /proc. lsof reports the executable for
-    # each pid; field `txt` is the text-segment file. Tolerate lsof
-    # absence by falling through to argv0 full-path match (no basename
-    # fallback — M4: avoid killing unrelated builds).
-    if command -v lsof > /dev/null 2>&1; then
-        ps -axww -o pid=,uid= 2>/dev/null | awk \
-            -v self="$$" -v uid="$_self_uid" -v uname="$_self_user" \
-            '{ pid=$1; usr=$2;
-               if (pid == self) next;
-               if (usr != uid && usr != uname) next;
-               print pid }' \
-        | while IFS= read -r _pid; do
+    # macOS / other Unix without /proc. Prefer ps' executable path
+    # (`comm`) over per-pid `lsof -p`: scanning every process can hang
+    # behind a slow or wedged unrelated process and stall upgrades right
+    # after "Download verified".
+    if ps -axww -o pid= -o uid= -o comm= > /dev/null 2>&1; then
+        ps -axww -o pid= -o uid= -o comm= | awk \
+            -v self="$$" \
+            -v uid="$_self_uid" \
+            -v uname="$_self_user" \
+            -v target_abs="$_binary" '
+            {
+                line=$0
+                sub(/^[[:space:]]*/, "", line)
+                pid=line
+                sub(/[[:space:]].*$/, "", pid)
+                sub(/^[^[:space:]]+[[:space:]]+/, "", line)
+                usr=line
+                sub(/[[:space:]].*$/, "", usr)
+                sub(/^[^[:space:]]+[[:space:]]*/, "", line)
+                exe=line
+                if (pid == self) next
+                if (usr != uid && usr != uname) next
+                if (exe == target_abs) print pid
+            }
+        '
+    elif command -v lsof > /dev/null 2>&1; then
+        # File-targeted lsof is a bounded fallback; do not iterate
+        # lsof over every process.
+        lsof -t -d txt -- "$_binary" 2>/dev/null | while IFS= read -r _pid; do
             [ -n "$_pid" ] || continue
-            # `lsof -p <pid> -d txt -F n` prints `n<path>` for txt
-            # descriptors. The first match is the executable.
-            _exe="$(lsof -p "$_pid" -d txt -F n 2>/dev/null \
-                | awk '/^n/ { sub(/^n/, ""); print; exit }')"
-            [ "$_exe" = "$_binary" ] && printf '%s\n' "$_pid"
+            [ "$_pid" = "$$" ] && continue
+            _pid_uid="$(ps -o uid= -p "$_pid" 2>/dev/null | awk '{print $1}')"
+            if [ "$_pid_uid" = "$_self_uid" ] || [ "$_pid_uid" = "$_self_user" ]; then
+                printf '%s\n' "$_pid"
+            fi
         done
-        return 0
     fi
 
-    # Last-resort: ps argv0 full-path match. Basename fallback removed
-    # so unrelated `quicktui-server` builds elsewhere on the same
-    # account survive. Paths containing whitespace will not match,
-    # which is intentional: better to miss than to mis-kill.
+    # Last-resort: ps argv0 full-path match for shell-launched scripts.
+    # Basename fallback removed so unrelated `quicktui-server` builds
+    # elsewhere on the same account survive. Paths containing whitespace
+    # will not match here, which is intentional: better to miss than to
+    # mis-kill.
     {
         if ps -axww -o pid= -o uid= -o command= > /dev/null 2>&1; then
             ps -axww -o pid= -o uid= -o command=

@@ -70,6 +70,7 @@ EXISTING_VERSION=""
 EXISTING_CHANNEL=""
 
 _BG_PID=""
+_BG_TIMER_PID=""
 _STTY_SAVED=""
 _SVC_OUT=""
 # install_binary transaction state. Cleanup uses these to roll back a
@@ -88,6 +89,7 @@ cleanup() {
         _STTY_SAVED=""
     fi
     [ -n "$_BG_PID" ] && kill "$_BG_PID" 2>/dev/null || true
+    [ -n "$_BG_TIMER_PID" ] && kill "$_BG_TIMER_PID" 2>/dev/null || true
     [ -n "$DOWNLOAD_TMPDIR" ] && rm -rf "$DOWNLOAD_TMPDIR" || true
     [ -n "$_SVC_OUT" ] && rm -f "$_SVC_OUT" || true
     [ -n "$_CONFIG_TMP" ] && rm -f "$_CONFIG_TMP" || true
@@ -1188,33 +1190,103 @@ _supervisor_stop_err_is_benign() {
     return 1
 }
 
+supervisor_timeout_seconds() {
+    _timeout="${QUICKTUI_SUPERVISOR_TIMEOUT:-10}"
+    case "$_timeout" in
+        ''|*[!0-9]*|0)
+            printf '10\n'
+            ;;
+        *)
+            printf '%s\n' "$_timeout"
+            ;;
+    esac
+}
+
+RUN_CAPTURE_OUTPUT=""
+run_capture_with_timeout() {
+    _run_timeout="$1"
+    shift
+    RUN_CAPTURE_OUTPUT=""
+    _run_out="$(mktemp "${TMPDIR:-/tmp}/quicktui-supervisor.XXXXXX")"
+    _run_timed_out="$(mktemp "${TMPDIR:-/tmp}/quicktui-supervisor-timeout.XXXXXX")"
+    rm -f "$_run_timed_out"
+
+    "$@" > "$_run_out" 2>&1 &
+    _run_pid=$!
+    _BG_PID="$_run_pid"
+    (
+        sleep "$_run_timeout"
+        if kill -0 "$_run_pid" 2>/dev/null; then
+            : > "$_run_timed_out"
+            kill "$_run_pid" 2>/dev/null || true
+            sleep 1
+            kill -9 "$_run_pid" 2>/dev/null || true
+        fi
+    ) &
+    _run_timer_pid=$!
+    _BG_TIMER_PID="$_run_timer_pid"
+
+    if wait "$_run_pid"; then
+        _run_rc=0
+    else
+        _run_rc=$?
+    fi
+    _BG_PID=""
+    kill "$_run_timer_pid" 2>/dev/null || true
+    wait "$_run_timer_pid" 2>/dev/null || true
+    _BG_TIMER_PID=""
+    if [ -f "$_run_timed_out" ]; then
+        _run_rc=124
+    fi
+    RUN_CAPTURE_OUTPUT="$(cat "$_run_out" 2>/dev/null || true)"
+    rm -f "$_run_out" "$_run_timed_out"
+    return "$_run_rc"
+}
+
 stop_service_keep_registration() {
     _os="$(uname -s)"
     _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
     _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
     _stopped=""
+    _timed_out=""
+    _supervisor_timeout="$(supervisor_timeout_seconds)"
 
     if [ "$_os" = "Darwin" ]; then
         if [ -f "$_launchd_plist" ]; then
-            _err="$(launchctl bootout "gui/$(id -u)" "$_launchd_plist" 2>&1)"
-            _rc=$?
+            _rc=0
+            run_capture_with_timeout "$_supervisor_timeout" launchctl bootout "gui/$(id -u)" "$_launchd_plist" || _rc=$?
+            _err="$RUN_CAPTURE_OUTPUT"
+            if [ "$_rc" -eq 124 ]; then
+                warn "Timed out stopping launchd service with bootout; trying legacy unload."
+                _timed_out=1
+            fi
             if [ "$_rc" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err"; then
-                _err2="$(launchctl unload "$_launchd_plist" 2>&1)"
-                _rc2=$?
-                if [ "$_rc2" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err2"; then
+                _rc2=0
+                run_capture_with_timeout "$_supervisor_timeout" launchctl unload "$_launchd_plist" || _rc2=$?
+                _err2="$RUN_CAPTURE_OUTPUT"
+                if [ "$_rc2" -eq 124 ]; then
+                    warn "Timed out stopping launchd service before binary replacement; continuing with binary replacement and service re-registration."
+                    _timed_out=1
+                elif [ "$_rc2" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err2"; then
                     die "Failed to stop launchd service before binary replacement: $_err2"
+                else
+                    _timed_out=""
                 fi
             fi
-            _stopped=1
+            [ -z "$_timed_out" ] && _stopped=1
         fi
     else
         if [ -f "$_systemd_service" ] && command -v systemctl > /dev/null 2>&1; then
-            _err="$(systemctl --user stop quicktui 2>&1)"
-            _rc=$?
-            if [ "$_rc" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err"; then
+            _rc=0
+            run_capture_with_timeout "$_supervisor_timeout" systemctl --user stop quicktui || _rc=$?
+            _err="$RUN_CAPTURE_OUTPUT"
+            if [ "$_rc" -eq 124 ]; then
+                warn "Timed out stopping systemd service before binary replacement; continuing with binary replacement and service re-registration."
+                _timed_out=1
+            elif [ "$_rc" -ne 0 ] && ! _supervisor_stop_err_is_benign "$_err"; then
                 die "Failed to stop systemd service before binary replacement: $_err"
             fi
-            _stopped=1
+            [ -z "$_timed_out" ] && _stopped=1
         fi
     fi
     if [ -n "$_stopped" ]; then
@@ -1237,15 +1309,16 @@ restart_existing_service() {
     _os="$(uname -s)"
     _launchd_plist="${HOME}/Library/LaunchAgents/ai.quicktui.plist"
     _systemd_service="${HOME}/.config/systemd/user/quicktui.service"
+    _supervisor_timeout="$(supervisor_timeout_seconds)"
     if [ "$_os" = "Darwin" ]; then
         if [ -f "$_launchd_plist" ]; then
-            launchctl bootstrap "gui/$(id -u)" "$_launchd_plist" >/dev/null 2>&1 && return 0
-            launchctl load "$_launchd_plist" >/dev/null 2>&1 && return 0
+            run_capture_with_timeout "$_supervisor_timeout" launchctl bootstrap "gui/$(id -u)" "$_launchd_plist" && return 0
+            run_capture_with_timeout "$_supervisor_timeout" launchctl load "$_launchd_plist" && return 0
             return 1
         fi
     else
         if [ -f "$_systemd_service" ] && command -v systemctl > /dev/null 2>&1; then
-            systemctl --user start quicktui >/dev/null 2>&1 || return 1
+            run_capture_with_timeout "$_supervisor_timeout" systemctl --user start quicktui || return 1
         fi
     fi
     return 0
@@ -1259,8 +1332,8 @@ restart_existing_service() {
 #   2. Killed unrelated `quicktui-server` builds in other directories
 #      owned by the same user (CI matrix, developer worktrees).
 # Linux exposes the kernel-resolved exe path via `/proc/<pid>/exe`,
-# which is immune to argv tampering. macOS has no /proc, so we use
-# `lsof -p <pid>` to read the `txt` (text-segment / executable) entry.
+# which is immune to argv tampering. macOS has no /proc, so we prefer
+# `ps ... comm` and keep a file-targeted `lsof` fallback.
 list_processes_for_binary() {
     _binary="$1"
     _self_uid="$(id -u)"

@@ -8,6 +8,11 @@ set -eu
 
 QUICKTUI_REPO="${QUICKTUI_REPO:-dualface/quicktui}"
 QUICKTUI_RELEASES="${QUICKTUI_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/latest/download}"
+if [ "${QUICKTUI_INSTALLER_RELEASES+x}" = x ]; then
+    QUICKTUI_INSTALLER_RELEASES_EXPLICIT=1
+else
+    QUICKTUI_INSTALLER_RELEASES_EXPLICIT=0
+fi
 QUICKTUI_INSTALLER_RELEASES="${QUICKTUI_INSTALLER_RELEASES:-$QUICKTUI_RELEASES}"
 QUICKTUI_UPDATE_MANIFEST_URL="${QUICKTUI_UPDATE_MANIFEST_URL:-https://quicktui.ai/server-manifest.json}"
 QUICKTUI_MAX_INSTALLER_BYTES="${QUICKTUI_MAX_INSTALLER_BYTES:-52428800}"
@@ -99,6 +104,43 @@ download() {
     fi
 }
 
+uses_preview_channel() {
+    for arg in "$@"; do
+        [ "$arg" = "--preview" ] && return 0
+    done
+    return 1
+}
+
+release_base_for_tag() {
+    tag=$1
+    _base=${QUICKTUI_RELEASES%/}
+    case "$_base" in
+        */releases/latest/download)
+            printf '%s/download/%s\n' "${_base%/latest/download}" "$tag"
+            ;;
+        *)
+            printf 'https://github.com/%s/releases/download/%s\n' "$QUICKTUI_REPO" "$tag"
+            ;;
+    esac
+}
+
+manifest_preview_tag() {
+    file=$1
+    awk '
+        BEGIN { RS = ""; ORS = "" }
+        {
+            s = $0
+            gsub(/[ \t\r\n]/, "", s)
+            if (match(s, /"preview":\{[^}]*"tag":"[^"]+"/)) {
+                part = substr(s, RSTART, RLENGTH)
+                sub(/^.*"tag":"/, "", part)
+                sub(/".*$/, "", part)
+                print part
+            }
+        }
+    ' "$file"
+}
+
 download_installer() {
     url=$1
     out=$2
@@ -169,15 +211,27 @@ need_cmd uname
 detect_platform
 
 asset="quicktui-installer-${platform_os}-${platform_arch}"
-base_url=${QUICKTUI_INSTALLER_RELEASES%/}
-installer_url="${base_url}/${asset}"
-sha_url="${installer_url}.sha256"
-
 tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/quicktui-installer.XXXXXX") || die "mktemp failed"
 cleanup() {
     rm -rf "$tmp_dir"
 }
 trap cleanup EXIT HUP INT TERM
+
+if uses_preview_channel "$@" && [ "$QUICKTUI_INSTALLER_RELEASES_EXPLICIT" != "1" ]; then
+    manifest_file="${tmp_dir}/server-manifest.json"
+    download "$QUICKTUI_UPDATE_MANIFEST_URL" "$manifest_file" || die "download failed: $QUICKTUI_UPDATE_MANIFEST_URL"
+    preview_tag=$(manifest_preview_tag "$manifest_file")
+    case "$preview_tag" in
+        server2-preview-*) ;;
+        *) die "server manifest does not include a valid preview tag" ;;
+    esac
+    QUICKTUI_INSTALLER_RELEASES=$(release_base_for_tag "$preview_tag")
+    export QUICKTUI_INSTALLER_RELEASES
+fi
+
+base_url=${QUICKTUI_INSTALLER_RELEASES%/}
+installer_url="${base_url}/${asset}"
+sha_url="${installer_url}.sha256"
 
 installer="${tmp_dir}/${asset}"
 sha_file="${installer}.sha256"

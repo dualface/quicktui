@@ -8,11 +8,7 @@ set -eu
 
 QUICKTUI_REPO="${QUICKTUI_REPO:-dualface/quicktui}"
 QUICKTUI_RELEASES="${QUICKTUI_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/latest/download}"
-if [ "${QUICKTUI_INSTALLER_RELEASES+x}" = x ]; then
-    QUICKTUI_INSTALLER_RELEASES_EXPLICIT=1
-else
-    QUICKTUI_INSTALLER_RELEASES_EXPLICIT=0
-fi
+[ "${QUICKTUI_INSTALLER_RELEASES+x}" = x ] && QUICKTUI_INSTALLER_RELEASES_EXPLICIT=1 || QUICKTUI_INSTALLER_RELEASES_EXPLICIT=0
 QUICKTUI_INSTALLER_RELEASES="${QUICKTUI_INSTALLER_RELEASES:-$QUICKTUI_RELEASES}"
 QUICKTUI_UPDATE_MANIFEST_URL="${QUICKTUI_UPDATE_MANIFEST_URL:-https://quicktui.ai/server-manifest.json}"
 QUICKTUI_MAX_INSTALLER_BYTES="${QUICKTUI_MAX_INSTALLER_BYTES:-52428800}"
@@ -93,21 +89,17 @@ detect_platform() {
 }
 
 download() {
-    url=$1
-    out=$2
     if command -v curl >/dev/null 2>&1; then
-        curl -fsSL "$url" -o "$out"
+        curl -fsSL "$1" -o "$2"
     elif command -v wget >/dev/null 2>&1; then
-        wget -qO "$out" "$url"
+        wget -qO "$2" "$1"
     else
         die "curl or wget is required to download quicktui-installer"
     fi
 }
 
 uses_preview_channel() {
-    for arg in "$@"; do
-        [ "$arg" = "--preview" ] && return 0
-    done
+    for arg do [ "$arg" = "--preview" ] && return 0; done
     return 1
 }
 
@@ -115,57 +107,31 @@ release_base_for_tag() {
     tag=$1
     _base=${QUICKTUI_RELEASES%/}
     case "$_base" in
-        */releases/latest/download)
-            printf '%s/download/%s\n' "${_base%/latest/download}" "$tag"
-            ;;
-        *)
-            printf 'https://github.com/%s/releases/download/%s\n' "$QUICKTUI_REPO" "$tag"
-            ;;
+        */releases/latest/download) printf '%s/download/%s\n' "${_base%/latest/download}" "$tag" ;;
+        *) printf 'https://github.com/%s/releases/download/%s\n' "$QUICKTUI_REPO" "$tag" ;;
     esac
 }
 
 manifest_preview_tag() {
-    file=$1
-    awk '
-        BEGIN { RS = ""; ORS = "" }
-        {
-            s = $0
-            gsub(/[ \t\r\n]/, "", s)
-            if (match(s, /"preview":\{[^}]*"tag":"[^"]+"/)) {
-                part = substr(s, RSTART, RLENGTH)
-                sub(/^.*"tag":"/, "", part)
-                sub(/".*$/, "", part)
-                print part
-            }
-        }
-    ' "$file"
+    tr -d '[:space:]' < "$1" | sed -n 's/.*"preview":{[^}]*"tag":"\([^"]*\)".*/\1/p'
 }
 
 download_installer() {
-    url=$1
-    out=$2
     case "$QUICKTUI_MAX_INSTALLER_BYTES" in
         ''|*[!0-9]*) die "QUICKTUI_MAX_INSTALLER_BYTES must be a byte count" ;;
     esac
     if command -v curl >/dev/null 2>&1; then
-        curl -fsSL --max-filesize "$QUICKTUI_MAX_INSTALLER_BYTES" "$url" -o "$out"
+        curl -fsSL --max-filesize "$QUICKTUI_MAX_INSTALLER_BYTES" "$1" -o "$2"
     else
-        download "$url" "$out"
+        download "$1" "$2"
     fi
-}
-
-file_size_bytes() {
-    wc -c < "$1" | awk '{print $1}'
 }
 
 check_installer_size() {
     file=$1
-    size=$(file_size_bytes "$file") || die "cannot read downloaded installer size"
+    size=$(wc -c < "$file" | awk '{print $1}') || die "cannot read downloaded installer size"
     case "$size" in
         ''|*[!0-9]*) die "cannot read downloaded installer size" ;;
-    esac
-    case "$QUICKTUI_MAX_INSTALLER_BYTES" in
-        ''|*[!0-9]*) die "QUICKTUI_MAX_INSTALLER_BYTES must be a byte count" ;;
     esac
     if [ "$size" -gt "$QUICKTUI_MAX_INSTALLER_BYTES" ]; then
         die "installer download exceeds ${QUICKTUI_MAX_INSTALLER_BYTES} bytes"
@@ -212,19 +178,14 @@ detect_platform
 
 asset="quicktui-installer-${platform_os}-${platform_arch}"
 tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/quicktui-installer.XXXXXX") || die "mktemp failed"
-cleanup() {
-    rm -rf "$tmp_dir"
-}
+cleanup() { rm -rf "$tmp_dir"; }
 trap cleanup EXIT HUP INT TERM
 
 if uses_preview_channel "$@" && [ "$QUICKTUI_INSTALLER_RELEASES_EXPLICIT" != "1" ]; then
     manifest_file="${tmp_dir}/server-manifest.json"
     download "$QUICKTUI_UPDATE_MANIFEST_URL" "$manifest_file" || die "download failed: $QUICKTUI_UPDATE_MANIFEST_URL"
     preview_tag=$(manifest_preview_tag "$manifest_file")
-    case "$preview_tag" in
-        server2-preview-*) ;;
-        *) die "server manifest does not include a valid preview tag" ;;
-    esac
+    case "$preview_tag" in server2-preview-*) ;; *) die "server manifest does not include a valid preview tag" ;; esac
     QUICKTUI_INSTALLER_RELEASES=$(release_base_for_tag "$preview_tag")
     export QUICKTUI_INSTALLER_RELEASES
 fi

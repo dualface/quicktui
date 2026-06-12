@@ -88,7 +88,12 @@ detect_platform() {
     esac
 }
 
+log_download_url() {
+    printf 'Downloading URL: %s\n' "$1" >&2
+}
+
 download() {
+    log_download_url "$1"
     if command -v curl >/dev/null 2>&1; then
         curl -fsSL "$1" -o "$2"
     elif command -v wget >/dev/null 2>&1; then
@@ -121,6 +126,7 @@ download_installer() {
         ''|*[!0-9]*) die "QUICKTUI_MAX_INSTALLER_BYTES must be a byte count" ;;
     esac
     if command -v curl >/dev/null 2>&1; then
+        log_download_url "$1"
         curl -fsSL --max-filesize "$QUICKTUI_MAX_INSTALLER_BYTES" "$1" -o "$2"
     else
         download "$1" "$2"
@@ -197,7 +203,7 @@ sha_url="${installer_url}.sha256"
 installer="${tmp_dir}/${asset}"
 sha_file="${installer}.sha256"
 
-printf 'Downloading %s...\n' "$asset" >&2
+printf 'Downloading installer asset: %s\n' "$asset" >&2
 download_installer "$installer_url" "$installer" || die "download failed: $installer_url"
 check_installer_size "$installer"
 checksum_available=0

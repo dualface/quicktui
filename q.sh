@@ -1842,12 +1842,12 @@ configure_service() {
     # Drop ONLY the server's QR-code reminder line so we can re-emit it
     # under "Getting started" with our own formatting. Any other line that
     # happens to mention --qrcode (e.g. an error message) still shows.
-    # Anchor to the literal `'quicktui-server --qrcode'` token that
+    # Anchor to the literal `'quicktui-server --list-addr --qrcode'` token that
     # svcinstall.go emits so an unrelated future log line that happens
     # to mention `--qrcode` (e.g. a config-update notice) is still
     # printed. If the server-side string changes, update both this
     # filter and the corresponding contract note in website/AGENTS.md.
-    awk "/'quicktui-server --qrcode' to display the connection QR code/ { next } { print }" "$_SVC_OUT"
+    awk "/'quicktui-server --list-addr --qrcode' to display the connection QR code/ { next } { print }" "$_SVC_OUT"
     rm -f "$_SVC_OUT"
     _SVC_OUT=""
 
@@ -1968,13 +1968,11 @@ print_success() {
             printf '\n'
             print_interactive_qrcode
         else
-            # `quicktui-server --qrcode` alone needs an explicit --addr
-            # (qrconnect.Print does not fall back to ~/.config/quicktui
-            # /config). Use the IP we already computed for the browser
-            # URL so a copy-paste produces a scannable QR immediately.
+            # Use the native address-selection flow so the copied command
+            # handles hosts where multiple LAN addresses are available.
             printf '    Run:\n'
-            printf '      %s%s --qrcode --addr %s:%s%s\n' \
-                "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$_ip" "$LISTEN_PORT" "$C_RESET"
+            printf '      %s%s --list-addr --qrcode%s\n' \
+                "$C_BOLD$C_GREEN" "$INSTALL_PATH" "$C_RESET"
             printf '    to display the connection QR code\n'
             printf '    for the iOS app.\n'
         fi

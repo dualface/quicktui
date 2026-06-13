@@ -24,8 +24,8 @@
     "published_at": "2026-05-27T09:20:50Z"
   },
   "preview": {
-    "tag": "server2-preview-20260613-104846-97854b348",
-    "release_url": "https://github.com/dualface/quicktui/releases/tag/server2-preview-20260613-104846-97854b348",
+    "tag": "server2-preview-20260614-003605-788544a5a",
+    "release_url": "https://github.com/dualface/quicktui/releases/tag/server2-preview-20260614-003605-788544a5a",
     "assets": [
       "quicktui-server-darwin-amd64",
       "quicktui-server-darwin-amd64.gz",
@@ -52,6 +52,6 @@
       "quicktui-server-windows-arm64.exe.gz.sha256",
       "quicktui-server-windows-arm64.exe.sha256"
     ],
-    "published_at": "2026-06-13T03:08:26Z"
+    "published_at": "2026-06-13T16:38:48Z"
   }
 }

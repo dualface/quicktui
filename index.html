@@ -923,7 +923,7 @@ html[lang="zh"] h3 .serif {
             <div class="hi-row">
               <span class="cmd">
                 <span class="cmd-variant on" data-region="global" data-copy="curl -fsSL https://quicktui.ai/q.sh | sh"><span class="ac">curl</span> -fsSL https://quicktui.ai/q.sh | <span class="ac">sh</span></span>
-                <span class="cmd-variant" data-region="cn" data-copy="curl -fsSL https://dl.twotwobear.cn/q.sh | sh"><span class="ac">curl</span> -fsSL https://dl.twotwobear.cn/q.sh | <span class="ac">sh</span></span>
+                <span class="cmd-variant" data-region="cn" data-copy="curl -fsSL https://dl.quicktui.cn/q.sh | sh"><span class="ac">curl</span> -fsSL https://dl.quicktui.cn/q.sh | <span class="ac">sh</span></span>
               </span>
               <button type="button" class="copy" data-i="hero.install.copy">Copy</button>
             </div>
@@ -1068,7 +1068,7 @@ html[lang="zh"] h3 .serif {
           <div class="steps">
             <div class="step"><span class="n">01</span><div><b data-i="step1.t">SSH-capable server → App wizard.</b><div class="d" data-i="step1.d">Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.</div></div></div>
             <div class="step"><span class="n">02</span><div><b data-i="step2.t">No SSH? Run on the server.</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step2.d" style="margin-top:4px">Copy that one line to the server's terminal and run it. Done in under a minute.</div></div></div>
-            <div class="step"><span class="n">03</span><div><b data-i="step-cn.t">Mainland China mirror.</b><div class="d"><span class="mono ac">curl -fsSL https://dl.twotwobear.cn/q.sh | sh</span></div><div class="d" data-i="step-cn.d" style="margin-top:4px">This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.twotwobear.cn/q.sh to use OSS-backed automatic updates.</div></div></div>
+            <div class="step"><span class="n">03</span><div><b data-i="step-cn.t">Mainland China mirror.</b><div class="d"><span class="mono ac">curl -fsSL https://dl.quicktui.cn/q.sh | sh</span></div><div class="d" data-i="step-cn.d" style="margin-top:4px">This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.quicktui.cn/q.sh to use OSS-backed automatic updates.</div></div></div>
             <div class="step"><span class="n">04</span><div><b data-i="step3.t">Pair the app, or open a browser.</b><div class="d" data-i-html="step3.d">On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.</div></div></div>
           </div>
         </div>
@@ -1513,7 +1513,7 @@ const I18N = {
   "step2.t": { en: "No SSH? Run on the server.", zh: "不能 SSH？直接到机器上跑。" },
   "step2.d": { en: `Copy that one line to the server's terminal and run it. Done in under a minute.`, zh: `把上面那行命令复制到服务器终端运行即可。一分钟搞定。` },
   "step-cn.t": { en: "Mainland China mirror.", zh: "中国大陆镜像入口。" },
-  "step-cn.d": { en: "This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.twotwobear.cn/q.sh to use OSS-backed automatic updates.", zh: "这是面向中国大陆用户的并列入口。已通过 quicktui.ai/q.sh 安装的服务不会自动迁移; 重新执行 dl.twotwobear.cn/q.sh 后才会走 OSS 自动更新。" },
+  "step-cn.d": { en: "This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.quicktui.cn/q.sh to use OSS-backed automatic updates.", zh: "这是面向中国大陆用户的并列入口。已通过 quicktui.ai/q.sh 安装的服务不会自动迁移; 重新执行 dl.quicktui.cn/q.sh 后才会走 OSS 自动更新。" },
   "step3.t": { en: "Pair the app, or open a browser.", zh: "配对 App，或用浏览器。" },
   "step3.d": { en: `On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.`, zh: `在服务器运行 <span class="mono ac">quicktui-server --qrcode</span>，然后在 App 里点 <span class="mono ac">+</span> → 扫描。<br>浏览器用户：访问 <span class="mono ac">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
 

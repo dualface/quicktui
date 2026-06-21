@@ -1842,12 +1842,11 @@ configure_service() {
     # Drop ONLY the server's QR-code reminder line so we can re-emit it
     # under "Getting started" with our own formatting. Any other line that
     # happens to mention --qrcode (e.g. an error message) still shows.
-    # Anchor to the literal `'quicktui-server --list-addr --qrcode'` token that
-    # svcinstall.go emits so an unrelated future log line that happens
-    # to mention `--qrcode` (e.g. a config-update notice) is still
-    # printed. If the server-side string changes, update both this
-    # filter and the corresponding contract note in website/AGENTS.md.
-    awk "/'quicktui-server --list-addr --qrcode' to display the connection QR code/ { next } { print }" "$_SVC_OUT"
+    awk "
+        /Run 'quicktui-server --list-addr --qrcode' to display the connection QR code/ { next }
+        /Run '\\/.*' --list-addr --qrcode to display the connection QR code/ { next }
+        { print }
+    " "$_SVC_OUT"
     rm -f "$_SVC_OUT"
     _SVC_OUT=""
 

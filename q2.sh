@@ -8,11 +8,11 @@ set -eu
 
 QUICKTUI_REPO="${QUICKTUI_REPO:-dualface/quicktui}"
 QUICKTUI_RELEASES="${QUICKTUI_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/latest/download}"
-[ "${QUICKTUI_INSTALLER_RELEASES+x}" = x ] && QUICKTUI_INSTALLER_RELEASES_EXPLICIT=1 || QUICKTUI_INSTALLER_RELEASES_EXPLICIT=0
-QUICKTUI_INSTALLER_RELEASES="${QUICKTUI_INSTALLER_RELEASES:-$QUICKTUI_RELEASES}"
+QUICKTUI_INSTALLER_RELEASE_TAG="${QUICKTUI_INSTALLER_RELEASE_TAG:-installer-latest}"
+QUICKTUI_INSTALLER_RELEASES="${QUICKTUI_INSTALLER_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/download/${QUICKTUI_INSTALLER_RELEASE_TAG}}"
 QUICKTUI_UPDATE_MANIFEST_URL="${QUICKTUI_UPDATE_MANIFEST_URL:-https://quicktui.ai/server-manifest.json}"
 QUICKTUI_MAX_INSTALLER_BYTES="${QUICKTUI_MAX_INSTALLER_BYTES:-52428800}"
-export QUICKTUI_RELEASES QUICKTUI_INSTALLER_RELEASES QUICKTUI_UPDATE_MANIFEST_URL
+export QUICKTUI_RELEASES QUICKTUI_INSTALLER_RELEASE_TAG QUICKTUI_INSTALLER_RELEASES QUICKTUI_UPDATE_MANIFEST_URL
 
 die() {
     printf 'quicktui bootstrap: %s\n' "$*" >&2
@@ -48,13 +48,16 @@ Common installer options:
 
 Environment:
   QUICKTUI_INSTALLER_RELEASES  Installer binary release base URL
+  QUICKTUI_INSTALLER_RELEASE_TAG
+                                Installer release tag used by default
   QUICKTUI_RELEASES            Server asset release base URL inherited by installer
   QUICKTUI_UPDATE_MANIFEST_URL Server manifest URL inherited by installer
 
 Server channel:
   Exactly one of --release or --preview selects the server build. Set
   QUICKTUI_INSTALLER_RELEASES only when the installer binary itself must come
-  from a non-latest release.
+  from a non-default installer release. The default installer tag is
+  installer-latest and is independent from server2 release tags.
 EOF
 }
 
@@ -101,24 +104,6 @@ download() {
     else
         die "curl or wget is required to download quicktui-installer"
     fi
-}
-
-uses_preview_channel() {
-    for arg do [ "$arg" = "--preview" ] && return 0; done
-    return 1
-}
-
-release_base_for_tag() {
-    tag=$1
-    _base=${QUICKTUI_RELEASES%/}
-    case "$_base" in
-        */releases/latest/download) printf '%s/download/%s\n' "${_base%/latest/download}" "$tag" ;;
-        *) printf 'https://github.com/%s/releases/download/%s\n' "$QUICKTUI_REPO" "$tag" ;;
-    esac
-}
-
-manifest_preview_tag() {
-    tr -d '[:space:]' < "$1" | sed -n 's/.*"preview":{[^}]*"tag":"\([^"]*\)".*/\1/p'
 }
 
 download_installer() {
@@ -186,15 +171,6 @@ asset="quicktui-installer-${platform_os}-${platform_arch}"
 tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/quicktui-installer.XXXXXX") || die "mktemp failed"
 cleanup() { rm -rf "$tmp_dir"; }
 trap cleanup EXIT HUP INT TERM
-
-if uses_preview_channel "$@" && [ "$QUICKTUI_INSTALLER_RELEASES_EXPLICIT" != "1" ]; then
-    manifest_file="${tmp_dir}/server-manifest.json"
-    download "$QUICKTUI_UPDATE_MANIFEST_URL" "$manifest_file" || die "download failed: $QUICKTUI_UPDATE_MANIFEST_URL"
-    preview_tag=$(manifest_preview_tag "$manifest_file")
-    case "$preview_tag" in server2-preview-*) ;; *) die "server manifest does not include a valid preview tag" ;; esac
-    QUICKTUI_INSTALLER_RELEASES=$(release_base_for_tag "$preview_tag")
-    export QUICKTUI_INSTALLER_RELEASES
-fi
 
 base_url=${QUICKTUI_INSTALLER_RELEASES%/}
 installer_url="${base_url}/${asset}"

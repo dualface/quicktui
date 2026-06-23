@@ -1,6 +1,8 @@
 .*
 !.github
+!.gitignore
 Thumbs.db
 
 docs/
 .omx/
+.verify-artifacts/

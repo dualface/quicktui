@@ -1,0 +1,14 @@
+[Unit]
+Description=QuickTUI public installer verifier
+After=systemd-logind.service dbus.service network-online.target
+Wants=systemd-logind.service dbus.service network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/qt-verify.env
+ExecStart=/usr/local/bin/verify-systemd-boot.sh
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

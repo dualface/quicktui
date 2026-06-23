@@ -1,0 +1,42 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV container=docker
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    ca-certificates \
+    coreutils \
+    curl \
+    dbus \
+    dbus-user-session \
+    gzip \
+    jq \
+    locales \
+    passwd \
+    procps \
+    systemd \
+    systemd-sysv \
+    tmux \
+    xz-utils \
+    && sed -i 's/^# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen \
+    && locale-gen en_US.UTF-8 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -s /bin/sh -u 1000 qtuser \
+    && mkdir -p /home/qtuser/.local/bin /home/qtuser/.config/quicktui \
+    && chown -R qtuser:qtuser /home/qtuser
+
+COPY monitoring/ /opt/quicktui-verify/
+
+RUN install -m 0644 /opt/quicktui-verify/qt-verify.service /etc/systemd/system/qt-verify.service \
+    && : > /etc/qt-verify.env \
+    && if [ -f /opt/quicktui-verify/verify-systemd-boot.sh ]; then install -m 0755 /opt/quicktui-verify/verify-systemd-boot.sh /usr/local/bin/verify-systemd-boot.sh; fi \
+    && if [ -f /opt/quicktui-verify/verify-install.sh ]; then install -m 0755 /opt/quicktui-verify/verify-install.sh /usr/local/bin/verify-install.sh; fi \
+    && ln -sf ../qt-verify.service /etc/systemd/system/multi-user.target.wants/qt-verify.service
+
+STOPSIGNAL SIGRTMIN+3
+
+CMD ["/sbin/init"]

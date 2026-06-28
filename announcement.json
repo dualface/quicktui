@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "announcement": {
+    "id": "test-2026-06-28",
+    "severity": "info",
+    "title": {
+      "en": "Announcement",
+      "cn": "通告"
+    },
+    "message": {
+      "en": "This is a test announcement.",
+      "cn": "这是一条测试通告。"
+    }
+  }
+}

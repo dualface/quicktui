@@ -979,7 +979,7 @@ html[lang="zh"] h3 .serif {
         <div class="feat col-12">
           <div class="idx">F.06</div>
           <h3 data-i="f06.t">Runs as a service, forever</h3>
-          <p data-i-html="f06.b">Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles install and service registration.</p>
+          <p data-i-html="f06.b">Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.</p>
         </div>
       </div>
     </section>
@@ -1154,7 +1154,7 @@ html[lang="zh"] h3 .serif {
           <div class="opt"><code class="mono">--preview</code><span data-i="opt.preview">Install the latest server2 preview release</span></div>
           <div class="opt"><code class="mono">--check</code><span data-i="opt.check">Run environment checks without installing</span></div>
           <div class="opt"><code class="mono">--no-service</code><span data-i="opt.noservice">Skip background service setup</span></div>
-          <div class="opt"><code class="mono">--uninstall</code><span data-i="opt.uninstall">Remove QuickTUI and all related files</span></div>
+          <div class="opt"><code class="mono">--uninstall</code><span data-i="opt.uninstall">Stop the service and uninstall the server</span></div>
         </div>
       </div>
     </section>
@@ -1218,7 +1218,7 @@ html[lang="zh"] h3 .serif {
           <div class="n">Q.05</div>
           <div>
             <div class="q" data-i="q5.q">How do server upgrade and restart work?</div>
-            <div class="a" data-i-html="q5.a">Two paths: <b>re-run the installer</b> (atomic swap, rollback on failure, config preserved); or <b>server self-update</b> (cached release checks, platform download, binary replacement). Self-update does not auto-restart; restart from the app/browser, call <span class="mono">POST /api/restart</span>, or restart the service. Update / restart / shutdown are serialized. Check status: <span class="mono">quicktui-server --check-upgrade</span>.</div>
+            <div class="a" data-i-html="q5.a">Two paths: <b>re-run the installer</b> (atomic swap, rollback on failure, config preserved); or <b>server self-update</b> (cached release checks, platform download, binary replacement). Self-update does not auto-restart; restart from the app/browser, call <span class="mono">POST /v2/api/restart</span>, or restart the service. Update / restart / shutdown are serialized. Check status: <span class="mono">quicktui-server --check-upgrade</span>.</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1227,7 +1227,7 @@ html[lang="zh"] h3 .serif {
           <div class="n">Q.06</div>
           <div>
             <div class="q" data-i="q6.q">Can I validate the server environment without installing?</div>
-            <div class="a" data-i-html="q6.a">Yes. <span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</span> runs all preflight checks with no downloads or writes: platform / arch, tmux 3.2+, locale, terminfo for TERM, default shell executable, PTY allocation via <span class="mono">script</span>, and a throwaway tmux session. Override values with <span class="mono">--term</span> / <span class="mono">--lang</span>.</div>
+            <div class="a" data-i-html="q6.a">Yes. <span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</span> runs environment preflight checks without installing or configuring the server.</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1290,7 +1290,7 @@ html[lang="zh"] h3 .serif {
           <div class="n">Q.13</div>
           <div>
             <div class="q" data-i="q13.q">How do I uninstall QuickTUI?</div>
-            <div class="a" data-i-html="q13.a"><span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</span> — stops the service, removes the binary, config, known launchd / systemd service files, and logs. Also cleans up leftover service files from partial installs.</div>
+            <div class="a" data-i-html="q13.a"><span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</span> — stops the service and uninstalls the server it manages.</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1483,7 +1483,7 @@ const I18N = {
   "f05.t": { en: "Three ways to get attached", zh: "三种方式即刻接入" },
   "f05.b": { en: `Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em class="ac">Quick Setup</em>（SSH 自动安装）、<em class="ac">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
   "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
-  "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. <span class="mono">q.sh</span> handles install and service registration.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。<span class="mono">q.sh</span> 负责安装与服务注册。` },
+  "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。安装器与服务端安装流程负责安装与服务注册。` },
 
   // ───── in action
   "ia.eyebrow": { en: "§ 02 / In Action", zh: "§ 02 / 实战演示" },
@@ -1561,7 +1561,7 @@ const I18N = {
   "opt.preview": { en: "Install the latest server2 preview release", zh: "安装最新 server2 preview 版本" },
   "opt.check": { en: "Run environment checks without installing", zh: "仅运行环境检查，不安装" },
   "opt.noservice": { en: "Skip background service setup", zh: "跳过后台服务注册" },
-  "opt.uninstall": { en: "Remove QuickTUI and all related files", zh: "移除 QuickTUI 及所有相关文件" },
+  "opt.uninstall": { en: "Stop the service and uninstall the server", zh: "停止服务并卸载服务端" },
 
   // ───── use cases
   "uc.eyebrow": { en: "§ 03 / Use Cases", zh: "§ 03 / 使用场景" },
@@ -1607,10 +1607,10 @@ launchctl kickstart -k gui/$(id -u)/ai.quicktui
 systemctl --user restart quicktui</pre>` },
 
   "q5.q": { en: "How do server upgrade and restart work?", zh: "服务端升级与重启如何工作？" },
-  "q5.a": { en: `<p>Two paths:</p><p><b>Re-run the installer</b> — atomic swap, rollback on failure, config preserved.</p><p><b>Server self-update</b> — cached release checks, platform download, binary replacement. Self-update does not auto-restart; restart from the app/browser, call <span class="mono">POST /api/restart</span>, or restart the service.</p><p>Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa.</p><p>Check status:</p><pre class="cmd">quicktui-server --check-upgrade</pre>`, zh: `<p>两条路径：</p><p><b>重新运行安装脚本</b> — 原子替换、失败回滚、配置保留。</p><p><b>服务端自更新</b> — 使用缓存发布检查、下载当前平台二进制、替换可执行文件。自更新不会自动重启；可在 App/浏览器重启、调用 <span class="mono">POST /api/restart</span>，或重启系统服务。</p><p>升级 / 重启 / 关停相互串行：重启进行中时新升级请求会被拒绝，反之亦然。</p><p>查看状态：</p><pre class="cmd">quicktui-server --check-upgrade</pre>` },
+  "q5.a": { en: `<p>Two paths:</p><p><b>Re-run the installer</b> — atomic swap, rollback on failure, config preserved.</p><p><b>Server self-update</b> — cached release checks, platform download, binary replacement. Self-update does not auto-restart; restart from the app/browser, call <span class="mono">POST /v2/api/restart</span>, or restart the service.</p><p>Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa.</p><p>Check status:</p><pre class="cmd">quicktui-server --check-upgrade</pre>`, zh: `<p>两条路径：</p><p><b>重新运行安装脚本</b> — 原子替换、失败回滚、配置保留。</p><p><b>服务端自更新</b> — 使用缓存发布检查、下载当前平台二进制、替换可执行文件。自更新不会自动重启；可在 App/浏览器重启、调用 <span class="mono">POST /v2/api/restart</span>，或重启系统服务。</p><p>升级 / 重启 / 关停相互串行：重启进行中时新升级请求会被拒绝，反之亦然。</p><p>查看状态：</p><pre class="cmd">quicktui-server --check-upgrade</pre>` },
 
   "q6.q": { en: "Can I validate the server environment without installing?", zh: "可以不安装就验证服务端环境吗？" },
-  "q6.a": { en: `<p>Yes — run all preflight checks with no downloads or writes:</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre><p>It verifies: platform / arch, tmux 3.2+, locale, terminfo for TERM, default shell executable, PTY allocation via <span class="mono">script</span>, and a throwaway tmux session. Override values with <span class="mono">--term</span> / <span class="mono">--lang</span>.</p>`, zh: `<p>可以 — 运行全部预检，不下载也不写入：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre><p>检验项：平台 / 架构、tmux 3.2+、locale、TERM 对应的 terminfo、默认 shell 可执行、通过 <span class="mono">script</span> 分配 PTY、以及一个临时 tmux 会话。用 <span class="mono">--term</span> / <span class="mono">--lang</span> 覆盖检查值。</p>` },
+  "q6.a": { en: `<p>Yes — run environment preflight checks without installing or configuring the server:</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre>`, zh: `<p>可以 — 运行环境预检，不安装、不写入服务端配置：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre>` },
 
   "q7.q": { en: `QuickTUI says "token is required".`, zh: `QuickTUI 提示"token is required"。` },
   "q7.a": { en: `<p><b>Service:</b> ensure <span class="path">~/.config/quicktui/config</span> exists and contains:</p><pre class="cmd">QUICKTUI_TOKEN=…</pre><p><b>Manual start:</b> pass <span class="mono">--token</span> or set <span class="path">QUICKTUI_TOKEN</span> in the environment — normal server startup does not read the config file automatically.</p>`, zh: `<p><b>服务方式：</b>确保 <span class="path">~/.config/quicktui/config</span> 存在且包含：</p><pre class="cmd">QUICKTUI_TOKEN=…</pre><p><b>手动启动：</b>传入 <span class="mono">--token</span> 或在环境中设置 <span class="path">QUICKTUI_TOKEN</span> — 普通启动不会自动读取配置文件。</p>` },
@@ -1659,7 +1659,7 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
   --addr 127.0.0.1 --port 9000</pre><p>安装脚本接受 IPv4 地址或主机名，不接受 IPv6 字面量。</p>` },
 
   "q13.q": { en: "How do I uninstall QuickTUI?", zh: "如何卸载 QuickTUI？" },
-  "q13.a": { en: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>Stops the service, removes the binary, config, known launchd / systemd service files, and logs. Also cleans up leftover service files from partial installs.</p>`, zh: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>停止服务，删除二进制、配置、已知的 launchd / systemd 服务文件与日志。同时清理残留的部分安装遗留文件。</p>` },
+  "q13.a": { en: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>Stops the service and uninstalls the server it manages.</p>`, zh: `<pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>停止服务并卸载它所管理的服务端。</p>` },
 
   "q14tcc.q": { en: `macOS file browser hangs on Desktop / Documents / Downloads.`, zh: `macOS 文件浏览器访问 桌面 / 文稿 / 下载 等目录会卡住。` },
   "q14tcc.a": {

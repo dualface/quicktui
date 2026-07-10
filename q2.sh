@@ -20,12 +20,13 @@ die() {
 }
 
 usage() {
-    cat <<'EOF'
+    cat <<EOF
 QuickTUI Installer Bootstrap
 
 Usage:
-  curl -fsSL https://quicktui.ai/q2.sh | sh -s -- --release
-  curl -fsSL https://quicktui.ai/q2.sh | sh -s -- [installer options]
+  curl -fsSL https://quicktui.ai/q.sh | sh
+  curl -fsSL https://quicktui.ai/q.sh | sh -s -- --preview
+  curl -fsSL https://quicktui.ai/q.sh | sh -s -- [installer options]
 
 This Unix bootstrap downloads quicktui-installer for the current OS/CPU and
 executes it with the original arguments. Windows users should download and run
@@ -54,10 +55,11 @@ Environment:
   QUICKTUI_UPDATE_MANIFEST_URL Server manifest URL inherited by installer
 
 Server channel:
-  Exactly one of --release or --preview selects the server build. Set
+  --release is added by default when neither --release nor --preview is passed.
+  Use --preview explicitly to select the preview server build. Set
   QUICKTUI_INSTALLER_RELEASES only when the installer binary itself must come
-  from a non-default installer release. The default installer tag is
-  installer-latest and is independent from server2 release tags.
+  from a non-default installer release. The current default installer tag is
+  ${QUICKTUI_INSTALLER_RELEASE_TAG} and is independent from server2 release tags.
 EOF
 }
 
@@ -67,6 +69,21 @@ case "${1:-}" in
         exit 0
         ;;
 esac
+
+has_server_channel_arg() {
+    for arg do
+        case "$arg" in
+            --release|--preview)
+                return 0
+                ;;
+        esac
+    done
+    return 1
+}
+
+if ! has_server_channel_arg "$@"; then
+    set -- --release "$@"
+fi
 
 need_cmd() {
     command -v "$1" >/dev/null 2>&1 || die "$1 is required"

@@ -82,13 +82,16 @@ jobs:
             exit 1
           }
 
-      - name: Test uninstall
+      - name: Test uninstall (unregisters service)
         run: |
           sh q.sh --uninstall
-          [ ! -f "$HOME/.local/bin/quicktui-server" ] || { echo "::error::Binary still exists after uninstall"; exit 1; }
-          [ ! -d "$HOME/.config/quicktui" ] || { echo "::error::Config dir still exists after uninstall"; exit 1; }
+          # The Rust q.sh delegates uninstall to the server's --uninstall-service:
+          # it unregisters the launchd service (removes the plist) and stops it, but
+          # intentionally leaves the installed binary and config in place. Full file
+          # removal is a separate/manual step, not part of --uninstall.
           [ ! -f "$HOME/Library/LaunchAgents/ai.quicktui.plist" ] || { echo "::error::Plist still exists after uninstall"; exit 1; }
-          echo "Uninstall clean"
+          ! curl -fsS --max-time 2 http://127.0.0.1:18022/ >/dev/null 2>&1 || { echo "::error::Service still reachable after uninstall"; exit 1; }
+          echo "Service unregistered (binary/config intentionally left)"
 
       - name: Test reinstall after uninstall
         run: |

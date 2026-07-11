@@ -36,6 +36,7 @@ Common installer options:
   -y, --yes                 Non-interactive mode
       --release             Install release server
       --preview             Install preview server
+      --publish-tag TAG     Install this exact release tag, bypassing manifest
       --token TOKEN         Set access token
       --rotate-token        Generate and save a new token
       --addr HOST[:PORT]    Listen host or host:port
@@ -55,11 +56,15 @@ Environment:
   QUICKTUI_UPDATE_MANIFEST_URL Server manifest URL inherited by installer
 
 Server channel:
-  --release is added by default when neither --release nor --preview is passed.
-  Use --preview explicitly to select the preview server build. Set
-  QUICKTUI_INSTALLER_RELEASES only when the installer binary itself must come
-  from a non-default installer release. The current default installer tag is
-  ${QUICKTUI_INSTALLER_RELEASE_TAG} and is independent from server2 release tags.
+  --release is added by default when neither --release, --preview, nor
+  --publish-tag is passed. Use --preview explicitly to select the preview
+  server build. Use --publish-tag TAG to install that exact release tag
+  directly from the release host, bypassing server-manifest.json entirely.
+  --publish-tag overrides --release/--preview when both are given.
+  Set QUICKTUI_INSTALLER_RELEASES only when the installer binary itself must
+  come from a non-default installer release. The current default installer
+  tag is ${QUICKTUI_INSTALLER_RELEASE_TAG} and is independent from server2
+  release tags.
 EOF
 }
 
@@ -73,7 +78,7 @@ esac
 has_server_channel_arg() {
     for arg do
         case "$arg" in
-            --release|--preview)
+            --release|--preview|--publish-tag|--publish-tag=*)
                 return 0
                 ;;
         esac

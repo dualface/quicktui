@@ -339,6 +339,13 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
   font-family: var(--mono);
   font-size: 15px;
 }
+.hero-install .hi-row + .hi-row { margin-top: 8px; }
+.hero-install .hi-row .os-tag {
+  flex: none;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink-4);
+}
 .hero-install .hi-row .cmd { flex: 1; color: var(--ink); overflow-x: auto; white-space: nowrap; min-width: 0; }
 .hero-install .hi-row .cmd .ac { color: var(--accent); }
 .hero-install .cmd-variant { display: none; }
@@ -921,9 +928,17 @@ html[lang="zh"] h3 .serif {
               </div>
             </div>
             <div class="hi-row">
+              <span class="os-tag">MAC·LINUX</span>
               <span class="cmd">
                 <span class="cmd-variant on" data-region="global" data-copy="curl -fsSL https://quicktui.ai/q.sh | sh"><span class="ac">curl</span> -fsSL https://quicktui.ai/q.sh | <span class="ac">sh</span></span>
                 <span class="cmd-variant" data-region="cn" data-copy="curl -fsSL https://dl.quicktui.cn/q.sh | sh"><span class="ac">curl</span> -fsSL https://dl.quicktui.cn/q.sh | <span class="ac">sh</span></span>
+              </span>
+              <button type="button" class="copy" data-i="hero.install.copy">Copy</button>
+            </div>
+            <div class="hi-row">
+              <span class="os-tag">WINDOWS</span>
+              <span class="cmd">
+                <span class="cmd-variant on" data-region="global" data-copy="irm https://quicktui.ai/q.ps1 | iex"><span class="ac">irm</span> https://quicktui.ai/q.ps1 | <span class="ac">iex</span></span>
               </span>
               <button type="button" class="copy" data-i="hero.install.copy">Copy</button>
             </div>
@@ -979,7 +994,7 @@ html[lang="zh"] h3 .serif {
         <div class="feat col-12">
           <div class="idx">F.06</div>
           <h3 data-i="f06.t">Runs as a service, forever</h3>
-          <p data-i-html="f06.b">Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.</p>
+          <p data-i-html="f06.b">Installed as a user service on macOS launchd, Linux systemd & Windows Scheduled Tasks. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.</p>
         </div>
       </div>
     </section>
@@ -1069,7 +1084,8 @@ html[lang="zh"] h3 .serif {
             <div class="step"><span class="n">01</span><div><b data-i="step1.t">SSH-capable server → App wizard.</b><div class="d" data-i="step1.d">Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.</div></div></div>
             <div class="step"><span class="n">02</span><div><b data-i="step2.t">No SSH? Run on the server.</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step2.d" style="margin-top:4px">Copy that one line to the server's terminal and run it. Done in under a minute.</div></div></div>
             <div class="step"><span class="n">03</span><div><b data-i="step-cn.t">Mainland China mirror.</b><div class="d"><span class="mono ac">curl -fsSL https://dl.quicktui.cn/q.sh | sh</span></div><div class="d" data-i="step-cn.d" style="margin-top:4px">This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.quicktui.cn/q.sh to use OSS-backed automatic updates.</div></div></div>
-            <div class="step"><span class="n">04</span><div><b data-i="step3.t">Pair the app, or open a browser.</b><div class="d" data-i-html="step3.d">On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.</div></div></div>
+            <div class="step"><span class="n">04</span><div><b data-i="stepwin.t">Windows server? One line in PowerShell.</b><div class="d"><span class="mono ac">irm https://quicktui.ai/q.ps1 | iex</span></div><div class="d" data-i="stepwin.d" style="margin-top:4px">Downloads the installer, installs the qscn session backend automatically, and registers a Scheduled Task that starts the server at logon. Mainland China mirror support for Windows arrives once qscn assets are mirrored. On legacy Windows PowerShell 5.1 with TLS 1.2 disabled, prepend <span class="mono">[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 3072;</span> to the same line.</div></div></div>
+            <div class="step"><span class="n">05</span><div><b data-i="step3.t">Pair the app, or open a browser.</b><div class="d" data-i-html="step3.d">On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.</div></div></div>
           </div>
         </div>
       </div>
@@ -1334,11 +1350,20 @@ html[lang="zh"] h3 .serif {
           <div class="plus">+</div>
         </div>
 
+        <div class="faq-item" id="q-osc-color-leak">
+          <div class="n">Q.18</div>
+          <div>
+            <div class="q" data-i="qoscleak.q">Garbage like 11;rgb:2828/2c2c/3434 keeps appearing in a terminal app's input box.</div>
+            <div class="a" data-i-html="qoscleak.a">Symptom and fix.</div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+
         <!-- ─── Group: iOS App & Browser ─── -->
         <div class="faq-group-label" data-i="faqg.client">iOS App & Browser</div>
 
         <div class="faq-item">
-          <div class="n">Q.18</div>
+          <div class="n">Q.19</div>
           <div>
             <div class="q" data-i="q15.q">What is the access token?</div>
             <div class="a" data-i-html="q15.a">A secret you set during installation — it protects your server from unauthorized access. Find it on your server: <span class="mono">cat ~/.config/quicktui/config</span>. Enter it when prompted on first login in the app or browser.</div>
@@ -1347,7 +1372,7 @@ html[lang="zh"] h3 .serif {
         </div>
 
         <div class="faq-item">
-          <div class="n">Q.19</div>
+          <div class="n">Q.20</div>
           <div>
             <div class="q" data-i="q16.q">Can I connect over the internet?</div>
             <div class="a" data-i-html="q16.a">Yes. You need the server reachable from the internet — via a public IP, VPN, reverse proxy, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. QuickTUI itself speaks plain HTTP on <span class="mono">8022</span>; if you use Cloudflare Tunnel, point the tunnel service to <span class="mono">http://127.0.0.1:8022</span> and use the public HTTPS hostname in the app, usually without an explicit port. <span class="mono">:443</span> is equivalent; do not use <span class="mono">:8022</span> on the public HTTPS URL.</div>
@@ -1356,7 +1381,7 @@ html[lang="zh"] h3 .serif {
         </div>
 
         <div class="faq-item">
-          <div class="n">Q.20</div>
+          <div class="n">Q.21</div>
           <div>
             <div class="q" data-i="q17.q">The app or browser shows "Session not found".</div>
             <div class="a" data-i-html="q17.a">This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running. Refresh the session list, then open an existing session or create a new one.</div>
@@ -1483,7 +1508,7 @@ const I18N = {
   "f05.t": { en: "Three ways to get attached", zh: "三种方式即刻接入" },
   "f05.b": { en: `Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em class="ac">Quick Setup</em>（SSH 自动安装）、<em class="ac">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
   "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
-  "f06.b": { en: `Installed as a user service on macOS launchd & Linux systemd. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.`, zh: `以用户级服务形式安装在 macOS launchd 与 Linux systemd 上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。安装器与服务端安装流程负责安装与服务注册。` },
+  "f06.b": { en: `Installed as a user service on macOS launchd, Linux systemd & Windows Scheduled Tasks. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.`, zh: `以用户级服务形式安装在 macOS launchd、Linux systemd 与 Windows 计划任务上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。安装器与服务端安装流程负责安装与服务注册。` },
 
   // ───── in action
   "ia.eyebrow": { en: "§ 02 / In Action", zh: "§ 02 / 实战演示" },
@@ -1514,6 +1539,8 @@ const I18N = {
   "step2.t": { en: "No SSH? Run on the server.", zh: "不能 SSH？直接到机器上跑。" },
   "step2.d": { en: `Copy that one line to the server's terminal and run it. Done in under a minute.`, zh: `把上面那行命令复制到服务器终端运行即可。一分钟搞定。` },
   "step-cn.t": { en: "Mainland China mirror.", zh: "中国大陆镜像入口。" },
+  "stepwin.t": { en: "Windows server? One line in PowerShell.", zh: "Windows 服务器？PowerShell 里跑一行。" },
+  "stepwin.d": { en: `Downloads the installer, installs the qscn session backend automatically, and registers a Scheduled Task that starts the server at logon. Mainland China mirror support for Windows arrives once qscn assets are mirrored. On legacy Windows PowerShell 5.1 with TLS 1.2 disabled, prepend <span class="mono">[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 3072;</span> to the same line.`, zh: `自动下载安装器、自动安装 qscn 会话后端，并注册登录时自启的计划任务。中国大陆镜像入口将在 qscn 资产镜像完成后支持 Windows。老旧 Windows PowerShell 5.1 若未启用 TLS 1.2，在同一行前面加上 <span class="mono">[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 3072;</span> 即可。` },
   "step-cn.d": { en: "This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.quicktui.cn/q.sh to use OSS-backed automatic updates.", zh: "这是面向中国大陆用户的并列入口。已通过 quicktui.ai/q.sh 安装的服务不会自动迁移; 重新执行 dl.quicktui.cn/q.sh 后才会走 OSS 自动更新。" },
   "step3.t": { en: "Pair the app, or open a browser.", zh: "配对 App，或用浏览器。" },
   "step3.d": { en: `On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.`, zh: `在服务器运行 <span class="mono ac">quicktui-server --qrcode</span>，然后在 App 里点 <span class="mono ac">+</span> → 扫描。<br>浏览器用户：访问 <span class="mono ac">http://&lt;host&gt;:8022</span>，粘贴一次 Token。` },
@@ -1681,6 +1708,12 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
     zh: `<p><b>现象。</b>在 tmux pane 里使用 Claude Code（或同类 TUI 工具如 OpenAI Codex CLI、aider）一段时间后，向上滚动 tmux 历史会看到重复的帧、错位的列，或旧渲染的碎片。重启 QuickTUI 服务端 <b>不能</b> 让桌面 tmux 自愈，只有 <span class="mono">tmux clear-history</span> 才能清掉。</p><p><b>原因。</b>Claude Code 的 TUI 基于 <b>Ink</b> 渲染库。当渲染区域超过 viewport（或满屏重绘时），Ink 的 render loop 会在 <b>主屏</b> 上发送 <span class="mono">CSI 3 J</span>（"擦除滚动条历史"）并重绘整屏 — 且没有 DECSET 2026（同步输出）包裹。tmux 把这些半截帧写进 pane scrollback。后续每次 SIGWINCH / 改尺寸会再叠加一份。上游 issue：</p><ul><li><a href="https://github.com/anthropics/claude-code/issues/29937" target="_blank" rel="noopener noreferrer">#29937 — Terminal rendering corruption in tmux</a></li><li><a href="https://github.com/anthropics/claude-code/issues/49086" target="_blank" rel="noopener noreferrer">#49086 — Resize duplicates banner/content in scrollback</a></li><li><a href="https://github.com/anthropics/claude-code/issues/37283" target="_blank" rel="noopener noreferrer">#37283 — TUI flicker / missing DECSET 2026</a></li></ul><p><b>解决方法。</b>用 <b>fullscreen 模式</b>跑 Claude Code — 切到 <b>alternate</b> screen buffer（和 vim / htop 一样），完全不动 scrollback。需要 <b>Claude Code v2.1.89+</b>：</p><pre class="cmd">/tui fullscreen</pre><p><b>v2.1.89 — v2.1.109</b> 版本用环境变量代替：</p><pre class="cmd">CLAUDE_CODE_NO_FLICKER=1 claude</pre><p><b>清掉已经污染的 scrollback。</b>烂字节已经在 tmux 内存里，只能整段清掉：</p><pre class="cmd">tmux clear-history</pre><p>然后用 fullscreen 模式重启 Claude Code 防止再次发生。QuickTUI 客户端在你选择运行了 Claude Code（或其他已知 main-screen TUI 工具）的 pane 时也会弹一条提示条。</p>`
   },
 
+  "qoscleak.q": { en: `Garbage like 11;rgb:2828/2c2c/3434 keeps appearing in a terminal app's input box.`, zh: `终端应用输入框反复出现 11;rgb:2828/2c2c/3434 之类乱码。` },
+  "qoscleak.a": {
+    en: `<p><b>Symptom.</b> When multiple clients (for example a local terminal plus the QuickTUI app or browser) attach to the same tmux session, the terminal app's input box repeatedly fills with garbage like <span class="mono">11;rgb:2828/2c2c/3434</span> — sometimes several in a row.</p><p><b>Cause.</b> Some terminal apps auto-detect your color theme by sending OSC 10/11/12 escape queries ("what are the current foreground / background / cursor colors?"). tmux forwards the query to the outer terminal and routes the reply back into the pane. With several clients attached, that reply can land after the app's short parsing window for that reply has already closed, so the app treats the raw escape bytes as literal keystrokes and drops them straight into its input box. This is an application-side bug, not a QuickTUI issue — for example Claude Code tracked it as <a href="https://github.com/anthropics/claude-code/issues/12910" target="_blank" rel="noopener noreferrer">#12910 — OSC terminal color query responses leak into input buffer</a>.</p><p><b>Fix.</b></p><ol><li>Give the affected app a fixed theme instead of auto-detect. In Claude Code, run <span class="mono">/theme</span> and pick a fixed light or dark value.</li><li>For other TUI tools, turn off automatic terminal color / theme detection the same way.</li><li>Optional: reduce escape-sequence fragmentation under tmux by adding this to <span class="path">~/.tmux.conf</span>:<pre class="cmd">set -s escape-time 100</pre></li></ol>`,
+    zh: `<p><b>现象。</b>多个客户端（比如本地终端加上 QuickTUI App 或浏览器）同时 attach 同一个 tmux session 时，终端应用的输入框会反复出现类似 <span class="mono">11;rgb:2828/2c2c/3434</span> 的乱码，有时连续好几条。</p><p><b>原因。</b>部分终端应用会通过发送 OSC 10/11/12 转义查询（"当前前景色 / 背景色 / 光标色是什么"）来自动探测配色主题。tmux 把查询转发给最外层终端，再把对方的回包路由回 pane。当多个客户端同时 attach 时，回包可能在应用为这次查询打开的解析窗口关闭之后才到达，于是应用把这些原始转义字节当成了普通按键，直接塞进了自己的输入框。这是终端应用侧的 bug，与 QuickTUI 无关 — 例如 Claude Code 就有对应的 <a href="https://github.com/anthropics/claude-code/issues/12910" target="_blank" rel="noopener noreferrer">#12910 — OSC terminal color query responses leak into input buffer</a>。</p><p><b>解决方法。</b></p><ol><li>把受影响的应用改成固定主题，不用自动探测。Claude Code 里运行 <span class="mono">/theme</span>，选一个固定的浅色或深色值。</li><li>其他 TUI 工具同理，关闭自动终端配色 / 主题检测。</li><li>可选：在 <span class="path">~/.tmux.conf</span> 里加一行，降低转义序列被拆片误判的概率：<pre class="cmd">set -s escape-time 100</pre></li></ol>`,
+  },
+
   "q15.q": { en: "What is the access token?", zh: "什么是 access token？" },
   "q15.a": { en: `<p>A secret you set during installation — it protects your server from unauthorized access. Find it on your server:</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>Enter it when prompted on first login in the app or browser.</p>`, zh: `<p>你在安装时设定的密钥 — 用于保护服务器不被未授权访问。在服务器上查看：</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>首次在 App 或浏览器登录时按提示输入。</p>` },
 
@@ -1760,7 +1793,6 @@ document.querySelectorAll('.hero-install').forEach(box => {
   const tabs = box.querySelectorAll('.hi-tab');
   const variants = box.querySelectorAll('.cmd-variant');
   const note = box.querySelector('.hi-note');
-  const copyBtn = box.querySelector('.copy');
 
   const setRegion = region => {
     tabs.forEach(t => {
@@ -1769,6 +1801,12 @@ document.querySelectorAll('.hero-install').forEach(box => {
       t.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     variants.forEach(v => v.classList.toggle('on', v.getAttribute('data-region') === region));
+    // Rows without a variant for this region (e.g. the Windows row on the CN
+    // mirror, where qscn assets are not mirrored yet) are hidden entirely.
+    box.querySelectorAll('.hi-row').forEach(row => {
+      const has = row.querySelector('.cmd-variant[data-region="' + region + '"]');
+      row.style.display = has ? '' : 'none';
+    });
     if (note) {
       const key = 'hero.install.note.' + region;
       note.setAttribute('data-i', key);
@@ -1778,9 +1816,11 @@ document.querySelectorAll('.hero-install').forEach(box => {
   };
   tabs.forEach(t => t.addEventListener('click', () => setRegion(t.getAttribute('data-region'))));
 
-  if (copyBtn) {
+  box.querySelectorAll('.hi-row').forEach(row => {
+    const copyBtn = row.querySelector('.copy');
+    if (!copyBtn) return;
     copyBtn.addEventListener('click', async () => {
-      const active = box.querySelector('.cmd-variant.on');
+      const active = row.querySelector('.cmd-variant.on');
       const text = active ? active.getAttribute('data-copy') : '';
       if (!text) return;
       const lang = document.documentElement.lang || 'en';
@@ -1806,7 +1846,7 @@ document.querySelectorAll('.hero-install').forEach(box => {
         }, 1400);
       } catch (_) { /* ignore */ }
     });
-  }
+  });
 });
 
 // FAQ toggles — ignore clicks inside the answer body so users can select/copy text

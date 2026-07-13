@@ -342,10 +342,15 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
 .hero-install .hi-row + .hi-row { margin-top: 8px; }
 .hero-install .hi-row .os-tag {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 10px;
   letter-spacing: 0.08em;
   color: var(--ink-4);
 }
+/* generic OS glyphs (terminal + app window); original marks, no trademarked brand logos */
+.hero-install .hi-row .os-tag .os-ico { flex: none; width: 12px; height: 12px; }
 .hero-install .hi-row .cmd { flex: 1; color: var(--ink); overflow-x: auto; white-space: nowrap; min-width: 0; }
 .hero-install .hi-row .cmd .ac { color: var(--accent); }
 .hero-install .cmd-variant { display: none; }
@@ -928,7 +933,7 @@ html[lang="zh"] h3 .serif {
               </div>
             </div>
             <div class="hi-row">
-              <span class="os-tag">MAC·LINUX</span>
+              <span class="os-tag"><svg class="os-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"></rect><path d="M4.5 6.5 6.5 8 4.5 9.5"></path><path d="M8 10h3.5"></path></svg>MAC·LINUX</span>
               <span class="cmd">
                 <span class="cmd-variant on" data-region="global" data-copy="curl -fsSL https://quicktui.ai/q.sh | sh"><span class="ac">curl</span> -fsSL https://quicktui.ai/q.sh | <span class="ac">sh</span></span>
                 <span class="cmd-variant" data-region="cn" data-copy="curl -fsSL https://dl.quicktui.cn/q.sh | sh"><span class="ac">curl</span> -fsSL https://dl.quicktui.cn/q.sh | <span class="ac">sh</span></span>
@@ -936,7 +941,7 @@ html[lang="zh"] h3 .serif {
               <button type="button" class="copy" data-i="hero.install.copy">Copy</button>
             </div>
             <div class="hi-row">
-              <span class="os-tag">WINDOWS</span>
+              <span class="os-tag"><svg class="os-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"></rect><path d="M1.5 5.5h13"></path><path d="M3.5 4h1.2"></path></svg>WINDOWS</span>
               <span class="cmd">
                 <span class="cmd-variant on" data-region="global" data-copy="irm https://quicktui.ai/q.ps1 | iex"><span class="ac">irm</span> https://quicktui.ai/q.ps1 | <span class="ac">iex</span></span>
               </span>

@@ -1,0 +1,26 @@
+# QuickTUI — https://quicktui.ai
+# All crawlers welcome, including AI search / answer engines.
+
+User-agent: *
+Allow: /
+
+# AI search & answer engines (explicit allow)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://quicktui.ai/sitemap.xml

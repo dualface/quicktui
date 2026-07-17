@@ -1,25 +1,25 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="zh-Hans" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QuickTUI — tmux-powered remote terminal for iPhone, iPad & browsers</title>
-<meta name="description" content="Self-hosted remote terminal for iPhone, iPad, and browsers. Attach tmux and run Claude Code, Codex, or any CLI agent from anywhere. Free for one server." />
-<link rel="canonical" href="https://quicktui.ai/" />
+<title>QuickTUI — 手机、iPad 远程终端 · tmux · Claude Code / Codex</title>
+<meta name="description" content="自托管远程终端，支持 iPhone、iPad 与浏览器。随时随地接入 tmux 会话，运行 Claude Code、Codex 或任意 CLI Agent。单服务器免费，默认直连。" />
+<link rel="canonical" href="https://quicktui.ai/cn/" />
 <link rel="alternate" hreflang="en" href="https://quicktui.ai/" />
 <link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/" />
 <link rel="alternate" hreflang="x-default" href="https://quicktui.ai/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="QuickTUI" />
-<meta property="og:title" content="QuickTUI — Full terminal for any coding agent" />
-<meta property="og:description" content="Attach tmux and run Claude Code, Codex, or any CLI agent from your iPhone, iPad, or browser. Self-hosted, direct connection. Free for one server." />
-<meta property="og:url" content="https://quicktui.ai/" />
+<meta property="og:title" content="QuickTUI — 任意 coding agent 的完整终端" />
+<meta property="og:description" content="在 iPhone、iPad 或浏览器上接入 tmux，运行 Claude Code、Codex 或任意 CLI Agent。自托管、直连、单服务器免费。" />
+<meta property="og:url" content="https://quicktui.ai/cn/" />
 <meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
-<meta property="og:locale" content="en_US" />
-<meta property="og:locale:alternate" content="zh_CN" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="QuickTUI — Full terminal for any coding agent" />
-<meta name="twitter:description" content="Attach tmux and run Claude Code, Codex, or any CLI agent from your iPhone, iPad, or browser. Self-hosted, direct connection. Free for one server." />
+<meta name="twitter:title" content="QuickTUI — 任意 coding agent 的完整终端" />
+<meta name="twitter:description" content="在 iPhone、iPad 或浏览器上接入 tmux，运行 Claude Code、Codex 或任意 CLI Agent。自托管、直连、单服务器免费。" />
 <meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
 <script type="application/ld+json">
 {
@@ -28,8 +28,8 @@
   "name": "QuickTUI",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "iOS",
-  "url": "https://quicktui.ai/",
-  "description": "Self-hosted remote terminal for iPhone, iPad, and browsers. Attach tmux and run Claude Code, Codex, or any CLI agent from anywhere. Free for one server.",
+  "url": "https://quicktui.ai/cn/",
+  "description": "自托管远程终端，支持 iPhone、iPad 与浏览器。随时随地接入 tmux 会话，运行 Claude Code、Codex 或任意 CLI Agent。单服务器免费，默认直连。",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -44,178 +44,178 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Checksum verification failed during install.",
+      "name": "安装时校验和验证失败。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Usually the download was interrupted or corrupted — re-run the installer. If it persists, release assets may have just been updated; wait a few minutes and retry. Also verify nothing is intercepting HTTPS traffic (e.g. a corporate proxy)."
+        "text": "通常是下载中断或损坏 — 重新运行安装脚本即可。若持续出错，可能是发布资源刚更新，稍等几分钟重试。 也请检查是否有中间人拦截 HTTPS 流量（例如企业代理）。"
       }
     },
     {
       "@type": "Question",
-      "name": "tmux is not installed or the version is too old.",
+      "name": "未安装 tmux 或版本过旧。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "QuickTUI requires tmux 3.2 or later . The installer can install it for you — first via the system package manager ( brew , apt , yum , dnf ), else a prebuilt archive unpacked to ~/.local/tmux . When tmux is not discoverable from the service PATH, the installer saves QUICKTUI_TMUX_BIN ."
+        "text": "QuickTUI 需要 tmux 3.2 或更高版本 。安装脚本可自动为你安装 — 优先使用系统包管理器（ brew 、 apt 、 yum 、 dnf ），否则下载预编译包解压到 ~/.local/tmux 。 当服务 PATH 找不到 tmux 时，安装脚本会保存 QUICKTUI_TMUX_BIN 。"
       }
     },
     {
       "@type": "Question",
-      "name": "What happens when I re-run the installer?",
+      "name": "重新运行安装脚本会发生什么？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It detects the existing ~/.local/bin/quicktui-server and switches to upgrade mode : stops the service, stages the new binary, sanity-checks --version , atomically swaps it into place, and rolls back on failure. Your token, address, TERM, LANG and QUICKTUI_TMUX_BIN are preserved."
+        "text": "脚本会检测已有的 ~/.local/bin/quicktui-server ，切换到 升级模式 ：停止服务、暂存新二进制、用 --version 做合理性检查、原子替换，失败自动回滚。你的 token、地址、TERM、LANG 以及 QUICKTUI_TMUX_BIN 全部保留。"
       }
     },
     {
       "@type": "Question",
-      "name": "What can I configure in the config file?",
+      "name": "配置文件里可以配置什么？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The service reads ~/.config/quicktui/config — a manual quicktui-server process does not . Keys: QUICKTUI_TOKEN , QUICKTUI_ADDR (default 0.0.0.0:8022 ), QUICKTUI_TERM (default xterm-256color ), QUICKTUI_LANG (default en_US.UTF-8 ), optionally QUICKTUI_TMUX_BIN . After editing, restart the service: # macOS launchctl kickstart -k gui/$(id -u)/ai.quicktui # Linux systemctl --user restart quicktui"
+        "text": "服务会读取 ~/.config/quicktui/config — 手动启动的 quicktui-server 进程 不会 自动读取。 键： QUICKTUI_TOKEN 、 QUICKTUI_ADDR （默认 0.0.0.0:8022 ）、 QUICKTUI_TERM （默认 xterm-256color ）、 QUICKTUI_LANG （默认 en_US.UTF-8 ），可选 QUICKTUI_TMUX_BIN 。 编辑后重启服务： # macOS launchctl kickstart -k gui/$(id -u)/ai.quicktui # Linux systemctl --user restart quicktui"
       }
     },
     {
       "@type": "Question",
-      "name": "How do server upgrade and restart work?",
+      "name": "服务端升级与重启如何工作？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Two paths: Re-run the installer — atomic swap, rollback on failure, config preserved. Server self-update — cached release checks, platform download, binary replacement. Self-update does not auto-restart; restart from the app/browser, call POST /v2/api/restart , or restart the service. Update / restart / shutdown are serialized: a new update is rejected if a restart is in progress, and vice versa. Check status: quicktui-server --check-upgrade"
+        "text": "两条路径： 重新运行安装脚本 — 原子替换、失败回滚、配置保留。 服务端自更新 — 使用缓存发布检查、下载当前平台二进制、替换可执行文件。自更新不会自动重启；可在 App/浏览器重启、调用 POST /v2/api/restart ，或重启系统服务。 升级 / 重启 / 关停相互串行：重启进行中时新升级请求会被拒绝，反之亦然。 查看状态： quicktui-server --check-upgrade"
       }
     },
     {
       "@type": "Question",
-      "name": "Can I validate the server environment without installing?",
+      "name": "可以不安装就验证服务端环境吗？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes — run environment preflight checks without installing or configuring the server: curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check"
+        "text": "可以 — 运行环境预检，不安装、不写入服务端配置： curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check"
       }
     },
     {
       "@type": "Question",
-      "name": "QuickTUI says \"token is required\".",
+      "name": "QuickTUI 提示\"token is required\"。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Service: ensure ~/.config/quicktui/config exists and contains: QUICKTUI_TOKEN=… Manual start: pass --token or set QUICKTUI_TOKEN in the environment — normal server startup does not read the config file automatically."
+        "text": "服务方式： 确保 ~/.config/quicktui/config 存在且包含： QUICKTUI_TOKEN=… 手动启动： 传入 --token 或在环境中设置 QUICKTUI_TOKEN — 普通启动不会自动读取配置文件。"
       }
     },
     {
       "@type": "Question",
-      "name": "Can't connect — connection refused.",
+      "name": "无法连接 — connection refused。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "First check the service: # macOS launchctl print gui/$(id -u)/ai.quicktui # Linux systemctl --user status quicktui If you skipped service registration, start the server manually with the same token and address. If it's running, make sure your firewall or tunnel allows the port from QUICKTUI_ADDR ."
+        "text": "先检查服务： # macOS launchctl print gui/$(id -u)/ai.quicktui # Linux systemctl --user status quicktui 若跳过了服务注册，用相同的 token 和地址手动启动服务端。若服务已在运行，请确认防火墙或隧道放通了 QUICKTUI_ADDR 对应的端口。"
       }
     },
     {
       "@type": "Question",
-      "name": "Text rendering is garbled when TERM=xterm-ghostty .",
+      "name": "当 TERM=xterm-ghostty 时，文字渲染错乱。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "QuickTUI's server-side tmux won't render correctly when TERM=xterm-ghostty is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session. Use a widely supported TERM instead. In ~/.config/quicktui/config : QUICKTUI_TERM=xterm-256color Then restart the service. For a manual server command: --term xterm-256color"
+        "text": "服务端的 tmux 在 TERM=xterm-ghostty 下无法正确渲染 — Ghostty 自己的 terminfo 不适用于远端会话里的 tmux。 改用广泛支持的 TERM。在 ~/.config/quicktui/config 中配置： QUICKTUI_TERM=xterm-256color 然后重启服务。手动启动命令则用： --term xterm-256color"
       }
     },
     {
       "@type": "Question",
-      "name": "PTY spawn failed / internal server error when opening a session.",
+      "name": "打开会话时出现 PTY spawn failed / internal server error。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The server could not launch or attach tmux. Check logs: # macOS tail -f ~/Library/Logs/QuickTUI/stdout.log # Linux journalctl --user -u quicktui -f If QUICKTUI_TMUX_BIN is set, it must be an absolute path to a real tmux binary. Also verify QUICKTUI_TERM and QUICKTUI_LANG are valid."
+        "text": "服务端无法启动或附加 tmux。查看日志： # macOS tail -f ~/Library/Logs/QuickTUI/stdout.log # Linux journalctl --user -u quicktui -f 若设置了 QUICKTUI_TMUX_BIN ，必须是指向真实 tmux 二进制的绝对路径。也请确认 QUICKTUI_TERM 与 QUICKTUI_LANG 有效。"
       }
     },
     {
       "@type": "Question",
-      "name": "How do I view server logs?",
+      "name": "如何查看服务端日志？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "# macOS tail -f ~/Library/Logs/QuickTUI/stdout.log \\ ~/Library/Logs/QuickTUI/stderr.log # Linux journalctl --user -u quicktui -f If you started quicktui-server manually, output appears in the terminal where you launched it."
+        "text": "# macOS tail -f ~/Library/Logs/QuickTUI/stdout.log \\ ~/Library/Logs/QuickTUI/stderr.log # Linux journalctl --user -u quicktui -f 若手动启动 quicktui-server ，输出在你启动它的那个终端。"
       }
     },
     {
       "@type": "Question",
-      "name": "How do I change the listen address or port?",
+      "name": "如何修改监听地址或端口？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Service: edit QUICKTUI_ADDR in ~/.config/quicktui/config , then restart. Manual: quicktui-server --addr 0.0.0.0:9000 At install time: curl -fsSL https://quicktui.ai/q.sh | sh -s -- \\ --addr 127.0.0.1 --port 9000 The installer accepts IPv4 addresses or hostnames, not IPv6 literals."
+        "text": "服务方式： 编辑 ~/.config/quicktui/config 中的 QUICKTUI_ADDR ，然后重启。 手动方式： quicktui-server --addr 0.0.0.0:9000 安装时： curl -fsSL https://quicktui.ai/q.sh | sh -s -- \\ --addr 127.0.0.1 --port 9000 安装脚本接受 IPv4 地址或主机名，不接受 IPv6 字面量。"
       }
     },
     {
       "@type": "Question",
-      "name": "How do I uninstall QuickTUI?",
+      "name": "如何卸载 QuickTUI？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall Stops the service and uninstalls the server it manages."
+        "text": "curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall 停止服务并卸载它所管理的服务端。"
       }
     },
     {
       "@type": "Question",
-      "name": "macOS file browser hangs on Desktop / Documents / Downloads.",
+      "name": "macOS 文件浏览器访问 桌面 / 文稿 / 下载 等目录会卡住。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "macOS protects Desktop , Documents , Downloads , iCloud Drive, and other system folders via TCC (Transparency, Consent, Control). The QuickTUI service runs as a background launchd agent and cannot trigger the system consent dialog, so accesses to those folders hang silently until the request times out. Fix — grant Full Disk Access to the server binary: Open System Settings → Privacy & Security → Full Disk Access . Click the + button. In the file picker, press Cmd+Shift+G and enter ~/.local/bin , then select quicktui-server . Make sure the toggle next to quicktui-server is enabled . Back in the QuickTUI client, tap Recheck on the warning banner. No service restart needed. If Recheck still fails, restart the service: launchctl kickstart -k gui/$(id -u)/ai.quicktui Why no consent dialog appears: macOS only shows the TCC consent prompt for processes launched with a UI context (Finder, Terminal, Dock). Background launchd agents have no UI, so the prompt is never displayed and the OS silently blocks until manually authorized."
+        "text": "macOS 通过 TCC（隐私权限子系统）保护 桌面 、 文稿 、 下载 、iCloud Drive 等系统目录。QuickTUI 服务以后台 launchd agent 形式运行，无 UI 上下文，无法触发系统授权弹窗，因此访问这些目录会静默挂起直到请求超时。 解决方法 — 给 server 二进制加完全磁盘访问权限： 打开 系统设置 → 隐私与安全性 → 完全磁盘访问 。 点 + 号。在文件选择器中按 Cmd+Shift+G ，输入 ~/.local/bin ，选中 quicktui-server 。 确保 quicktui-server 旁边的开关已 启用 。 回到 QuickTUI 客户端，点警告条上的 已授权, 重测 。无需重启服务。 若 重测 仍然失败，重启服务： launchctl kickstart -k gui/$(id -u)/ai.quicktui 为什么没有自动授权弹窗： macOS 仅对带 UI 上下文的进程（Finder、终端、Dock 启动的 App）显示 TCC 授权弹窗。后台 launchd agent 无 UI，授权弹窗永远不会显示，系统会静默拒绝直到用户手动加白名单。"
       }
     },
     {
       "@type": "Question",
-      "name": "Linux file browser shows \"permission denied\" or returns 403.",
+      "name": "Linux 文件浏览器提示 \"permission denied\" 或返回 403。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The QuickTUI server runs under your user (typically systemd --user ) and can only read paths your user has POSIX read+execute on. Common causes: Mode bits. Files mode 0600 / dirs mode 0700 are unreadable to anyone but the owner. Check with ls -ld /path . Parent directory missing x bit. Even if the target file is world-readable, the server can't traverse into it without execute permission on every ancestor directory. POSIX ACL. getfacl /path may show an explicit deny entry that overrides mode bits. Wrong user. If you started the server with sudo once and switched back, residual files may be owned by root. stat /path shows the owner. SELinux (RHEL / Fedora / Rocky). Even with correct mode, MAC may block access. Check with ausearch -m AVC -ts recent or getenforce . Temporarily test with setenforce 0 (do not leave permissive in production). AppArmor / Snap confinement (Ubuntu). If you installed quicktui-server via snap, it can't read files outside the snap home. The recommended install path is ~/.local/bin/quicktui-server (no confinement). Mount options. A mount with noexec or read-only flags may surface as EACCES on some operations. Check findmnt /path . Fix steps: Run ls -ld /full/path/to/dir on the failing path and every parent . Confirm the user running quicktui-server has r-x on dirs and r-- on files. Identify which user the service runs as: systemctl --user show quicktui -p MainPID , then ps -o user= -p <PID> . Adjust permissions: chmod o+rx /path for shared paths, or use ACLs ( setfacl -m u:<user>:rx /path ) for selective access. If SELinux blocks access, add a file context label or use audit2allow to generate a policy module — see your distro's SELinux docs. Tap Recheck in the client. No service restart required. If still failing, check logs: journalctl --user -u quicktui -f while reproducing."
+        "text": "QuickTUI 服务以你当前用户（通常是 systemd --user ）身份运行，只能读到该用户拥有 POSIX 读+执行权限的路径。常见原因： 权限位。 文件 0600 / 目录 0700 模式只有所有者能读。用 ls -ld /path 检查。 父目录缺少 x 位。 即使目标文件 world-readable，server 也需要每一级祖先目录有 execute 权限才能 traverse。 POSIX ACL。 getfacl /path 可能显示显式 deny 条目覆盖了普通权限位。 用户错误。 如果某次用 sudo 启动过 server，后又切回普通用户，残留文件可能 root 所有。 stat /path 看 owner。 SELinux（RHEL / Fedora / Rocky）。 即便权限位正确，MAC 也可能拦截。用 ausearch -m AVC -ts recent 或 getenforce 检查。临时测试用 setenforce 0 （生产环境不要长期 permissive）。 AppArmor / Snap 隔离（Ubuntu）。 若你用 snap 安装 quicktui-server ，它读不到 snap home 之外的文件。推荐安装路径是 ~/.local/bin/quicktui-server （无 confinement）。 挂载选项。 noexec 或只读挂载在某些操作上会表现为 EACCES。用 findmnt /path 检查。 排查步骤： 对失败路径 及每一级父目录 跑 ls -ld /full/path/to/dir 。确认 server 运行用户对目录有 r-x ，对文件有 r-- 。 确认服务运行用户： systemctl --user show quicktui -p MainPID ，再 ps -o user= -p <PID> 。 调权限： chmod o+rx /path （共享路径），或用 ACL setfacl -m u:<user>:rx /path （选择性授权）。 SELinux 拦截时，加文件 context label 或用 audit2allow 生成策略模块 — 参考你的发行版 SELinux 文档。 客户端点 已授权, 重测 。无需重启服务。 仍失败时复现操作并查看日志： journalctl --user -u quicktui -f 。"
       }
     },
     {
       "@type": "Question",
-      "name": "My session list is empty.",
+      "name": "会话列表为空。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with New Session , or on the server: tmux new-session -s mysession"
+        "text": "QuickTUI 显示当前 tmux 会话。若尚无会话，从 App 或浏览器点 New Session 创建，或在服务器上运行： tmux new-session -s mysession"
       }
     },
     {
       "@type": "Question",
-      "name": "tmux scrollback shows duplicated / misaligned text after running Claude Code.",
+      "name": "在 tmux 里跑 Claude Code 一段时间后，scrollback 出现重复或错位的文字。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Symptom. After interacting with Claude Code (or similar TUI tools like OpenAI Codex CLI, aider) inside a tmux pane, scrolling back through tmux history shows duplicated frames, misaligned columns, or fragments of older render passes. Restarting the QuickTUI server does not fix the desktop tmux side — only tmux clear-history clears it. Cause. Claude Code's TUI is built on the Ink rendering library. When the rendered region exceeds the terminal viewport (or on every full-viewport repaint), Ink's render loop emits CSI 3 J (\"Erase Saved Lines\") and re-paints the whole screen on the main screen buffer — without DECSET 2026 (synchronized output) bracketing. tmux processes the partial frames and writes them into pane scrollback. Subsequent SIGWINCH / resize events compound this: each intermediate width pushes another stale frame into history. Upstream tracking issues: #29937 — Terminal rendering corruption in tmux #49086 — Resize duplicates banner/content in scrollback #37283 — TUI flicker / missing DECSET 2026 Fix. Run Claude Code in fullscreen mode — it switches to the alternate screen buffer (like vim / htop) and never touches scrollback. Requires Claude Code v2.1.89+ : /tui fullscreen Versions v2.1.89 — v2.1.109 use the environment variable instead: CLAUDE_CODE_NO_FLICKER=1 claude Recovering existing corrupted scrollback. The garbled bytes are already inside tmux's pane history; only clearing it removes them: tmux clear-history Then re-launch Claude Code in fullscreen mode to prevent recurrence. The QuickTUI client also pops a hint banner the first time you select a pane that is running Claude Code (or another known TUI tool) on the main screen."
+        "text": "现象。 在 tmux pane 里使用 Claude Code（或同类 TUI 工具如 OpenAI Codex CLI、aider）一段时间后，向上滚动 tmux 历史会看到重复的帧、错位的列，或旧渲染的碎片。重启 QuickTUI 服务端 不能 让桌面 tmux 自愈，只有 tmux clear-history 才能清掉。 原因。 Claude Code 的 TUI 基于 Ink 渲染库。当渲染区域超过 viewport（或满屏重绘时），Ink 的 render loop 会在 主屏 上发送 CSI 3 J （\"擦除滚动条历史\"）并重绘整屏 — 且没有 DECSET 2026（同步输出）包裹。tmux 把这些半截帧写进 pane scrollback。后续每次 SIGWINCH / 改尺寸会再叠加一份。上游 issue： #29937 — Terminal rendering corruption in tmux #49086 — Resize duplicates banner/content in scrollback #37283 — TUI flicker / missing DECSET 2026 解决方法。 用 fullscreen 模式 跑 Claude Code — 切到 alternate screen buffer（和 vim / htop 一样），完全不动 scrollback。需要 Claude Code v2.1.89+ ： /tui fullscreen v2.1.89 — v2.1.109 版本用环境变量代替： CLAUDE_CODE_NO_FLICKER=1 claude 清掉已经污染的 scrollback。 烂字节已经在 tmux 内存里，只能整段清掉： tmux clear-history 然后用 fullscreen 模式重启 Claude Code 防止再次发生。QuickTUI 客户端在你选择运行了 Claude Code（或其他已知 main-screen TUI 工具）的 pane 时也会弹一条提示条。"
       }
     },
     {
       "@type": "Question",
-      "name": "Garbage like 11;rgb:2828/2c2c/3434 keeps appearing in a terminal app's input box.",
+      "name": "终端应用输入框反复出现 11;rgb:2828/2c2c/3434 之类乱码。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Symptom. When multiple clients (for example a local terminal plus the QuickTUI app or browser) attach to the same tmux session, the terminal app's input box repeatedly fills with garbage like 11;rgb:2828/2c2c/3434 — sometimes several in a row. Cause. Some terminal apps auto-detect your color theme by sending OSC 10/11/12 escape queries (\"what are the current foreground / background / cursor colors?\"). tmux forwards the query to the outer terminal and routes the reply back into the pane. With several clients attached, that reply can land after the app's short parsing window for that reply has already closed, so the app treats the raw escape bytes as literal keystrokes and drops them straight into its input box. This is an application-side bug, not a QuickTUI issue — for example Claude Code tracked it as #12910 — OSC terminal color query responses leak into input buffer . Fix. Give the affected app a fixed theme instead of auto-detect. In Claude Code, run /theme and pick a fixed light or dark value. For other TUI tools, turn off automatic terminal color / theme detection the same way. Optional: reduce escape-sequence fragmentation under tmux by adding this to ~/.tmux.conf : set -s escape-time 100"
+        "text": "现象。 多个客户端（比如本地终端加上 QuickTUI App 或浏览器）同时 attach 同一个 tmux session 时，终端应用的输入框会反复出现类似 11;rgb:2828/2c2c/3434 的乱码，有时连续好几条。 原因。 部分终端应用会通过发送 OSC 10/11/12 转义查询（\"当前前景色 / 背景色 / 光标色是什么\"）来自动探测配色主题。tmux 把查询转发给最外层终端，再把对方的回包路由回 pane。当多个客户端同时 attach 时，回包可能在应用为这次查询打开的解析窗口关闭之后才到达，于是应用把这些原始转义字节当成了普通按键，直接塞进了自己的输入框。这是终端应用侧的 bug，与 QuickTUI 无关 — 例如 Claude Code 就有对应的 #12910 — OSC terminal color query responses leak into input buffer 。 解决方法。 把受影响的应用改成固定主题，不用自动探测。Claude Code 里运行 /theme ，选一个固定的浅色或深色值。 其他 TUI 工具同理，关闭自动终端配色 / 主题检测。 可选：在 ~/.tmux.conf 里加一行，降低转义序列被拆片误判的概率： set -s escape-time 100"
       }
     },
     {
       "@type": "Question",
-      "name": "What is the access token?",
+      "name": "什么是 access token？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A secret you set during installation — it protects your server from unauthorized access. Find it on your server: cat ~/.config/quicktui/config Enter it when prompted on first login in the app or browser."
+        "text": "你在安装时设定的密钥 — 用于保护服务器不被未授权访问。在服务器上查看： cat ~/.config/quicktui/config 首次在 App 或浏览器登录时按提示输入。"
       }
     },
     {
       "@type": "Question",
-      "name": "Can I connect over the internet?",
+      "name": "可以通过公网连接吗？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. You need the server reachable from the internet — via a public IP, VPN, reverse proxy, or a tunnel such as Tailscale or Cloudflare Tunnel . QuickTUI itself speaks plain HTTP on 8022 ; if you use Cloudflare Tunnel, point the tunnel service to http://127.0.0.1:8022 and use the public HTTPS hostname in the app, usually without an explicit port. :443 is equivalent; do not use :8022 on the public HTTPS URL. Keep your token secret."
+        "text": "可以。需要让服务器可从公网访问 — 通过公网 IP、VPN、反向代理，或 Tailscale 、 Cloudflare Tunnel 等隧道。QuickTUI 本身在 8022 跑明文 HTTP；如果使用 Cloudflare Tunnel，tunnel service 填 http://127.0.0.1:8022 ，App 里填公网 HTTPS 域名，通常不写端口； :443 等价可用。公网 HTTPS 地址不要写 :8022 。Token 妥善保密。"
       }
     },
     {
       "@type": "Question",
-      "name": "The app or browser shows \"Session not found\".",
+      "name": "App 或浏览器提示\"Session not found\"。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running. Refresh the session list, then open an existing session or create a new one."
+        "text": "这是服务端返回的消息 — tmux 会话已关闭或被重命名，或 tmux 服务本身未运行。 刷新会话列表，然后打开已有会话或新建一个。"
       }
     }
   ]
 }
 </script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-<link rel="manifest" href="site.webmanifest" />
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
 <meta name="theme-color" content="#111820" />
 <script>
 (() => {
@@ -1093,11 +1093,11 @@ html[lang="zh"] h3 .serif {
         <span class="brand-name">quicktui<sup>v1</sup></span>
       </a>
       <nav class="nav-links">
-        <a href="#features" data-i-html="nav.features"><span class="n">01</span>Features</a>
-        <a href="#action" data-i-html="nav.action"><span class="n">02</span>In&nbsp;Action</a>
-        <a href="#usecases" data-i-html="nav.usecases"><span class="n">03</span>Use&nbsp;Cases</a>
-        <a href="#install" data-i-html="nav.install"><span class="n">04</span>Install</a>
-        <a href="#faq" data-i-html="nav.faq"><span class="n">05</span>FAQ</a>
+        <a href="#features" data-i-html="nav.features"><span class="n">01</span>功能</a>
+        <a href="#action" data-i-html="nav.action"><span class="n">02</span>实战演示</a>
+        <a href="#usecases" data-i-html="nav.usecases"><span class="n">03</span>使用场景</a>
+        <a href="#install" data-i-html="nav.install"><span class="n">04</span>安装</a>
+        <a href="#faq" data-i-html="nav.faq"><span class="n">05</span>常见问题</a>
       </nav>
       <div class="nav-right">
         <div class="lang-toggle" id="langToggle">
@@ -1106,7 +1106,7 @@ html[lang="zh"] h3 .serif {
           <button data-lang="zh">CN</button>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Toggle theme">◐</button>
-        <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.nav"><span class="lbl-long">Get the App</span><span class="lbl-short">Get App</span> <span class="arr">→</span></a>
+        <a class="btn btn-primary" href="https://apps.apple.com/app/quicktui/id6761338192" data-i-html="cta.nav"><span class="lbl-long">获取应用</span><span class="lbl-short">获取</span> <span class="arr">→</span></a>
       </div>
     </div>
   </header>
@@ -1115,7 +1115,7 @@ html[lang="zh"] h3 .serif {
 
     <!-- status bar -->
     <div class="statusbar">
-      <span data-i-html="status.ready"><span class="dot"></span>SESSION / READY</span>
+      <span data-i-html="status.ready"><span class="dot"></span>会话 / 就绪</span>
       <span class="mono">
         <span>TMUX 3.2+</span><span class="sep">·</span>
         <span>iOS 16.4+ / iPadOS</span><span class="sep">·</span>
@@ -1131,11 +1131,11 @@ html[lang="zh"] h3 .serif {
       <div class="hero v3">
         <div>
           <div class="tag">────  REMOTE CONTROL FOR AI CODING AGENTS  ────</div>
-          <h1 data-i-html="hero3.h1">Coding agents run on your Mac.<br><em>You run them <br>from your phone.</em></h1>
-          <p class="sub" data-i="hero3.sub">Claude Code, Codex, Aider, Cursor Agent — keep them moving when you step away from the desk. Attach from anywhere, approve in seconds, walk away.</p>
+          <h1 data-i-html="hero3.h1">AI 编程 Agent<br>在 Mac 上跑，<br><em>你在手机上控</em>。</h1>
+          <p class="sub" data-i="hero3.sub">Claude Code、Codex、Aider、Cursor Agent — 离开座位也别让它们空转。随时接入，秒级确认，转身走人。</p>
           <div class="hero-install">
             <div class="hi-head">
-              <div class="hi-label" data-i="hero.install.label">▌ Install on your server · one line</div>
+              <div class="hi-label" data-i="hero.install.label">▌ 服务器一行装好</div>
               <div class="hi-tabs" role="tablist">
                 <button type="button" class="hi-tab on" data-region="global" role="tab" aria-selected="true">Global</button>
                 <button type="button" class="hi-tab" data-region="cn" role="tab" aria-selected="false">CN</button>
@@ -1147,23 +1147,23 @@ html[lang="zh"] h3 .serif {
                 <span class="cmd-variant on" data-region="global" data-copy="curl -fsSL https://quicktui.ai/q.sh | sh"><span class="ac">curl</span> -fsSL https://quicktui.ai/q.sh | <span class="ac">sh</span></span>
                 <span class="cmd-variant" data-region="cn" data-copy="curl -fsSL https://dl.quicktui.cn/q.sh | sh"><span class="ac">curl</span> -fsSL https://dl.quicktui.cn/q.sh | <span class="ac">sh</span></span>
               </span>
-              <button type="button" class="copy" data-i="hero.install.copy">Copy</button>
+              <button type="button" class="copy" data-i="hero.install.copy">复制</button>
             </div>
             <div class="hi-row">
               <span class="os-tag"><svg class="os-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"></rect><path d="M1.5 5.5h13"></path><path d="M3.5 4h1.2"></path></svg>WINDOWS</span>
               <span class="cmd">
                 <span class="cmd-variant on" data-region="global" data-copy="irm https://quicktui.ai/q.ps1 | iex"><span class="ac">irm</span> https://quicktui.ai/q.ps1 | <span class="ac">iex</span></span>
               </span>
-              <button type="button" class="copy" data-i="hero.install.copy">Copy</button>
+              <button type="button" class="copy" data-i="hero.install.copy">复制</button>
             </div>
-            <div class="hi-note" data-i="hero.install.note.global">Default mirror · GitHub Releases via Cloudflare.</div>
+            <div class="hi-note" data-i="hero.install.note.global">默认镜像 · 经 Cloudflare 的 GitHub Releases。</div>
           </div>
           <div class="ctas">
-            <a class="btn btn-primary btn-xl" href="#install" data-i-html="cta.getQt">How to use <span class="arr">→</span></a>
-            <a class="btn btn-xl" href="#features" data-i="cta.features">View features</a>
+            <a class="btn btn-primary btn-xl" href="#install" data-i-html="cta.getQt">如何使用 <span class="arr">→</span></a>
+            <a class="btn btn-xl" href="#features" data-i="cta.features">查看功能</a>
           </div>
         </div>
-        <div class="hero-shot has-img"><img src="images/usage/hero.png" alt="QuickTUI on iPhone" loading="lazy"></div>
+        <div class="hero-shot has-img"><img src="/images/usage/hero.png" alt="QuickTUI on iPhone" loading="lazy"></div>
       </div>
     </section>
 
@@ -1171,44 +1171,44 @@ html[lang="zh"] h3 .serif {
     <section id="features" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="f.eyebrow">§ 01 / Features</div>
-          <h2 data-i-html="f.h2">Built for <em>reach</em>, not tutorials.</h2>
+          <div class="eyebrow" data-i="f.eyebrow">§ 01 / 功能特性</div>
+          <h2 data-i-html="f.h2">为<em>随手可用</em>而生。</h2>
         </div>
         <div>
-          <p data-i="f.desc">Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.</p>
+          <p data-i="f.desc">每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让你的 Agent 随手即得。</p>
         </div>
       </div>
 
       <div class="features-grid">
         <div class="feat col-8">
           <div class="idx">F.01</div>
-          <h3 data-i="f01.t">Always attached — you're always within reach</h3>
-          <p data-i="f01.b">Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there — output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)</p>
+          <h3 data-i="f01.t">始终在线 — Agent 随时就位</h3>
+          <p data-i="f01.b">Agent 的会话在两次接入之间持续存活于服务器 — 你在任何设备上打开 QuickTUI，它已在那里等你：输出完整、光标停在你离开的位置。（底层由 tmux 保活 PTY。）</p>
         </div>
         <div class="feat col-4">
           <div class="idx">F.02</div>
-          <h3 data-i="f03.t">QR onboarding in 2 seconds</h3>
-          <p data-i="f03.b">Run `quicktui-server --qrcode` on the server, scan with the iOS app — you are inside your agent's session. No token copy-paste, no IP typing.</p>
+          <h3 data-i="f03.t">2 秒扫码接入</h3>
+          <p data-i="f03.b">在服务器执行 `quicktui-server --qrcode`，用 iOS App 扫描 — 你已进入 Agent 的会话。无需复制 Token、无需敲 IP。</p>
         </div>
         <div class="feat col-4">
           <div class="idx">F.03</div>
-          <h3 data-i="f04.t">One truth, every client</h3>
-          <p data-i="f04.b">Windows, panes, zoom, scroll, copy-mode — every client sees the exact same view of what your agents are doing. Switch devices mid-task, the cursor doesn't blink.</p>
+          <h3 data-i="f04.t">同一真相，所有客户端</h3>
+          <p data-i="f04.b">窗口、面板、缩放、滚动、复制模式 — 每个客户端都看到 Agent 当前状态的同一份视图。任务进行中切换设备，光标毫不闪动。</p>
         </div>
         <div class="feat col-4">
           <div class="idx">F.04</div>
-          <h3 data-i="f02.t">Self-hosted, zero cloud</h3>
-          <p data-i="f02.b">Your agents run where you run them — Mac, Linux, or WSL. Your code, your keys, your API quotas stay put. No account, no telemetry, no vendor in the loop.</p>
+          <h3 data-i="f02.t">自托管 · 零云端</h3>
+          <p data-i="f02.b">Agent 跑在你选的主机上 — Mac、Linux 或 WSL。代码、密钥、API 额度留在原地。无账号、无遥测、无厂商介入。</p>
           </div>
         <div class="feat col-4">
           <div class="idx">F.05</div>
-          <h3 data-i="f05.t">Three ways to get attached</h3>
-          <p data-i-html="f05.b">Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.</p>
+          <h3 data-i="f05.t">三种方式即刻接入</h3>
+          <p data-i-html="f05.b">通过 <em class="ac">Quick Setup</em>（SSH 自动安装）、<em class="ac">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。</p>
         </div>
         <div class="feat col-12">
           <div class="idx">F.06</div>
-          <h3 data-i="f06.t">Runs as a service, forever</h3>
-          <p data-i-html="f06.b">Installed as a user service on macOS launchd, Linux systemd & Windows Scheduled Tasks. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.</p>
+          <h3 data-i="f06.t">作为服务 · 永久在线</h3>
+          <p data-i-html="f06.b">以用户级服务形式安装在 macOS launchd、Linux systemd 与 Windows 计划任务上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。安装器与服务端安装流程负责安装与服务注册。</p>
         </div>
       </div>
     </section>
@@ -1217,24 +1217,24 @@ html[lang="zh"] h3 .serif {
     <section id="action" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="ia.eyebrow">§ 02 / In Action</div>
-          <h2 data-i-html="ia.h2">Within reach on <span class="serif">every</span> screen.</h2>
+          <div class="eyebrow" data-i="ia.eyebrow">§ 02 / 实战演示</div>
+          <h2 data-i-html="ia.h2"><span class="serif">每一块</span>屏幕，皆是入口。</h2>
         </div>
         <div>
-          <p data-i="ia.desc">Same session across every device. Peek on your phone during a commute. Steer from iPad at the café. Review in a browser at your desk. Your agent is wherever you are.</p>
+          <p data-i="ia.desc">同一会话，跨越每一块设备。通勤时用手机查看。咖啡厅里用 iPad 接管。办公桌前在浏览器里审阅。你在哪里，Agent 就在哪里。</p>
         </div>
       </div>
 
       <div class="devices-row">
         <div class="devices-copy">
-          <div class="eyebrow ac" data-i="ia.badge">■ CONTINUOUS</div>
-          <h3 data-i="ia.h3">Pick up any screen. It's already there.</h3>
-          <p data-i="ia.p">Every client — phone, tablet, browser — is a live window into the same agent session. No reconnect ritual, no scrolling back through logs. Your agent is already waiting on whichever screen you open.</p>
+          <div class="eyebrow ac" data-i="ia.badge">■ 持续在线</div>
+          <h3 data-i="ia.h3">拿起任一屏幕，Agent 已在那里。</h3>
+          <p data-i="ia.p">每个客户端 — 手机、平板、浏览器 — 都是通往同一 Agent 会话的实时窗口。无需重连仪式、无需翻回日志。Agent 已在你打开的那块屏幕上等你。</p>
           <ul>
-            <li><span class="k" data-i="ia.k1">session</span><span class="v" data-i="ia.v1">claude-code · 14d · 7 windows</span></li>
-            <li><span class="k" data-i="ia.k2">roam</span><span class="v" data-i="ia.v2">Wi-Fi → LTE → 5G · seamless</span></li>
-            <li><span class="k" data-i="ia.k3">clients</span><span class="v" data-i="ia.v3">iPhone · iPad · Safari · Chrome</span></li>
-            <li><span class="k" data-i="ia.k4">transport</span><span class="v" data-i="ia.v4">HTTP API · WebSocket</span></li>
+            <li><span class="k" data-i="ia.k1">会话</span><span class="v" data-i="ia.v1">claude-code · 14 天 · 7 个窗口</span></li>
+            <li><span class="k" data-i="ia.k2">漫游</span><span class="v" data-i="ia.v2">Wi-Fi → LTE → 5G · 无缝切换</span></li>
+            <li><span class="k" data-i="ia.k3">客户端</span><span class="v" data-i="ia.v3">iPhone · iPad · Safari · Chrome</span></li>
+            <li><span class="k" data-i="ia.k4">传输</span><span class="v" data-i="ia.v4">HTTP API · WebSocket</span></li>
           </ul>
         </div>
       </div>
@@ -1244,34 +1244,34 @@ html[lang="zh"] h3 .serif {
     <section id="usecases" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="uc.eyebrow">§ 03 / Use Cases</div>
-          <h2 data-i-html="uc.h2">Your agents, <span class="serif">wherever</span> you happen to be.</h2>
+          <div class="eyebrow" data-i="uc.eyebrow">§ 03 / 使用场景</div>
+          <h2 data-i-html="uc.h2">你在<span class="serif">哪</span>，Agent 就在哪。</h2>
         </div>
         <div>
-          <p data-i="uc.desc">QuickTUI isn't an IDE. It's the seam between the agents humming away on your server and the screen you happen to be holding right now.</p>
+          <p data-i="uc.desc">QuickTUI 不是 IDE。它是那条纽带 — 连接正在你服务器上默默运行的 Agent，和你此刻正拿着的那块屏幕。</p>
         </div>
       </div>
 
       <div class="usecases">
         <div class="uc">
           <div class="glyph">&gt;_</div>
-          <h4 data-i="uc1.t">Steer an agent from your phone</h4>
-          <p data-i="uc1.b">Your agent hit a confirm prompt. You're on the subway. Attach, approve, detach — 10 seconds. It keeps going without you.</p>
+          <h4 data-i="uc1.t">在手机上接管 Agent</h4>
+          <p data-i="uc1.b">Agent 停在一个确认提示上。你正在地铁里。接入、批准、断开 —— 10 秒。它继续往下跑，不需要你守着。</p>
         </div>
         <div class="uc">
           <div class="glyph">◈</div>
-          <h4 data-i="uc2.t">iPad as agent cockpit</h4>
-          <p data-i="uc2.b">Magic Keyboard + QuickTUI + a beefy server = a 12" cockpit to supervise Claude Code, Aider, or a multi-hour build. Lightweight client, heavyweight agents.</p>
+          <h4 data-i="uc2.t">iPad 即 Agent 驾驶舱</h4>
+          <p data-i="uc2.b">Magic Keyboard + QuickTUI + 强力服务器 = 一块 12 英寸驾驶舱，用来盯着 Claude Code、Aider 或多小时构建任务。轻量客户端，重量级 Agent。</p>
         </div>
         <div class="uc">
           <div class="glyph">⇄</div>
-          <h4 data-i="uc3.t">Browser from any borrowed device</h4>
-          <p data-i="uc3.b">No install needed. Open the server URL in any modern browser, enter your token once, and you are watching your agents live — from a hotel laptop if you have to.</p>
+          <h4 data-i="uc3.t">从任何设备的浏览器接入</h4>
+          <p data-i="uc3.b">无需安装。在任意现代浏览器中打开服务器 URL，输入一次 Token，即可实时查看 Agent 的运行状态 — 哪怕是酒店里借来的笔记本。</p>
         </div>
         <div class="uc">
           <div class="glyph">◷</div>
-          <h4 data-i="uc4.t">Long-running jobs without babysitting</h4>
-          <p data-i="uc4.b">Training runs, agent swarms, migrations, builds. Start it, walk away, check in from the couch. Your laptop can sleep — the job can't be bothered.</p>
+          <h4 data-i="uc4.t">长时间任务 · 无需值守</h4>
+          <p data-i="uc4.b">训练任务、Agent 群、数据迁移、构建流水线。启动后走开，从沙发上随手查看。笔记本可以休眠 — 任务不会因此停下。</p>
         </div>
       </div>
     </section>
@@ -1280,26 +1280,26 @@ html[lang="zh"] h3 .serif {
     <section id="install" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="in.eyebrow">§ 04 / Get started</div>
-          <h2 data-i-html="in.h2">From <span class="serif">install</span> to daily driving.</h2>
+          <div class="eyebrow" data-i="in.eyebrow">§ 04 / 上手指南</div>
+          <h2 data-i-html="in.h2">从<span class="serif">安装</span>到日常使用。</h2>
         </div>
         <div>
-          <p data-i="in.desc">Two ways to install the server, then the gestures you'll actually use on phone and iPad every day.</p>
-          <a class="btn btn-primary btn-xl" href="https://apps.apple.com/app/quicktui/id6761338192" style="margin-top:22px" data-i-html="in.cta">Get the App <span class="arr">→</span></a>
+          <p data-i="in.desc">两种方式装好服务端，再加上手机和 iPad 上每天都会用到的手势速查表。</p>
+          <a class="btn btn-primary btn-xl" href="https://apps.apple.com/app/quicktui/id6761338192" style="margin-top:22px" data-i-html="in.cta">获取应用 <span class="arr">→</span></a>
         </div>
       </div>
 
       <div class="install">
         <div class="install-left">
-          <div class="eyebrow" data-i="in.badge">■ INSTALL</div>
-          <h3 data-i="in.h3">Two paths to your server.</h3>
-          <p data-i-html="in.p">If you can SSH to the box, the iOS app installs the server for you. If not, run one line on the server itself. Either way, the installer detects tmux 3.2+, registers a launchd / systemd service, and saves your token to <span class="path">~/.config/quicktui/config</span>.</p>
+          <div class="eyebrow" data-i="in.badge">■ 安装</div>
+          <h3 data-i="in.h3">两种方式装好服务端。</h3>
+          <p data-i-html="in.p">如果机器能 SSH 登录，iOS App 内的向导帮你装好服务端。不能 SSH 的话，到机器上跑一行 curl 也行。两种方式都会自动检测 tmux 3.2+，注册 launchd / systemd 服务，并把 Token 写入 <span class="path">~/.config/quicktui/config</span>。</p>
           <div class="steps">
-            <div class="step"><span class="n">01</span><div><b data-i="step1.t">SSH-capable server → App wizard.</b><div class="d" data-i="step1.d">Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.</div></div></div>
-            <div class="step"><span class="n">02</span><div><b data-i="step2.t">No SSH? Run on the server.</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step2.d" style="margin-top:4px">Copy that one line to the server's terminal and run it. Done in under a minute.</div></div></div>
-            <div class="step"><span class="n">03</span><div><b data-i="step-cn.t">Mainland China mirror.</b><div class="d"><span class="mono ac">curl -fsSL https://dl.quicktui.cn/q.sh | sh</span></div><div class="d" data-i="step-cn.d" style="margin-top:4px">This is a parallel entrypoint for users in mainland China. Existing installs from quicktui.ai/q.sh do not migrate automatically; re-run dl.quicktui.cn/q.sh to use OSS-backed automatic updates.</div></div></div>
-            <div class="step"><span class="n">04</span><div><b data-i="stepwin.t">Windows server? One line in PowerShell.</b><div class="d"><span class="mono ac">irm https://quicktui.ai/q.ps1 | iex</span></div><div class="d" data-i="stepwin.d" style="margin-top:4px">Downloads the installer, installs the qscn session backend automatically, and registers a Scheduled Task that starts the server at logon. Mainland China mirror support for Windows arrives once qscn assets are mirrored. On legacy Windows PowerShell 5.1 with TLS 1.2 disabled, prepend <span class="mono">[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 3072;</span> to the same line.</div></div></div>
-            <div class="step"><span class="n">05</span><div><b data-i="step3.t">Pair the app, or open a browser.</b><div class="d" data-i-html="step3.d">On the server, run <span class="mono ac">quicktui-server --qrcode</span>, then in the app tap <span class="mono ac">+</span> → Scan.<br>Browser users: visit <span class="mono ac">http://&lt;host&gt;:8022</span> and paste the token once.</div></div></div>
+            <div class="step"><span class="n">01</span><div><b data-i="step1.t">能 SSH 的机器 → App 向导。</b><div class="d" data-i="step1.d">在 iOS App 里添加服务器，选"快速设置"，填入 SSH 凭据。App 自动帮你装好服务端，全程不用开终端。</div></div></div>
+            <div class="step"><span class="n">02</span><div><b data-i="step2.t">不能 SSH？直接到机器上跑。</b><div class="d"><span class="mono ac">curl -fsSL https://quicktui.ai/q.sh | sh</span></div><div class="d" data-i="step2.d" style="margin-top:4px">把上面那行命令复制到服务器终端运行即可。一分钟搞定。</div></div></div>
+            <div class="step"><span class="n">03</span><div><b data-i="step-cn.t">中国大陆镜像入口。</b><div class="d"><span class="mono ac">curl -fsSL https://dl.quicktui.cn/q.sh | sh</span></div><div class="d" data-i="step-cn.d" style="margin-top:4px">这是面向中国大陆用户的并列入口。已通过 quicktui.ai/q.sh 安装的服务不会自动迁移; 重新执行 dl.quicktui.cn/q.sh 后才会走 OSS 自动更新。</div></div></div>
+            <div class="step"><span class="n">04</span><div><b data-i="stepwin.t">Windows 服务器？PowerShell 里跑一行。</b><div class="d"><span class="mono ac">irm https://quicktui.ai/q.ps1 | iex</span></div><div class="d" data-i="stepwin.d" style="margin-top:4px">自动下载安装器、自动安装 qscn 会话后端，并注册登录时自启的计划任务。中国大陆镜像入口将在 qscn 资产镜像完成后支持 Windows。老旧 Windows PowerShell 5.1 若未启用 TLS 1.2，在同一行前面加上 &lt;span class="mono"&gt;[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 3072;&lt;/span&gt; 即可。</div></div></div>
+            <div class="step"><span class="n">05</span><div><b data-i="step3.t">配对 App，或用浏览器。</b><div class="d" data-i-html="step3.d">在服务器运行 <span class="mono ac">quicktui-server --qrcode</span>，然后在 App 里点 <span class="mono ac">+</span> → 扫描。<br>浏览器用户：访问 <span class="mono ac">http://&lt;host&gt;:8022</span>，粘贴一次 Token。</div></div></div>
           </div>
         </div>
       </div>
@@ -1307,45 +1307,45 @@ html[lang="zh"] h3 .serif {
       <!-- Daily-use walkthrough (drop screenshots into website/images/usage/) -->
       <div class="usage-grid">
         <div class="usage-head">
-          <div class="eyebrow" data-i="usage.badge">■ DAILY USE</div>
-          <h3 data-i="usage.h3">The pieces you'll touch every day.</h3>
-          <p data-i="usage.desc">Five things on screen, each doing one job.</p>
+          <div class="eyebrow" data-i="usage.badge">■ 日常使用</div>
+          <h3 data-i="usage.h3">你每天都会用到的几个东西。</h3>
+          <p data-i="usage.desc">屏幕上的五个组件，每个只干一件事。</p>
         </div>
         <div class="usage-items">
           <div class="usage-item">
             <div class="usage-text">
-              <h4 data-i="usage.controls.t">Toolbar &amp; D-Pad</h4>
-              <p data-i="usage.controls.b">A customizable strip of keys at the bottom — Tab, Ctrl, and your own macros organized in folders. A D-Pad overlay sits next to it with the keys you reach for most: four arrow keys, Esc, Enter, Backspace. One tap away.</p>
+              <h4 data-i="usage.controls.t">工具栏 与 方向键</h4>
+              <p data-i="usage.controls.b">屏幕底部可自定义的按键条 — Tab、Ctrl，以及你自己按文件夹分类的快捷宏。旁边的方向键面板提供最常按的键：四个方向键、Esc、Enter、删除。常用键随手可及。</p>
             </div>
-            <div class="usage-shot has-img"><img src="images/usage/toolbar.png" alt="Toolbar and D-Pad overlay" loading="lazy"></div>
+            <div class="usage-shot has-img"><img src="/images/usage/toolbar.png" alt="Toolbar and D-Pad overlay" loading="lazy"></div>
           </div>
           <div class="usage-item">
             <div class="usage-text">
-              <h4 data-i="usage.inputbar.t">Input Bar</h4>
-              <p data-i="usage.inputbar.b">A compact text input right above the toolbar. Tap the edit button to open, type your command, hit Send or Enter. Stays out of the way until you need it.</p>
+              <h4 data-i="usage.inputbar.t">输入条</h4>
+              <p data-i="usage.inputbar.b">工具栏正上方的紧凑输入条。点编辑按钮打开，输入命令，按发送或回车。不用时完全隐藏，不占终端空间。</p>
             </div>
-            <div class="usage-shot has-img"><img src="images/usage/inputbar.png" alt="Input bar above toolbar" loading="lazy"></div>
+            <div class="usage-shot has-img"><img src="/images/usage/inputbar.png" alt="Input bar above toolbar" loading="lazy"></div>
           </div>
           <div class="usage-item">
             <div class="usage-text">
-              <h4 data-i="usage.palette.t">Command Palette</h4>
-              <p data-i="usage.palette.b">Quick launcher for terminal commands. Searchable, folder-organized, with a recent list. Slash commands send Enter automatically.</p>
+              <h4 data-i="usage.palette.t">命令面板</h4>
+              <p data-i="usage.palette.b">终端命令的快速启动器。可搜索，按文件夹分组，有最近使用列表。斜杠命令自动按回车。</p>
             </div>
-            <div class="usage-shot has-img"><img src="images/usage/command-palette.png" alt="Command palette" loading="lazy"></div>
+            <div class="usage-shot has-img"><img src="/images/usage/command-palette.png" alt="Command palette" loading="lazy"></div>
           </div>
           <div class="usage-item">
             <div class="usage-text">
-              <h4 data-i="usage.switcher.t">Switcher</h4>
-              <p data-i="usage.switcher.b">Three-finger swipe up to summon the session switcher. Jump between tmux sessions and windows, even across different servers, in one tap.</p>
+              <h4 data-i="usage.switcher.t">切换器</h4>
+              <p data-i="usage.switcher.b">三指上滑唤出会话切换器。在 tmux session、window 之间快速跳转，跨服务器也行，一指搞定。</p>
             </div>
-            <div class="usage-shot has-img"><img src="images/usage/switcher.png" alt="Session switcher" loading="lazy"></div>
+            <div class="usage-shot has-img"><img src="/images/usage/switcher.png" alt="Session switcher" loading="lazy"></div>
           </div>
           <div class="usage-item">
             <div class="usage-text">
-              <h4 data-i="usage.files.t">File Browser</h4>
-              <p data-i="usage.files.b">Browse and preview files on the server without leaving the app. Tap a file to view, grab a path, or download for later. Each pane remembers the last folder you visited.</p>
+              <h4 data-i="usage.files.t">文件浏览器</h4>
+              <p data-i="usage.files.b">在 App 内浏览和预览服务器上的文件，不用切应用。点文件直接看，抓路径，或下载到本地。每个 pane 记住上次浏览的位置。</p>
             </div>
-            <div class="usage-shot has-img"><img src="images/usage/file-browser.png" alt="File browser" loading="lazy"></div>
+            <div class="usage-shot has-img"><img src="/images/usage/file-browser.png" alt="File browser" loading="lazy"></div>
           </div>
         </div>
       </div>
@@ -1353,38 +1353,38 @@ html[lang="zh"] h3 .serif {
       <!-- Gestures cheat sheet -->
       <div class="opts-grid">
         <div class="opts-head">
-          <div class="eyebrow" data-i="gest.badge">■ GESTURES</div>
-          <p data-i="gest.desc">How you actually drive the terminal from a phone or iPad. A few of these are swappable in Settings if you prefer single- and double-finger flipped.</p>
+          <div class="eyebrow" data-i="gest.badge">■ 手势操作</div>
+          <p data-i="gest.desc">在手机或 iPad 上驾驭终端的方式。部分单指 / 双指动作可以在设置里互换。</p>
         </div>
         <div class="opts-list">
-          <div class="opt"><code class="mono" data-i="gest.act1">1-finger double-tap</code><span data-i="gest.tab">Send Tab</span></div>
-          <div class="opt"><code class="mono" data-i="gest.act2">2-finger double-tap</code><span data-i="gest.enter">Send Enter</span></div>
-          <div class="opt"><code class="mono" data-i="gest.act3">1-finger swipe ↕</code><span data-i="gest.scroll">Scroll history</span></div>
-          <div class="opt"><code class="mono" data-i="gest.act4">1-finger swipe ↔</code><span data-i="gest.win">Switch tmux window</span></div>
-          <div class="opt"><code class="mono" data-i="gest.act5">2-finger swipe</code><span data-i="gest.arrow">Arrow keys</span></div>
-          <div class="opt"><code class="mono" data-i="gest.act6">3-finger swipe ←</code><span data-i="gest.bs">Backspace</span></div>
-          <div class="opt"><code class="mono" data-i="gest.act7">3-finger swipe ↑</code><span data-i="gest.switcher">Open session switcher</span></div>
+          <div class="opt"><code class="mono" data-i="gest.act1">单指双击</code><span data-i="gest.tab">输入 Tab</span></div>
+          <div class="opt"><code class="mono" data-i="gest.act2">双指双击</code><span data-i="gest.enter">输入 Enter</span></div>
+          <div class="opt"><code class="mono" data-i="gest.act3">单指上下滑</code><span data-i="gest.scroll">滚动历史</span></div>
+          <div class="opt"><code class="mono" data-i="gest.act4">单指左右滑</code><span data-i="gest.win">切换 tmux 窗口</span></div>
+          <div class="opt"><code class="mono" data-i="gest.act5">双指滑动</code><span data-i="gest.arrow">方向键</span></div>
+          <div class="opt"><code class="mono" data-i="gest.act6">三指左滑</code><span data-i="gest.bs">退格</span></div>
+          <div class="opt"><code class="mono" data-i="gest.act7">三指上滑</code><span data-i="gest.switcher">打开会话切换器</span></div>
         </div>
       </div>
 
       <!-- Installer options reference (from landing.md) -->
       <div class="opts-grid">
         <div class="opts-head">
-          <div class="eyebrow" data-i="opts.badge">■ INSTALLER OPTIONS</div>
-          <p data-i-html="opts.desc">Non-interactive installs, custom ports, environment checks. Pass via <span class="mono">sh -s --</span>:</p>
+          <div class="eyebrow" data-i="opts.badge">■ 安装脚本参数</div>
+          <p data-i-html="opts.desc">非交互式安装、自定义端口、环境检查。通过 <span class="mono">sh -s --</span> 传入：</p>
         </div>
         <div class="opts-list">
-          <div class="opt"><code class="mono">-y, --yes</code><span data-i="opt.yes">Non-interactive mode</span></div>
-          <div class="opt"><code class="mono">--token &lt;string&gt;</code><span data-i="opt.token">Set access token (default: prompted)</span></div>
-          <div class="opt"><code class="mono">--rotate-token</code><span data-i="opt.rotate">Generate a fresh random token</span></div>
-          <div class="opt"><code class="mono">--addr &lt;address&gt;</code><span data-i="opt.addr">Listen address, IPv4/hostname only (default: 0.0.0.0)</span></div>
-          <div class="opt"><code class="mono">--port &lt;port&gt;</code><span data-i="opt.port">Listen port (default: 8022)</span></div>
-          <div class="opt"><code class="mono">--term &lt;value&gt;</code><span data-i="opt.term">TERM for tmux (default: xterm-256color)</span></div>
-          <div class="opt"><code class="mono">--lang &lt;value&gt;</code><span data-i="opt.lang">LANG for tmux (default: en_US.UTF-8)</span></div>
-          <div class="opt"><code class="mono">--preview</code><span data-i="opt.preview">Install the latest server2 preview release</span></div>
-          <div class="opt"><code class="mono">--check</code><span data-i="opt.check">Run environment checks without installing</span></div>
-          <div class="opt"><code class="mono">--no-service</code><span data-i="opt.noservice">Skip background service setup</span></div>
-          <div class="opt"><code class="mono">--uninstall</code><span data-i="opt.uninstall">Stop the service and uninstall the server</span></div>
+          <div class="opt"><code class="mono">-y, --yes</code><span data-i="opt.yes">非交互模式</span></div>
+          <div class="opt"><code class="mono">--token &lt;string&gt;</code><span data-i="opt.token">设置 access token（默认：交互提示）</span></div>
+          <div class="opt"><code class="mono">--rotate-token</code><span data-i="opt.rotate">生成新的随机 access token</span></div>
+          <div class="opt"><code class="mono">--addr &lt;address&gt;</code><span data-i="opt.addr">监听地址，仅 IPv4/主机名（默认：0.0.0.0）</span></div>
+          <div class="opt"><code class="mono">--port &lt;port&gt;</code><span data-i="opt.port">监听端口（默认：8022）</span></div>
+          <div class="opt"><code class="mono">--term &lt;value&gt;</code><span data-i="opt.term">tmux 的 TERM（默认：xterm-256color）</span></div>
+          <div class="opt"><code class="mono">--lang &lt;value&gt;</code><span data-i="opt.lang">tmux 的 LANG（默认：en_US.UTF-8）</span></div>
+          <div class="opt"><code class="mono">--preview</code><span data-i="opt.preview">安装最新 server2 preview 版本</span></div>
+          <div class="opt"><code class="mono">--check</code><span data-i="opt.check">仅运行环境检查，不安装</span></div>
+          <div class="opt"><code class="mono">--no-service</code><span data-i="opt.noservice">跳过后台服务注册</span></div>
+          <div class="opt"><code class="mono">--uninstall</code><span data-i="opt.uninstall">停止服务并卸载服务端</span></div>
         </div>
       </div>
     </section>
@@ -1393,23 +1393,23 @@ html[lang="zh"] h3 .serif {
     <section id="faq" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="faq.eyebrow">§ 05 / FAQ</div>
-          <h2 data-i-html="faq.h2">Questions &amp; <span class="serif">answers</span>.</h2>
+          <div class="eyebrow" data-i="faq.eyebrow">§ 05 / 常见问题</div>
+          <h2 data-i-html="faq.h2">问题与<span class="serif">答案</span>。</h2>
         </div>
         <div>
-          <p data-i-html="faq.desc">Grouped by topic, straight from the docs. More answers in the repo — open an issue at <span class="mono ac">github.com/dualface/quicktui</span>.</p>
+          <p data-i-html="faq.desc">按主题分组，均来自官方文档。更多答案请见仓库 — 在 <span class="mono ac">github.com/dualface/quicktui</span> 提 Issue。</p>
         </div>
       </div>
 
       <div class="faq" id="faqList">
         <!-- ─── Group: Installation ─── -->
-        <div class="faq-group-label" data-i="faqg.install">Installation</div>
+        <div class="faq-group-label" data-i="faqg.install">安装</div>
 
         <div class="faq-item open">
           <div class="n">Q.01</div>
           <div>
-            <div class="q" data-i="q1.q">Checksum verification failed during install.</div>
-            <div class="a" data-i-html="q1.a"><p>Usually the download was interrupted or corrupted — re-run the installer. If it persists, release assets may have just been updated; wait a few minutes and retry.</p><p>Also verify nothing is intercepting HTTPS traffic (e.g. a corporate proxy).</p></div>
+            <div class="q" data-i="q1.q">安装时校验和验证失败。</div>
+            <div class="a" data-i-html="q1.a"><p>通常是下载中断或损坏 — 重新运行安装脚本即可。若持续出错，可能是发布资源刚更新，稍等几分钟重试。</p><p>也请检查是否有中间人拦截 HTTPS 流量（例如企业代理）。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1417,8 +1417,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.02</div>
           <div>
-            <div class="q" data-i="q2.q">tmux is not installed or the version is too old.</div>
-            <div class="a" data-i-html="q2.a">QuickTUI requires tmux <b>3.2 or later</b>. The installer can install it for you — first via the system package manager (<span class="mono">brew</span>, <span class="mono">apt</span>, <span class="mono">yum</span>, <span class="mono">dnf</span>), else a prebuilt archive unpacked to <span class="path">~/.local/tmux</span>. When tmux is not discoverable from the service PATH, the installer saves <span class="path">QUICKTUI_TMUX_BIN</span>.</div>
+            <div class="q" data-i="q2.q">未安装 tmux 或版本过旧。</div>
+            <div class="a" data-i-html="q2.a"><p>QuickTUI 需要 tmux <b>3.2 或更高版本</b>。安装脚本可自动为你安装 — 优先使用系统包管理器（<span class="mono">brew</span>、<span class="mono">apt</span>、<span class="mono">yum</span>、<span class="mono">dnf</span>），否则下载预编译包解压到 <span class="path">~/.local/tmux</span>。</p><p>当服务 PATH 找不到 tmux 时，安装脚本会保存 <span class="path">QUICKTUI_TMUX_BIN</span>。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1426,20 +1426,24 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.03</div>
           <div>
-            <div class="q" data-i="q3.q">What happens when I re-run the installer?</div>
-            <div class="a" data-i-html="q3.a">It detects the existing <span class="path">~/.local/bin/quicktui-server</span> and switches to <b>upgrade mode</b>: stops the service, stages the new binary, sanity-checks <span class="mono">--version</span>, atomically swaps it into place, and rolls back on failure. Your token, address, TERM, LANG and <span class="path">QUICKTUI_TMUX_BIN</span> are preserved.</div>
+            <div class="q" data-i="q3.q">重新运行安装脚本会发生什么？</div>
+            <div class="a" data-i-html="q3.a">脚本会检测已有的 <span class="path">~/.local/bin/quicktui-server</span>，切换到<b>升级模式</b>：停止服务、暂存新二进制、用 <span class="mono">--version</span> 做合理性检查、原子替换，失败自动回滚。你的 token、地址、TERM、LANG 以及 <span class="path">QUICKTUI_TMUX_BIN</span> 全部保留。</div>
           </div>
           <div class="plus">+</div>
         </div>
 
         <!-- ─── Group: Server & Service ─── -->
-        <div class="faq-group-label" data-i="faqg.server">Server & Service</div>
+        <div class="faq-group-label" data-i="faqg.server">服务端 · 服务</div>
 
         <div class="faq-item">
           <div class="n">Q.04</div>
           <div>
-            <div class="q" data-i="q4.q">What can I configure in the config file?</div>
-            <div class="a" data-i-html="q4.a">The service reads <span class="path">~/.config/quicktui/config</span> — a manual <span class="mono">quicktui-server</span> process does <b>not</b>. Keys: <span class="path">QUICKTUI_TOKEN</span>, <span class="path">QUICKTUI_ADDR</span> (default <span class="mono">0.0.0.0:8022</span>), <span class="path">QUICKTUI_TERM</span> (default <span class="mono">xterm-256color</span>), <span class="path">QUICKTUI_LANG</span> (default <span class="mono">en_US.UTF-8</span>), optionally <span class="path">QUICKTUI_TMUX_BIN</span>. After editing, restart: <span class="mono">launchctl kickstart -k gui/$(id -u)/ai.quicktui</span> (macOS) or <span class="mono">systemctl --user restart quicktui</span> (Linux).</div>
+            <div class="q" data-i="q4.q">配置文件里可以配置什么？</div>
+            <div class="a" data-i-html="q4.a"><p>服务会读取 <span class="path">~/.config/quicktui/config</span> — 手动启动的 <span class="mono">quicktui-server</span> 进程<b>不会</b>自动读取。</p><p>键：<span class="path">QUICKTUI_TOKEN</span>、<span class="path">QUICKTUI_ADDR</span>（默认 <span class="mono">0.0.0.0:8022</span>）、<span class="path">QUICKTUI_TERM</span>（默认 <span class="mono">xterm-256color</span>）、<span class="path">QUICKTUI_LANG</span>（默认 <span class="mono">en_US.UTF-8</span>），可选 <span class="path">QUICKTUI_TMUX_BIN</span>。</p><p>编辑后重启服务：</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl kickstart -k gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user restart quicktui</pre></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1447,8 +1451,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.05</div>
           <div>
-            <div class="q" data-i="q5.q">How do server upgrade and restart work?</div>
-            <div class="a" data-i-html="q5.a">Two paths: <b>re-run the installer</b> (atomic swap, rollback on failure, config preserved); or <b>server self-update</b> (cached release checks, platform download, binary replacement). Self-update does not auto-restart; restart from the app/browser, call <span class="mono">POST /v2/api/restart</span>, or restart the service. Update / restart / shutdown are serialized. Check status: <span class="mono">quicktui-server --check-upgrade</span>.</div>
+            <div class="q" data-i="q5.q">服务端升级与重启如何工作？</div>
+            <div class="a" data-i-html="q5.a"><p>两条路径：</p><p><b>重新运行安装脚本</b> — 原子替换、失败回滚、配置保留。</p><p><b>服务端自更新</b> — 使用缓存发布检查、下载当前平台二进制、替换可执行文件。自更新不会自动重启；可在 App/浏览器重启、调用 <span class="mono">POST /v2/api/restart</span>，或重启系统服务。</p><p>升级 / 重启 / 关停相互串行：重启进行中时新升级请求会被拒绝，反之亦然。</p><p>查看状态：</p><pre class="cmd">quicktui-server --check-upgrade</pre></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1456,8 +1460,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.06</div>
           <div>
-            <div class="q" data-i="q6.q">Can I validate the server environment without installing?</div>
-            <div class="a" data-i-html="q6.a">Yes. <span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</span> runs environment preflight checks without installing or configuring the server.</div>
+            <div class="q" data-i="q6.q">可以不安装就验证服务端环境吗？</div>
+            <div class="a" data-i-html="q6.a"><p>可以 — 运行环境预检，不安装、不写入服务端配置：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --check</pre></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1465,8 +1469,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.07</div>
           <div>
-            <div class="q" data-i="q7.q">QuickTUI says "token is required".</div>
-            <div class="a" data-i-html="q7.a"><b>Service:</b> ensure <span class="path">~/.config/quicktui/config</span> exists and contains <span class="path">QUICKTUI_TOKEN=…</span>. <b>Manual start:</b> pass <span class="mono">--token</span> or set <span class="path">QUICKTUI_TOKEN</span> in the environment — normal server startup does not read the config file automatically.</div>
+            <div class="q" data-i="q7.q">QuickTUI 提示"token is required"。</div>
+            <div class="a" data-i-html="q7.a"><p><b>服务方式：</b>确保 <span class="path">~/.config/quicktui/config</span> 存在且包含：</p><pre class="cmd">QUICKTUI_TOKEN=…</pre><p><b>手动启动：</b>传入 <span class="mono">--token</span> 或在环境中设置 <span class="path">QUICKTUI_TOKEN</span> — 普通启动不会自动读取配置文件。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1474,8 +1478,12 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.08</div>
           <div>
-            <div class="q" data-i="q8.q">Can't connect — connection refused.</div>
-            <div class="a" data-i-html="q8.a">First check the service: <span class="mono">launchctl print gui/$(id -u)/ai.quicktui</span> (macOS) or <span class="mono">systemctl --user status quicktui</span> (Linux). If you skipped service registration, start the server manually with the same token and address. If it's running, make sure your firewall or tunnel allows the port from <span class="path">QUICKTUI_ADDR</span>.</div>
+            <div class="q" data-i="q8.q">无法连接 — connection refused。</div>
+            <div class="a" data-i-html="q8.a"><p>先检查服务：</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl print gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user status quicktui</pre><p>若跳过了服务注册，用相同的 token 和地址手动启动服务端。若服务已在运行，请确认防火墙或隧道放通了 <span class="path">QUICKTUI_ADDR</span> 对应的端口。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1483,8 +1491,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.09</div>
           <div>
-            <div class="q" data-i-html="q9.q">Text rendering is garbled when <span class="mono">TERM=xterm-ghostty</span>.</div>
-            <div class="a" data-i-html="q9.a"><p>QuickTUI's server-side tmux won't render correctly when <span class="mono">TERM=xterm-ghostty</span> is forwarded — Ghostty's own terminfo isn't a fit for tmux inside the remote session.</p><p>Use a widely supported TERM instead. In <span class="path">~/.config/quicktui/config</span>:</p><pre class="cmd">QUICKTUI_TERM=xterm-256color</pre><p>Then restart the service. For a manual server command:</p><pre class="cmd">--term xterm-256color</pre></div>
+            <div class="q" data-i-html="q9.q">当 <span class="mono">TERM=xterm-ghostty</span> 时，文字渲染错乱。</div>
+            <div class="a" data-i-html="q9.a"><p>服务端的 tmux 在 <span class="mono">TERM=xterm-ghostty</span> 下无法正确渲染 — Ghostty 自己的 terminfo 不适用于远端会话里的 tmux。</p><p>改用广泛支持的 TERM。在 <span class="path">~/.config/quicktui/config</span> 中配置：</p><pre class="cmd">QUICKTUI_TERM=xterm-256color</pre><p>然后重启服务。手动启动命令则用：</p><pre class="cmd">--term xterm-256color</pre></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1492,8 +1500,12 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.10</div>
           <div>
-            <div class="q" data-i="q10.q">PTY spawn failed / internal server error when opening a session.</div>
-            <div class="a" data-i-html="q10.a">The server could not launch or attach tmux. Check logs: <span class="mono">tail -f ~/Library/Logs/QuickTUI/stdout.log</span> (macOS) or <span class="mono">journalctl --user -u quicktui -f</span> (Linux). If <span class="path">QUICKTUI_TMUX_BIN</span> is set, it must be an absolute path to a real tmux binary. Also verify <span class="path">QUICKTUI_TERM</span> and <span class="path">QUICKTUI_LANG</span> are valid.</div>
+            <div class="q" data-i="q10.q">打开会话时出现 PTY spawn failed / internal server error。</div>
+            <div class="a" data-i-html="q10.a"><p>服务端无法启动或附加 tmux。查看日志：</p><pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stdout.log
+
+<span class="com"># Linux</span>
+journalctl --user -u quicktui -f</pre><p>若设置了 <span class="path">QUICKTUI_TMUX_BIN</span>，必须是指向真实 tmux 二进制的绝对路径。也请确认 <span class="path">QUICKTUI_TERM</span> 与 <span class="path">QUICKTUI_LANG</span> 有效。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1501,8 +1513,13 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.11</div>
           <div>
-            <div class="q" data-i="q11.q">How do I view server logs?</div>
-            <div class="a" data-i-html="q11.a"><b>macOS:</b> <span class="mono">tail -f ~/Library/Logs/QuickTUI/stdout.log ~/Library/Logs/QuickTUI/stderr.log</span>. <b>Linux:</b> <span class="mono">journalctl --user -u quicktui -f</span>. If you started <span class="mono">quicktui-server</span> manually, output appears in the terminal where you launched it.</div>
+            <div class="q" data-i="q11.q">如何查看服务端日志？</div>
+            <div class="a" data-i-html="q11.a"><pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stdout.log \
+        ~/Library/Logs/QuickTUI/stderr.log
+
+<span class="com"># Linux</span>
+journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quicktui-server</span>，输出在你启动它的那个终端。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1510,8 +1527,9 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.12</div>
           <div>
-            <div class="q" data-i="q12.q">How do I change the listen address or port?</div>
-            <div class="a" data-i-html="q12.a"><b>Service:</b> edit <span class="path">QUICKTUI_ADDR</span> in <span class="path">~/.config/quicktui/config</span>, then restart. <b>Manual:</b> pass <span class="mono">--addr 0.0.0.0:9000</span>. <b>At install time:</b> <span class="mono">curl … | sh -s -- --addr 127.0.0.1 --port 9000</span>. The installer accepts IPv4 addresses or hostnames, not IPv6 literals.</div>
+            <div class="q" data-i="q12.q">如何修改监听地址或端口？</div>
+            <div class="a" data-i-html="q12.a"><p><b>服务方式：</b>编辑 <span class="path">~/.config/quicktui/config</span> 中的 <span class="path">QUICKTUI_ADDR</span>，然后重启。</p><p><b>手动方式：</b></p><pre class="cmd">quicktui-server --addr 0.0.0.0:9000</pre><p><b>安装时：</b></p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- \
+  --addr 127.0.0.1 --port 9000</pre><p>安装脚本接受 IPv4 地址或主机名，不接受 IPv6 字面量。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1519,8 +1537,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.13</div>
           <div>
-            <div class="q" data-i="q13.q">How do I uninstall QuickTUI?</div>
-            <div class="a" data-i-html="q13.a"><span class="mono">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</span> — stops the service and uninstalls the server it manages.</div>
+            <div class="q" data-i="q13.q">如何卸载 QuickTUI？</div>
+            <div class="a" data-i-html="q13.a"><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- --uninstall</pre><p>停止服务并卸载它所管理的服务端。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1528,8 +1546,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item" id="q-tcc-macos">
           <div class="n">Q.14</div>
           <div>
-            <div class="q" data-i="q14tcc.q">macOS file browser hangs on Desktop / Documents / Downloads.</div>
-            <div class="a" data-i-html="q14tcc.a"><p>macOS protects <b>Desktop</b>, <b>Documents</b>, <b>Downloads</b>, iCloud Drive, and other system folders via TCC (Transparency, Consent, Control). The QuickTUI service runs as a background <span class="mono">launchd</span> agent and cannot trigger the system consent dialog, so accesses to those folders hang silently until the request times out.</p><p><b>Fix — grant Full Disk Access to the server binary:</b></p><ol><li>Open <b>System Settings</b> → <b>Privacy &amp; Security</b> → <b>Full Disk Access</b>.</li><li>Click the <b>+</b> button. In the file picker, press <span class="mono">Cmd+Shift+G</span> and enter <span class="path">~/.local/bin</span>, then select <span class="path">quicktui-server</span>.</li><li>Make sure the toggle next to <span class="mono">quicktui-server</span> is <b>enabled</b>.</li><li>Back in the QuickTUI client, tap <b>Recheck</b> on the warning banner. No service restart needed.</li></ol><p>If <b>Recheck</b> still fails, restart the service:</p><pre class="cmd">launchctl kickstart -k gui/$(id -u)/ai.quicktui</pre><p><b>Why no consent dialog appears:</b> macOS only shows the TCC consent prompt for processes launched with a UI context (Finder, Terminal, Dock). Background <span class="mono">launchd</span> agents have no UI, so the prompt is never displayed and the OS silently blocks until manually authorized.</p></div>
+            <div class="q" data-i="q14tcc.q">macOS 文件浏览器访问 桌面 / 文稿 / 下载 等目录会卡住。</div>
+            <div class="a" data-i-html="q14tcc.a"><p>macOS 通过 TCC（隐私权限子系统）保护 <b>桌面</b>、<b>文稿</b>、<b>下载</b>、iCloud Drive 等系统目录。QuickTUI 服务以后台 <span class="mono">launchd</span> agent 形式运行，无 UI 上下文，无法触发系统授权弹窗，因此访问这些目录会静默挂起直到请求超时。</p><p><b>解决方法 — 给 server 二进制加完全磁盘访问权限：</b></p><ol><li>打开 <b>系统设置</b> → <b>隐私与安全性</b> → <b>完全磁盘访问</b>。</li><li>点 <b>+</b> 号。在文件选择器中按 <span class="mono">Cmd+Shift+G</span>，输入 <span class="path">~/.local/bin</span>，选中 <span class="path">quicktui-server</span>。</li><li>确保 <span class="mono">quicktui-server</span> 旁边的开关已<b>启用</b>。</li><li>回到 QuickTUI 客户端，点警告条上的 <b>已授权, 重测</b>。无需重启服务。</li></ol><p>若 <b>重测</b> 仍然失败，重启服务：</p><pre class="cmd">launchctl kickstart -k gui/$(id -u)/ai.quicktui</pre><p><b>为什么没有自动授权弹窗：</b> macOS 仅对带 UI 上下文的进程（Finder、终端、Dock 启动的 App）显示 TCC 授权弹窗。后台 <span class="mono">launchd</span> agent 无 UI，授权弹窗永远不会显示，系统会静默拒绝直到用户手动加白名单。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1537,8 +1555,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item" id="q-permission-linux">
           <div class="n">Q.15</div>
           <div>
-            <div class="q" data-i="q15perm.q">Linux file browser shows "permission denied" or returns 403.</div>
-            <div class="a" data-i-html="q15perm.a"><p>The QuickTUI server runs under your user (typically systemd <span class="mono">--user</span>) and can only read paths your user has POSIX read+execute on. Common causes:</p><ul><li><b>Mode bits.</b> Files mode <span class="mono">0600</span> / dirs mode <span class="mono">0700</span> are unreadable to anyone but the owner. Check with <span class="mono">ls -ld /path</span>.</li><li><b>Parent directory missing <span class="mono">x</span> bit.</b> Even if the target file is world-readable, the server can't traverse into it without execute permission on every ancestor directory.</li><li><b>POSIX ACL.</b> <span class="mono">getfacl /path</span> may show an explicit deny entry that overrides mode bits.</li><li><b>Wrong user.</b> If you started the server with <span class="mono">sudo</span> once and switched back, residual files may be owned by root. <span class="mono">stat /path</span> shows the owner.</li><li><b>SELinux (RHEL / Fedora / Rocky).</b> Even with correct mode, MAC may block access. Check with <span class="mono">ausearch -m AVC -ts recent</span> or <span class="mono">getenforce</span>. Temporarily test with <span class="mono">setenforce 0</span> (do not leave permissive in production).</li><li><b>AppArmor / Snap confinement (Ubuntu).</b> If you installed <span class="mono">quicktui-server</span> via snap, it can't read files outside the snap home. The recommended install path is <span class="path">~/.local/bin/quicktui-server</span> (no confinement).</li><li><b>Mount options.</b> A mount with <span class="mono">noexec</span> or read-only flags may surface as EACCES on some operations. Check <span class="mono">findmnt /path</span>.</li></ul><p><b>Fix steps:</b></p><ol><li>Run <span class="mono">ls -ld /full/path/to/dir</span> on the failing path <b>and every parent</b>. Confirm the user running quicktui-server has <span class="mono">r-x</span> on dirs and <span class="mono">r--</span> on files.</li><li>Identify which user the service runs as: <span class="mono">systemctl --user show quicktui -p MainPID</span>, then <span class="mono">ps -o user= -p &lt;PID&gt;</span>.</li><li>Adjust permissions: <span class="mono">chmod o+rx /path</span> for shared paths, or use ACLs (<span class="mono">setfacl -m u:&lt;user&gt;:rx /path</span>) for selective access.</li><li>If SELinux blocks access, add a file context label or use <span class="mono">audit2allow</span> to generate a policy module — see your distro's SELinux docs.</li><li>Tap <b>Recheck</b> in the client. No service restart required.</li></ol><p>If still failing, check logs: <span class="mono">journalctl --user -u quicktui -f</span> while reproducing.</p></div>
+            <div class="q" data-i="q15perm.q">Linux 文件浏览器提示 "permission denied" 或返回 403。</div>
+            <div class="a" data-i-html="q15perm.a"><p>QuickTUI 服务以你当前用户（通常是 systemd <span class="mono">--user</span>）身份运行，只能读到该用户拥有 POSIX 读+执行权限的路径。常见原因：</p><ul><li><b>权限位。</b> 文件 <span class="mono">0600</span> / 目录 <span class="mono">0700</span> 模式只有所有者能读。用 <span class="mono">ls -ld /path</span> 检查。</li><li><b>父目录缺少 <span class="mono">x</span> 位。</b> 即使目标文件 world-readable，server 也需要每一级祖先目录有 execute 权限才能 traverse。</li><li><b>POSIX ACL。</b> <span class="mono">getfacl /path</span> 可能显示显式 deny 条目覆盖了普通权限位。</li><li><b>用户错误。</b> 如果某次用 <span class="mono">sudo</span> 启动过 server，后又切回普通用户，残留文件可能 root 所有。<span class="mono">stat /path</span> 看 owner。</li><li><b>SELinux（RHEL / Fedora / Rocky）。</b> 即便权限位正确，MAC 也可能拦截。用 <span class="mono">ausearch -m AVC -ts recent</span> 或 <span class="mono">getenforce</span> 检查。临时测试用 <span class="mono">setenforce 0</span>（生产环境不要长期 permissive）。</li><li><b>AppArmor / Snap 隔离（Ubuntu）。</b> 若你用 snap 安装 <span class="mono">quicktui-server</span>，它读不到 snap home 之外的文件。推荐安装路径是 <span class="path">~/.local/bin/quicktui-server</span>（无 confinement）。</li><li><b>挂载选项。</b> <span class="mono">noexec</span> 或只读挂载在某些操作上会表现为 EACCES。用 <span class="mono">findmnt /path</span> 检查。</li></ul><p><b>排查步骤：</b></p><ol><li>对失败路径<b>及每一级父目录</b>跑 <span class="mono">ls -ld /full/path/to/dir</span>。确认 server 运行用户对目录有 <span class="mono">r-x</span>，对文件有 <span class="mono">r--</span>。</li><li>确认服务运行用户：<span class="mono">systemctl --user show quicktui -p MainPID</span>，再 <span class="mono">ps -o user= -p &lt;PID&gt;</span>。</li><li>调权限：<span class="mono">chmod o+rx /path</span>（共享路径），或用 ACL <span class="mono">setfacl -m u:&lt;user&gt;:rx /path</span>（选择性授权）。</li><li>SELinux 拦截时，加文件 context label 或用 <span class="mono">audit2allow</span> 生成策略模块 — 参考你的发行版 SELinux 文档。</li><li>客户端点 <b>已授权, 重测</b>。无需重启服务。</li></ol><p>仍失败时复现操作并查看日志：<span class="mono">journalctl --user -u quicktui -f</span>。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1549,8 +1567,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.16</div>
           <div>
-            <div class="q" data-i="q14.q">My session list is empty.</div>
-            <div class="a" data-i-html="q14.a">QuickTUI shows your current tmux sessions. If none exist yet, create one from the app or browser with <b>New Session</b>, or on the server: <span class="mono">tmux new-session -s mysession</span>.</div>
+            <div class="q" data-i="q14.q">会话列表为空。</div>
+            <div class="a" data-i-html="q14.a"><p>QuickTUI 显示当前 tmux 会话。若尚无会话，从 App 或浏览器点 <b>New Session</b> 创建，或在服务器上运行：</p><pre class="cmd">tmux new-session -s mysession</pre></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1558,8 +1576,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item" id="q-tmux-tui-fullscreen">
           <div class="n">Q.17</div>
           <div>
-            <div class="q" data-i="qtuifs.q">tmux scrollback shows duplicated / misaligned text after running Claude Code.</div>
-            <div class="a" data-i-html="qtuifs.a">Symptom and fix.</div>
+            <div class="q" data-i="qtuifs.q">在 tmux 里跑 Claude Code 一段时间后，scrollback 出现重复或错位的文字。</div>
+            <div class="a" data-i-html="qtuifs.a"><p><b>现象。</b>在 tmux pane 里使用 Claude Code（或同类 TUI 工具如 OpenAI Codex CLI、aider）一段时间后，向上滚动 tmux 历史会看到重复的帧、错位的列，或旧渲染的碎片。重启 QuickTUI 服务端 <b>不能</b> 让桌面 tmux 自愈，只有 <span class="mono">tmux clear-history</span> 才能清掉。</p><p><b>原因。</b>Claude Code 的 TUI 基于 <b>Ink</b> 渲染库。当渲染区域超过 viewport（或满屏重绘时），Ink 的 render loop 会在 <b>主屏</b> 上发送 <span class="mono">CSI 3 J</span>（"擦除滚动条历史"）并重绘整屏 — 且没有 DECSET 2026（同步输出）包裹。tmux 把这些半截帧写进 pane scrollback。后续每次 SIGWINCH / 改尺寸会再叠加一份。上游 issue：</p><ul><li><a href="https://github.com/anthropics/claude-code/issues/29937" target="_blank" rel="noopener noreferrer">#29937 — Terminal rendering corruption in tmux</a></li><li><a href="https://github.com/anthropics/claude-code/issues/49086" target="_blank" rel="noopener noreferrer">#49086 — Resize duplicates banner/content in scrollback</a></li><li><a href="https://github.com/anthropics/claude-code/issues/37283" target="_blank" rel="noopener noreferrer">#37283 — TUI flicker / missing DECSET 2026</a></li></ul><p><b>解决方法。</b>用 <b>fullscreen 模式</b>跑 Claude Code — 切到 <b>alternate</b> screen buffer（和 vim / htop 一样），完全不动 scrollback。需要 <b>Claude Code v2.1.89+</b>：</p><pre class="cmd">/tui fullscreen</pre><p><b>v2.1.89 — v2.1.109</b> 版本用环境变量代替：</p><pre class="cmd">CLAUDE_CODE_NO_FLICKER=1 claude</pre><p><b>清掉已经污染的 scrollback。</b>烂字节已经在 tmux 内存里，只能整段清掉：</p><pre class="cmd">tmux clear-history</pre><p>然后用 fullscreen 模式重启 Claude Code 防止再次发生。QuickTUI 客户端在你选择运行了 Claude Code（或其他已知 main-screen TUI 工具）的 pane 时也会弹一条提示条。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1567,20 +1585,20 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item" id="q-osc-color-leak">
           <div class="n">Q.18</div>
           <div>
-            <div class="q" data-i="qoscleak.q">Garbage like 11;rgb:2828/2c2c/3434 keeps appearing in a terminal app's input box.</div>
-            <div class="a" data-i-html="qoscleak.a">Symptom and fix.</div>
+            <div class="q" data-i="qoscleak.q">终端应用输入框反复出现 11;rgb:2828/2c2c/3434 之类乱码。</div>
+            <div class="a" data-i-html="qoscleak.a"><p><b>现象。</b>多个客户端（比如本地终端加上 QuickTUI App 或浏览器）同时 attach 同一个 tmux session 时，终端应用的输入框会反复出现类似 <span class="mono">11;rgb:2828/2c2c/3434</span> 的乱码，有时连续好几条。</p><p><b>原因。</b>部分终端应用会通过发送 OSC 10/11/12 转义查询（"当前前景色 / 背景色 / 光标色是什么"）来自动探测配色主题。tmux 把查询转发给最外层终端，再把对方的回包路由回 pane。当多个客户端同时 attach 时，回包可能在应用为这次查询打开的解析窗口关闭之后才到达，于是应用把这些原始转义字节当成了普通按键，直接塞进了自己的输入框。这是终端应用侧的 bug，与 QuickTUI 无关 — 例如 Claude Code 就有对应的 <a href="https://github.com/anthropics/claude-code/issues/12910" target="_blank" rel="noopener noreferrer">#12910 — OSC terminal color query responses leak into input buffer</a>。</p><p><b>解决方法。</b></p><ol><li>把受影响的应用改成固定主题，不用自动探测。Claude Code 里运行 <span class="mono">/theme</span>，选一个固定的浅色或深色值。</li><li>其他 TUI 工具同理，关闭自动终端配色 / 主题检测。</li><li>可选：在 <span class="path">~/.tmux.conf</span> 里加一行，降低转义序列被拆片误判的概率：<pre class="cmd">set -s escape-time 100</pre></li></ol></div>
           </div>
           <div class="plus">+</div>
         </div>
 
         <!-- ─── Group: iOS App & Browser ─── -->
-        <div class="faq-group-label" data-i="faqg.client">iOS App & Browser</div>
+        <div class="faq-group-label" data-i="faqg.client">iOS App 与浏览器</div>
 
         <div class="faq-item">
           <div class="n">Q.19</div>
           <div>
-            <div class="q" data-i="q15.q">What is the access token?</div>
-            <div class="a" data-i-html="q15.a">A secret you set during installation — it protects your server from unauthorized access. Find it on your server: <span class="mono">cat ~/.config/quicktui/config</span>. Enter it when prompted on first login in the app or browser.</div>
+            <div class="q" data-i="q15.q">什么是 access token？</div>
+            <div class="a" data-i-html="q15.a"><p>你在安装时设定的密钥 — 用于保护服务器不被未授权访问。在服务器上查看：</p><pre class="cmd">cat ~/.config/quicktui/config</pre><p>首次在 App 或浏览器登录时按提示输入。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1588,8 +1606,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.20</div>
           <div>
-            <div class="q" data-i="q16.q">Can I connect over the internet?</div>
-            <div class="a" data-i-html="q16.a">Yes. You need the server reachable from the internet — via a public IP, VPN, reverse proxy, or a tunnel such as <b>Tailscale</b> or <b>Cloudflare Tunnel</b>. QuickTUI itself speaks plain HTTP on <span class="mono">8022</span>; if you use Cloudflare Tunnel, point the tunnel service to <span class="mono">http://127.0.0.1:8022</span> and use the public HTTPS hostname in the app, usually without an explicit port. <span class="mono">:443</span> is equivalent; do not use <span class="mono">:8022</span> on the public HTTPS URL.</div>
+            <div class="q" data-i="q16.q">可以通过公网连接吗？</div>
+            <div class="a" data-i-html="q16.a">可以。需要让服务器可从公网访问 — 通过公网 IP、VPN、反向代理，或 <b>Tailscale</b>、<b>Cloudflare Tunnel</b> 等隧道。QuickTUI 本身在 <span class="mono">8022</span> 跑明文 HTTP；如果使用 Cloudflare Tunnel，tunnel service 填 <span class="mono">http://127.0.0.1:8022</span>，App 里填公网 HTTPS 域名，通常不写端口；<span class="mono">:443</span> 等价可用。公网 HTTPS 地址不要写 <span class="mono">:8022</span>。Token 妥善保密。</div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1597,8 +1615,8 @@ html[lang="zh"] h3 .serif {
         <div class="faq-item">
           <div class="n">Q.21</div>
           <div>
-            <div class="q" data-i="q17.q">The app or browser shows "Session not found".</div>
-            <div class="a" data-i-html="q17.a">This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running. Refresh the session list, then open an existing session or create a new one.</div>
+            <div class="q" data-i="q17.q">App 或浏览器提示"Session not found"。</div>
+            <div class="a" data-i-html="q17.a"><p>这是服务端返回的消息 — tmux 会话已关闭或被重命名，或 tmux 服务本身未运行。</p><p>刷新会话列表，然后打开已有会话或新建一个。</p></div>
           </div>
           <div class="plus">+</div>
         </div>
@@ -1611,7 +1629,7 @@ html[lang="zh"] h3 .serif {
         <span class="brand-mark">q</span>
         <span>quicktui.ai</span>
         <span style="opacity:.5">·</span>
-        <span data-i="foot.tag">© 2026 · All rights reserved.</span>
+        <span data-i="foot.tag">© 2026 · 版权所有。</span>
       </div>
       <div class="links">
         <a href="https://apps.apple.com/app/quicktui/id6761338192" data-i="foot.appstore">App Store</a>
@@ -1685,7 +1703,7 @@ function saveTheme(theme) {
   }
 }
 
-const state = { theme: getStoredTheme() || detectSystemTheme(), lang: getStoredLang() || detectBrowserLang() };
+const state = { theme: getStoredTheme() || detectSystemTheme(), lang: getStoredLang() || 'zh' };
 
 // ───────── i18n dictionary
 const I18N = {

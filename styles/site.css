@@ -121,6 +121,11 @@ a { color: inherit; text-decoration: none; }
 /* ───────── article */
 main { position: relative; z-index: 2; }
 .article { max-width: var(--readw); margin: 0 auto; padding: 56px var(--gutter) 72px; }
+.breadcrumb { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); margin: 0 0 22px; }
+.breadcrumb a { color: var(--ink-3); }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { margin: 0 8px; color: var(--ink-4); }
+.breadcrumb [aria-current="page"] { color: var(--ink-2); }
 .eyebrow {
   font-family: var(--mono); font-size: 12px; letter-spacing: .12em;
   text-transform: uppercase; color: var(--accent);

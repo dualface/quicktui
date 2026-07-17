@@ -950,7 +950,7 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
   flex-wrap: wrap;
 }
 .foot .left { display: flex; align-items: center; gap: 14px; }
-.foot .links { display: flex; gap: 20px; }
+.foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .foot .links a:hover { color: var(--ink); }
 
 /* ───────────────────────────────────────────────── i18n */
@@ -1605,6 +1605,27 @@ html[lang="zh"] h3 .serif {
       </div>
     </section>
 
+    <section id="resources" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="res.eyebrow">§ 06 / Resources</div>
+          <h2 data-i="res.h2">Guides &amp; comparisons</h2>
+        </div>
+        <div>
+          <p data-i="res.desc">Set up tmux on your phone, run coding agents remotely, and see how QuickTUI compares.</p>
+        </div>
+      </div>
+      <div class="features-grid">
+        <a class="feat col-4" href="/tmux-ios-app/"><div class="idx">R.01</div><h3 data-i="res.r1">tmux on iOS</h3></a>
+        <a class="feat col-4" href="/guides/attach-tmux-from-phone/"><div class="idx">R.02</div><h3 data-i="res.r2">Attach a tmux session from your phone</h3></a>
+        <a class="feat col-4" href="/guides/run-claude-code-from-iphone/"><div class="idx">R.03</div><h3 data-i="res.r3">Run Claude Code from your iPhone</h3></a>
+        <a class="feat col-4" href="/guides/run-codex-cli-from-phone/"><div class="idx">R.04</div><h3 data-i="res.r4">Run Codex CLI from your phone</h3></a>
+        <a class="feat col-4" href="/guides/remote-development-from-ipad/"><div class="idx">R.05</div><h3 data-i="res.r5">Remote development from iPad</h3></a>
+        <a class="feat col-4" href="/use-cases/control-ai-agents-from-phone/"><div class="idx">R.06</div><h3 data-i="res.r6">Control AI coding agents from your phone</h3></a>
+        <a class="feat col-12" href="/compare/"><div class="idx">R.07</div><h3 data-i="res.r7">QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux</h3></a>
+      </div>
+    </section>
+
     <!-- ───────── FOOT ───────── -->
     <footer class="foot">
       <div class="left">
@@ -1615,6 +1636,11 @@ html[lang="zh"] h3 .serif {
       </div>
       <div class="links">
         <a href="/tmux-ios-app/">tmux on iOS</a>
+        <a href="/guides/attach-tmux-from-phone/">Attach tmux</a>
+        <a href="/guides/run-claude-code-from-iphone/">Claude Code</a>
+        <a href="/guides/run-codex-cli-from-phone/">Codex CLI</a>
+        <a href="/guides/remote-development-from-ipad/">iPad</a>
+        <a href="/use-cases/control-ai-agents-from-phone/">Control agents</a>
         <a href="/compare/">Compare</a>
         <a href="https://apps.apple.com/app/quicktui/id6761338192" data-i="foot.appstore">App Store</a>
         <a href="https://discord.gg/DyJdXEa6q" data-i="foot.discord">Discord</a>
@@ -1696,6 +1722,18 @@ const I18N = {
   "seo.description": { en: "Self-hosted remote terminal for iPhone, iPad, and browsers. Attach tmux and run Claude Code, Codex, or any CLI agent from anywhere. Free for one server.", zh: "自托管远程终端，支持 iPhone、iPad 与浏览器。随时随地接入 tmux 会话，运行 Claude Code、Codex 或任意 CLI Agent。单服务器免费，默认直连。" },
   "seo.ogTitle": { en: "QuickTUI — Full terminal for any coding agent", zh: "QuickTUI — 任意 coding agent 的完整终端" },
   "seo.ogDesc": { en: "Attach tmux and run Claude Code, Codex, or any CLI agent from your iPhone, iPad, or browser. Self-hosted, direct connection. Free for one server.", zh: "在 iPhone、iPad 或浏览器上接入 tmux，运行 Claude Code、Codex 或任意 CLI Agent。自托管、直连、单服务器免费。" },
+
+  // ───── resources (homepage Guides section, links to SEO content pages)
+  "res.eyebrow": { en: "§ 06 / Resources", zh: "§ 06 / 资源" },
+  "res.h2": { en: "Guides & comparisons", zh: "指南与对比" },
+  "res.desc": { en: "Set up tmux on your phone, run coding agents remotely, and see how QuickTUI compares.", zh: "在手机上配置 tmux、远程运行编程 Agent，并了解 QuickTUI 的对比。" },
+  "res.r1": { en: "tmux on iOS", zh: "iOS 上的 tmux" },
+  "res.r2": { en: "Attach a tmux session from your phone", zh: "从手机接入 tmux 会话" },
+  "res.r3": { en: "Run Claude Code from your iPhone", zh: "在 iPhone 上运行 Claude Code" },
+  "res.r4": { en: "Run Codex CLI from your phone", zh: "在手机上运行 Codex CLI" },
+  "res.r5": { en: "Remote development from iPad", zh: "用 iPad 远程开发" },
+  "res.r6": { en: "Control AI coding agents from your phone", zh: "在手机上掌控 AI 编程 Agent" },
+  "res.r7": { en: "QuickTUI vs Happy, Omnara, Termius, Blink & dotMux", zh: "QuickTUI 对比 Happy、Omnara、Termius、Blink、dotMux" },
 
   // ───── nav
   "nav.features": { en: `<span class="n">01</span>Features`, zh: `<span class="n">01</span>功能` },

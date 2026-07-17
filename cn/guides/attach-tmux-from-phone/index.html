@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>如何从手机接入 tmux 会话 | QuickTUI</title>
+<meta name="description" content="手把手：从手机接入你自己服务器上运行的 tmux 会话，断线后从离开处原样接回。" />
+<link rel="canonical" href="https://quicktui.ai/cn/guides/attach-tmux-from-phone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/attach-tmux-from-phone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/attach-tmux-from-phone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/attach-tmux-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="如何从手机接入 tmux 会话" />
+<meta property="og:description" content="手把手：从手机接入你自己服务器上运行的 tmux 会话，断线后从离开处原样接回。" />
+<meta property="og:url" content="https://quicktui.ai/cn/guides/attach-tmux-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="如何从手机接入 tmux 会话" />
+<meta name="twitter:description" content="手把手：从手机接入你自己服务器上运行的 tmux 会话，断线后从离开处原样接回。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "如何从手机接入 tmux 会话",
+  "description": "手把手：从手机接入你自己服务器上运行的 tmux 会话，断线后从离开处原样接回。",
+  "url": "https://quicktui.ai/cn/guides/attach-tmux-from-phone/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "从手机接入 tmux 会话",
+      "item": "https://quicktui.ai/cn/guides/attach-tmux-from-phone/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><span aria-current="page">从手机接入 tmux 会话</span></nav>
+<p class="eyebrow">指南 · tmux</p>
+<h1>如何从手机接入 tmux 会话</h1>
+<p class="lede">tmux 让你的终端会话在断开连接后仍在服务器上运行：长时间的构建、编程 Agent、日志跟踪和 shell 都能保持存活。本指南带你走一遍用 QuickTUI 从 iPhone 或 iPad 接入这些会话、在掉线后重新接回，以及在需要时新建会话的完整流程。</p>
+
+<p>tmux 持久化背后的想法很简单：会话活在机器上，而不在客户端。你把一个视图接上去，再断开，工作照常进行。QuickTUI 是原生应用（另有浏览器客户端），接入你自己服务器上真正的 tmux，所以你在手机上打开的会话，就是你在办公桌终端里离开的那一个。</p>
+
+<h2>安装服务端</h2>
+<p>在运行 tmux 会话的机器上运行安装器。它会配置好 QuickTUI 服务，如果缺少 tmux 3.2+ 还能替你装上。</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>连接默认直连，所以你的代码和密钥绝不经过我们的服务器。单个服务器免费且功能完整；QuickTUI Pro 为一次性买断，解锁无限服务器配置。</p>
+
+<h2>配对应用</h2>
+<p>在服务器上生成配对码，扫一次即可：</p>
+<pre><code>quicktui-server --qrcode</code></pre>
+<p>在 iPhone 或 iPad 上打开 QuickTUI 应用，扫描二维码，服务器就添加好了。如果你更喜欢手动输入信息，也可以用 URL 和 token 添加。</p>
+
+<h2>打开、接入与重新接回</h2>
+<ul>
+  <li><strong>接入正在运行的会话。</strong>QuickTUI 会列出服务器上的 tmux 会话；点一个，你就直接进入实时画面，回滚缓冲完好无损。</li>
+  <li><strong>掉线后重新接回。</strong>从 Wi-Fi 切到 LTE 或 5G、把应用切到后台，或是失去信号，都不会结束会话。会话保活为你守住位置，重新打开应用就回到原处。</li>
+  <li><strong>新建会话。</strong>在服务器上运行 <code>tmux new-session -s work</code>，或在应用里打开一个 shell 从那儿启动；命名后的会话随即出现在列表里，可从任意设备接入。</li>
+</ul>
+
+<div class="callout">
+  <strong>要和编程 Agent 打交道？</strong>在 tmux 会话里启动 Claude Code、Codex 或任意 CLI 工具，然后从手机上盯着它。参见<a href="/cn/guides/run-claude-code-from-iphone/">从 iPhone 运行 Claude Code</a>。
+</div>
+
+<h2>常见问题</h2>
+<h3>如果我的手机掉线，会话还在吗？</h3>
+<p>在。tmux 让会话在服务器上持续运行，QuickTUI 的会话保活会在网络切换、连接中断或应用重启后重新接回，所以你能从离开的地方续上。</p>
+<h3>我要怎么新建一个 tmux 会话？</h3>
+<p>在服务器上运行 <code>tmux new-session -s name</code>，或在应用里打开一个 shell 从那儿启动。命名后的会话会出现在 QuickTUI 的列表里，可从 iPhone、iPad 或浏览器接入。</p>
+<h3>我需要 SSH 吗？</h3>
+<p>不需要。QuickTUI 通过 HTTP/WebSocket 与它自己的轻量服务端通信。你可以在局域网内、通过 Tailscale 或 Cloudflare Tunnel 这样的 VPN 或隧道，或经由公网地址访问它。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "如果我的手机掉线，tmux 会话还在吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "在。tmux 让会话在服务器上持续运行，QuickTUI 的会话保活会在网络切换、连接中断或应用重启后重新接回，所以你能从离开的地方续上。" } },
+    { "@type": "Question", "name": "我要怎么从手机新建一个 tmux 会话？",
+      "acceptedAnswer": { "@type": "Answer", "text": "在服务器上运行 tmux new-session -s name，或在 QuickTUI 应用里打开一个 shell 从那儿启动。命名后的会话会出现在 QuickTUI 的列表里，可从 iPhone、iPad 或浏览器接入。" } },
+    { "@type": "Question", "name": "从手机接入 tmux 会话需要 SSH 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "不需要。QuickTUI 通过 HTTP/WebSocket 与它自己的轻量服务端通信。你可以在局域网内、通过 Tailscale 或 Cloudflare Tunnel 这样的 VPN 或隧道，或经由公网地址访问它。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/tmux-ios-app/">iOS 上的 tmux：从 iPhone 和 iPad 接入你的会话</a></li>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">从 iPhone 运行 Claude Code</a></li>
+    <li><a href="/cn/guides/remote-development-from-ipad/">从 iPad 远程开发</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

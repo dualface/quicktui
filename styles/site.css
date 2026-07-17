@@ -126,6 +126,9 @@ main { position: relative; z-index: 2; }
 .breadcrumb a:hover { color: var(--accent); }
 .breadcrumb .sep { margin: 0 8px; color: var(--ink-4); }
 .breadcrumb [aria-current="page"] { color: var(--ink-2); }
+.article figure.shot { margin: 0 0 24px; }
+.article figure.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-1); }
+.article figure.shot figcaption { margin-top: 8px; font-size: 13px; color: var(--ink-3); font-family: var(--mono); }
 .eyebrow {
   font-family: var(--mono); font-size: 12px; letter-spacing: .12em;
   text-transform: uppercase; color: var(--accent);

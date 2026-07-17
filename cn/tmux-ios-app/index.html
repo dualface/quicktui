@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>iOS 上的 tmux — 从 iPhone、iPad 接入 tmux 会话 | QuickTUI</title>
+<meta name="description" content="在 iOS 上用真正的 tmux 客户端。QuickTUI 从 iPhone、iPad 或浏览器接入你服务器上的 tmux 会话。自托管、直连、单服务器免费。" />
+<link rel="canonical" href="https://quicktui.ai/cn/tmux-ios-app/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/tmux-ios-app/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/tmux-ios-app/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/tmux-ios-app/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="iOS 上的 tmux — 从 iPhone、iPad 接入 tmux 会话" />
+<meta property="og:description" content="在 iOS 上用真正的 tmux 客户端。QuickTUI 从 iPhone、iPad 或浏览器接入你服务器上的 tmux 会话。自托管、直连、单服务器免费。" />
+<meta property="og:url" content="https://quicktui.ai/cn/tmux-ios-app/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="iOS 上的 tmux — 从 iPhone、iPad 接入 tmux 会话" />
+<meta name="twitter:description" content="在 iOS 上用真正的 tmux 客户端。QuickTUI 从 iPhone、iPad 或浏览器接入你服务器上的 tmux 会话。自托管、直连、单服务器免费。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "iOS 上的 tmux — 从 iPhone、iPad 接入 tmux 会话",
+  "description": "在 iOS 上用真正的 tmux 客户端。QuickTUI 从 iPhone、iPad 或浏览器接入你服务器上的 tmux 会话。自托管、直连、单服务器免费。",
+  "url": "https://quicktui.ai/cn/tmux-ios-app/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "iOS 上的 tmux",
+      "item": "https://quicktui.ai/cn/tmux-ios-app/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><span aria-current="page">iOS 上的 tmux</span></nav>
+<p class="eyebrow">tmux · iOS</p>
+<h1>iOS 上的 tmux：从 iPhone 和 iPad 接入你的 tmux 会话</h1>
+<p class="lede">iOS 上没有官方的 tmux 应用，你也不需要。你真正想要的，是从手机或平板接上自己机器里已经在运行的 tmux 会话，从上次离开的地方精确续上。这正是 QuickTUI 所做的事。</p>
+
+<figure class="shot"><img src="/images/usage/toolbar.png" alt="iPhone 上带 tmux 控制的 QuickTUI 终端工具栏" loading="lazy" width="1260" height="737"><figcaption>QuickTUI 终端工具栏——tmux 窗口、窗格与按键都在拇指可及之处。</figcaption></figure>
+
+<p>tmux 让你的终端会话在服务器上持续运行：长时间的构建、编程 Agent、日志跟踪和 SSH shell，在你断开连接后都能继续存活。一直缺的那块拼图，是从 iPhone 或 iPad 顺畅接入它们的方式。QuickTUI 是原生 iOS 客户端（另有 iPad 与浏览器版本），通过你自己的服务器接入这些会话，中间没有任何第三方。</p>
+
+<h2>一个"iOS tmux 客户端"应该做到什么</h2>
+<ul>
+  <li><strong>接入，而非重跑。</strong>两次接入之间，你的会话一直活在服务器上；打开应用就直接回到实时画面，输出完好无损。</li>
+  <li><strong>真正的终端，而非聊天框。</strong>tmux 的窗口、窗格、回滚缓冲和复制模式：iPhone、iPad 与浏览器上看到的是同一个画面。</li>
+  <li><strong>扛得住网络变化。</strong>从 Wi-Fi 切到 LTE 再到 5G、把应用切到后台，或是连接中断，都不该让你丢失位置。</li>
+  <li><strong>始终属于你。</strong>默认自托管、默认直连，你的代码和密钥绝不经过别人的云。</li>
+</ul>
+
+<h2>动手配置（约两分钟）</h2>
+<p>在运行 tmux 会话的机器上安装 QuickTUI 服务端。它会配置好服务，必要时还能替你装上 tmux 3.2+。</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>然后扫描 <code>quicktui-server --qrcode</code> 完成扫码配对，或者用 URL 和 token 手动添加服务器。打开一个会话，你就接上了。想要逐步操作的版本，参见<a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a>。</p>
+
+<h2>它真的是 tmux 吗？</h2>
+<p>是的。QuickTUI 驱动的是你服务器上真正的 tmux，而不是重新实现的替代品。你现有的 <code>~/.tmux.conf</code>、按键绑定、窗口和窗格全都生效。如果尚未安装 tmux，安装器可以配置一份受支持的构建；你也可以用 <code>QUICKTUI_TMUX_BIN</code> 指向已有的二进制文件。</p>
+
+<div class="callout">
+  <strong>在 tmux 里跑编程 Agent？</strong>QuickTUI 正是为此而生：在会话里启动 Claude Code、Codex 或任意 CLI Agent，然后从手机上盯着它。参见<a href="/cn/guides/run-claude-code-from-iphone/">从 iPhone 运行 Claude Code</a>。
+</div>
+
+<h2>一览</h2>
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr><th>能力</th><th>QuickTUI</th></tr></thead>
+  <tbody>
+    <tr><th>原生 iPhone 和 iPad 应用</th><td class="yes">支持</td></tr>
+    <tr><th>浏览器客户端</th><td class="yes">支持，由你自己的服务器提供</td></tr>
+    <tr><th>真正的 tmux（窗口、窗格、回滚缓冲）</th><td class="yes">支持</td></tr>
+    <tr><th>自托管、直连</th><td class="yes">支持，代码绝不经过我们的服务器</td></tr>
+    <tr><th>跨断连的会话保活</th><td class="yes">支持</td></tr>
+    <tr><th>价格</th><td>单服务器免费；Pro 为一次性买断</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>常见问题</h2>
+<h3>iOS 上有官方的 tmux 应用吗？</h3>
+<p>没有。tmux 是一个服务器端程序，没有官方 iOS 应用。QuickTUI 是原生 iOS 客户端，接入运行在你自己服务器上的 tmux。</p>
+<h3>我需要 SSH 吗？</h3>
+<p>不需要。QuickTUI 通过 HTTP/WebSocket 与它自己的轻量服务端通信。你可以在局域网内、通过 VPN 或隧道（Tailscale、Cloudflare Tunnel），或经由公网地址访问它。</p>
+<h3>它能在 iPad 上用吗？</h3>
+<p>能。同一个应用、同一个实时会话，在 iPhone 和 iPad 上都能运行，任何浏览器里也一样。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "iOS 上有官方的 tmux 应用吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "没有。tmux 是一个服务器端程序，没有官方 iOS 应用。QuickTUI 是原生 iOS 客户端，接入运行在你自己服务器上的 tmux。" } },
+    { "@type": "Question", "name": "用 QuickTUI 在 iOS 上使用 tmux 需要 SSH 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "不需要。QuickTUI 通过 HTTP/WebSocket 与它自己的轻量服务端通信。你可以在局域网内、通过 Tailscale 或 Cloudflare Tunnel 这样的 VPN 或隧道，或经由公网地址访问它。" } },
+    { "@type": "Question", "name": "QuickTUI 能在 iPad 上用吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能。同一个应用、同一个实时会话，在 iPhone 和 iPad 上都能运行，任何浏览器里也一样。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a></li>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">从 iPhone 运行 Claude Code</a></li>
+    <li><a href="/cn/compare/">QuickTUI 对比 Happy、Omnara、Termius、Blink 与 dotMux</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

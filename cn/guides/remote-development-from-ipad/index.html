@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用 iPad 远程开发（2026 指南） | QuickTUI</title>
+<meta name="description" content="一套 2026 年可落地的 iPad 远程开发方案：接入服务器终端、运行编程 Agent、让长任务持续存活。" />
+<link rel="canonical" href="https://quicktui.ai/cn/guides/remote-development-from-ipad/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/remote-development-from-ipad/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="用 iPad 远程开发（2026 指南）" />
+<meta property="og:description" content="一套 2026 年可落地的 iPad 远程开发方案：接入服务器终端、运行编程 Agent、让长任务持续存活。" />
+<meta property="og:url" content="https://quicktui.ai/cn/guides/remote-development-from-ipad/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="用 iPad 远程开发（2026 指南）" />
+<meta name="twitter:description" content="一套 2026 年可落地的 iPad 远程开发方案：接入服务器终端、运行编程 Agent、让长任务持续存活。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "用 iPad 远程开发（2026 指南）",
+  "description": "一套 2026 年可落地的 iPad 远程开发方案：接入服务器终端、运行编程 Agent、让长任务持续存活。",
+  "url": "https://quicktui.ai/cn/guides/remote-development-from-ipad/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "用 iPad 远程开发",
+      "item": "https://quicktui.ai/cn/guides/remote-development-from-ipad/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><span aria-current="page">用 iPad 远程开发</span></nav>
+<p class="eyebrow">指南 · iPad</p>
+<h1>从 iPad 远程开发（2026）</h1>
+<p class="lede">一旦工作跑在真正的服务器上、平板只负责承载终端，iPad 就成了一块称职的开发平面。本指南用 QuickTUI 配置从 iPad 远程开发：接入你的服务器终端、运行编程 Agent、让长任务保持存活，并在需要时退回浏览器客户端。</p>
+
+<p>这套模式很直接：编译器、仓库和 Agent 全都活在你自己托管的机器上；iPad 通过你自己的服务器接上一个实时终端视图。平板上不跑重活，所以电量和发热都不来添乱，而这个会话就是你在办公桌上用的那一个。QuickTUI 正为此提供了原生 iPad 应用外加浏览器客户端。</p>
+
+<h2>配置服务端</h2>
+<p>在存放你代码的机器上安装 QuickTUI：一台工作站、家用服务器或云主机。它会配置好服务，必要时还能装上 tmux 3.2+。</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>扫描 <code>quicktui-server --qrcode</code> 完成 iPad 应用的配对，或者用 URL 和 token 添加服务器。连接默认直连，所以你的代码和密钥绝不经过我们的服务器。</p>
+
+<h2>在 iPad 上工作</h2>
+<ul>
+  <li><strong>接入你的终端。</strong>打开服务器上的会话，你就进入了实时画面：tmux 的窗口、窗格和回滚缓冲，在 iPad 上和在桌面上别无二致。</li>
+  <li><strong>运行 Agent。</strong>在会话里启动 Claude Code、Codex 或任意 CLI，并从平板驱动它；无需离开终端就能监督、批准和引导。</li>
+  <li><strong>让长任务保持存活。</strong>构建、测试套件和 Agent 运行在你断开后仍留在 tmux 里继续跑。会话保活会跨越 Wi-Fi 切 LTE 或 5G、应用切后台和连接中断重新接回。</li>
+  <li><strong>浏览器兜底。</strong>当你不想用应用时，打开由你自己服务器提供的浏览器客户端，从 Safari 里接上同一个会话。</li>
+</ul>
+
+<div class="callout">
+  <strong>硬件键盘。</strong>配上妙控键盘或任意蓝牙键盘，iPad 就表现得像一台正经终端：方向键、修饰键和控制序列都会传递给 tmux 和 shell，所以按键绑定和复制模式都如常工作。
+</div>
+
+<h2>常见问题</h2>
+<h3>我真的能这样在 iPad 上开发吗？</h3>
+<p>能。构建工具、仓库和 Agent 都跑在你的服务器上；iPad 接上一个实时终端视图。配上硬件键盘，它就像任何笔记本上的终端一样好用。</p>
+<h3>如果我关掉 iPad，长时间运行的任务还在吗？</h3>
+<p>在。任务跑在服务器的 tmux 里，在你断开后仍会继续。当你重新打开应用或浏览器客户端时，QuickTUI 的会话保活会重新接回实时会话。</p>
+<h3>有浏览器选项吗？</h3>
+<p>有。你的服务器托管了一个浏览器客户端，所以当你不想用应用时，可以从 Safari 或任意浏览器接上同一个会话。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "我真的能在 iPad 上远程开发吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能。构建工具、仓库和 Agent 都跑在你的服务器上；iPad 接上一个实时终端视图。配上硬件键盘，它就像任何笔记本上的终端一样好用。" } },
+    { "@type": "Question", "name": "如果我关掉 iPad，长时间运行的任务还在吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "在。任务跑在服务器的 tmux 里，在你断开后仍会继续。当你重新打开应用或浏览器客户端时，QuickTUI 的会话保活会重新接回实时会话。" } },
+    { "@type": "Question", "name": "从 iPad 远程开发有浏览器选项吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "有。你的服务器托管了一个浏览器客户端，所以当你不想用应用时，可以从 Safari 或任意浏览器接上同一个会话。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/tmux-ios-app/">iOS 上的 tmux：从 iPhone 和 iPad 接入你的会话</a></li>
+    <li><a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a></li>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">从 iPhone 运行 Claude Code</a></li>
+    <li><a href="/cn/use-cases/control-ai-agents-from-phone/">从手机操控 AI 编程 Agent</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>如何在 iPhone 上运行 Claude Code | QuickTUI</title>
+<meta name="description" content="在 iPhone 上运行并监控你服务器上的 Claude Code：完整终端、多会话，而非单会话的聊天壳。" />
+<link rel="canonical" href="https://quicktui.ai/cn/guides/run-claude-code-from-iphone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/run-claude-code-from-iphone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/run-claude-code-from-iphone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/run-claude-code-from-iphone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="如何在 iPhone 上运行 Claude Code" />
+<meta property="og:description" content="在 iPhone 上运行并监控你服务器上的 Claude Code：完整终端、多会话，而非单会话的聊天壳。" />
+<meta property="og:url" content="https://quicktui.ai/cn/guides/run-claude-code-from-iphone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="如何在 iPhone 上运行 Claude Code" />
+<meta name="twitter:description" content="在 iPhone 上运行并监控你服务器上的 Claude Code：完整终端、多会话，而非单会话的聊天壳。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "如何在 iPhone 上运行 Claude Code",
+  "description": "在 iPhone 上运行并监控你服务器上的 Claude Code：完整终端、多会话，而非单会话的聊天壳。",
+  "url": "https://quicktui.ai/cn/guides/run-claude-code-from-iphone/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "在 iPhone 上运行 Claude Code",
+      "item": "https://quicktui.ai/cn/guides/run-claude-code-from-iphone/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><span aria-current="page">在 iPhone 上运行 Claude Code</span></nav>
+<p class="eyebrow">指南 · Claude Code</p>
+<h1>如何从 iPhone 运行 Claude Code</h1>
+<p class="lede">Claude Code 跑在终端里，而当会话活在你自己的服务器上时，终端正是 iPhone 能够触及的东西。本指南会在一个 tmux 会话里启动 Claude Code，从 QuickTUI 应用驱动它，在你离开时让它继续运行，还能并排跑好几个会话。</p>
+
+<figure class="shot"><img src="/images/usage/toolbar.png" alt="Claude Code 在 iPhone 上的 QuickTUI 终端会话里运行" loading="lazy" width="1260" height="737"><figcaption>从 QuickTUI 的 iPhone 终端驱动一个 Claude Code 会话。</figcaption></figure>
+
+<p>让长时间的终端工作变得可靠，靠的就是同一套办法：把进程留在服务器的 tmux 里，再从任何地方接一个视图上去。QuickTUI 是原生 iPhone 和 iPad 应用（另有浏览器客户端），接入你自己托管的服务器上真正的 tmux，所以无论你的手机是否正看着它，Claude Code 都在持续思考和编辑。</p>
+
+<h2>安装服务端</h2>
+<p>在你想运行 Claude Code 的机器上运行安装器：你的工作站、一台家用服务器，或是一台云主机。它会配置好 QuickTUI 服务，必要时还能装上 tmux 3.2+。</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>扫描 <code>quicktui-server --qrcode</code> 完成配对，或者用 URL 和 token 手动添加服务器。连接默认直连，所以你的代码和密钥绝不经过我们的服务器。</p>
+
+<h2>在会话里启动 Claude Code</h2>
+<p>在服务器上，打开一个命名的 tmux 会话并在其中启动 Claude Code：</p>
+<pre><code>tmux new-session -s claude
+claude</code></pre>
+<p>在应用里接入 <code>claude</code> 会话，你就来到了实时提示符前。像在终端里一样输入、审阅 diff、批准工具调用，精确地引导 Agent。</p>
+
+<h2>让它持续运行，并同时跑多个</h2>
+<ul>
+  <li><strong>让它继续干活。</strong>断开或关闭应用，Claude Code 仍在服务器的 tmux 里运行。稍后重新打开，会话保活会重新接回实时画面。</li>
+  <li><strong>扛得住网络变化。</strong>从 Wi-Fi 切到 LTE 再到 5G、切到后台，或是连接中断，都不会打断这次运行。</li>
+  <li><strong>多个会话。</strong>为另一个任务或仓库启动第二个会话（<code>tmux new-session -s review</code>），并在应用里来回切换。</li>
+</ul>
+
+<div class="callout">
+  <strong>横向对比。</strong>Anthropic 提供了内置的远程控制 Claude Code 的方式。QuickTUI 的定位不同：它是一个完整的终端，面向任意 CLI Agent（Claude Code、Codex 或别的什么），跑在你自托管服务器上真正的 tmux 之上，支持多会话，且不要求订阅套餐。哪种适合你的场景就选哪种。
+</div>
+
+<h2>常见问题</h2>
+<h3>关闭应用后 Claude Code 还会继续运行吗？</h3>
+<p>会。Claude Code 跑在你服务器的 tmux 里，所以在你断开后仍会继续。当你重新打开应用时，QuickTUI 的会话保活会重新接回同一个实时会话。</p>
+<h3>我能同时跑多个 Claude Code 会话吗？</h3>
+<p>能。用 <code>tmux new-session -s name</code> 各自启动在独立的 tmux 会话里，然后在 iPhone、iPad 和浏览器上的应用里来回切换。</p>
+<h3>我的代码会经过 QuickTUI 的服务器吗？</h3>
+<p>不会。连接默认直连，所以你的代码和密钥只在你的设备与你自己的服务器之间流转。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "关闭应用后 Claude Code 还会继续运行吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "会。Claude Code 跑在你服务器的 tmux 里，所以在你断开后仍会继续。当你重新打开应用时，QuickTUI 的会话保活会重新接回同一个实时会话。" } },
+    { "@type": "Question", "name": "我能从 iPhone 同时跑多个 Claude Code 会话吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能。用 tmux new-session -s name 各自启动在独立的 tmux 会话里，然后在 iPhone、iPad 和浏览器上的应用里来回切换。" } },
+    { "@type": "Question", "name": "我的代码会经过 QuickTUI 的服务器吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "不会。连接默认直连，所以你的代码和密钥只在你的设备与你自己的服务器之间流转。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a></li>
+    <li><a href="/cn/guides/run-codex-cli-from-phone/">从手机运行 Codex CLI</a></li>
+    <li><a href="/cn/use-cases/control-ai-agents-from-phone/">从手机操控 AI 编程 Agent</a></li>
+    <li><a href="/cn/compare/">QuickTUI 对比 Happy、Omnara、Termius、Blink 与 dotMux</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

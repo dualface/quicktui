@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>在手机上掌控 AI 编程 Agent | QuickTUI</title>
+<meta name="description" content="在服务器上启动 Claude Code、Codex 或任意 CLI Agent，然后从手机监督、批准、引导；你离开时会话持续存活。" />
+<link rel="canonical" href="https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/use-cases/control-ai-agents-from-phone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/use-cases/control-ai-agents-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="在手机上掌控 AI 编程 Agent" />
+<meta property="og:description" content="在服务器上启动 Claude Code、Codex 或任意 CLI Agent，然后从手机监督、批准、引导；你离开时会话持续存活。" />
+<meta property="og:url" content="https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="在手机上掌控 AI 编程 Agent" />
+<meta name="twitter:description" content="在服务器上启动 Claude Code、Codex 或任意 CLI Agent，然后从手机监督、批准、引导；你离开时会话持续存活。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "在手机上掌控 AI 编程 Agent",
+  "description": "在服务器上启动 Claude Code、Codex 或任意 CLI Agent，然后从手机监督、批准、引导；你离开时会话持续存活。",
+  "url": "https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "在手机上掌控 AI 编程 Agent",
+      "item": "https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><span aria-current="page">在手机上掌控 AI 编程 Agent</span></nav>
+<p class="eyebrow">应用场景 · AI Agent</p>
+<h1>从手机操控 AI 编程 Agent</h1>
+<p class="lede">AI 编程 Agent 在有人盯着时表现最佳：把它们启动起来、批准有风险的步骤、在它们跑偏时拉回正轨。QuickTUI 把这份掌控放进你的口袋：在你自己的服务器上启动一个 Agent，然后通过一个真正的终端从手机上监督并引导它。</p>
+
+<figure class="shot"><img src="/images/usage/toolbar.png" alt="从 QuickTUI iPhone 应用监督 AI 编程 Agent" loading="lazy" width="1260" height="737"><figcaption>从 QuickTUI 终端工具栏监督并引导一个 Agent。</figcaption></figure>
+
+<p>像 Claude Code 和 Codex 这样的 Agent 跑在终端里，工作耗时以分钟计，所以有用的问题不是"我能不能跟它聊天"，而是"我能不能从任何地方让它持续运行、让它守规矩"。QuickTUI 是原生 iPhone 和 iPad 应用（另有浏览器客户端），接入你自己托管的服务器上真正的 tmux，所以 Agent 一直活在机器上，而你从手机上驱动它。</p>
+
+<h2>启动并监督</h2>
+<ul>
+  <li><strong>发起一次运行。</strong>打开一个会话，启动 Agent，交给它一个任务，就是你在办公桌上会敲下的那段提示词。</li>
+  <li><strong>批准并引导。</strong>盯着实时输出，批准工具调用、回答问题，并在 Agent 偏离时重新导向。你看到的是真正的终端，而非摘要。</li>
+  <li><strong>充当会话保活。</strong>走开一会儿，这次运行会在服务器的 tmux 里继续。重新打开应用，会话保活会跨越 Wi-Fi 切 LTE 或 5G、应用切后台和连接中断，重新接回实时画面。</li>
+</ul>
+
+<h2>配置你的服务器</h2>
+<p>在你想运行 Agent 的机器上安装 QuickTUI。它会配置好服务，必要时还能装上 tmux 3.2+。</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>扫描 <code>quicktui-server --qrcode</code> 完成配对，或者用 URL 和 token 添加服务器。连接默认直连，所以你的代码和密钥绝不经过我们的服务器。</p>
+
+<h2>适配任意 Agent</h2>
+<p>由于 QuickTUI 驱动的是真正的 tmux，它并不绑定单一工具。运行 Claude Code、Codex 或任意 CLI Agent，各自跑在独立的会话里，然后从手机上来回切换。</p>
+<pre><code>tmux new-session -s agent
+claude   # or: codex, or any CLI agent</code></pre>
+
+<div class="callout">
+  <strong>同时跑多个 Agent。</strong>把每个 Agent 启动在各自的 tmux 会话里，然后从一个应用里统一监督整套：一个在功能分支上、另一个在跑测试、第三个在跟踪日志。单个服务器免费且功能完整；QuickTUI Pro 为一次性买断，可用于无限服务器配置。
+</div>
+
+<h2>常见问题</h2>
+<h3>我能操控哪些 Agent？</h3>
+<p>任何跑在终端里的 CLI Agent：Claude Code、Codex 或你自己的工具。QuickTUI 驱动的是真正的 tmux，所以它不局限于某个特定产品。</p>
+<h3>我能批准步骤并引导 Agent，而不只是读取输出吗？</h3>
+<p>能。你拿到的是实时终端，所以可以从手机上实时回答提示、批准工具调用，并重新导向 Agent。</p>
+<h3>我离开时 Agent 还会继续运行吗？</h3>
+<p>会。它跑在你服务器的 tmux 里，在你断开后仍会继续。会话保活会跨越网络切换、应用重启和连接中断，重新接回实时会话。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "我能从手机操控哪些 AI 编程 Agent？",
+      "acceptedAnswer": { "@type": "Answer", "text": "任何跑在终端里的 CLI Agent，包括 Claude Code、Codex 或你自己的工具。QuickTUI 驱动的是真正的 tmux，所以它不局限于某个特定产品。" } },
+    { "@type": "Question", "name": "我能批准步骤并引导 Agent，而不只是读取输出吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能。你拿到的是实时终端，所以可以从手机上实时回答提示、批准工具调用，并重新导向 Agent。" } },
+    { "@type": "Question", "name": "我离开时 Agent 还会继续运行吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "会。它跑在你服务器的 tmux 里，在你断开后仍会继续。会话保活会跨越网络切换、应用重启和连接中断，重新接回实时会话。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">从 iPhone 运行 Claude Code</a></li>
+    <li><a href="/cn/guides/run-codex-cli-from-phone/">从手机运行 Codex CLI</a></li>
+    <li><a href="/cn/guides/remote-development-from-ipad/">从 iPad 远程开发</a></li>
+    <li><a href="/cn/compare/">QuickTUI 对比 Happy、Omnara、Termius、Blink 与 dotMux</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

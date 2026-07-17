@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>如何在手机上运行 Codex CLI | QuickTUI</title>
+<meta name="description" content="在服务器上启动 OpenAI Codex CLI，通过 tmux 从手机驱动它，会话在断线与网络切换后依然存活。" />
+<link rel="canonical" href="https://quicktui.ai/cn/guides/run-codex-cli-from-phone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/run-codex-cli-from-phone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="如何在手机上运行 Codex CLI" />
+<meta property="og:description" content="在服务器上启动 OpenAI Codex CLI，通过 tmux 从手机驱动它，会话在断线与网络切换后依然存活。" />
+<meta property="og:url" content="https://quicktui.ai/cn/guides/run-codex-cli-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="如何在手机上运行 Codex CLI" />
+<meta name="twitter:description" content="在服务器上启动 OpenAI Codex CLI，通过 tmux 从手机驱动它，会话在断线与网络切换后依然存活。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "如何在手机上运行 Codex CLI",
+  "description": "在服务器上启动 OpenAI Codex CLI，通过 tmux 从手机驱动它，会话在断线与网络切换后依然存活。",
+  "url": "https://quicktui.ai/cn/guides/run-codex-cli-from-phone/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "在手机上运行 Codex CLI",
+      "item": "https://quicktui.ai/cn/guides/run-codex-cli-from-phone/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><span aria-current="page">在手机上运行 Codex CLI</span></nav>
+<p class="eyebrow">指南 · Codex CLI</p>
+<h1>如何从手机运行 Codex CLI</h1>
+<p class="lede">OpenAI 的 Codex CLI 是一个终端 Agent，所以从手机运行它，归根结底就是接上它所在的终端。本指南会在你自己服务器上的 tmux 会话里启动 Codex CLI，从 QuickTUI 应用驱动它，并在你断开连接后让会话保持存活。</p>
+
+<p>Codex CLI 会在你的文件上实打实地干活，耗时以分钟计而非几秒，所以你希望它待在一台不会走开的机器上。把它留在服务器的 tmux 里，再从手机接一个视图上去。QuickTUI 是原生 iPhone 和 iPad 应用（另有浏览器客户端），接入你自己托管的服务器上真正的 tmux：同一个 Codex 会话，从任何地方都能触及。</p>
+
+<h2>安装服务端</h2>
+<p>在你想运行 Codex CLI 的机器上运行安装器。它会配置好 QuickTUI 服务，如果缺少 tmux 3.2+ 还能替你装上。</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>扫描 <code>quicktui-server --qrcode</code> 完成配对，或者用 URL 和 token 手动添加服务器。连接默认直连，所以你的代码和密钥绝不经过我们的服务器。单个服务器免费且功能完整；QuickTUI Pro 为一次性买断，可用于无限服务器配置。</p>
+
+<h2>在会话里启动 Codex CLI</h2>
+<p>在服务器上，打开一个命名的 tmux 会话并在其中启动 Codex：</p>
+<pre><code>tmux new-session -s codex
+codex</code></pre>
+<p>在应用里接入 <code>codex</code> 会话，你就来到了实时提示符前。像在本地一样下达指令、读取输出、批准或引导 Agent。</p>
+
+<h2>让会话保持存活</h2>
+<ul>
+  <li><strong>它扛得住断连。</strong>tmux 让 Codex 在服务器上持续运行；关掉应用，它照样继续。当你回来时，会话保活会重新接回实时画面。</li>
+  <li><strong>它扛得住网络变化。</strong>从 Wi-Fi 切到 LTE 或 5G、把应用切到后台，或是失去信号，都不会停下这次运行。</li>
+  <li><strong>同时跑多个。</strong>用 <code>tmux new-session -s codex2</code> 为另一个任务或仓库启动第二个会话，并在应用里来回切换。</li>
+</ul>
+
+<div class="callout">
+  <strong>任意 Agent，同一个终端。</strong>QuickTUI 驱动的是真正的 tmux，所以它不绑定单一工具：在会话里运行 Codex、Claude Code 或任意 CLI，然后从手机上统一盯着它们。参见<a href="/cn/use-cases/control-ai-agents-from-phone/">从手机操控 AI 编程 Agent</a>。
+</div>
+
+<h2>常见问题</h2>
+<h3>我离开后 Codex CLI 还会继续运行吗？</h3>
+<p>会。Codex 跑在你服务器的 tmux 里，所以在你断开后仍会继续。当你重新打开应用时，QuickTUI 的会话保活会重新接回同一个实时会话。</p>
+<h3>我能同时跑 Codex 和 Claude Code 吗？</h3>
+<p>能。各自启动在独立的 tmux 会话里，然后在应用里来回切换。QuickTUI 是面向任意 CLI Agent 的完整终端，而非单一工具的客户端。</p>
+<h3>我需要 SSH 吗？</h3>
+<p>不需要。QuickTUI 通过 HTTP/WebSocket 与它自己的轻量服务端通信。你可以在局域网内、通过 Tailscale 或 Cloudflare Tunnel 这样的 VPN 或隧道，或经由公网地址访问它。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "我离开后 Codex CLI 还会继续运行吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "会。Codex 跑在你服务器的 tmux 里，所以在你断开后仍会继续。当你重新打开应用时，QuickTUI 的会话保活会重新接回同一个实时会话。" } },
+    { "@type": "Question", "name": "我能同时跑 Codex CLI 和 Claude Code 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能。各自启动在独立的 tmux 会话里，然后在应用里来回切换。QuickTUI 是面向任意 CLI Agent 的完整终端，而非单一工具的客户端。" } },
+    { "@type": "Question", "name": "从手机运行 Codex CLI 需要 SSH 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "不需要。QuickTUI 通过 HTTP/WebSocket 与它自己的轻量服务端通信。你可以在局域网内、通过 Tailscale 或 Cloudflare Tunnel 这样的 VPN 或隧道，或经由公网地址访问它。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">从 iPhone 运行 Claude Code</a></li>
+    <li><a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a></li>
+    <li><a href="/cn/use-cases/control-ai-agents-from-phone/">从手机操控 AI 编程 Agent</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

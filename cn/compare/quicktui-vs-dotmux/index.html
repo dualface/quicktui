@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI 对比 dotMux | QuickTUI</title>
+<meta name="description" content="QuickTUI 与 dotMux 从手机接入 tmux 的对比：原生 iPhone/iPad App + 浏览器客户端，带扫码配对与会话保活。" />
+<link rel="canonical" href="https://quicktui.ai/cn/compare/quicktui-vs-dotmux/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/quicktui-vs-dotmux/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/quicktui-vs-dotmux/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/quicktui-vs-dotmux/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 对比 dotMux" />
+<meta property="og:description" content="QuickTUI 与 dotMux 从手机接入 tmux 的对比：原生 iPhone/iPad App + 浏览器客户端，带扫码配对与会话保活。" />
+<meta property="og:url" content="https://quicktui.ai/cn/compare/quicktui-vs-dotmux/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 对比 dotMux" />
+<meta name="twitter:description" content="QuickTUI 与 dotMux 从手机接入 tmux 的对比：原生 iPhone/iPad App + 浏览器客户端，带扫码配对与会话保活。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI 对比 dotMux",
+  "description": "QuickTUI 与 dotMux 从手机接入 tmux 的对比：原生 iPhone/iPad App + 浏览器客户端，带扫码配对与会话保活。",
+  "url": "https://quicktui.ai/cn/compare/quicktui-vs-dotmux/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "对比",
+      "item": "https://quicktui.ai/cn/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "对比 dotMux",
+      "item": "https://quicktui.ai/cn/compare/quicktui-vs-dotmux/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><a href="https://quicktui.ai/cn/compare/">对比</a><span class="sep">/</span><span aria-current="page">对比 dotMux</span></nav>
+<p class="eyebrow">对比</p>
+<h1>QuickTUI 对比 dotMux</h1>
+<p class="lede">dotMux 是一款用于从移动端连接 tmux 的工具，因此它与 QuickTUI 的核心所做的事直接重叠。区别
+在于广度：QuickTUI 把这份 tmux 访问包裹进一款原生 iPhone 和 iPad 应用以及浏览器客户端，配以二维码配对和
+以智能体为先的设计。</p>
+
+<p>两者都能让你从手机连到一个 tmux 会话，并从离开的地方接着往下。QuickTUI 额外提供横跨 iPhone、iPad 和
+浏览器的原生应用体验、默认自托管直连，以及一套围绕运行 Claude Code、Codex 或任何 CLI 智能体构建的工作流。</p>
+
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr><th>维度</th><th>QuickTUI</th><th>dotMux</th></tr></thead>
+  <tbody>
+    <tr><th>原生 tmux（窗口、窗格、回滚缓冲）</th><td class="yes">是</td><td class="yes">是</td></tr>
+    <tr><th>原生 iPhone 和 iPad 应用</th><td class="yes">是</td><td>视情况</td></tr>
+    <tr><th>浏览器客户端</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>自托管 / 直连</th><td class="yes">是</td><td>视情况</td></tr>
+    <tr><th>运行任意 CLI 智能体</th><td class="yes">是</td><td>经由 tmux shell</td></tr>
+    <tr><th>跨断线的会话保持</th><td class="yes">是</td><td>经由 tmux</td></tr>
+    <tr><th>定价模式</th><td>单台服务器免费；Pro 一次性；可选 Relay 订阅</td><td>视情况</td></tr>
+    <tr><th>在中国区 App Store 同样可用</th><td class="yes">是</td><td class="no">—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>同样的核心，不同的界面</h2>
+<p>因为两款工具都连接真实 tmux，底层的会话模型是相似的：你的窗口、窗格和回滚缓冲都存活在服务器上，断开
+连接不会丢掉你的进度。它们的不同在于外围的界面：QuickTUI 是一款原生 iPhone 和 iPad 应用，外加一个由你
+自己服务器提供的浏览器客户端，因此同一个实时会话会跨设备跟随着你。</p>
+
+<h2>配对与配置</h2>
+<p>QuickTUI 通过扫描二维码配对，你也可以用 URL 和令牌手动添加一台服务器。它默认自托管、直连，因此你的
+代码和密钥只停留在你的手机与你的机器之间，仅在你无法直连时才用到可选的 Relay。</p>
+
+<h2>为智能体而生</h2>
+<p>QuickTUI 是围绕运行编码智能体设计的：在一个会话里启动 Claude Code、Codex 或任何 CLI 智能体并从手机
+监督它，与其他 tmux 窗口中的构建和日志跟踪并排进行。</p>
+
+<h2>你该选哪个？</h2>
+<p>如果 dotMux 已经给了你所需的从移动端访问 tmux 的能力，并且契合你的工作方式，那就没有为了换而换的理由。
+如果你想要一款在 iPhone 和 iPad 上都精致的原生应用、一个浏览器客户端、二维码配对，以及一套以编码智能体
+为中心的设计，那么 QuickTUI 覆盖了同样的核心并且更进一步。如果这些额外的界面和智能体工作流正合你意，
+不妨试试 QuickTUI。</p>
+
+<h2>常见问题</h2>
+<h3>QuickTUI 会像 dotMux 那样使用真实 tmux 吗？</h3>
+<p>会。QuickTUI 在你自己服务器上驱动真实 tmux（你现有的配置、窗口和窗格都适用），而不是重新实现它。</p>
+<h3>我可以在 iPhone 和 iPad 上都使用 QuickTUI 吗？</h3>
+<p>可以。同一个应用和同一个实时会话在 iPhone 和 iPad 上运行，也可在任何由你自己服务器提供的浏览器中运行。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "QuickTUI 会像 dotMux 那样使用真实 tmux 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "会。QuickTUI 在你自己服务器上驱动真实 tmux，因此你现有的配置、窗口和窗格都适用，而不是重新实现它。" } },
+    { "@type": "Question", "name": "我可以在 iPhone 和 iPad 上都使用 QuickTUI 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "可以。同一个应用和同一个实时会话在 iPhone 和 iPad 上运行，也可在任何由你自己服务器提供的浏览器中运行。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/compare/">QuickTUI 对比 Happy、Omnara、Termius、Blink 和 dotMux</a></li>
+    <li><a href="/cn/compare/quicktui-vs-happy/">QuickTUI 对比 Happy</a></li>
+    <li><a href="/cn/compare/quicktui-vs-omnara/">QuickTUI 对比 Omnara</a></li>
+    <li><a href="/cn/compare/quicktui-vs-termius/">QuickTUI 对比 Termius</a></li>
+    <li><a href="/cn/compare/quicktui-vs-blink/">QuickTUI 对比 Blink Shell</a></li>
+    <li><a href="/cn/tmux-ios-app/">iOS 上的 tmux：从 iPhone 和 iPad 接入</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

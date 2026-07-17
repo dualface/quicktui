@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI 对比 Happy | QuickTUI</title>
+<meta name="description" content="QuickTUI 与 Happy 在手机上运行 Claude Code 的对比：完整 tmux 终端 + 自托管直连，对比托管式移动客户端。" />
+<link rel="canonical" href="https://quicktui.ai/cn/compare/quicktui-vs-happy/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/quicktui-vs-happy/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/quicktui-vs-happy/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/quicktui-vs-happy/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 对比 Happy" />
+<meta property="og:description" content="QuickTUI 与 Happy 在手机上运行 Claude Code 的对比：完整 tmux 终端 + 自托管直连，对比托管式移动客户端。" />
+<meta property="og:url" content="https://quicktui.ai/cn/compare/quicktui-vs-happy/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 对比 Happy" />
+<meta name="twitter:description" content="QuickTUI 与 Happy 在手机上运行 Claude Code 的对比：完整 tmux 终端 + 自托管直连，对比托管式移动客户端。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI 对比 Happy",
+  "description": "QuickTUI 与 Happy 在手机上运行 Claude Code 的对比：完整 tmux 终端 + 自托管直连，对比托管式移动客户端。",
+  "url": "https://quicktui.ai/cn/compare/quicktui-vs-happy/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "对比",
+      "item": "https://quicktui.ai/cn/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "对比 Happy",
+      "item": "https://quicktui.ai/cn/compare/quicktui-vs-happy/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><a href="https://quicktui.ai/cn/compare/">对比</a><span class="sep">/</span><span aria-current="page">对比 Happy</span></nav>
+<p class="eyebrow">对比</p>
+<h1>QuickTUI 对比 Happy</h1>
+<p class="lede">QuickTUI 和 Happy 都能让你在手机上运行编码智能体，但它们的出发点不同。Happy 是一款专注于
+Claude Code 的移动客户端；QuickTUI 是一个完整的 tmux 终端，能运行任何 CLI 智能体，默认自托管、直连。</p>
+
+<p>如果你的整个移动工作流就是 Claude Code，Happy 的专注让一切保持简单。QuickTUI 走的是更宽广的路线：
+它接入你自己服务器上的真实 tmux，因此你能获得窗口、窗格和回滚缓冲，并且可以在一个断线后依然存活的会话
+里运行 Claude Code、Codex 或其他任何东西。</p>
+
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr><th>维度</th><th>QuickTUI</th><th>Happy</th></tr></thead>
+  <tbody>
+    <tr><th>原生 tmux（窗口、窗格、回滚缓冲）</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>原生 iPhone 和 iPad 应用</th><td class="yes">是</td><td>移动应用</td></tr>
+    <tr><th>浏览器客户端</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>自托管 / 直连</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>运行任意 CLI 智能体</th><td class="yes">是</td><td>专注 Claude Code</td></tr>
+    <tr><th>跨断线的会话保持</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>定价模式</th><td>单台服务器免费；Pro 一次性；可选 Relay 订阅</td><td>视情况</td></tr>
+    <tr><th>在中国区 App Store 同样可用</th><td class="yes">是</td><td class="no">—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>单一智能体 vs 任意终端</h2>
+<p>Happy 是围绕在手机上运行 Claude Code 构建的，一个专注的客户端处理这一件事可能感觉更清爽。QuickTUI
+首先是一个真正的终端：凡是你能在 shell 里运行的（Claude Code、Codex、一次构建、一段日志跟踪、一跳
+SSH），你都可以在跨越多个 tmux 窗口的并排布局中运行并监督它。</p>
+
+<h2>你的代码在哪里</h2>
+<p>QuickTUI 默认自托管、直连，因此你的代码和密钥只停留在你的手机与你自己的服务器之间。如果这种掌控对你
+重要，它是一项核心设计选择，而非附加功能。配对只需扫一个二维码，同一个实时会话会出现在 iPhone、iPad
+和浏览器上。</p>
+
+<h2>保持接入</h2>
+<p>因为 QuickTUI 驱动 tmux，你的会话能在连接掉线和网络切换中存活，因此你能从离开的地方精确地重新接入。
+这份会话保持正是你所选择的一部分。</p>
+
+<h2>你该选哪个？</h2>
+<p>如果手机上的 Claude Code 基本上就是你的全部使用场景，而你又喜欢一个为它量身打造的客户端，那么 Happy
+可能很适合你。如果你想要一个真正的 tmux 终端、运行任意智能体的自由、自托管直连，以及一个跨断线持续存活
+的会话，那么 QuickTUI 更契合。</p>
+
+<h2>常见问题</h2>
+<h3>QuickTUI 能像 Happy 那样运行 Claude Code 吗？</h3>
+<p>能。你在自己服务器上的一个 tmux 会话里启动 Claude Code，并从应用中驱动它，你还可以在同一个终端里运行
+Codex 或任何其他 CLI 智能体。</p>
+<h3>QuickTUI 是自托管的吗？</h3>
+<p>是。QuickTUI 默认直连你自己的服务器，因此你的代码和密钥不会经由我们的基础设施中转。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "QuickTUI 能像 Happy 那样运行 Claude Code 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能。你在自己服务器上的一个 tmux 会话里启动 Claude Code，并从应用中驱动它，你还可以在同一个终端里运行 Codex 或任何其他 CLI 智能体。" } },
+    { "@type": "Question", "name": "QuickTUI 是自托管的吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "是。QuickTUI 默认直连你自己的服务器，因此你的代码和密钥不会经由我们的基础设施中转。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/compare/">QuickTUI 对比 Happy、Omnara、Termius、Blink 和 dotMux</a></li>
+    <li><a href="/cn/compare/quicktui-vs-omnara/">QuickTUI 对比 Omnara</a></li>
+    <li><a href="/cn/compare/quicktui-vs-termius/">QuickTUI 对比 Termius</a></li>
+    <li><a href="/cn/compare/quicktui-vs-blink/">QuickTUI 对比 Blink Shell</a></li>
+    <li><a href="/cn/compare/quicktui-vs-dotmux/">QuickTUI 对比 dotMux</a></li>
+    <li><a href="/cn/tmux-ios-app/">iOS 上的 tmux：从 iPhone 和 iPad 接入</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI 对比 Termius | QuickTUI</title>
+<meta name="description" content="QuickTUI 与 Termius 的对比：专为 tmux + 编程 Agent 打造、带会话保活，对比通用 SSH 客户端。" />
+<link rel="canonical" href="https://quicktui.ai/cn/compare/quicktui-vs-termius/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/quicktui-vs-termius/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/quicktui-vs-termius/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/quicktui-vs-termius/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 对比 Termius" />
+<meta property="og:description" content="QuickTUI 与 Termius 的对比：专为 tmux + 编程 Agent 打造、带会话保活，对比通用 SSH 客户端。" />
+<meta property="og:url" content="https://quicktui.ai/cn/compare/quicktui-vs-termius/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 对比 Termius" />
+<meta name="twitter:description" content="QuickTUI 与 Termius 的对比：专为 tmux + 编程 Agent 打造、带会话保活，对比通用 SSH 客户端。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI 对比 Termius",
+  "description": "QuickTUI 与 Termius 的对比：专为 tmux + 编程 Agent 打造、带会话保活，对比通用 SSH 客户端。",
+  "url": "https://quicktui.ai/cn/compare/quicktui-vs-termius/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "对比",
+      "item": "https://quicktui.ai/cn/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "对比 Termius",
+      "item": "https://quicktui.ai/cn/compare/quicktui-vs-termius/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><a href="https://quicktui.ai/cn/compare/">对比</a><span class="sep">/</span><span aria-current="page">对比 Termius</span></nav>
+<p class="eyebrow">对比</p>
+<h1>QuickTUI 对比 Termius</h1>
+<p class="lede">Termius 是一款广受欢迎的通用 SSH 客户端；QuickTUI 是一款专为 tmux 加编码智能体打造的
+客户端。它们的重叠之处在于都把终端放到了你的手机上，但它们是为不同的任务而生的。</p>
+
+<p>Termius 是一种精致的、跨平台的方式，用于 SSH 连入许多主机、管理密钥并保持一份整洁的连接列表。
+QuickTUI 更窄也更深：它接入你自己服务器上的真实 tmux，运行 Claude Code、Codex 或任何 CLI 智能体，并
+开箱即用地跨断线保持会话存活。</p>
+
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr><th>维度</th><th>QuickTUI</th><th>Termius</th></tr></thead>
+  <tbody>
+    <tr><th>原生 tmux（窗口、窗格、回滚缓冲）</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>原生 iPhone 和 iPad 应用</th><td class="yes">是</td><td class="yes">是</td></tr>
+    <tr><th>浏览器客户端</th><td class="yes">是</td><td>视情况</td></tr>
+    <tr><th>自托管 / 直连</th><td class="yes">是</td><td>你的 SSH 主机</td></tr>
+    <tr><th>运行任意 CLI 智能体</th><td class="yes">是</td><td>经由 SSH shell</td></tr>
+    <tr><th>跨断线的会话保持</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>定价模式</th><td>单台服务器免费；Pro 一次性；可选 Relay 订阅</td><td>视情况</td></tr>
+    <tr><th>在中国区 App Store 同样可用</th><td class="yes">是</td><td class="no">—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>通用 SSH vs tmux 与智能体</h2>
+<p>Termius 是一款通用 SSH 客户端，并不专门针对 tmux 或智能体。你当然可以在一个 Termius SSH 会话里运行
+tmux 和编码智能体，但那套配置和管理都得你自己来。QuickTUI 把 tmux 和智能体监督内建进产品，因此窗口、
+窗格、回滚缓冲和重新接入是默认体验，而不是你需要自行拼装的东西。</p>
+
+<h2>会话持久性</h2>
+<p>用一个纯 SSH 客户端时，除非你已经自己配好了 tmux 或 screen，否则连接掉线可能会丢掉你的会话。QuickTUI
+的会话保持是内建的：切换网络、把应用切到后台或失去信号，你都能从离开的地方精确地重新接入。</p>
+
+<h2>你该选哪个？</h2>
+<p>如果你要管理一批服务器，想要一款一流的通用 SSH 客户端，具备密钥管理和广泛的协议特性，那么 Termius
+更契合；那正是它的设计目标，QuickTUI 也不试图取代它。如果你的目标明确是在手机上、在真实 tmux 里运行并
+监督编码智能体，自托管且直连、会话持续存活，那么 QuickTUI 是更专注的工具。许多人两者并用，各得其所。</p>
+
+<h2>常见问题</h2>
+<h3>QuickTUI 是像 Termius 那样的 SSH 客户端吗？</h3>
+<p>不是。QuickTUI 与它自己的轻量服务器通信并驱动真实 tmux，而不是一款通用 SSH 客户端。你仍然可以通过
+局域网、VPN 或隧道连到那台机器。</p>
+<h3>我可以在使用 QuickTUI 的同时继续用 Termius 吗？</h3>
+<p>可以。它们服务于不同的需求：Termius 用于广泛的 SSH 访问，QuickTUI 用于 tmux 和编码智能体，两者并用
+并无冲突。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "QuickTUI 是像 Termius 那样的 SSH 客户端吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "不是。QuickTUI 与它自己的轻量服务器通信并驱动真实 tmux，而不是一款通用 SSH 客户端。你仍然可以通过局域网、VPN 或隧道连到那台机器。" } },
+    { "@type": "Question", "name": "我可以在使用 QuickTUI 的同时继续用 Termius 吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "可以。它们服务于不同的需求，Termius 用于广泛的 SSH 访问，QuickTUI 用于 tmux 和编码智能体，两者并用并无冲突。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/compare/">QuickTUI 对比 Happy、Omnara、Termius、Blink 和 dotMux</a></li>
+    <li><a href="/cn/compare/quicktui-vs-happy/">QuickTUI 对比 Happy</a></li>
+    <li><a href="/cn/compare/quicktui-vs-omnara/">QuickTUI 对比 Omnara</a></li>
+    <li><a href="/cn/compare/quicktui-vs-blink/">QuickTUI 对比 Blink Shell</a></li>
+    <li><a href="/cn/compare/quicktui-vs-dotmux/">QuickTUI 对比 dotMux</a></li>
+    <li><a href="/cn/tmux-ios-app/">iOS 上的 tmux：从 iPhone 和 iPad 接入</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

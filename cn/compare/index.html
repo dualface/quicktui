@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI 对比 Happy、Omnara、Termius、Blink、dotMux | QuickTUI</title>
+<meta name="description" content="QuickTUI 与 Happy、Omnara、Termius、Blink、dotMux 在手机上运行编程 Agent 的对比：原生 tmux、自托管、价格、国区可用性。" />
+<link rel="canonical" href="https://quicktui.ai/cn/compare/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 对比 Happy、Omnara、Termius、Blink、dotMux" />
+<meta property="og:description" content="QuickTUI 与 Happy、Omnara、Termius、Blink、dotMux 在手机上运行编程 Agent 的对比：原生 tmux、自托管、价格、国区可用性。" />
+<meta property="og:url" content="https://quicktui.ai/cn/compare/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 对比 Happy、Omnara、Termius、Blink、dotMux" />
+<meta name="twitter:description" content="QuickTUI 与 Happy、Omnara、Termius、Blink、dotMux 在手机上运行编程 Agent 的对比：原生 tmux、自托管、价格、国区可用性。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI 对比 Happy、Omnara、Termius、Blink、dotMux",
+  "description": "QuickTUI 与 Happy、Omnara、Termius、Blink、dotMux 在手机上运行编程 Agent 的对比：原生 tmux、自托管、价格、国区可用性。",
+  "url": "https://quicktui.ai/cn/compare/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "对比",
+      "item": "https://quicktui.ai/cn/compare/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><span aria-current="page">对比</span></nav>
+<p class="eyebrow">对比</p>
+<h1>QuickTUI 对比 Happy、Omnara、Termius、Blink 和 dotMux</h1>
+<p class="lede">如果你想在手机上运行编码智能体或使用真正的终端，有几款工具会在不同层面与 QuickTUI
+重叠。本页梳理它们在各个关键维度上的差异，并为每一款提供专门的对比文章。</p>
+
+<p>QuickTUI 是一款原生 iPhone 和 iPad 应用（同时还有由你自己的服务器提供的浏览器客户端），它接入
+运行在你机器上的真实 tmux。它默认自托管、直连，因此你的代码和密钥永远不会经过我们的服务器；它能在
+一个断线后依然存活的会话中运行 Claude Code、Codex 或任何其他 CLI 智能体。配对只需扫一个二维码。它对
+单台服务器免费，Pro 是一次性购买、可用于无限台服务器，另有一项可选的 Relay 订阅，仅用于你无法直连
+的情况。它在包括中国大陆在内的所有地区 App Store 上架。</p>
+
+<p>其他工具各自解决相关但不同的问题。有些是面向单一智能体的托管移动客户端；有些通过托管云中转；有些
+是通用 SSH 终端，能做的远不止运行智能体，但把 tmux 和会话管理留给你自己处理。它们没有一个绝对更差；
+它们只是面向不同的需求。</p>
+
+<h2>一览</h2>
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr>
+    <th>维度</th><th>QuickTUI</th><th>Happy</th><th>Omnara</th>
+    <th>Termius</th><th>Blink Shell</th><th>dotMux</th>
+  </tr></thead>
+  <tbody>
+    <tr><th>原生 tmux（窗口、窗格、回滚缓冲）</th>
+      <td class="yes">是</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td class="no">—</td><td class="yes">是</td></tr>
+    <tr><th>原生 iPhone 和 iPad 应用</th>
+      <td class="yes">是</td><td>移动应用</td><td>移动应用</td>
+      <td class="yes">是</td><td class="yes">是</td><td>视情况</td></tr>
+    <tr><th>浏览器客户端</th>
+      <td class="yes">是</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+    <tr><th>自托管 / 直连</th>
+      <td class="yes">是</td><td class="no">—</td><td>托管云</td>
+      <td>你的 SSH 主机</td><td>你的 SSH 主机</td><td>视情况</td></tr>
+    <tr><th>运行任意 CLI 智能体（Claude Code、Codex……）</th>
+      <td class="yes">是</td><td>专注 Claude Code</td><td>AI 智能体（托管）</td>
+      <td>经由 SSH shell</td><td>经由 SSH shell</td><td>经由 tmux shell</td></tr>
+    <tr><th>跨断线的会话保持</th>
+      <td class="yes">是</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td>经由 Mosh</td><td>经由 tmux</td></tr>
+    <tr><th>定价模式</th>
+      <td>单台服务器免费；Pro 一次性；可选 Relay 订阅</td>
+      <td>视情况</td><td>视情况</td><td>视情况</td><td>视情况</td><td>视情况</td></tr>
+    <tr><th>在中国区 App Store 同样可用</th>
+      <td class="yes">是</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>各款如何对比</h2>
+
+<h3>QuickTUI 对比 Happy</h3>
+<p>Happy 是一款专注于在手机上运行 Claude Code 的移动客户端。如果 Claude Code 就是你的整个工作流，
+这份专注是加分项。QuickTUI 更宽广：它是一个完整的 tmux 终端，能运行任何智能体，并在断线后重新接入。
+<a href="/cn/compare/quicktui-vs-happy/">阅读完整对比</a>。</p>
+
+<h3>QuickTUI 对比 Omnara</h3>
+<p>Omnara 是一款面向 AI 编码智能体的移动客户端，它通过托管云服务中转。这能简化配置，但你的流量会经过
+它们的基础设施。QuickTUI 默认自托管、直连。<a href="/cn/compare/quicktui-vs-omnara/">阅读完整对比</a>。</p>
+
+<h3>QuickTUI 对比 Termius</h3>
+<p>Termius 是一款广受欢迎的通用 SSH 客户端，如果你要管理许多主机、想要一个精致的多协议终端，它很出色。
+QuickTUI 则是专为 tmux 加编码智能体打造的，内置会话保持。
+<a href="/cn/compare/quicktui-vs-termius/">阅读完整对比</a>。</p>
+
+<h3>QuickTUI 对比 Blink Shell</h3>
+<p>Blink Shell 是一款强大的 iOS 原生 SSH/Mosh 终端，由你自己配置。如果你想完全掌控自己的 SSH 配置，
+它非常优秀。QuickTUI 则以这份底层灵活性换取一套托管的 tmux 与面向智能体的体验。
+<a href="/cn/compare/quicktui-vs-blink/">阅读完整对比</a>。</p>
+
+<h3>QuickTUI 对比 dotMux</h3>
+<p>dotMux 是一款用于从移动端连接 tmux 的工具，因此它与 QuickTUI 的核心直接重叠。QuickTUI 额外提供原生
+iPhone 和 iPad 应用以及浏览器客户端、二维码配对，以及以智能体为先的设计。
+<a href="/cn/compare/quicktui-vs-dotmux/">阅读完整对比</a>。</p>
+
+<div class="callout">
+  <strong>一句话版本：</strong>当你想在手机上使用真正的 tmux 终端和编码智能体、自托管且直连时，选
+  QuickTUI。当对许多主机的原生 SSH 访问比智能体专属工作流更重要时，选 Termius 或 Blink 这类通用 SSH
+  客户端。
+</div>
+
+<p style="font-size:13px;color:var(--ink-3);">此处定位反映各产品截至 2026 年的大致类别；请到各产品官网
+查看最新详情。</p>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/compare/quicktui-vs-happy/">QuickTUI 对比 Happy</a></li>
+    <li><a href="/cn/compare/quicktui-vs-omnara/">QuickTUI 对比 Omnara</a></li>
+    <li><a href="/cn/compare/quicktui-vs-termius/">QuickTUI 对比 Termius</a></li>
+    <li><a href="/cn/compare/quicktui-vs-blink/">QuickTUI 对比 Blink Shell</a></li>
+    <li><a href="/cn/compare/quicktui-vs-dotmux/">QuickTUI 对比 dotMux</a></li>
+    <li><a href="/cn/tmux-ios-app/">iOS 上的 tmux：从 iPhone 和 iPad 接入</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

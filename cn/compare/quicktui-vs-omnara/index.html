@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI 对比 Omnara | QuickTUI</title>
+<meta name="description" content="QuickTUI 与 Omnara 在移动端运行 AI 编程 Agent 的对比：自托管直连 + 一次性买断，对比云中转订阅。" />
+<link rel="canonical" href="https://quicktui.ai/cn/compare/quicktui-vs-omnara/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/quicktui-vs-omnara/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/quicktui-vs-omnara/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/quicktui-vs-omnara/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 对比 Omnara" />
+<meta property="og:description" content="QuickTUI 与 Omnara 在移动端运行 AI 编程 Agent 的对比：自托管直连 + 一次性买断，对比云中转订阅。" />
+<meta property="og:url" content="https://quicktui.ai/cn/compare/quicktui-vs-omnara/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 对比 Omnara" />
+<meta name="twitter:description" content="QuickTUI 与 Omnara 在移动端运行 AI 编程 Agent 的对比：自托管直连 + 一次性买断，对比云中转订阅。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI 对比 Omnara",
+  "description": "QuickTUI 与 Omnara 在移动端运行 AI 编程 Agent 的对比：自托管直连 + 一次性买断，对比云中转订阅。",
+  "url": "https://quicktui.ai/cn/compare/quicktui-vs-omnara/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "对比",
+      "item": "https://quicktui.ai/cn/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "对比 Omnara",
+      "item": "https://quicktui.ai/cn/compare/quicktui-vs-omnara/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/cn/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+      <a href="/cn/compare/">对比</a>
+      <a href="/cn/#faq">常见问题</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">获取应用</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/cn/">首页</a><span class="sep">/</span><a href="https://quicktui.ai/cn/compare/">对比</a><span class="sep">/</span><span aria-current="page">对比 Omnara</span></nav>
+<p class="eyebrow">对比</p>
+<h1>QuickTUI 对比 Omnara</h1>
+<p class="lede">QuickTUI 和 Omnara 都帮助你在手机上运行 AI 编码智能体。主要区别在于会话所走的路径：Omnara
+是一款通过托管云服务中转的移动客户端，而 QuickTUI 默认直连你自己的服务器。</p>
+
+<p>托管云模式能让配置更简单，因为中间有一个服务替你打通链路。QuickTUI 做的是相反的取舍：它自托管、直连，
+因此你的代码和密钥只停留在你的手机与你的机器之间，你在其中驱动真实 tmux，运行任意 CLI 智能体。</p>
+
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr><th>维度</th><th>QuickTUI</th><th>Omnara</th></tr></thead>
+  <tbody>
+    <tr><th>原生 tmux（窗口、窗格、回滚缓冲）</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>原生 iPhone 和 iPad 应用</th><td class="yes">是</td><td>移动应用</td></tr>
+    <tr><th>浏览器客户端</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>自托管 / 直连</th><td class="yes">是</td><td>托管云</td></tr>
+    <tr><th>运行任意 CLI 智能体</th><td class="yes">是</td><td>AI 智能体（托管）</td></tr>
+    <tr><th>跨断线的会话保持</th><td class="yes">是</td><td class="no">—</td></tr>
+    <tr><th>定价模式</th><td>单台服务器免费；Pro 一次性；可选 Relay 订阅</td><td>视情况</td></tr>
+    <tr><th>在中国区 App Store 同样可用</th><td class="yes">是</td><td class="no">—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>直连 vs 经由云中转</h2>
+<p>Omnara 的托管服务位于你的手机与你的智能体之间。QuickTUI 默认是通过局域网、VPN 或你自己掌控的隧道
+直连你自己的服务器，因此无需经过任何第三方。QuickTUI 确实提供一项可选的 Relay 订阅，但仅用于你无法直连
+的情况；它是一个兜底方案，而非默认路径。</p>
+
+<h2>一个真正的终端，而不只是智能体视图</h2>
+<p>因为 QuickTUI 驱动真实 tmux，你能获得窗口、窗格和回滚缓冲，并且可以在同一个会话里运行 Claude Code、
+Codex 或任何其他 CLI 工具。智能体只是你所掌控的这个完整终端里运行的一样东西而已。</p>
+
+<h2>定价形态</h2>
+<p>QuickTUI 对单台服务器免费，一次性购买 Pro 即可用于无限台服务器；唯一的订阅是可选的 Relay，且仅在你
+需要时才用。这与围绕托管基础设施计费的服务是不同的形态。</p>
+
+<h2>你该选哪个？</h2>
+<p>如果你看重托管、云端体验的便利，并且能接受你的智能体流量经过某个服务商的云中转，那么 Omnara 可能适合
+你。如果你更愿意保持直连、自托管，拥有一个完整的 tmux 终端，并在常见场景下避免持续订阅，那么 QuickTUI
+更契合。</p>
+
+<h2>常见问题</h2>
+<h3>QuickTUI 会像 Omnara 那样把我的会话经由云中转吗？</h3>
+<p>不会。QuickTUI 默认直连你自己的服务器。可选的 Relay 仅在无法直连时才存在。</p>
+<h3>QuickTUI 能运行不止一种智能体吗？</h3>
+<p>能。它能运行 Claude Code、Codex 或任何 CLI 智能体，因为它是一个接入 tmux 的真正终端，而不是对单一
+服务的封装。</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "QuickTUI 会像 Omnara 那样把我的会话经由云中转吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "不会。QuickTUI 默认直连你自己的服务器。可选的 Relay 仅在无法直连时才存在。" } },
+    { "@type": "Question", "name": "QuickTUI 能运行不止一种智能体吗？",
+      "acceptedAnswer": { "@type": "Answer", "text": "能。它能运行 Claude Code、Codex 或任何 CLI 智能体，因为它是一个接入 tmux 的真正终端，而不是对单一服务的封装。" } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>相关内容</h2>
+  <ul>
+    <li><a href="/cn/compare/">QuickTUI 对比 Happy、Omnara、Termius、Blink 和 dotMux</a></li>
+    <li><a href="/cn/compare/quicktui-vs-happy/">QuickTUI 对比 Happy</a></li>
+    <li><a href="/cn/compare/quicktui-vs-termius/">QuickTUI 对比 Termius</a></li>
+    <li><a href="/cn/compare/quicktui-vs-blink/">QuickTUI 对比 Blink Shell</a></li>
+    <li><a href="/cn/compare/quicktui-vs-dotmux/">QuickTUI 对比 dotMux</a></li>
+    <li><a href="/cn/tmux-ios-app/">iOS 上的 tmux：从 iPhone 和 iPad 接入</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/cn/">首页</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

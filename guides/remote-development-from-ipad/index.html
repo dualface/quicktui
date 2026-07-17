@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Remote development from iPad (2026 guide) | QuickTUI</title>
+<meta name="description" content="A practical 2026 setup for remote development from an iPad: attach your server terminal, run coding agents, and keep long jobs alive." />
+<link rel="canonical" href="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="Remote development from iPad (2026 guide)" />
+<meta property="og:description" content="A practical 2026 setup for remote development from an iPad: attach your server terminal, run coding agents, and keep long jobs alive." />
+<meta property="og:url" content="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Remote development from iPad (2026 guide)" />
+<meta name="twitter:description" content="A practical 2026 setup for remote development from an iPad: attach your server terminal, run coding agents, and keep long jobs alive." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Remote development from iPad (2026 guide)",
+  "description": "A practical 2026 setup for remote development from an iPad: attach your server terminal, run coding agents, and keep long jobs alive.",
+  "url": "https://quicktui.ai/guides/remote-development-from-ipad/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">Guide · iPad</p>
+<h1>Remote development from iPad (2026)</h1>
+<p class="lede">An iPad makes a capable development surface once the work runs on a real server
+and the tablet just holds the terminal. This guide sets up remote development from iPad with
+QuickTUI: attach your server terminal, run coding agents, keep long jobs alive, and fall back to
+the browser client when you need it.</p>
+
+<p>The model is straightforward: the compiler, the repo, and the agents all live on a machine
+you host; the iPad attaches a live terminal view over your own server. Nothing heavy runs on the
+tablet, so battery and thermals stay out of the way and the session is the same one you use at
+your desk. QuickTUI ships a native iPad app plus a browser client for exactly this.</p>
+
+<h2>Set up the server</h2>
+<p>Install QuickTUI on the machine that holds your code: a workstation, home server, or cloud
+box. It sets up the service and can install tmux 3.2+ if needed.</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>Pair the iPad app by scanning <code>quicktui-server --qrcode</code>, or add the server by URL
+and token. The connection is direct by default, so your code and keys never touch our servers.</p>
+
+<h2>Work from the iPad</h2>
+<ul>
+  <li><strong>Attach your terminal.</strong> Open the session on the server and you are in the
+    live view: tmux windows, panes, and scrollback, the same on iPad as on the desktop.</li>
+  <li><strong>Run agents.</strong> Start Claude Code, Codex, or any CLI in a session and drive it
+    from the tablet; supervise, approve, and steer without leaving the terminal.</li>
+  <li><strong>Keep long jobs alive.</strong> Builds, test suites, and agent runs stay running in
+    tmux after you detach. The session keeper reattaches across Wi-Fi to LTE or 5G, app
+    backgrounding, and dropped connections.</li>
+  <li><strong>Browser fallback.</strong> When you would rather not use the app, open the browser
+    client served by your own server and attach the same session from Safari.</li>
+</ul>
+
+<div class="callout">
+  <strong>Hardware keyboard.</strong> With a Magic Keyboard or any Bluetooth keyboard, the iPad
+  behaves like a proper terminal: arrow keys, modifiers, and control sequences pass through to
+  tmux and the shell, so key bindings and copy-mode work as expected.
+</div>
+
+<h2>FAQ</h2>
+<h3>Can I actually develop on an iPad this way?</h3>
+<p>Yes. The build tools, repository, and agents run on your server; the iPad attaches a live
+terminal view. With a hardware keyboard it works like a terminal on any laptop.</p>
+<h3>Do long-running jobs survive if I close the iPad?</h3>
+<p>Yes. Jobs run in tmux on the server and keep going after you detach. QuickTUI's session keeper
+reattaches to the live session when you reopen the app or the browser client.</p>
+<h3>Is there a browser option?</h3>
+<p>Yes. Your server hosts a browser client, so you can attach the same session from Safari or any
+browser when you prefer not to use the app.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Can I actually develop on an iPad remotely?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The build tools, repository, and agents run on your server; the iPad attaches a live terminal view. With a hardware keyboard it works like a terminal on any laptop." } },
+    { "@type": "Question", "name": "Do long-running jobs survive if I close the iPad?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Jobs run in tmux on the server and keep going after you detach. QuickTUI's session keeper reattaches to the live session when you reopen the app or the browser client." } },
+    { "@type": "Question", "name": "Is there a browser option for remote development from iPad?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your server hosts a browser client, so you can attach the same session from Safari or any browser when you prefer not to use the app." } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/tmux-ios-app/">tmux on iOS: attach your sessions from iPhone &amp; iPad</a></li>
+    <li><a href="/guides/attach-tmux-from-phone/">Attach a tmux session from your phone</a></li>
+    <li><a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a></li>
+    <li><a href="/use-cases/control-ai-agents-from-phone/">Control AI coding agents from your phone</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

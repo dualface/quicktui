@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI vs Omnara | QuickTUI</title>
+<meta name="description" content="QuickTUI vs Omnara for AI coding agents on mobile: direct self-hosted connection and one-time purchase versus a cloud-relayed subscription." />
+<link rel="canonical" href="https://quicktui.ai/compare/quicktui-vs-omnara/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI vs Omnara" />
+<meta property="og:description" content="QuickTUI vs Omnara for AI coding agents on mobile: direct self-hosted connection and one-time purchase versus a cloud-relayed subscription." />
+<meta property="og:url" content="https://quicktui.ai/compare/quicktui-vs-omnara/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI vs Omnara" />
+<meta name="twitter:description" content="QuickTUI vs Omnara for AI coding agents on mobile: direct self-hosted connection and one-time purchase versus a cloud-relayed subscription." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI vs Omnara",
+  "description": "QuickTUI vs Omnara for AI coding agents on mobile: direct self-hosted connection and one-time purchase versus a cloud-relayed subscription.",
+  "url": "https://quicktui.ai/compare/quicktui-vs-omnara/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">Compare</p>
+<h1>QuickTUI vs Omnara</h1>
+<p class="lede">QuickTUI and Omnara both help you run AI coding agents from your phone. The main
+difference is the path your session takes: Omnara is a mobile client that routes through a hosted
+cloud service, while QuickTUI connects directly to your own server by default.</p>
+
+<p>A hosted-cloud model can make setup simpler, since there is a service in the middle doing the wiring.
+QuickTUI takes the opposite trade: it is self-hosted and direct, so your code and keys stay between
+your phone and your machine, and you drive real tmux with any CLI agent inside it.</p>
+
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr><th>Dimension</th><th>QuickTUI</th><th>Omnara</th></tr></thead>
+  <tbody>
+    <tr><th>Native tmux (windows, panes, scrollback)</th><td class="yes">Yes</td><td class="no">—</td></tr>
+    <tr><th>Native iPhone &amp; iPad app</th><td class="yes">Yes</td><td>Mobile app</td></tr>
+    <tr><th>Browser client</th><td class="yes">Yes</td><td class="no">—</td></tr>
+    <tr><th>Self-hosted / direct connection</th><td class="yes">Yes</td><td>Hosted cloud</td></tr>
+    <tr><th>Runs any CLI agent</th><td class="yes">Yes</td><td>AI agents (hosted)</td></tr>
+    <tr><th>Session keeper across disconnects</th><td class="yes">Yes</td><td class="no">—</td></tr>
+    <tr><th>Pricing model</th><td>Free for one server; Pro one-time; optional Relay sub</td><td>Varies</td></tr>
+    <tr><th>Available in China App Store</th><td class="yes">Yes</td><td class="no">—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Direct vs routed through a cloud</h2>
+<p>Omnara's hosted service sits between your phone and your agents. QuickTUI's default is a direct
+connection to your own server over LAN, VPN, or a tunnel you control, so nothing has to pass through a
+third party. QuickTUI does offer an optional Relay subscription, but only for the case where you
+cannot connect directly; it is a fallback, not the default path.</p>
+
+<h2>A real terminal, not just an agent view</h2>
+<p>Because QuickTUI drives real tmux, you get windows, panes, and scrollback, and you can run Claude
+Code, Codex, or any other CLI tool in the same session. The agent is just one thing running in a full
+terminal you control.</p>
+
+<h2>Pricing shape</h2>
+<p>QuickTUI is free for one server, with a one-time Pro purchase for unlimited servers; the only
+subscription is the optional Relay, and only when you need it. That is a different shape from a
+service billed around hosted infrastructure.</p>
+
+<h2>Which should you pick?</h2>
+<p>If you value the convenience of a managed, hosted experience and are comfortable with your agent
+traffic routing through a provider's cloud, Omnara may suit you. If you would rather keep a direct, self-hosted connection, own a full tmux terminal, and avoid
+an ongoing subscription for the common case, QuickTUI is the better fit.</p>
+
+<h2>FAQ</h2>
+<h3>Does QuickTUI route my session through a cloud like Omnara?</h3>
+<p>No. QuickTUI connects directly to your own server by default. An optional Relay exists only for
+when a direct connection is not possible.</p>
+<h3>Can QuickTUI run more than one kind of agent?</h3>
+<p>Yes. It runs Claude Code, Codex, or any CLI agent, because it is a real terminal attached to tmux
+rather than a wrapper around a single service.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Does QuickTUI route my session through a cloud like Omnara?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. QuickTUI connects directly to your own server by default. An optional Relay exists only for when a direct connection is not possible." } },
+    { "@type": "Question", "name": "Can QuickTUI run more than one kind of agent?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. It runs Claude Code, Codex, or any CLI agent, because it is a real terminal attached to tmux rather than a wrapper around a single service." } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/compare/">QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux</a></li>
+    <li><a href="/compare/quicktui-vs-happy/">QuickTUI vs Happy</a></li>
+    <li><a href="/compare/quicktui-vs-termius/">QuickTUI vs Termius</a></li>
+    <li><a href="/compare/quicktui-vs-blink/">QuickTUI vs Blink Shell</a></li>
+    <li><a href="/compare/quicktui-vs-dotmux/">QuickTUI vs dotMux</a></li>
+    <li><a href="/tmux-ios-app/">tmux on iOS: attach from iPhone &amp; iPad</a></li>
+    <li><a href="/">QuickTUI home</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

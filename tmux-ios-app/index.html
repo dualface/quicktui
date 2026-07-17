@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tmux on iOS — attach tmux sessions from iPhone &amp; iPad | QuickTUI</title>
+<meta name="description" content="Run a real tmux client on iOS. QuickTUI attaches your tmux sessions from iPhone, iPad, or the browser. Self-hosted, direct connection, free for one server." />
+<link rel="canonical" href="https://quicktui.ai/tmux-ios-app/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="tmux on iOS — attach tmux sessions from iPhone &amp; iPad" />
+<meta property="og:description" content="Run a real tmux client on iOS. QuickTUI attaches your tmux sessions from iPhone, iPad, or the browser. Self-hosted, direct connection, free for one server." />
+<meta property="og:url" content="https://quicktui.ai/tmux-ios-app/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="tmux on iOS — attach tmux sessions from iPhone &amp; iPad" />
+<meta name="twitter:description" content="Run a real tmux client on iOS. QuickTUI attaches your tmux sessions from iPhone, iPad, or the browser. Self-hosted, direct connection, free for one server." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "tmux on iOS — attach tmux sessions from iPhone & iPad",
+  "description": "Run a real tmux client on iOS. QuickTUI attaches your tmux sessions from iPhone, iPad, or the browser. Self-hosted, direct connection, free for one server.",
+  "url": "https://quicktui.ai/tmux-ios-app/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">tmux · iOS</p>
+<h1>tmux on iOS: attach your tmux sessions from iPhone &amp; iPad</h1>
+<p class="lede">There is no official tmux app for iOS, and you don't need one. What you
+actually want is to reach the tmux sessions already running on your own machine, from your
+phone or tablet, and pick up exactly where you left off. That is what QuickTUI does.</p>
+
+<p>tmux keeps your terminal sessions alive on the server: long builds, coding agents, log
+tails, and SSH shells all survive after you disconnect. The missing piece has always been a
+good way to reach them from an iPhone or iPad. QuickTUI is a native iOS client (plus iPad and
+browser) that attaches to those sessions over your own server, with no third party in the middle.</p>
+
+<h2>What an "iOS tmux client" should do</h2>
+<ul>
+  <li><strong>Attach, not re-run.</strong> Your session lives on the server between attaches;
+    opening the app drops you back into the live view, output intact.</li>
+  <li><strong>Real terminal, not a chat box.</strong> tmux windows, panes, scrollback, and
+    copy-mode: the same view on iPhone, iPad, and the browser.</li>
+  <li><strong>Survive the network.</strong> Wi-Fi to LTE to 5G, backgrounding the app, or a
+    dropped connection shouldn't lose your place.</li>
+  <li><strong>Stay yours.</strong> Self-hosted and direct by default, so your code and keys
+    never pass through someone else's cloud.</li>
+</ul>
+
+<h2>Set it up (about two minutes)</h2>
+<p>Install the QuickTUI server on the machine where your tmux sessions run. It sets up the
+service and can install tmux 3.2+ for you if needed.</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>Then pair the app by scanning <code>quicktui-server --qrcode</code>, or add the server
+manually by URL and token. Open a session and you are attached. For the step-by-step version,
+see <a href="/guides/attach-tmux-from-phone/">attach a tmux session from your phone</a>.</p>
+
+<h2>Is it actually tmux?</h2>
+<p>Yes. QuickTUI drives real tmux on your server; it is not a re-implementation. Your existing
+<code>~/.tmux.conf</code>, key bindings, windows, and panes all apply. If tmux isn't installed,
+the installer can set up a supported build; you can also point it at an existing binary with
+<code>QUICKTUI_TMUX_BIN</code>.</p>
+
+<div class="callout">
+  <strong>Running coding agents in tmux?</strong> QuickTUI is built for it: start Claude Code,
+  Codex, or any CLI agent in a session and supervise it from your phone. See
+  <a href="/guides/run-claude-code-from-iphone/">run Claude Code from your iPhone</a>.
+</div>
+
+<h2>At a glance</h2>
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr><th>Capability</th><th>QuickTUI</th></tr></thead>
+  <tbody>
+    <tr><th>Native iPhone &amp; iPad app</th><td class="yes">Yes</td></tr>
+    <tr><th>Browser client</th><td class="yes">Yes, served by your own server</td></tr>
+    <tr><th>Real tmux (windows, panes, scrollback)</th><td class="yes">Yes</td></tr>
+    <tr><th>Self-hosted, direct connection</th><td class="yes">Yes, code never touches our servers</td></tr>
+    <tr><th>Session keeper across disconnects</th><td class="yes">Yes</td></tr>
+    <tr><th>Price</th><td>Free for one server; Pro is a one-time purchase</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>FAQ</h2>
+<h3>Is there an official tmux app for iOS?</h3>
+<p>No. tmux is a server-side program; there is no first-party iOS app. QuickTUI is a native iOS
+client that attaches to tmux running on your own server.</p>
+<h3>Do I need SSH?</h3>
+<p>No. QuickTUI talks to its own lightweight server over HTTP/WebSocket. You can reach it on
+your LAN, over a VPN or tunnel (Tailscale, Cloudflare Tunnel), or a public address.</p>
+<h3>Does it work on iPad?</h3>
+<p>Yes. The same app and the same live session run on iPhone and iPad, and in any browser.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is there an official tmux app for iOS?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. tmux is a server-side program; there is no first-party iOS app. QuickTUI is a native iOS client that attaches to tmux running on your own server." } },
+    { "@type": "Question", "name": "Do I need SSH to use tmux on iOS with QuickTUI?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. QuickTUI talks to its own lightweight server over HTTP/WebSocket. You can reach it on your LAN, over a VPN or tunnel such as Tailscale or Cloudflare Tunnel, or a public address." } },
+    { "@type": "Question", "name": "Does QuickTUI work on iPad?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The same app and the same live session run on iPhone and iPad, and in any browser." } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/guides/attach-tmux-from-phone/">Attach a tmux session from your phone</a></li>
+    <li><a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a></li>
+    <li><a href="/compare/">QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux</a></li>
+    <li><a href="/">QuickTUI home</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

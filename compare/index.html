@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux (comparison) | QuickTUI</title>
+<meta name="description" content="How QuickTUI compares to Happy, Omnara, Termius, Blink, and dotMux for running coding agents from your phone: native tmux, self-hosted, pricing, and CN availability." />
+<link rel="canonical" href="https://quicktui.ai/compare/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux (comparison)" />
+<meta property="og:description" content="How QuickTUI compares to Happy, Omnara, Termius, Blink, and dotMux for running coding agents from your phone: native tmux, self-hosted, pricing, and CN availability." />
+<meta property="og:url" content="https://quicktui.ai/compare/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux (comparison)" />
+<meta name="twitter:description" content="How QuickTUI compares to Happy, Omnara, Termius, Blink, and dotMux for running coding agents from your phone: native tmux, self-hosted, pricing, and CN availability." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI vs Happy, Omnara, Termius, Blink & dotMux (comparison)",
+  "description": "How QuickTUI compares to Happy, Omnara, Termius, Blink, and dotMux for running coding agents from your phone: native tmux, self-hosted, pricing, and CN availability.",
+  "url": "https://quicktui.ai/compare/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">Compare</p>
+<h1>QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux</h1>
+<p class="lede">If you want to run coding agents or a real terminal from your phone, several tools
+overlap with QuickTUI in different ways. This page lays out how they compare across the dimensions
+that matter, then points you to a dedicated write-up for each one.</p>
+
+<p>QuickTUI is a native iPhone and iPad app (plus a browser client served by your own server) that
+attaches to real tmux running on your machine. It is self-hosted and direct by default, so your code
+and keys never touch our servers, and it runs Claude Code, Codex, or any other CLI agent in a
+session that survives disconnects. Pairing is a QR scan. It is free for one server, Pro is a
+one-time purchase for unlimited servers, and an optional Relay subscription exists only for the case
+where you cannot connect directly. It is available in the China App Store.</p>
+
+<p>The other tools each solve a related but different problem. Some are managed mobile clients for a
+single agent; some route through a hosted cloud; some are general-purpose SSH terminals that can do
+far more than agents but leave tmux and session management up to you. None of them is strictly worse;
+they are aimed at different needs.</p>
+
+<h2>At a glance</h2>
+<div class="table-scroll">
+<table class="fact-table">
+  <thead><tr>
+    <th>Dimension</th><th>QuickTUI</th><th>Happy</th><th>Omnara</th>
+    <th>Termius</th><th>Blink Shell</th><th>dotMux</th>
+  </tr></thead>
+  <tbody>
+    <tr><th>Native tmux (windows, panes, scrollback)</th>
+      <td class="yes">Yes</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td class="no">—</td><td class="yes">Yes</td></tr>
+    <tr><th>Native iPhone &amp; iPad app</th>
+      <td class="yes">Yes</td><td>Mobile app</td><td>Mobile app</td>
+      <td class="yes">Yes</td><td class="yes">Yes</td><td>Varies</td></tr>
+    <tr><th>Browser client</th>
+      <td class="yes">Yes</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+    <tr><th>Self-hosted / direct connection</th>
+      <td class="yes">Yes</td><td class="no">—</td><td>Hosted cloud</td>
+      <td>Your SSH hosts</td><td>Your SSH hosts</td><td>Varies</td></tr>
+    <tr><th>Runs any CLI agent (Claude Code, Codex, …)</th>
+      <td class="yes">Yes</td><td>Claude Code focus</td><td>AI agents (hosted)</td>
+      <td>Via SSH shell</td><td>Via SSH shell</td><td>Via tmux shell</td></tr>
+    <tr><th>Session keeper across disconnects</th>
+      <td class="yes">Yes</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td>Via Mosh</td><td>Via tmux</td></tr>
+    <tr><th>Pricing model</th>
+      <td>Free for one server; Pro one-time; optional Relay sub</td>
+      <td>Varies</td><td>Varies</td><td>Varies</td><td>Varies</td><td>Varies</td></tr>
+    <tr><th>Available in China App Store</th>
+      <td class="yes">Yes</td><td class="no">—</td><td class="no">—</td>
+      <td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>How each one compares</h2>
+
+<h3>QuickTUI vs Happy</h3>
+<p>Happy is a mobile client focused on running Claude Code from your phone. If Claude Code is your
+whole workflow, that focus is a plus. QuickTUI is broader: a full tmux terminal that runs any agent
+and reattaches after disconnects. <a href="/compare/quicktui-vs-happy/">Read the full comparison</a>.</p>
+
+<h3>QuickTUI vs Omnara</h3>
+<p>Omnara is a mobile client for AI coding agents that routes through a hosted cloud service. That
+can simplify setup, but your traffic passes through their infrastructure. QuickTUI is self-hosted and
+direct by default. <a href="/compare/quicktui-vs-omnara/">Read the full comparison</a>.</p>
+
+<h3>QuickTUI vs Termius</h3>
+<p>Termius is a popular general-purpose SSH client, great if you manage many hosts and want a
+polished multi-protocol terminal. QuickTUI is purpose-built for tmux plus coding agents, with a
+session keeper baked in. <a href="/compare/quicktui-vs-termius/">Read the full comparison</a>.</p>
+
+<h3>QuickTUI vs Blink Shell</h3>
+<p>Blink Shell is a powerful raw SSH/Mosh terminal for iOS that you configure yourself. If you want
+total control over your own SSH setup, it is excellent. QuickTUI trades that low-level flexibility
+for a managed tmux and agent-focused experience. <a href="/compare/quicktui-vs-blink/">Read the full
+comparison</a>.</p>
+
+<h3>QuickTUI vs dotMux</h3>
+<p>dotMux is a tool for reaching tmux from mobile, so it overlaps directly with QuickTUI's core.
+QuickTUI adds a native iPhone and iPad app plus a browser client, QR pairing, and an agent-first
+design. <a href="/compare/quicktui-vs-dotmux/">Read the full comparison</a>.</p>
+
+<div class="callout">
+  <strong>The short version:</strong> pick QuickTUI when you want a real tmux terminal and coding
+  agents on your phone, self-hosted and direct. Pick a general SSH client like Termius or Blink when
+  raw SSH access to many hosts matters more than agent-specific workflow.
+</div>
+
+<p style="font-size:13px;color:var(--ink-3);">Positioning reflects each product's general category
+as of 2026; check each product's site for current details.</p>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/compare/quicktui-vs-happy/">QuickTUI vs Happy</a></li>
+    <li><a href="/compare/quicktui-vs-omnara/">QuickTUI vs Omnara</a></li>
+    <li><a href="/compare/quicktui-vs-termius/">QuickTUI vs Termius</a></li>
+    <li><a href="/compare/quicktui-vs-blink/">QuickTUI vs Blink Shell</a></li>
+    <li><a href="/compare/quicktui-vs-dotmux/">QuickTUI vs dotMux</a></li>
+    <li><a href="/tmux-ios-app/">tmux on iOS: attach from iPhone &amp; iPad</a></li>
+    <li><a href="/">QuickTUI home</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

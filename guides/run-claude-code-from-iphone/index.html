@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How to run Claude Code from your iPhone | QuickTUI</title>
+<meta name="description" content="Run and monitor Claude Code on your own server from your iPhone: a full terminal with multiple sessions, not a single-session chat wrapper." />
+<link rel="canonical" href="https://quicktui.ai/guides/run-claude-code-from-iphone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="How to run Claude Code from your iPhone" />
+<meta property="og:description" content="Run and monitor Claude Code on your own server from your iPhone: a full terminal with multiple sessions, not a single-session chat wrapper." />
+<meta property="og:url" content="https://quicktui.ai/guides/run-claude-code-from-iphone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How to run Claude Code from your iPhone" />
+<meta name="twitter:description" content="Run and monitor Claude Code on your own server from your iPhone: a full terminal with multiple sessions, not a single-session chat wrapper." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to run Claude Code from your iPhone",
+  "description": "Run and monitor Claude Code on your own server from your iPhone: a full terminal with multiple sessions, not a single-session chat wrapper.",
+  "url": "https://quicktui.ai/guides/run-claude-code-from-iphone/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">Guide · Claude Code</p>
+<h1>How to run Claude Code from your iPhone</h1>
+<p class="lede">Claude Code runs in a terminal, and a terminal is exactly what your iPhone can
+reach when the session lives on your own server. This guide starts Claude Code inside a tmux
+session, drives it from the QuickTUI app, keeps it running while you are away, and runs several
+sessions side by side.</p>
+
+<p>The pattern is the same one that makes long-running terminal work reliable: keep the process
+on the server in tmux, and attach a view to it from wherever you are. QuickTUI is a native iPhone
+and iPad app (plus a browser client) that attaches to real tmux on a server you host, so Claude
+Code keeps thinking and editing whether or not your phone is looking at it.</p>
+
+<h2>Install the server</h2>
+<p>Run the installer on the machine where Claude Code should run: your workstation, a home
+server, or a cloud box. It sets up the QuickTUI service and can install tmux 3.2+ if needed.</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>Pair the app by scanning <code>quicktui-server --qrcode</code>, or add the server manually by
+URL and token. The connection is direct by default, so your code and keys never touch our
+servers.</p>
+
+<h2>Start Claude Code in a session</h2>
+<p>On the server, open a named tmux session and launch Claude Code inside it:</p>
+<pre><code>tmux new-session -s claude
+claude</code></pre>
+<p>From the app, attach to the <code>claude</code> session and you are at the live prompt. Type,
+review diffs, approve tool calls, and steer the agent exactly as you would in the terminal.</p>
+
+<h2>Keep it running and run several at once</h2>
+<ul>
+  <li><strong>Leave it working.</strong> Detach or close the app and Claude Code keeps running in
+    tmux on the server. Reopen later and the session keeper reattaches to the live view.</li>
+  <li><strong>Survive the network.</strong> Wi-Fi to LTE to 5G, backgrounding, or a dropped
+    connection does not interrupt the run.</li>
+  <li><strong>Multiple sessions.</strong> Start a second session (<code>tmux new-session -s
+    review</code>) for another task or repository, and switch between them in the app.</li>
+</ul>
+
+<div class="callout">
+  <strong>How this compares.</strong> Anthropic offers a built-in way to control Claude Code
+  remotely. QuickTUI's scope is different: it is a full terminal for any CLI agent (Claude Code,
+  Codex, or anything else) running over real tmux on a server you self-host, with multiple
+  sessions and no plan requirement. Pick whichever fits your setup.
+</div>
+
+<h2>FAQ</h2>
+<h3>Does Claude Code keep running when I close the app?</h3>
+<p>Yes. Claude Code runs in tmux on your server, so it continues after you detach. QuickTUI's
+session keeper reattaches to the same live session when you reopen the app.</p>
+<h3>Can I run more than one Claude Code session?</h3>
+<p>Yes. Start each in its own tmux session with <code>tmux new-session -s name</code>, then switch
+between them in the app across iPhone, iPad, and the browser.</p>
+<h3>Does my code go through QuickTUI's servers?</h3>
+<p>No. The connection is direct by default, so your code and keys stay between your device and
+your own server.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Does Claude Code keep running when I close the app?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Claude Code runs in tmux on your server, so it continues after you detach. QuickTUI's session keeper reattaches to the same live session when you reopen the app." } },
+    { "@type": "Question", "name": "Can I run more than one Claude Code session from my iPhone?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Start each in its own tmux session with tmux new-session -s name, then switch between them in the app across iPhone, iPad, and the browser." } },
+    { "@type": "Question", "name": "Does my code go through QuickTUI's servers?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. The connection is direct by default, so your code and keys stay between your device and your own server." } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/guides/attach-tmux-from-phone/">Attach a tmux session from your phone</a></li>
+    <li><a href="/guides/run-codex-cli-from-phone/">Run Codex CLI from your phone</a></li>
+    <li><a href="/use-cases/control-ai-agents-from-phone/">Control AI coding agents from your phone</a></li>
+    <li><a href="/compare/">QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

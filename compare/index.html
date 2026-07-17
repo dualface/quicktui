@@ -56,6 +56,26 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://quicktui.ai/compare/"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <header class="site-nav">
@@ -75,6 +95,7 @@
 </header>
 <main>
 <article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://quicktui.ai/">Home</a><span class="sep">/</span><span aria-current="page">Compare</span></nav>
 <p class="eyebrow">Compare</p>
 <h1>QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux</h1>
 <p class="lede">If you want to run coding agents or a real terminal from your phone, several tools

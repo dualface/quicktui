@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How to run Codex CLI from your phone | QuickTUI</title>
+<meta name="description" content="Start OpenAI Codex CLI on your server and drive it from your phone over tmux, with the session surviving disconnects and network changes." />
+<link rel="canonical" href="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="How to run Codex CLI from your phone" />
+<meta property="og:description" content="Start OpenAI Codex CLI on your server and drive it from your phone over tmux, with the session surviving disconnects and network changes." />
+<meta property="og:url" content="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How to run Codex CLI from your phone" />
+<meta name="twitter:description" content="Start OpenAI Codex CLI on your server and drive it from your phone over tmux, with the session surviving disconnects and network changes." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to run Codex CLI from your phone",
+  "description": "Start OpenAI Codex CLI on your server and drive it from your phone over tmux, with the session surviving disconnects and network changes.",
+  "url": "https://quicktui.ai/guides/run-codex-cli-from-phone/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">Guide · Codex CLI</p>
+<h1>How to run Codex CLI from your phone</h1>
+<p class="lede">OpenAI's Codex CLI is a terminal agent, so running it from your phone comes down to
+reaching the terminal it runs in. This guide starts Codex CLI inside a tmux session on your own
+server, drives it from the QuickTUI app, and keeps the session alive after you disconnect.</p>
+
+<p>Codex CLI does real work on your files over minutes, not seconds, so you want it on a machine
+that stays put. Keep it in tmux on the server and attach a view from your phone. QuickTUI is a
+native iPhone and iPad app (plus a browser client) that attaches to real tmux on a server you
+host: the same Codex session, reachable from anywhere.</p>
+
+<h2>Install the server</h2>
+<p>Run the installer on the machine where Codex CLI should run. It sets up the QuickTUI service
+and can install tmux 3.2+ if it is missing.</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>Pair the app by scanning <code>quicktui-server --qrcode</code>, or add the server manually by
+URL and token. The connection is direct by default, so your code and keys never touch our
+servers. A single server is free with full features; QuickTUI Pro is a one-time purchase for
+unlimited server profiles.</p>
+
+<h2>Start Codex CLI in a session</h2>
+<p>On the server, open a named tmux session and launch Codex inside it:</p>
+<pre><code>tmux new-session -s codex
+codex</code></pre>
+<p>From the app, attach to the <code>codex</code> session and you are at the live prompt. Send
+instructions, read the output, and approve or steer the agent the same way you would locally.</p>
+
+<h2>Keep the session alive</h2>
+<ul>
+  <li><strong>It survives disconnects.</strong> tmux keeps Codex running on the server; close the
+    app and it keeps going. The session keeper reattaches to the live view when you return.</li>
+  <li><strong>It survives the network.</strong> Switching Wi-Fi to LTE or 5G, backgrounding the
+    app, or losing signal does not stop the run.</li>
+  <li><strong>Run more than one.</strong> Start a second session with <code>tmux new-session -s
+    codex2</code> for another task or repo, and switch between them in the app.</li>
+</ul>
+
+<div class="callout">
+  <strong>Any agent, one terminal.</strong> QuickTUI drives real tmux, so it is not tied to a
+  single tool: run Codex, Claude Code, or any CLI in a session and supervise them all from your
+  phone. See <a href="/use-cases/control-ai-agents-from-phone/">control AI coding agents from your
+  phone</a>.
+</div>
+
+<h2>FAQ</h2>
+<h3>Does Codex CLI keep running when I leave?</h3>
+<p>Yes. Codex runs in tmux on your server, so it continues after you detach. QuickTUI's session
+keeper reattaches to the same live session when you reopen the app.</p>
+<h3>Can I run Codex and Claude Code at the same time?</h3>
+<p>Yes. Start each in its own tmux session and switch between them in the app. QuickTUI is a full
+terminal for any CLI agent, not a single-tool client.</p>
+<h3>Do I need SSH?</h3>
+<p>No. QuickTUI talks to its own lightweight server over HTTP/WebSocket. Reach it on your LAN,
+over a VPN or tunnel such as Tailscale or Cloudflare Tunnel, or a public address.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Does Codex CLI keep running when I leave?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Codex runs in tmux on your server, so it continues after you detach. QuickTUI's session keeper reattaches to the same live session when you reopen the app." } },
+    { "@type": "Question", "name": "Can I run Codex CLI and Claude Code at the same time?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Start each in its own tmux session and switch between them in the app. QuickTUI is a full terminal for any CLI agent, not a single-tool client." } },
+    { "@type": "Question", "name": "Do I need SSH to run Codex CLI from my phone?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. QuickTUI talks to its own lightweight server over HTTP/WebSocket. Reach it on your LAN, over a VPN or tunnel such as Tailscale or Cloudflare Tunnel, or a public address." } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a></li>
+    <li><a href="/guides/attach-tmux-from-phone/">Attach a tmux session from your phone</a></li>
+    <li><a href="/use-cases/control-ai-agents-from-phone/">Control AI coding agents from your phone</a></li>
+    <li><a href="/">QuickTUI home</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

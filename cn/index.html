@@ -1632,6 +1632,8 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
         <span data-i="foot.tag">© 2026 · 版权所有。</span>
       </div>
       <div class="links">
+        <a href="/tmux-ios-app/">tmux on iOS</a>
+        <a href="/compare/">Compare</a>
         <a href="https://apps.apple.com/app/quicktui/id6761338192" data-i="foot.appstore">App Store</a>
         <a href="https://discord.gg/DyJdXEa6q" data-i="foot.discord">Discord</a>
         <a href="https://github.com/dualface/quicktui" data-i="foot.github">GitHub</a>
@@ -1733,20 +1735,20 @@ const I18N = {
   // ───── features
   "f.eyebrow": { en: "§ 01 / Features", zh: "§ 01 / 功能特性" },
   "f.h2": { en: `Built for <em>reach</em>.`, zh: `为<em>随手可用</em>而生。` },
-  "f.desc": { en: "Every primitive — session keeper, QR pairing, browser client — exists so your agents are within reach on any device you happen to be carrying.", zh: "每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让你的 Agent 随手即得。" },
+  "f.desc": { en: "Every primitive (session keeper, QR pairing, browser client) exists so your agents are within reach on any device you happen to be carrying.", zh: "每一个底层能力 — 会话保活、扫码配对、浏览器客户端 — 都为了让你的 Agent 随手即得。" },
 
-  "f01.t": { en: "Always attached — you're always within reach", zh: "始终在线 — Agent 随时就位" },
-  "f01.b": { en: "Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there — output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)", zh: "Agent 的会话在两次接入之间持续存活于服务器 — 你在任何设备上打开 QuickTUI，它已在那里等你：输出完整、光标停在你离开的位置。（底层由 tmux 保活 PTY。）" },
+  "f01.t": { en: "Always attached, always within reach", zh: "始终在线 — Agent 随时就位" },
+  "f01.b": { en: "Your agent's session lives on your server between attaches, so when you open QuickTUI on any device it's already there, output intact, cursor exactly where you left it. (tmux keeps the PTY alive under the hood.)", zh: "Agent 的会话在两次接入之间持续存活于服务器 — 你在任何设备上打开 QuickTUI，它已在那里等你：输出完整、光标停在你离开的位置。（底层由 tmux 保活 PTY。）" },
   "f04.t": { en: "One truth, every client", zh: "同一真相，所有客户端" },
-  "f04.b": { en: "Windows, panes, zoom, scroll, copy-mode — every client sees the exact same view of what your agents are doing. Switch devices mid-task, the cursor doesn't blink.", zh: "窗口、面板、缩放、滚动、复制模式 — 每个客户端都看到 Agent 当前状态的同一份视图。任务进行中切换设备，光标毫不闪动。" },
+  "f04.b": { en: "Windows, panes, zoom, scroll, copy-mode: every client sees the exact same view of what your agents are doing. Switch devices mid-task, the cursor doesn't blink.", zh: "窗口、面板、缩放、滚动、复制模式 — 每个客户端都看到 Agent 当前状态的同一份视图。任务进行中切换设备，光标毫不闪动。" },
   "f02.t": { en: "Self-hosted, zero cloud", zh: "自托管 · 零云端" },
-  "f02.b": { en: "Your agents run where you run them — Mac, Linux, or WSL. Your code, your keys, your API quotas stay put. No account, no telemetry, no vendor in the loop.", zh: "Agent 跑在你选的主机上 — Mac、Linux 或 WSL。代码、密钥、API 额度留在原地。无账号、无遥测、无厂商介入。" },
+  "f02.b": { en: "Your agents run where you run them: Mac, Linux, or WSL. Your code, your keys, your API quotas stay put. No account, no telemetry, no vendor in the loop.", zh: "Agent 跑在你选的主机上 — Mac、Linux 或 WSL。代码、密钥、API 额度留在原地。无账号、无遥测、无厂商介入。" },
   "f03.t": { en: "QR onboarding in 2 seconds", zh: "2 秒扫码接入" },
-  "f03.b": { en: "Run `quicktui-server --qrcode` on the server, scan with the iOS app — you are inside your agent's session. No token copy-paste, no IP typing.", zh: "在服务器执行 `quicktui-server --qrcode`，用 iOS App 扫描 — 你已进入 Agent 的会话。无需复制 Token、无需敲 IP。" },
+  "f03.b": { en: "Run `quicktui-server --qrcode` on the server, scan with the iOS app, and you are inside your agent's session. No token copy-paste, no IP typing.", zh: "在服务器执行 `quicktui-server --qrcode`，用 iOS App 扫描 — 你已进入 Agent 的会话。无需复制 Token、无需敲 IP。" },
   "f05.t": { en: "Three ways to get attached", zh: "三种方式即刻接入" },
   "f05.b": { en: `Add your server via <em class="ac">Quick Setup</em> (SSH auto-install), <em class="ac">QR scan</em>, or manual URL + token. An accessory bar & shortcut panel keep terminal keys one tap from your thumb.`, zh: `通过 <em class="ac">Quick Setup</em>（SSH 自动安装）、<em class="ac">扫码</em>，或手动输入 URL + Token 添加服务器。配件栏与快捷键面板让终端按键随指可得。` },
   "f06.t": { en: "Runs as a service, forever", zh: "作为服务 · 永久在线" },
-  "f06.b": { en: `Installed as a user service on macOS launchd, Linux systemd & Windows Scheduled Tasks. Upgrade checks, controlled restarts, reboot survival — your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.`, zh: `以用户级服务形式安装在 macOS launchd、Linux systemd 与 Windows 计划任务上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。安装器与服务端安装流程负责安装与服务注册。` },
+  "f06.b": { en: `Installed as a user service on macOS launchd, Linux systemd & Windows Scheduled Tasks. Upgrade checks, controlled restarts, reboot survival: your agents keep supervising even when you are not watching. The installer and server setup handle install and service registration.`, zh: `以用户级服务形式安装在 macOS launchd、Linux systemd 与 Windows 计划任务上。升级检查、受控重启、重启后自动恢复 — 你不在时，Agent 依然在被看守。安装器与服务端安装流程负责安装与服务注册。` },
 
   // ───── in action
   "ia.eyebrow": { en: "§ 02 / In Action", zh: "§ 02 / 实战演示" },
@@ -1754,11 +1756,11 @@ const I18N = {
   "ia.desc": { en: "Same session across every device. Peek on your phone during a commute. Steer from iPad at the café. Review in a browser at your desk. Your agent is wherever you are.", zh: "同一会话，跨越每一块设备。通勤时用手机查看。咖啡厅里用 iPad 接管。办公桌前在浏览器里审阅。你在哪里，Agent 就在哪里。" },
   "ia.badge": { en: "■ CONTINUOUS", zh: "■ 持续在线" },
   "ia.h3": { en: "Pick up any screen. It's already there.", zh: "拿起任一屏幕，Agent 已在那里。" },
-  "ia.p": { en: "Every client — phone, tablet, browser — is a live window into the same agent session. No reconnect ritual, no scrolling back through logs. Your agent is already waiting on whichever screen you open.", zh: "每个客户端 — 手机、平板、浏览器 — 都是通往同一 Agent 会话的实时窗口。无需重连仪式、无需翻回日志。Agent 已在你打开的那块屏幕上等你。" },
+  "ia.p": { en: "Every client (phone, tablet, browser) is a live window into the same agent session. No reconnect ritual, no scrolling back through logs. Your agent is already waiting on whichever screen you open.", zh: "每个客户端 — 手机、平板、浏览器 — 都是通往同一 Agent 会话的实时窗口。无需重连仪式、无需翻回日志。Agent 已在你打开的那块屏幕上等你。" },
   "ia.k1": { en: "session", zh: "会话" },
   "ia.v1": { en: "claude-code · 14d · 7 windows", zh: "claude-code · 14 天 · 7 个窗口" },
   "ia.k2": { en: "roam", zh: "漫游" },
-  "ia.v2": { en: "Wi-Fi → LTE → 5G · seamless", zh: "Wi-Fi → LTE → 5G · 无缝切换" },
+  "ia.v2": { en: "Wi-Fi → LTE → 5G · no reconnect", zh: "Wi-Fi → LTE → 5G · 无缝切换" },
   "ia.k3": { en: "clients", zh: "客户端" },
   "ia.v3": { en: "iPhone · iPad · Safari · Chrome", zh: "iPhone · iPad · Safari · Chrome" },
   "ia.k4": { en: "transport", zh: "传输" },
@@ -1773,7 +1775,7 @@ const I18N = {
   "in.h3": { en: "Two paths to your server.", zh: "两种方式装好服务端。" },
   "in.p": { en: `If you can SSH to the box, the iOS app installs the server for you. If not, run one line on the server itself. Either way, the installer detects tmux 3.2+, registers a launchd / systemd service, and saves your token to <span class="path">~/.config/quicktui/config</span>.`, zh: `如果机器能 SSH 登录，iOS App 内的向导帮你装好服务端。不能 SSH 的话，到机器上跑一行 curl 也行。两种方式都会自动检测 tmux 3.2+，注册 launchd / systemd 服务，并把 Token 写入 <span class="path">~/.config/quicktui/config</span>。` },
   "step1.t": { en: "SSH-capable server → App wizard.", zh: "能 SSH 的机器 → App 向导。" },
-  "step1.d": { en: `Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you — no terminal needed.`, zh: `在 iOS App 里添加服务器，选"快速设置"，填入 SSH 凭据。App 自动帮你装好服务端，全程不用开终端。` },
+  "step1.d": { en: `Add a server in the iOS app, pick Quick Setup, enter your SSH credentials. The app installs the server for you, no terminal needed.`, zh: `在 iOS App 里添加服务器，选"快速设置"，填入 SSH 凭据。App 自动帮你装好服务端，全程不用开终端。` },
   "step2.t": { en: "No SSH? Run on the server.", zh: "不能 SSH？直接到机器上跑。" },
   "step2.d": { en: `Copy that one line to the server's terminal and run it. Done in under a minute.`, zh: `把上面那行命令复制到服务器终端运行即可。一分钟搞定。` },
   "step-cn.t": { en: "Mainland China mirror.", zh: "中国大陆镜像入口。" },
@@ -1787,7 +1789,7 @@ const I18N = {
   "usage.h3": { en: "The pieces you'll touch every day.", zh: "你每天都会用到的几个东西。" },
   "usage.desc": { en: "Five things on screen, each doing one job.", zh: "屏幕上的五个组件，每个只干一件事。" },
   "usage.controls.t": { en: "Toolbar & D-Pad", zh: "工具栏 与 方向键" },
-  "usage.controls.b": { en: "A customizable strip of keys at the bottom — Tab, Ctrl, and your own macros organized in folders. A D-Pad overlay sits next to it with the keys you reach for most: four arrow keys, Esc, Enter, Backspace. One tap away.", zh: "屏幕底部可自定义的按键条 — Tab、Ctrl，以及你自己按文件夹分类的快捷宏。旁边的方向键面板提供最常按的键：四个方向键、Esc、Enter、删除。常用键随手可及。" },
+  "usage.controls.b": { en: "A customizable strip of keys at the bottom: Tab, Ctrl, and your own macros organized in folders. A D-Pad overlay sits next to it with the keys you reach for most: four arrow keys, Esc, Enter, Backspace. One tap away.", zh: "屏幕底部可自定义的按键条 — Tab、Ctrl，以及你自己按文件夹分类的快捷宏。旁边的方向键面板提供最常按的键：四个方向键、Esc、Enter、删除。常用键随手可及。" },
   "usage.inputbar.t": { en: "Input Bar", zh: "输入条" },
   "usage.inputbar.b": { en: "A compact text input right above the toolbar. Tap the edit button to open, type your command, hit Send or Enter. Stays out of the way until you need it.", zh: "工具栏正上方的紧凑输入条。点编辑按钮打开，输入命令，按发送或回车。不用时完全隐藏，不占终端空间。" },
   "usage.palette.t": { en: "Command Palette", zh: "命令面板" },
@@ -1833,7 +1835,7 @@ const I18N = {
   "uc.h2": { en: `Your agents, <span class="serif">wherever</span> you happen to be.`, zh: `你在<span class="serif">哪</span>，Agent 就在哪。` },
   "uc.desc": { en: "QuickTUI isn't an IDE. It's the seam between the agents humming away on your server and the screen you happen to be holding right now.", zh: "QuickTUI 不是 IDE。它是那条纽带 — 连接正在你服务器上默默运行的 Agent，和你此刻正拿着的那块屏幕。" },
   "uc1.t": { en: "Steer an agent from your phone", zh: "在手机上接管 Agent" },
-  "uc1.b": { en: "Your agent hit a confirm prompt. You're on the subway. Attach, approve, detach — 10 seconds. It keeps going without you.", zh: "Agent 停在一个确认提示上。你正在地铁里。接入、批准、断开 —— 10 秒。它继续往下跑，不需要你守着。" },
+  "uc1.b": { en: "Your agent hit a confirm prompt. You're on the subway. Attach, approve, detach: 10 seconds. It keeps going without you.", zh: "Agent 停在一个确认提示上。你正在地铁里。接入、批准、断开 —— 10 秒。它继续往下跑，不需要你守着。" },
   "uc2.t": { en: "iPad as agent cockpit", zh: "iPad 即 Agent 驾驶舱" },
   "uc2.b": { en: "Magic Keyboard + QuickTUI + a beefy server = a 12\" cockpit to supervise Claude Code, Aider, or a multi-hour build. Lightweight client, heavyweight agents.", zh: "Magic Keyboard + QuickTUI + 强力服务器 = 一块 12 英寸驾驶舱，用来盯着 Claude Code、Aider 或多小时构建任务。轻量客户端，重量级 Agent。" },
   "uc3.t": { en: "Browser from any borrowed device", zh: "从任何设备的浏览器接入" },
@@ -1962,7 +1964,7 @@ journalctl --user -u quicktui -f</pre><p>若手动启动 <span class="mono">quic
   "q17.a": { en: `<p>This comes directly from the server — the tmux session was closed, renamed, or the tmux server isn't running.</p><p>Refresh the session list, then open an existing session or create a new one.</p>`, zh: `<p>这是服务端返回的消息 — tmux 会话已关闭或被重命名，或 tmux 服务本身未运行。</p><p>刷新会话列表，然后打开已有会话或新建一个。</p>` },
 
   "hero3.h1": { en: `Coding agents run on your Mac.<br><em>You run them <br>from your phone.</em>`, zh: `AI 编程 Agent<br>在 Mac 上跑，<br><em>你在手机上控</em>。` },
-  "hero3.sub": { en: "Claude Code, Codex, Aider, Cursor Agent — keep them moving when you step away from the desk. Attach from anywhere, approve in seconds, walk away.", zh: "Claude Code、Codex、Aider、Cursor Agent — 离开座位也别让它们空转。随时接入，秒级确认，转身走人。" },
+  "hero3.sub": { en: "Claude Code, Codex, Aider, Cursor Agent: keep them moving when you step away from the desk. Attach from anywhere, approve in seconds, walk away.", zh: "Claude Code、Codex、Aider、Cursor Agent — 离开座位也别让它们空转。随时接入，秒级确认，转身走人。" },
 
   // ───── footer
   "foot.tag": { en: "© 2026 · All rights reserved.", zh: "© 2026 · 版权所有。" },

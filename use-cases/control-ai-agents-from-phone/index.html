@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Control AI coding agents from your phone | QuickTUI</title>
+<meta name="description" content="Kick off Claude Code, Codex, or any CLI agent on your server, then supervise, approve, and steer them from your phone; sessions persist while you are away." />
+<link rel="canonical" href="https://quicktui.ai/use-cases/control-ai-agents-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="Control AI coding agents from your phone" />
+<meta property="og:description" content="Kick off Claude Code, Codex, or any CLI agent on your server, then supervise, approve, and steer them from your phone; sessions persist while you are away." />
+<meta property="og:url" content="https://quicktui.ai/use-cases/control-ai-agents-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Control AI coding agents from your phone" />
+<meta name="twitter:description" content="Kick off Claude Code, Codex, or any CLI agent on your server, then supervise, approve, and steer them from your phone; sessions persist while you are away." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Control AI coding agents from your phone",
+  "description": "Kick off Claude Code, Codex, or any CLI agent on your server, then supervise, approve, and steer them from your phone; sessions persist while you are away.",
+  "url": "https://quicktui.ai/use-cases/control-ai-agents-from-phone/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">Use case · AI agents</p>
+<h1>Control AI coding agents from your phone</h1>
+<p class="lede">AI coding agents do their best work when someone is watching: kicking them off,
+approving the risky steps, and nudging them back on track. QuickTUI puts that control in your
+pocket: start an agent on your own server, then supervise and steer it from your phone over a
+real terminal.</p>
+
+<p>Agents like Claude Code and Codex run in a terminal and work over minutes, so the useful
+question is not "can I chat with it" but "can I keep it running and keep it honest from anywhere."
+QuickTUI is a native iPhone and iPad app (plus a browser client) that attaches to real tmux on a
+server you host, so the agent stays alive on the machine while you drive it from the phone.</p>
+
+<h2>Kick off and supervise</h2>
+<ul>
+  <li><strong>Start a run.</strong> Open a session, launch the agent, and hand it a task, the
+    same prompt you would type at your desk.</li>
+  <li><strong>Approve and steer.</strong> Watch the live output, approve tool calls, answer
+    questions, and redirect the agent when it drifts. You see the real terminal, not a summary.</li>
+  <li><strong>Act as a session keeper.</strong> Step away and the run continues in tmux on the
+    server. Reopen the app and the session keeper reattaches to the live view across Wi-Fi to
+    LTE or 5G, app backgrounding, and dropped connections.</li>
+</ul>
+
+<h2>Set up your server</h2>
+<p>Install QuickTUI on the machine where your agents should run. It sets up the service and can
+install tmux 3.2+ if needed.</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>Pair the app by scanning <code>quicktui-server --qrcode</code>, or add the server by URL and
+token. The connection is direct by default, so your code and keys never touch our servers.</p>
+
+<h2>Works with any agent</h2>
+<p>Because QuickTUI drives real tmux, it is not tied to one tool. Run Claude Code, Codex, or any
+CLI agent, each in its own session, and switch between them from the phone.</p>
+<pre><code>tmux new-session -s agent
+claude   # or: codex, or any CLI agent</code></pre>
+
+<div class="callout">
+  <strong>Several agents at once.</strong> Start each agent in its own tmux session and supervise
+  the whole set from one app: one on a feature branch, another running tests, a third tailing
+  logs. A single server is free with full features; QuickTUI Pro is a one-time purchase for
+  unlimited server profiles.
+</div>
+
+<h2>FAQ</h2>
+<h3>Which agents can I control?</h3>
+<p>Any CLI agent that runs in a terminal: Claude Code, Codex, or your own tools. QuickTUI drives
+real tmux, so it is not limited to a specific product.</p>
+<h3>Can I approve steps and steer the agent, not just read output?</h3>
+<p>Yes. You get the live terminal, so you can answer prompts, approve tool calls, and redirect the
+agent in real time from your phone.</p>
+<h3>Does the agent keep running while I am away?</h3>
+<p>Yes. It runs in tmux on your server and continues after you detach. The session keeper
+reattaches to the live session across network changes, app restarts, and dropped connections.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Which AI coding agents can I control from my phone?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Any CLI agent that runs in a terminal, including Claude Code, Codex, or your own tools. QuickTUI drives real tmux, so it is not limited to a specific product." } },
+    { "@type": "Question", "name": "Can I approve steps and steer the agent, not just read output?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. You get the live terminal, so you can answer prompts, approve tool calls, and redirect the agent in real time from your phone." } },
+    { "@type": "Question", "name": "Does the agent keep running while I am away?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. It runs in tmux on your server and continues after you detach. The session keeper reattaches to the live session across network changes, app restarts, and dropped connections." } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a></li>
+    <li><a href="/guides/run-codex-cli-from-phone/">Run Codex CLI from your phone</a></li>
+    <li><a href="/guides/remote-development-from-ipad/">Remote development from iPad</a></li>
+    <li><a href="/compare/">QuickTUI vs Happy, Omnara, Termius, Blink &amp; dotMux</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

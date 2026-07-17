@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How to attach a tmux session from your phone | QuickTUI</title>
+<meta name="description" content="Step-by-step: reach a tmux session running on your own server from your phone, and reattach exactly where you left off after disconnects." />
+<link rel="canonical" href="https://quicktui.ai/guides/attach-tmux-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#111820" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="How to attach a tmux session from your phone" />
+<meta property="og:description" content="Step-by-step: reach a tmux session running on your own server from your phone, and reattach exactly where you left off after disconnects." />
+<meta property="og:url" content="https://quicktui.ai/guides/attach-tmux-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How to attach a tmux session from your phone" />
+<meta name="twitter:description" content="Step-by-step: reach a tmux session running on your own server from your phone, and reattach exactly where you left off after disconnects." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png" />
+<script>
+(() => {
+  let theme = null;
+  try { const s = localStorage.getItem('quicktui.theme'); if (s === 'dark' || s === 'light') theme = s; } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to attach a tmux session from your phone",
+  "description": "Step-by-step: reach a tmux session running on your own server from your phone, and reattach exactly where you left off after disconnects.",
+  "url": "https://quicktui.ai/guides/attach-tmux-from-phone/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand-mark">q</span>
+      <span class="brand-name">quicktui<sup>v1</sup></span>
+    </a>
+    <nav class="links">
+      <a href="/tmux-ios-app/">tmux on iOS</a>
+      <a href="/compare/">Compare</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <span class="spacer"></span>
+    <a class="btn" href="https://apps.apple.com/app/quicktui/id6761338192">Get the App</a>
+  </div>
+</header>
+<main>
+<article class="article">
+<p class="eyebrow">Guide · tmux</p>
+<h1>How to attach a tmux session from your phone</h1>
+<p class="lede">tmux keeps your terminal sessions running on the server after you disconnect:
+long builds, coding agents, log tails, and shells all stay alive. This guide walks through
+attaching to those sessions from an iPhone or iPad with QuickTUI, reattaching after a drop, and
+starting a fresh session when you need one.</p>
+
+<p>The idea behind tmux persistence is simple: the session lives on the machine, not on the
+client. You attach a view to it, detach, and the work keeps going. QuickTUI is a native app
+(plus a browser client) that attaches to real tmux on your own server, so the session you open
+on your phone is the same one you left in the terminal at your desk.</p>
+
+<h2>Install the server</h2>
+<p>Run the installer on the machine where your tmux sessions live. It sets up the QuickTUI
+service and can install tmux 3.2+ for you if it is missing.</p>
+
+<div class="install-row">
+  <div>
+    <p class="lbl">macOS / Linux</p>
+    <pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+  </div>
+  <div>
+    <p class="lbl">Windows (PowerShell)</p>
+    <pre><code>irm https://quicktui.ai/q.ps1 | iex</code></pre>
+  </div>
+</div>
+
+<p>The connection is direct by default, so your code and keys never pass through our servers.
+A single server is free with full features; QuickTUI Pro is a one-time purchase that unlocks
+unlimited server profiles.</p>
+
+<h2>Pair the app</h2>
+<p>Start the pairing code on the server and scan it once:</p>
+<pre><code>quicktui-server --qrcode</code></pre>
+<p>Open the QuickTUI app on your iPhone or iPad, scan the QR code, and the server is added. You
+can also add it manually by URL and token if you prefer to type the details in.</p>
+
+<h2>Open, attach, and reattach</h2>
+<ul>
+  <li><strong>Attach to a running session.</strong> QuickTUI lists the tmux sessions on the
+    server; tap one and you drop straight into the live view with scrollback intact.</li>
+  <li><strong>Reattach after a disconnect.</strong> Switching Wi-Fi to LTE or 5G, backgrounding
+    the app, or losing signal does not end the session. The session keeper holds your place, and
+    reopening the app puts you back where you were.</li>
+  <li><strong>Create a new session.</strong> Run <code>tmux new-session -s work</code> on the
+    server, or open a shell in the app and start it there; the named session then shows up in the
+    list to attach from any device.</li>
+</ul>
+
+<div class="callout">
+  <strong>Working with coding agents?</strong> Start Claude Code, Codex, or any CLI tool inside a
+  tmux session and supervise it from your phone. See
+  <a href="/guides/run-claude-code-from-iphone/">run Claude Code from your iPhone</a>.
+</div>
+
+<h2>FAQ</h2>
+<h3>Does the session survive if my phone loses connection?</h3>
+<p>Yes. tmux keeps the session running on the server, and QuickTUI's session keeper reattaches
+after a network change, a dropped connection, or an app restart, so you pick up where you left off.</p>
+<h3>How do I start a new tmux session?</h3>
+<p>Run <code>tmux new-session -s name</code> on the server, or open a shell in the app and start
+it there. The named session appears in QuickTUI's list to attach from iPhone, iPad, or a browser.</p>
+<h3>Do I need SSH?</h3>
+<p>No. QuickTUI talks to its own lightweight server over HTTP/WebSocket. You can reach it on your
+LAN, over a VPN or tunnel such as Tailscale or Cloudflare Tunnel, or a public address.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Does the tmux session survive if my phone loses connection?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. tmux keeps the session running on the server, and QuickTUI's session keeper reattaches after a network change, a dropped connection, or an app restart, so you pick up where you left off." } },
+    { "@type": "Question", "name": "How do I start a new tmux session from my phone?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Run tmux new-session -s name on the server, or open a shell in the QuickTUI app and start it there. The named session appears in QuickTUI's list to attach from iPhone, iPad, or a browser." } },
+    { "@type": "Question", "name": "Do I need SSH to attach a tmux session from my phone?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. QuickTUI talks to its own lightweight server over HTTP/WebSocket. You can reach it on your LAN, over a VPN or tunnel such as Tailscale or Cloudflare Tunnel, or a public address." } }
+  ]
+}
+</script>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/tmux-ios-app/">tmux on iOS: attach your sessions from iPhone &amp; iPad</a></li>
+    <li><a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a></li>
+    <li><a href="/guides/remote-development-from-ipad/">Remote development from iPad</a></li>
+    <li><a href="/">QuickTUI home</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="site-foot">
+  <div class="wrap">
+    <span class="left"><span class="brand-mark">q</span><span>quicktui.ai</span></span>
+    <span class="spacer"></span>
+    <span class="links">
+      <a href="/">Home</a>
+      <a href="https://apps.apple.com/app/quicktui/id6761338192">App Store</a>
+      <a href="https://discord.gg/DyJdXEa6q">Discord</a>
+      <a href="https://github.com/dualface/quicktui">GitHub</a>
+    </span>
+  </div>
+</footer>
+</body>
+</html>

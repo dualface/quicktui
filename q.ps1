@@ -51,7 +51,7 @@ function Restore-QuickTuiEnv {
 # mirror variant, and (c) the assertions in website/tests. Do not reformat.
 $env:QUICKTUI_REPO = if ($env:QUICKTUI_REPO) { $env:QUICKTUI_REPO } else { "dualface/quicktui" }
 $env:QUICKTUI_RELEASES = if ($env:QUICKTUI_RELEASES) { $env:QUICKTUI_RELEASES } else { "https://github.com/$env:QUICKTUI_REPO/releases/latest/download" }
-$env:QUICKTUI_INSTALLER_RELEASE_TAG = if ($env:QUICKTUI_INSTALLER_RELEASE_TAG) { $env:QUICKTUI_INSTALLER_RELEASE_TAG } else { "installer-20260713-01" }
+$env:QUICKTUI_INSTALLER_RELEASE_TAG = if ($env:QUICKTUI_INSTALLER_RELEASE_TAG) { $env:QUICKTUI_INSTALLER_RELEASE_TAG } else { "installer-20260719-01" }
 $env:QUICKTUI_INSTALLER_RELEASES = if ($env:QUICKTUI_INSTALLER_RELEASES) { $env:QUICKTUI_INSTALLER_RELEASES } else { "https://github.com/$env:QUICKTUI_REPO/releases/download/$env:QUICKTUI_INSTALLER_RELEASE_TAG" }
 $env:QUICKTUI_UPDATE_MANIFEST_URL = if ($env:QUICKTUI_UPDATE_MANIFEST_URL) { $env:QUICKTUI_UPDATE_MANIFEST_URL } else { "https://quicktui.ai/server-manifest.json" }
 

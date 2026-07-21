@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact QuickTUI support and find privacy and license information.">
+    <link rel="canonical" href="https://quicktui.ai/support.html">
+    <title>Support - QuickTUI</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #f7f8fa;
+            --surface: #ffffff;
+            --text: #1f2328;
+            --muted: #59636e;
+            --line: #d8dee4;
+            --accent: #0969da;
+            --notice: #fff8c5;
+            --notice-line: #d4a72c;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0d1117;
+                --surface: #161b22;
+                --text: #f0f6fc;
+                --muted: #9da7b3;
+                --line: #30363d;
+                --accent: #58a6ff;
+                --notice: #2d2a16;
+                --notice-line: #9e6a03;
+            }
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.65;
+        }
+        main {
+            width: min(100% - 40px, 680px);
+            margin: 0 auto;
+            padding: 48px 0 64px;
+        }
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .brand img { width: 30px; height: 30px; }
+        h1 { margin: 32px 0 8px; font-size: 2rem; line-height: 1.2; }
+        h2 { margin: 32px 0 8px; font-size: 1.15rem; line-height: 1.35; }
+        p { margin: 10px 0; }
+        ul { margin: 10px 0; padding-left: 1.4rem; }
+        li { margin: 6px 0; }
+        a { color: var(--accent); text-underline-offset: 3px; }
+        .lead { color: var(--muted); font-size: 1.05rem; }
+        .contact {
+            margin: 24px 0;
+            padding: 18px 20px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+        }
+        .contact strong { display: block; margin-bottom: 4px; }
+        .notice {
+            margin: 18px 0;
+            padding: 12px 16px;
+            border-left: 3px solid var(--notice-line);
+            background: var(--notice);
+        }
+        .legal {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+        }
+        .chinese {
+            margin-top: 40px;
+            padding-top: 8px;
+            border-top: 1px solid var(--line);
+        }
+        @media (max-width: 480px) {
+            main { width: min(100% - 32px, 680px); padding-top: 32px; }
+            h1 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <a class="brand" href="/">
+            <img src="/favicon.svg" alt="" width="30" height="30">
+            <span>QuickTUI</span>
+        </a>
+
+        <h1>Support</h1>
+        <p class="lead">Get help with the QuickTUI app, your self-hosted QuickTUI server, cloud account, subscription, or relay service.</p>
+
+        <div class="contact">
+            <strong>Email support</strong>
+            <a href="mailto:dualface@gmail.com?subject=QuickTUI%20Support">dualface@gmail.com</a>
+        </div>
+
+        <h2>What to include</h2>
+        <ul>
+            <li>Your QuickTUI app version and build number.</li>
+            <li>Your device model and operating system version.</li>
+            <li>A short description of what happened and the steps to reproduce it.</li>
+            <li>A sanitized error message or screenshot, when useful.</li>
+        </ul>
+        <p class="notice"><strong>Protect your credentials.</strong> Never email passwords, access tokens, private keys, recovery codes, or server URLs containing credentials.</p>
+
+        <h2>Subscriptions and account deletion</h2>
+        <p>Apple processes App Store subscriptions. Manage or cancel a subscription in your Apple Account settings. You can delete your QuickTUI Cloud account from within the app; deleting the account does not cancel an active App Store subscription.</p>
+
+        <h2>Privacy and terms</h2>
+        <p class="legal">
+            <a href="/privacy.html">Privacy Policy</a>
+            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Apple Standard EULA</a>
+        </p>
+
+        <section class="chinese" lang="zh-Hans">
+            <h2>中文支持</h2>
+            <p>如需 QuickTUI 客户端、自托管服务端、云账号、订阅或 Relay 服务支持, 请发送邮件至 <a href="mailto:dualface@gmail.com?subject=QuickTUI%20Support">dualface@gmail.com</a>.</p>
+            <p>请附上 App 版本和 build 号、设备与系统版本、问题现象及复现步骤. 如需附错误信息或截图, 请先移除敏感信息. 不要发送密码、访问令牌、私钥、恢复码, 或包含凭据的服务器 URL.</p>
+        </section>
+
+    </main>
+</body>
+</html>

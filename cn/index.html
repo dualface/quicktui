@@ -1714,6 +1714,18 @@ function getStoredLang() {
   }
 }
 
+// App 奖励入口带 ?lang=<界面语言> 进入; URL 参数优先于本地存储与浏览器检测.
+// 站点仅有 en / zh; 中文界面映射 zh, 其余已知应用语言 (en/es/de/fr/pt-BR/ja) 统一回退 en.
+function getUrlLang() {
+  try {
+    const value = new URLSearchParams(window.location.search).get('lang');
+    if (!value) return null;
+    return normalizeLang(value) || 'en';
+  } catch (_) {
+    return null;
+  }
+}
+
 function detectBrowserLang() {
   const langs = navigator.languages && navigator.languages.length
     ? navigator.languages
@@ -1754,7 +1766,10 @@ function saveTheme(theme) {
   }
 }
 
-const state = { theme: getStoredTheme() || detectSystemTheme(), lang: getStoredLang() || 'zh' };
+const urlLang = getUrlLang();
+const state = { theme: getStoredTheme() || detectSystemTheme(), lang: urlLang || getStoredLang() || 'zh' };
+// 记住 App 传入的语言, 后续访问保持一致 (与语言切换器持久化行为一致).
+if (urlLang) saveLang(urlLang);
 
 // ───────── i18n dictionary
 const I18N = {

@@ -15,18 +15,49 @@
             color: #333;
         }
         h1 { font-size: 1.5em; }
+        h2 { font-size: 1.15em; margin-top: 1.8em; }
         p { margin: 1em 0; }
+        ul { margin: 1em 0; padding-left: 1.4em; }
+        li { margin: 0.4em 0; }
         .updated { color: #888; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: May 2, 2026</p>
-    <p>QuickTUI ("the App") respects and protects user privacy.</p>
-    <p>The App does not use QuickTUI-operated cloud accounts, analytics, advertising SDKs, or telemetry.</p>
+    <p class="updated">Last updated: July 21, 2026</p>
+    <p>QuickTUI ("the App") respects and protects user privacy. The App does not use analytics, advertising SDKs, or telemetry.</p>
+    <p>Most features of the App work without any account. A QuickTUI Cloud account is only needed for the optional cloud subscription features described below.</p>
+
+    <h2>Data That Stays on Your Devices and Servers</h2>
     <p>Connection data stays on your device and on servers you choose. The iOS app stores server profiles locally and stores access tokens in the iOS Keychain. The browser client stores its verified session token and preferences in browser storage on that server origin.</p>
     <p>When you use Quick Setup, the SSH password is used to connect to your server and run the installer. It is not saved by QuickTUI.</p>
     <p>Your QuickTUI server may process terminal I/O, session metadata, logs, and update checks needed to provide the remote terminal service. That data remains under the server you operate.</p>
+
+    <h2>QuickTUI Cloud Account (Optional)</h2>
+    <p>If you choose to use QuickTUI Cloud, you sign in with your Apple Account (Sign in with Apple) or Google account. When you sign in, we collect and store:</p>
+    <ul>
+        <li>An account identifier provided by Apple or Google. This identifier is specific to QuickTUI and does not give us access to your Apple or Google account.</li>
+        <li>Your email address, stored only as a one-way cryptographic hash. We do not store your email address in plain text.</li>
+        <li>Authentication tokens used to keep you signed in, stored in the platform's secure storage on your device (the iOS Keychain on iOS).</li>
+    </ul>
+    <p>This data is used only to create and authenticate your QuickTUI Cloud account, link your subscription to it, and prevent abuse.</p>
+
+    <h2>Cloud Subscription</h2>
+    <p>Cloud subscriptions are purchased through Apple's App Store, and payment is processed by Apple. We never receive your payment card details. To provide the service, we store your subscription plan and status, together with a pseudonymous transaction token that links your App Store purchase to your QuickTUI Cloud account.</p>
+    <p>When your subscription includes the cloud relay service, we also store the data needed to operate it: your relay IDs, the public keys and fingerprints of the devices you bind to them, relay server assignments, and aggregate usage counters such as transferred bytes and connection counts, used to run the relay and enforce plan limits. Relay traffic itself is end-to-end encrypted between your devices; the relay cannot read your terminal content.</p>
+
+    <h2>How We Use and Share Data</h2>
+    <p>Account and subscription data is used solely to provide the QuickTUI Cloud service. We do not sell your data or use it for advertising. We do not share it with third parties, except with the infrastructure providers that host the service, or where disclosure is required by law.</p>
+    <p>Like most online services, our servers keep technical access logs of requests to QuickTUI Cloud, including IP addresses and request metadata. These logs are used only for security, abuse prevention, and troubleshooting, are kept only for a limited time, and are not used for marketing or profiling.</p>
+
+    <h2>Data Retention and Account Deletion</h2>
+    <p>Account and subscription data is retained while your account exists. You can delete your account at any time from within the App using the Delete Account option. Deleting your account permanently removes all data associated with it from our servers, including your account identifier, hashed email, subscription records, and relay data. We may retain minimal security and audit records where required for fraud prevention or legal compliance.</p>
+    <p>Deleting your account does not cancel an active App Store subscription. To stop billing, cancel the subscription in your Apple Account settings.</p>
+
+    <h2>Security</h2>
+    <p>All communication with QuickTUI Cloud uses encrypted connections (TLS). Email addresses are stored only as one-way hashes, and authentication tokens are kept in the platform's secure storage on your device.</p>
+
+    <h2>Changes and Contact</h2>
     <p>This privacy policy may be updated on this page.</p>
     <p>If you have any questions, please contact us through the App Store page.</p>
 </body>

@@ -1,0 +1,60 @@
+name: Test q.sh on Apple Silicon macOS 26
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'q.sh'
+      - 'tests/**'
+      - '.github/workflows/test-apple-silicon-mac.yml'
+
+jobs:
+  integration-test:
+    name: Native darwin/arm64 startup (GitHub M1)
+    runs-on: macos-26
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Apple Silicon macOS 26 environment
+        run: |
+          echo "Architecture: $(uname -m)"
+          echo "Chip: $(sysctl -n machdep.cpu.brand_string)"
+          echo "macOS: $(sw_vers -productVersion)"
+          [ "$(uname -m)" = "arm64" ]
+          [ "$(sw_vers -productVersion | cut -d. -f1)" = "26" ]
+
+      - name: Install tmux
+        run: brew install tmux
+
+      - name: Install and start quicktui-server natively
+        run: sh q.sh -y --port 18023
+        env:
+          TERM: xterm-256color
+
+      - name: Verify native server startup
+        run: |
+          binary="$HOME/.local/bin/quicktui-server"
+          [ -x "$binary" ]
+          file "$binary" | tee /dev/stderr | grep -q arm64
+          "$binary" --version
+
+          attempt=1
+          while [ "$attempt" -le 30 ]; do
+            if curl -fsS --max-time 2 http://127.0.0.1:18023/ >/dev/null 2>&1; then
+              echo "Service reachable on attempt $attempt"
+              exit 0
+            fi
+            sleep 1
+            attempt=$((attempt + 1))
+          done
+
+          echo "::error::Service not reachable at http://127.0.0.1:18023/"
+          launchctl list | grep -i quicktui || true
+          cat "$HOME/Library/Logs/QuickTUI/"*.log 2>/dev/null || true
+          exit 1
+
+      - name: Final cleanup
+        if: always()
+        run: sh q.sh --uninstall 2>/dev/null || true

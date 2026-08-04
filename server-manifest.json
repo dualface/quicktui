@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "stable": {
-    "tag": "20260729-01",
-    "release_url": "https://github.com/dualface/quicktui/releases/tag/20260729-01",
-    "published_at": "2026-07-29T07:03:03Z",
+    "tag": "20260804-01",
+    "release_url": "https://github.com/dualface/quicktui/releases/tag/20260804-01",
+    "published_at": "2026-08-04T12:50:34Z",
     "assets": [
       "quicktui-server-darwin-amd64",
       "quicktui-server-darwin-amd64.gz",

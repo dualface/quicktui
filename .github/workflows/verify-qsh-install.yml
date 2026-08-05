@@ -201,7 +201,43 @@ jobs:
             fail "manifest is not valid schema version 1 JSON"
           fi
 
-          tag="$(jq -r --arg channel "$CHANNEL" '.[$channel].tag // empty' "$temp_dir/server-manifest.json")"
+          if ! channel_type="$(jq -r \
+            --arg channel "$CHANNEL" \
+            '.[$channel] | type' \
+            "$temp_dir/server-manifest.json" 2>> "$log_file")"; then
+            fail "manifest channel cannot be read"
+          fi
+          if [ "$channel_type" = "null" ]; then
+            if [ "$CHANNEL" = "preview" ]; then
+              skip "preview manifest channel is missing"
+            fi
+            fail "manifest channel is missing"
+          fi
+          if [ "$channel_type" != "object" ]; then
+            fail "manifest channel must be an object"
+          fi
+
+          if ! tag_type="$(jq -r \
+            --arg channel "$CHANNEL" \
+            '.[$channel].tag | type' \
+            "$temp_dir/server-manifest.json" 2>> "$log_file")"; then
+            fail "manifest channel tag cannot be read"
+          fi
+          if [ "$tag_type" = "null" ]; then
+            if [ "$CHANNEL" = "preview" ]; then
+              skip "preview manifest tag is missing"
+            fi
+            fail "manifest channel tag is missing"
+          fi
+          if [ "$tag_type" != "string" ]; then
+            fail "manifest channel tag must be a string"
+          fi
+          if ! tag="$(jq -r \
+            --arg channel "$CHANNEL" \
+            '.[$channel].tag' \
+            "$temp_dir/server-manifest.json" 2>> "$log_file")"; then
+            fail "manifest channel tag cannot be read"
+          fi
           if [ -z "$tag" ]; then
             if [ "$CHANNEL" = "preview" ]; then
               skip "preview manifest tag is missing"

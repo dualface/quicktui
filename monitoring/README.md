@@ -1,21 +1,29 @@
 # Stable Install Verifier
 
-This directory contains the synthetic monitor for public QuickTUI server installs. It runs the same public `curl | sh` installer paths that users run from `quicktui.ai` and `dl.quicktui.cn`, but does so inside a disposable privileged Linux container with user systemd enabled.
+This directory contains the synthetic monitor for public QuickTUI server installs and mirrored release integrity. Global cells run the same public `curl | sh` installer paths that users run from `quicktui.ai` inside a disposable privileged Linux container with user systemd enabled. CN `q.sh` cells validate the public manifest and mirrored server archive checksum without running an installer.
 
 The monitor is read-only with respect to release state. It does not publish, tag, upload, or modify manifests. Its only remote side effect is the GitHub Actions reporting jobs that create, comment on, or close fixed monitor Issues when the scheduled workflows run.
 
 ## Matrix
 
-The GitHub Actions workflows run one disposable container per matrix cell.
+Install-mode cells run in disposable containers. CN checksum-mode cells run directly on the GitHub runner and use only temporary files.
 
-`.github/workflows/verify-qsh-install.yml` verifies `q.sh` stable and preview installs:
+`.github/workflows/verify-qsh-install.yml` verifies these `q.sh` cells:
 
-| site | script | channel | install command |
-| --- | --- | --- | --- |
-| `quicktui.ai` | `q.sh` | `stable` | `curl -fsSL https://quicktui.ai/q.sh \| sh -s -- -y` |
-| `quicktui.ai` | `q.sh` | `preview` | `curl -fsSL https://quicktui.ai/q.sh \| sh -s -- -y --preview --required-version-2` |
-| `dl.quicktui.cn` | `q.sh` | `stable` | `curl -fsSL https://dl.quicktui.cn/q.sh \| sh -s -- -y` |
-| `dl.quicktui.cn` | `q.sh` | `preview` | `curl -fsSL https://dl.quicktui.cn/q.sh \| sh -s -- -y --preview --required-version-2` |
+- `quicktui.ai / stable / install`: runs `q.sh -y` and verifies the installed server,
+  user service, and version API.
+- `quicktui.ai / preview / install`: runs `q.sh -y --preview --required-version-2`
+  and performs the same runtime checks.
+- `dl.quicktui.cn / stable / checksum`: validates the stable manifest entry and
+  mirrored `quicktui-server-linux-amd64.gz` SHA-256.
+- `dl.quicktui.cn / preview / checksum`: validates the preview manifest entry and
+  the same mirrored archive SHA-256.
+
+Each CN checksum cell validates manifest schema version 1, the channel object and tag shape,
+and declarations for the archive and its `.sha256` file. It then downloads both files from
+`https://dl.quicktui.cn/releases/download/<tag>/` and requires the actual archive digest to
+match the 64-character hexadecimal digest in the checksum file. It does not download or run
+`q.sh`, the native installer, or the server.
 
 `.github/workflows/verify-q2-install.yml` verifies `q2.sh` preview installs:
 
@@ -26,11 +34,11 @@ The GitHub Actions workflows run one disposable container per matrix cell.
 
 `q2.sh` currently supports the preview channel only, so the q2 workflow does not include `q2.sh` stable cells.
 
-Preview cells exit `skip` when the site's `server-manifest.json` has no usable preview tag. Skip is a green monitor state. Any non-skip failure is a hard failure for that workflow.
+Preview cells exit `skip` when the site's `server-manifest.json` has no preview channel or usable preview tag. Skip is a green monitor state. A malformed channel or tag is a hard failure, as is any other non-skip failure.
 
 ## Local Reproduction
 
-Run from the repository root:
+The Docker wrapper reproduces install-mode cells. Run from the repository root:
 
 ```sh
 sh monitoring/run-verify-docker.sh \
@@ -78,7 +86,8 @@ The expected-tag override is only accepted with `QT_VERIFY_TEST_MODE=1`. It is u
 
 ## Result Artifacts
 
-The wrapper copies these files from the container:
+Each workflow cell uploads these files. Install-mode cells copy them from the disposable
+container; CN checksum-mode cells write them directly under the runner temporary directory.
 
 | file | meaning |
 | --- | --- |
@@ -93,10 +102,15 @@ Important result fields:
 | `site`, `script`, `channel` | Matrix cell identity. |
 | `reason` | Human-readable failure or skip reason. |
 | `expected.tag` | Tag selected from the same site's manifest. |
-| `installed.tag` | Tag parsed from the installed `quicktui-server`. |
-| `installed.version_response_endpoint` | Version endpoint that returned the service version. |
-| `assertions.S1` through `assertions.S7` | Install, binary, tag shape, manifest, version match, service, and version API checks. |
-| `log_tail`, `journal_tail` | Sanitized tails used by the Actions summary and monitor Issue. |
+| `installed.tag` | Tag parsed from the installed server; empty for CN checksum cells. |
+| `installed.version_response_endpoint` | Version endpoint for install-mode cells. |
+| `assertions.S1` through `assertions.S7` | Install-mode assertion results. |
+| `expected.asset` | Archive selected by a CN checksum cell. |
+| `expected.checksum_asset` | Checksum file selected by a CN checksum cell. |
+| `expected.sha256` | Digest read from the CN checksum file. |
+| `verified.asset` | Archive downloaded and hashed by a CN checksum cell. |
+| `verified.sha256` | Digest calculated from the downloaded CN archive. |
+| `log_tail`, `journal_tail` | Sanitized install-mode log tails. |
 
 Each workflow uploads result and log artifacts for every cell with `if: always()`. Each summary job treats missing or invalid result artifacts as hard failures so a failed cell cannot disappear from the monitor.
 
@@ -117,7 +131,11 @@ The q.sh workflow also closes any open legacy Issue titled `[monitor] stable ins
 
 ## Host-Side Boundary
 
-Host-side effects are limited to Docker image/container lifecycle, a temporary env file, copied result/log artifacts, and cleanup. The public installers, tmux, service registration, user systemd, and version API checks run inside the disposable container, not on the host.
+For install-mode cells, host-side effects are limited to Docker image/container lifecycle, a temporary env file, copied result/log artifacts, and cleanup. The public installers, tmux, service registration, user systemd, and version API checks run inside the disposable container, not on the host.
+
+CN checksum-mode cells do not start Docker or execute release binaries. They download the
+manifest, Linux amd64 archive, and checksum into a temporary runner directory, write result and
+log artifacts, and remove the downloaded files when the step exits.
 
 The wrapper:
 
@@ -127,10 +145,15 @@ The wrapper:
 - removes the container on exit;
 - rejects test-only expected-tag overrides unless `QT_VERIFY_TEST_MODE=1`.
 
-Do not run public `q.sh` / `q2.sh` install commands directly on the host for this monitor. Use `run-verify-docker.sh`.
+Do not run public `q.sh` / `q2.sh` install commands directly on the host for this monitor. Use
+`run-verify-docker.sh` for install-mode reproduction. The CN checksum path is defined inline in
+`.github/workflows/verify-qsh-install.yml` and does not have a host-side install command.
 
 ## Known Limitations
 
 - GitHub-hosted runners are Linux amd64, so this does not cover macOS, Windows, arm64, or launchd paths.
+- CN `q.sh` cells verify only `quicktui-server-linux-amd64.gz` and its `.sha256` file. They do
+  not cover the CN bootstrap, installer, service, runtime API, signatures, or other platform
+  assets; the Global cells retain installer and runtime coverage for Linux amd64.
 - CN mirror reachability from GitHub-hosted runners can be noisy. The monitor intentionally records those failures as hard failures for now; adjust matrix policy later only with explicit operations data.
 - Live GitHub Actions dispatch and live Issue behavior can only be validated after the workflow file exists on the default branch.

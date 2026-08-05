@@ -24,21 +24,26 @@ jobs:
           - site: quicktui.ai
             script: q.sh
             channel: stable
+            mode: install
           - site: quicktui.ai
             script: q.sh
             channel: preview
+            mode: install
           - site: dl.quicktui.cn
             script: q.sh
             channel: stable
+            mode: checksum
           - site: dl.quicktui.cn
             script: q.sh
             channel: preview
+            mode: checksum
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Run disposable Docker verifier
+        if: ${{ matrix.mode == 'install' }}
         id: verify
         shell: bash
         env:
@@ -103,6 +108,208 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           exit "$exit_code"
+
+      - name: Verify CN manifest and asset checksum
+        if: ${{ matrix.mode == 'checksum' }}
+        shell: bash
+        env:
+          SITE: ${{ matrix.site }}
+          SCRIPT: ${{ matrix.script }}
+          CHANNEL: ${{ matrix.channel }}
+          QT_VERIFY_ARTIFACT_DIR: ${{ runner.temp }}/qt-verify/${{ matrix.site }}/${{ matrix.script }}/${{ matrix.channel }}
+        run: |
+          set -uo pipefail
+
+          mkdir -p "$QT_VERIFY_ARTIFACT_DIR"
+          result_file="$QT_VERIFY_ARTIFACT_DIR/qt-verify-result.json"
+          log_file="$QT_VERIFY_ARTIFACT_DIR/qt-verify-install.log"
+          manifest_url="https://${SITE}/server-manifest.json"
+          asset="quicktui-server-linux-amd64.gz"
+          checksum_asset="${asset}.sha256"
+          tag=""
+          expected_sha256=""
+          actual_sha256=""
+          temp_dir="$(mktemp -d)"
+          trap 'rm -rf "$temp_dir"' EXIT
+          : > "$log_file"
+
+          write_result() {
+            local status=$1
+            local reason=$2
+            jq -n \
+              --arg status "$status" \
+              --arg reason "$reason" \
+              --arg site "$SITE" \
+              --arg script "$SCRIPT" \
+              --arg channel "$CHANNEL" \
+              --arg manifest_url "$manifest_url" \
+              --arg tag "$tag" \
+              --arg asset "$asset" \
+              --arg checksum_asset "$checksum_asset" \
+              --arg expected_sha256 "$expected_sha256" \
+              --arg actual_sha256 "$actual_sha256" \
+              '{
+                status: $status,
+                reason: $reason,
+                site: $site,
+                script: $script,
+                channel: $channel,
+                manifest_url: $manifest_url,
+                expected: {
+                  tag: $tag,
+                  manifest_url: $manifest_url,
+                  asset: $asset,
+                  checksum_asset: $checksum_asset,
+                  sha256: $expected_sha256
+                },
+                installed: {
+                  tag: ""
+                },
+                verified: {
+                  asset: $asset,
+                  sha256: $actual_sha256
+                }
+              }' > "$result_file"
+          }
+
+          fail() {
+            printf 'CN checksum verification failed: %s\n' "$1" | tee -a "$log_file" >&2
+            write_result fail "$1"
+            exit 1
+          }
+
+          skip() {
+            printf 'CN checksum verification skipped: %s\n' "$1" | tee -a "$log_file"
+            write_result skip "$1"
+            exit 0
+          }
+
+          printf 'Fetching manifest: %s\n' "$manifest_url" | tee -a "$log_file"
+          if ! curl -fsSL \
+            --retry 3 \
+            --retry-all-errors \
+            --connect-timeout 10 \
+            --max-time 60 \
+            "$manifest_url" \
+            -o "$temp_dir/server-manifest.json" >> "$log_file" 2>&1; then
+            fail "manifest download failed"
+          fi
+
+          if ! jq -e \
+            'type == "object" and .schema_version == 1' \
+            "$temp_dir/server-manifest.json" >/dev/null 2>> "$log_file"; then
+            fail "manifest is not valid schema version 1 JSON"
+          fi
+
+          if ! channel_type="$(jq -r \
+            --arg channel "$CHANNEL" \
+            '.[$channel] | type' \
+            "$temp_dir/server-manifest.json" 2>> "$log_file")"; then
+            fail "manifest channel cannot be read"
+          fi
+          if [ "$channel_type" = "null" ]; then
+            if [ "$CHANNEL" = "preview" ]; then
+              skip "preview manifest channel is missing"
+            fi
+            fail "manifest channel is missing"
+          fi
+          if [ "$channel_type" != "object" ]; then
+            fail "manifest channel must be an object"
+          fi
+
+          if ! tag_type="$(jq -r \
+            --arg channel "$CHANNEL" \
+            '.[$channel].tag | type' \
+            "$temp_dir/server-manifest.json" 2>> "$log_file")"; then
+            fail "manifest channel tag cannot be read"
+          fi
+          if [ "$tag_type" = "null" ]; then
+            if [ "$CHANNEL" = "preview" ]; then
+              skip "preview manifest tag is missing"
+            fi
+            fail "manifest channel tag is missing"
+          fi
+          if [ "$tag_type" != "string" ]; then
+            fail "manifest channel tag must be a string"
+          fi
+          if ! tag="$(jq -r \
+            --arg channel "$CHANNEL" \
+            '.[$channel].tag' \
+            "$temp_dir/server-manifest.json" 2>> "$log_file")"; then
+            fail "manifest channel tag cannot be read"
+          fi
+          if [ -z "$tag" ]; then
+            if [ "$CHANNEL" = "preview" ]; then
+              skip "preview manifest tag is missing"
+            fi
+            fail "manifest channel tag is missing"
+          fi
+
+          if [ "$CHANNEL" = "stable" ]; then
+            if ! [[ "$tag" =~ ^[0-9]{8}-[0-9]{2}$ ]]; then
+              fail "manifest stable tag has an invalid shape: $tag"
+            fi
+          elif ! [[ "$tag" =~ ^server2?-preview-[0-9]{8}-[0-9]{6}-[A-Za-z0-9._-]+$ ]]; then
+            fail "manifest preview tag has an invalid shape: $tag"
+          fi
+
+          if ! jq -e \
+            --arg channel "$CHANNEL" \
+            --arg asset "$asset" \
+            --arg checksum_asset "$checksum_asset" \
+            '.[$channel].assets as $assets
+              | ($assets | type == "array")
+                and ($assets | index($asset) != null)
+                and ($assets | index($checksum_asset) != null)' \
+            "$temp_dir/server-manifest.json" >/dev/null 2>> "$log_file"; then
+            fail "manifest does not declare $asset and $checksum_asset"
+          fi
+
+          asset_base_url="https://${SITE}/releases/download/${tag}"
+          printf 'Fetching checksum: %s/%s\n' "$asset_base_url" "$checksum_asset" | tee -a "$log_file"
+          if ! curl -fsSL \
+            --retry 3 \
+            --retry-all-errors \
+            --connect-timeout 10 \
+            --max-time 60 \
+            "$asset_base_url/$checksum_asset" \
+            -o "$temp_dir/$checksum_asset" >> "$log_file" 2>&1; then
+            fail "checksum file download failed"
+          fi
+
+          expected_sha256="$(awk 'NR == 1 { print tolower($1) }' "$temp_dir/$checksum_asset")"
+          if ! [[ "$expected_sha256" =~ ^[0-9a-f]{64}$ ]]; then
+            fail "checksum file does not contain a valid SHA-256 digest"
+          fi
+
+          printf 'Fetching asset: %s/%s\n' "$asset_base_url" "$asset" | tee -a "$log_file"
+          if ! curl -fsSL \
+            --retry 3 \
+            --retry-all-errors \
+            --connect-timeout 10 \
+            --max-time 180 \
+            "$asset_base_url/$asset" \
+            -o "$temp_dir/$asset" >> "$log_file" 2>&1; then
+            fail "asset download failed"
+          fi
+
+          actual_sha256="$(sha256sum "$temp_dir/$asset" | awk '{ print tolower($1) }')"
+          if [ "$actual_sha256" != "$expected_sha256" ]; then
+            fail "asset SHA-256 does not match $checksum_asset"
+          fi
+
+          printf 'Verified %s at tag %s with SHA-256 %s\n' \
+            "$asset" "$tag" "$actual_sha256" | tee -a "$log_file"
+          write_result pass "manifest and asset SHA-256 verified"
+
+          {
+            echo "### Verify cell: $SITE / $SCRIPT / $CHANNEL"
+            echo
+            echo "- mode: checksum"
+            echo "- manifest_tag: $tag"
+            echo "- verified_asset: $asset"
+            echo "- sha256: $actual_sha256"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload result artifact
         if: always()

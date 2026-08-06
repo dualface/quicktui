@@ -63,3 +63,5 @@ This repo hosts the QuickTUI **website and release distribution** (the `q.sh` / 
 bootstrap, server manifests, and the static site at [quicktui.ai](https://quicktui.ai)).
 QuickTUI is a commercial product; its application source is not open source. Questions or
 bugs — open an issue or join the [Discord](https://discord.gg/DyJdXEa6q).
+
+<!-- Pages deployment retry: 2026-08-06T14:33:26Z -->

@@ -5,7 +5,9 @@ STATUS_FILE="${QT_VERIFY_STATUS_FILE:-/run/qt-verify.status}"
 RESULT_FILE="${QT_VERIFY_RESULT_FILE:-/run/qt-verify-result.json}"
 LOG_FILE="${QT_VERIFY_LOG_FILE:-/run/qt-verify-install.log}"
 INSTALL_BIN="$HOME/.local/bin/quicktui-server"
-CONFIG_FILE="$HOME/.config/quicktui-server-v2/config.toml"
+NEW_CONFIG_FILE="$HOME/.config/quicktui-server-v2/config.toml"
+LEGACY_CONFIG_FILE="$HOME/.config/quicktui/config"
+CONFIG_FILE="$NEW_CONFIG_FILE"
 SERVICE_UNIT="$HOME/.config/systemd/user/quicktui.service"
 RETRY_ATTEMPTS="${QT_VERIFY_RETRY_ATTEMPTS:-3}"
 MANIFEST_TIMEOUT_SECONDS="${QT_VERIFY_MANIFEST_TIMEOUT_SECONDS:-20}"
@@ -220,24 +222,53 @@ is_preview_tag() {
     printf '%s\n' "$1" | grep -Eq '^server2?-preview-[0-9]{8}-[0-9]{6}-[A-Za-z0-9._-]+$'
 }
 
+select_config_file() {
+    if [ -f "$NEW_CONFIG_FILE" ]; then
+        CONFIG_FILE="$NEW_CONFIG_FILE"
+    elif [ -f "$LEGACY_CONFIG_FILE" ]; then
+        CONFIG_FILE="$LEGACY_CONFIG_FILE"
+    else
+        CONFIG_FILE="$NEW_CONFIG_FILE"
+    fi
+}
+
 config_value() {
     key=$1
     [ -f "$CONFIG_FILE" ] || return 0
-    case "$key" in
-        QUICKTUI_ADDR) toml_key=addr ;;
-        QUICKTUI_UPDATE_CHANNEL) toml_key=update_channel ;;
-        *) fail_assertion "CONFIG" "unsupported config key: $key" ;;
+    case "$CONFIG_FILE" in
+        *.toml)
+            case "$key" in
+                QUICKTUI_ADDR) toml_key=addr ;;
+                QUICKTUI_UPDATE_CHANNEL) toml_key=update_channel ;;
+                *) fail_assertion "CONFIG" "unsupported config key: $key" ;;
+            esac
+            awk -F' = ' -v key="$toml_key" '$1 == key {
+                value = substr($0, length(key) + 4)
+                if (value ~ /^".*"$/) value = substr(value, 2, length(value) - 2)
+                print value
+                exit
+            }' "$CONFIG_FILE"
+            ;;
+        *)
+            awk -F= -v key="$key" '$1 == key { print substr($0, length(key) + 2); exit }' "$CONFIG_FILE"
+            ;;
     esac
-    awk -F' = ' -v key="$toml_key" '$1 == key {
-        value = substr($0, length(key) + 4)
-        if (value ~ /^".*"$/) value = substr(value, 2, length(value) - 2)
-        print value
-        exit
-    }' "$CONFIG_FILE"
 }
 
 config_token() {
-    "$INSTALL_BIN" config token show --config "$CONFIG_FILE"
+    if [ -x "$INSTALL_BIN" ] && "$INSTALL_BIN" config token show --config "$CONFIG_FILE" 2>>"$LOG_FILE"; then
+        return 0
+    fi
+    [ -f "$CONFIG_FILE" ] || return 0
+    awk -F= '$1 == "QUICKTUI_TOKEN" { print substr($0, length("QUICKTUI_TOKEN") + 2); exit }' "$CONFIG_FILE"
+}
+
+read_installed_version() {
+    if out="$("$INSTALL_BIN" --version 2>>"$LOG_FILE")" && [ -n "$out" ]; then
+        printf '%s\n' "$out"
+        return 0
+    fi
+    "$INSTALL_BIN" version 2>>"$LOG_FILE" || true
 }
 
 require_env SITE
@@ -425,7 +456,8 @@ else
     fail_assertion "S2" "installed server binary is missing or not executable: $INSTALL_BIN"
 fi
 
-version_output="$("$INSTALL_BIN" version 2>>"$LOG_FILE" || true)"
+select_config_file
+version_output="$(read_installed_version)"
 installed_tag="$(printf '%s\n' "$version_output" | awk '$1 == "quicktui" { print $2; exit }')"
 if [ -z "$installed_tag" ]; then
     S3="FAIL"

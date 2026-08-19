@@ -16,7 +16,7 @@ json_fail() {
     elapsed_seconds=$((finish_epoch - START_EPOCH))
     log_tail=""
     if [ -f "$LOG_FILE" ]; then
-        log_tail="$(tr '\r' '\n' < "$LOG_FILE" 2>/dev/null | tail -n 120 | sed -E 's/(Authorization: Bearer )[A-Za-z0-9._~+\/=-]+/\1[REDACTED]/g; s/(QUICKTUI_TOKEN=)[^[:space:]]+/\1[REDACTED]/g' || true)"
+        log_tail="$(tr '\r' '\n' < "$LOG_FILE" 2>/dev/null | tail -n 120 | sed -E 's/(Authorization: Bearer )[A-Za-z0-9._~+\/=-]+/\1[REDACTED]/g; s/(QUICKTUI_TOKEN=)[^[:space:]]+/\1[REDACTED]/g; s/(token[[:space:]]*=[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' || true)"
     fi
     jq -n \
         --arg status "fail" \

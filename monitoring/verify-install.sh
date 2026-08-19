@@ -5,7 +5,7 @@ STATUS_FILE="${QT_VERIFY_STATUS_FILE:-/run/qt-verify.status}"
 RESULT_FILE="${QT_VERIFY_RESULT_FILE:-/run/qt-verify-result.json}"
 LOG_FILE="${QT_VERIFY_LOG_FILE:-/run/qt-verify-install.log}"
 INSTALL_BIN="$HOME/.local/bin/quicktui-server"
-CONFIG_FILE="$HOME/.config/quicktui/config"
+CONFIG_FILE="$HOME/.config/quicktui-server-v2/config.toml"
 SERVICE_UNIT="$HOME/.config/systemd/user/quicktui.service"
 RETRY_ATTEMPTS="${QT_VERIFY_RETRY_ATTEMPTS:-3}"
 MANIFEST_TIMEOUT_SECONDS="${QT_VERIFY_MANIFEST_TIMEOUT_SECONDS:-20}"
@@ -43,14 +43,14 @@ sanitize_tail() {
     if [ -f "$LOG_FILE" ]; then
         tr '\r' '\n' < "$LOG_FILE" 2>/dev/null \
             | tail -n 120 \
-            | sed -E 's/(Authorization: Bearer )[A-Za-z0-9._~+\/=-]+/\1[REDACTED]/g; s/(QUICKTUI_TOKEN=)[^[:space:]]+/\1[REDACTED]/g'
+            | sed -E 's/(Authorization: Bearer )[A-Za-z0-9._~+\/=-]+/\1[REDACTED]/g; s/(QUICKTUI_TOKEN=)[^[:space:]]+/\1[REDACTED]/g; s/(token[[:space:]]*=[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g'
     fi
 }
 
 sanitize_journal_tail() {
     if command -v journalctl >/dev/null 2>&1; then
         journalctl --user -u quicktui.service -n 80 --no-pager 2>/dev/null \
-            | sed -E 's/(Authorization: Bearer )[A-Za-z0-9._~+\/=-]+/\1[REDACTED]/g; s/(QUICKTUI_TOKEN=)[^[:space:]]+/\1[REDACTED]/g' \
+            | sed -E 's/(Authorization: Bearer )[A-Za-z0-9._~+\/=-]+/\1[REDACTED]/g; s/(QUICKTUI_TOKEN=)[^[:space:]]+/\1[REDACTED]/g; s/(token[[:space:]]*=[[:space:]]*)"[^"]*"/\1"[REDACTED]"/g' \
             || true
     fi
 }
@@ -223,7 +223,21 @@ is_preview_tag() {
 config_value() {
     key=$1
     [ -f "$CONFIG_FILE" ] || return 0
-    awk -F= -v key="$key" '$1 == key { print substr($0, length(key) + 2); exit }' "$CONFIG_FILE"
+    case "$key" in
+        QUICKTUI_ADDR) toml_key=addr ;;
+        QUICKTUI_UPDATE_CHANNEL) toml_key=update_channel ;;
+        *) fail_assertion "CONFIG" "unsupported config key: $key" ;;
+    esac
+    awk -F' = ' -v key="$toml_key" '$1 == key {
+        value = substr($0, length(key) + 4)
+        if (value ~ /^".*"$/) value = substr(value, 2, length(value) - 2)
+        print value
+        exit
+    }' "$CONFIG_FILE"
+}
+
+config_token() {
+    "$INSTALL_BIN" config token show --config "$CONFIG_FILE"
 }
 
 require_env SITE
@@ -241,18 +255,14 @@ case "$SITE" in
 esac
 
 case "$SCRIPT" in
-    q.sh|q2.sh) ;;
-    *) fail_assertion "INPUT" "SCRIPT must be q.sh or q2.sh" ;;
+    q.sh) ;;
+    *) fail_assertion "INPUT" "SCRIPT must be q.sh" ;;
 esac
 
 case "$CHANNEL" in
     stable|preview) ;;
     *) fail_assertion "INPUT" "CHANNEL must be stable or preview" ;;
 esac
-
-if [ "$SCRIPT:$CHANNEL" = "q2.sh:stable" ]; then
-    fail_assertion "INPUT" "q2.sh stable is not a supported monitor cell; q2.sh currently supports preview only"
-fi
 
 install_url="https://${SITE}/${SCRIPT}"
 manifest_url="https://${SITE}/server-manifest.json"
@@ -263,15 +273,11 @@ fi
 
 case "$SCRIPT:$CHANNEL" in
     q.sh:stable)
-        install_flags="-y"
+        install_flags="install --channel stable -y"
         install_command_display="curl -fsSL ${install_url} | sh -s -- ${install_flags}"
         ;;
     q.sh:preview)
-        install_flags="-y --preview --required-version-2"
-        install_command_display="curl -fsSL ${install_url} | sh -s -- ${install_flags}"
-        ;;
-    q2.sh:preview)
-        install_flags="--preview"
+        install_flags="install --channel preview -y"
         install_command_display="curl -fsSL ${install_url} | sh -s -- ${install_flags}"
         ;;
 esac
@@ -283,13 +289,10 @@ run_install_command() {
     fi
     case "$SCRIPT:$CHANNEL" in
         q.sh:stable)
-            timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- -y' sh "$install_url"
+            timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- install --channel stable -y' sh "$install_url"
             ;;
         q.sh:preview)
-            timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- -y --preview --required-version-2' sh "$install_url"
-            ;;
-        q2.sh:preview)
-            timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- --preview' sh "$install_url"
+            timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- install --channel preview -y' sh "$install_url"
             ;;
     esac
 }
@@ -422,7 +425,7 @@ else
     fail_assertion "S2" "installed server binary is missing or not executable: $INSTALL_BIN"
 fi
 
-version_output="$("$INSTALL_BIN" --version 2>>"$LOG_FILE" || true)"
+version_output="$("$INSTALL_BIN" version 2>>"$LOG_FILE" || true)"
 installed_tag="$(printf '%s\n' "$version_output" | awk '$1 == "quicktui" { print $2; exit }')"
 if [ -z "$installed_tag" ]; then
     S3="FAIL"
@@ -493,7 +496,7 @@ case "$unit_exec_start" in
 esac
 
 addr="$(config_value QUICKTUI_ADDR)"
-token="$(config_value QUICKTUI_TOKEN)"
+token="$(config_token)"
 [ -n "$addr" ] || {
     S7="FAIL"
     failure_stage="service_validation"
@@ -514,14 +517,12 @@ esac
 version_json=""
 i=0
 while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
-    for version_endpoint in /v2/version /api/version; do
-        version_json="$(curl -fsS -H "Authorization: Bearer ${token}" "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
-        version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
-        if [ -n "$version_response_version" ]; then
-            version_response_endpoint="$version_endpoint"
-            break
-        fi
-    done
+    version_endpoint=/v3/version
+    version_json="$(curl -fsS -H "Authorization: Bearer ${token}" "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
+    version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
+    if [ -n "$version_response_version" ]; then
+        version_response_endpoint="$version_endpoint"
+    fi
     if [ -n "$version_response_version" ]; then
         break
     fi
@@ -535,7 +536,7 @@ else
     S7="FAIL"
     if [ -z "$version_response_version" ]; then
         failure_stage="service_validation"
-        fail_assertion "S7" "/v2/version and /api/version did not return a version after $VERSION_ATTEMPTS attempts"
+        fail_assertion "S7" "/v3/version did not return a version after $VERSION_ATTEMPTS attempts"
     fi
     failure_stage="version_mismatch"
     fail_assertion "S7" "${version_response_endpoint:-version API} returned ${version_response_version:-empty}, expected $installed_tag"

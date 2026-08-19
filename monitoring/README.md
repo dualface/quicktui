@@ -64,7 +64,7 @@ The container verifier uses these defaults internally. The wrapper does not curr
 | `QT_VERIFY_MANIFEST_TIMEOUT_SECONDS` | `20` | Per-attempt manifest fetch timeout. |
 | `QT_VERIFY_INSTALL_TIMEOUT_SECONDS` | `300` | Per-attempt installer timeout. |
 | `QT_VERIFY_SERVICE_ATTEMPTS` | `30` | User service active polling attempts. |
-| `QT_VERIFY_VERSION_ATTEMPTS` | `100` | Version API polling attempts; the verifier tries `/v2/version` first and falls back to legacy `/api/version`. |
+| `QT_VERIFY_VERSION_ATTEMPTS` | `100` | Version API polling attempts; the verifier tries `/v3/version`, then `/v2/version`, then legacy `/api/version`. |
 
 Test-only modes:
 

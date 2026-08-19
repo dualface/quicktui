@@ -546,16 +546,27 @@ case "$addr" in
     *) http_addr="$addr" ;;
 esac
 
-version_json=""
+probe_http_version() {
+    addr=$1
+    auth_token=$2
+    version_response_version=""
+    version_response_endpoint=""
+    for version_endpoint in /v3/version /v2/version /api/version; do
+        version_json="$(curl -sS -H "Authorization: Bearer ${auth_token}" "http://${addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
+        version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
+        if [ -n "$version_response_version" ]; then
+            version_response_endpoint="$version_endpoint"
+            return 0
+        fi
+    done
+    version_response_version=""
+    version_response_endpoint=""
+    return 1
+}
+
 i=0
 while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
-    version_endpoint=/v3/version
-    version_json="$(curl -fsS -H "Authorization: Bearer ${token}" "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
-    version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
-    if [ -n "$version_response_version" ]; then
-        version_response_endpoint="$version_endpoint"
-    fi
-    if [ -n "$version_response_version" ]; then
+    if probe_http_version "$http_addr" "$token"; then
         break
     fi
     sleep 0.2
@@ -568,7 +579,7 @@ else
     S7="FAIL"
     if [ -z "$version_response_version" ]; then
         failure_stage="service_validation"
-        fail_assertion "S7" "/v3/version did not return a version after $VERSION_ATTEMPTS attempts"
+        fail_assertion "S7" "version API (/v3/version, /v2/version, /api/version) did not return a version after $VERSION_ATTEMPTS attempts"
     fi
     failure_stage="version_mismatch"
     fail_assertion "S7" "${version_response_endpoint:-version API} returned ${version_response_version:-empty}, expected $installed_tag"

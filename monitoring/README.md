@@ -137,6 +137,14 @@ CN checksum-mode cells do not start Docker or execute release binaries. They dow
 manifest, Linux amd64 archive, and checksum into a temporary runner directory, write result and
 log artifacts, and remove the downloaded files when the step exits.
 
+The install verifier selects its checks from the installed setup schema. Stable schema v1
+installations use the legacy env config, authenticate with its root token, and accept the
+registered legacy version endpoints. Schema v2 installations use the TOML config and probe
+`/v3/healthz`, `/v3/version`, and `/.well-known/quicktui-server-capability` without an
+`Authorization` header. The v2 capability must advertise `quicktui.e2e.v1`, the same-host
+`ws://.../e2e` endpoint, `pairing_code_v1`, a valid identity fingerprint, and `device_pop_v1`
+before the install is considered ready.
+
 The wrapper:
 
 - creates a temporary env file outside the repository and mounts it read-only at `/etc/qt-verify.env`;

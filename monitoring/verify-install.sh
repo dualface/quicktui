@@ -8,6 +8,7 @@ INSTALL_BIN="$HOME/.local/bin/quicktui-server"
 NEW_CONFIG_FILE="$HOME/.config/quicktui-server-v2/config.toml"
 LEGACY_CONFIG_FILE="$HOME/.config/quicktui/config"
 CONFIG_FILE="$NEW_CONFIG_FILE"
+setup_schema=""
 SERVICE_UNIT="$HOME/.config/systemd/user/quicktui.service"
 RETRY_ATTEMPTS="${QT_VERIFY_RETRY_ATTEMPTS:-3}"
 MANIFEST_TIMEOUT_SECONDS="${QT_VERIFY_MANIFEST_TIMEOUT_SECONDS:-20}"
@@ -37,6 +38,13 @@ service_active=""
 unit_exec_start=""
 version_response_version=""
 version_response_endpoint=""
+health_response_status=""
+health_response_endpoint=""
+pairing_response_endpoint=""
+pairing_response_e2e_protocol=""
+pairing_response_auth_schemes=""
+pairing_response_fingerprint=""
+pairing_ready="false"
 http_addr=""
 override_used="false"
 failure_stage=""
@@ -99,6 +107,13 @@ write_result() {
         --arg http_addr "$http_addr" \
         --arg version_response_version "$version_response_version" \
         --arg version_response_endpoint "$version_response_endpoint" \
+        --arg health_response_status "$health_response_status" \
+        --arg health_response_endpoint "$health_response_endpoint" \
+        --arg pairing_response_endpoint "$pairing_response_endpoint" \
+        --arg pairing_response_e2e_protocol "$pairing_response_e2e_protocol" \
+        --arg pairing_response_auth_schemes "$pairing_response_auth_schemes" \
+        --arg pairing_response_fingerprint "$pairing_response_fingerprint" \
+        --arg pairing_ready "$pairing_ready" \
         --arg s1 "$S1" \
         --arg s2 "$S2" \
         --arg s3 "$S3" \
@@ -135,6 +150,13 @@ write_result() {
           http_addr: $http_addr,
           version_response_version: $version_response_version,
           version_response_endpoint: $version_response_endpoint,
+          health_response_status: $health_response_status,
+          health_response_endpoint: $health_response_endpoint,
+          pairing_response_endpoint: $pairing_response_endpoint,
+          pairing_response_e2e_protocol: $pairing_response_e2e_protocol,
+          pairing_response_auth_schemes: $pairing_response_auth_schemes,
+          pairing_response_fingerprint: $pairing_response_fingerprint,
+          pairing_ready: ($pairing_ready == "true"),
           expected: {
             tag: $expected_tag,
             manifest_tag: $manifest_tag,
@@ -151,7 +173,14 @@ write_result() {
             unit_exec_start: $unit_exec_start,
             http_addr: $http_addr,
             version_response_version: $version_response_version,
-            version_response_endpoint: $version_response_endpoint
+            version_response_endpoint: $version_response_endpoint,
+            health_response_status: $health_response_status,
+            health_response_endpoint: $health_response_endpoint,
+            pairing_response_endpoint: $pairing_response_endpoint,
+            pairing_response_e2e_protocol: $pairing_response_e2e_protocol,
+            pairing_response_auth_schemes: $pairing_response_auth_schemes,
+            pairing_response_fingerprint: $pairing_response_fingerprint,
+            pairing_ready: ($pairing_ready == "true")
           },
           timing: {
             start_time: $start_time,
@@ -225,18 +254,29 @@ is_preview_tag() {
 select_config_file() {
     if [ -f "$NEW_CONFIG_FILE" ]; then
         CONFIG_FILE="$NEW_CONFIG_FILE"
+        setup_schema=2
     elif [ -f "$LEGACY_CONFIG_FILE" ]; then
         CONFIG_FILE="$LEGACY_CONFIG_FILE"
+        setup_schema=1
     else
         CONFIG_FILE="$NEW_CONFIG_FILE"
+        setup_schema=""
     fi
 }
 
 config_value() {
     key=$1
     [ -f "$CONFIG_FILE" ] || return 0
-    case "$CONFIG_FILE" in
-        *.toml)
+    case "$setup_schema" in
+        1)
+            case "$key" in
+                QUICKTUI_ADDR|QUICKTUI_UPDATE_CHANNEL)
+                    awk -F= -v key="$key" '$1 == key { print substr($0, length(key) + 2); exit }' "$CONFIG_FILE"
+                    ;;
+                *) fail_assertion "CONFIG" "unsupported config key: $key" ;;
+            esac
+            ;;
+        2)
             case "$key" in
                 QUICKTUI_ADDR) toml_key=addr ;;
                 QUICKTUI_UPDATE_CHANNEL) toml_key=update_channel ;;
@@ -249,17 +289,12 @@ config_value() {
                 exit
             }' "$CONFIG_FILE"
             ;;
-        *)
-            awk -F= -v key="$key" '$1 == key { print substr($0, length(key) + 2); exit }' "$CONFIG_FILE"
-            ;;
+        *) return 0 ;;
     esac
 }
 
 config_token() {
-    if [ -x "$INSTALL_BIN" ] && "$INSTALL_BIN" config token show --config "$CONFIG_FILE" 2>>"$LOG_FILE"; then
-        return 0
-    fi
-    [ -f "$CONFIG_FILE" ] || return 0
+    [ "$setup_schema" = 1 ] || return 0
     awk -F= '$1 == "QUICKTUI_TOKEN" { print substr($0, length("QUICKTUI_TOKEN") + 2); exit }' "$CONFIG_FILE"
 }
 
@@ -269,6 +304,80 @@ read_installed_version() {
         return 0
     fi
     "$INSTALL_BIN" version 2>>"$LOG_FILE" || true
+}
+
+health_response_is_ready() {
+    printf '%s\n' "$1" | jq -e '.status == "ok"' >/dev/null 2>&1
+}
+
+pairing_response_is_ready() {
+    expected_endpoint="ws://${2}/e2e"
+    printf '%s\n' "$1" | jq -e --arg expected_endpoint "$expected_endpoint" '
+        .e2e_protocol == "quicktui.e2e.v1" and
+        .direct_e2e_endpoint == $expected_endpoint and
+        .pairing_protocol == "pairing_code_v1" and
+        (.auth_schemes | type == "array" and index("device_pop_v1") != null) and
+        (.identity_fingerprint | type == "string" and test("^[0-9a-f]{64}$"))
+    ' >/dev/null 2>&1
+}
+
+probe_schema_v1() {
+    token=$1
+    i=0
+    while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
+        for version_endpoint in /v3/version /v2/version /api/version; do
+            version_json="$(curl -fsS -H "Authorization: Bearer ${token}" "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
+            version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
+            if [ -n "$version_response_version" ]; then
+                version_response_endpoint="$version_endpoint"
+                return 0
+            fi
+        done
+        sleep 0.2
+        i=$((i + 1))
+    done
+    return 1
+}
+
+probe_schema_v2() {
+    version_json=""
+    health_json=""
+    pairing_json=""
+    i=0
+    while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
+        health_endpoint=/v3/healthz
+        health_json="$(curl -fsS "http://${http_addr}${health_endpoint}" 2>>"$LOG_FILE" || true)"
+        health_response_status="$(printf '%s\n' "$health_json" | jq -r '.status // empty' 2>>"$LOG_FILE" || true)"
+        if health_response_is_ready "$health_json"; then
+            health_response_endpoint="$health_endpoint"
+        fi
+
+        version_endpoint=/v3/version
+        version_json="$(curl -fsS "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
+        version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
+        if [ -n "$version_response_version" ]; then
+            version_response_endpoint="$version_endpoint"
+        fi
+
+        pairing_endpoint=/.well-known/quicktui-server-capability
+        pairing_json="$(curl -fsS "http://${http_addr}${pairing_endpoint}" 2>>"$LOG_FILE" || true)"
+        pairing_response_e2e_protocol="$(printf '%s\n' "$pairing_json" | jq -r '.e2e_protocol // empty' 2>>"$LOG_FILE" || true)"
+        pairing_response_auth_schemes="$(printf '%s\n' "$pairing_json" | jq -c '.auth_schemes // []' 2>>"$LOG_FILE" || true)"
+        pairing_response_fingerprint="$(printf '%s\n' "$pairing_json" | jq -r '.identity_fingerprint // empty' 2>>"$LOG_FILE" || true)"
+        if pairing_response_is_ready "$pairing_json" "$http_addr"; then
+            pairing_response_endpoint="$pairing_endpoint"
+            pairing_ready="true"
+        else
+            pairing_ready="false"
+        fi
+
+        if health_response_is_ready "$health_json" && [ -n "$version_response_version" ] && [ "$pairing_ready" = "true" ]; then
+            return 0
+        fi
+        sleep 0.2
+        i=$((i + 1))
+    done
+    return 1
 }
 
 require_env SITE
@@ -528,16 +637,10 @@ case "$unit_exec_start" in
 esac
 
 addr="$(config_value QUICKTUI_ADDR)"
-token="$(config_token)"
 [ -n "$addr" ] || {
     S7="FAIL"
     failure_stage="service_validation"
     fail_assertion "S7" "QUICKTUI_ADDR missing from config"
-}
-[ -n "$token" ] || {
-    S7="FAIL"
-    failure_stage="service_validation"
-    fail_assertion "S7" "QUICKTUI_TOKEN missing from config"
 }
 
 case "$addr" in
@@ -546,41 +649,49 @@ case "$addr" in
     *) http_addr="$addr" ;;
 esac
 
-probe_http_version() {
-    addr=$1
-    auth_token=$2
-    version_response_version=""
-    version_response_endpoint=""
-    for version_endpoint in /v3/version /v2/version /api/version; do
-        version_json="$(curl -sS -H "Authorization: Bearer ${auth_token}" "http://${addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
-        version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
-        if [ -n "$version_response_version" ]; then
-            version_response_endpoint="$version_endpoint"
-            return 0
+case "$setup_schema" in
+    1)
+        token="$(config_token)"
+        [ -n "$token" ] || {
+            S7="FAIL"
+            failure_stage="service_validation"
+            fail_assertion "S7" "QUICKTUI_TOKEN missing from schema v1 config"
+        }
+        if ! probe_schema_v1 "$token"; then
+            S7="FAIL"
+            failure_stage="service_validation"
+            fail_assertion "S7" "schema v1 version API did not return a version after $VERSION_ATTEMPTS attempts"
         fi
-    done
-    version_response_version=""
-    version_response_endpoint=""
-    return 1
-}
-
-i=0
-while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
-    if probe_http_version "$http_addr" "$token"; then
-        break
-    fi
-    sleep 0.2
-    i=$((i + 1))
-done
+        ;;
+    2)
+        probe_schema_v2 || true
+        if [ "$health_response_status" != "ok" ]; then
+            S7="FAIL"
+            failure_stage="service_validation"
+            fail_assertion "S7" "/v3/healthz did not return status ok after $VERSION_ATTEMPTS attempts"
+        fi
+        if [ -z "$version_response_version" ]; then
+            S7="FAIL"
+            failure_stage="service_validation"
+            fail_assertion "S7" "/v3/version did not return a version after $VERSION_ATTEMPTS attempts"
+        fi
+        if [ "$pairing_ready" != "true" ]; then
+            S7="FAIL"
+            failure_stage="service_validation"
+            fail_assertion "S7" "pairing capability did not advertise quicktui.e2e.v1 with device_pop_v1 after $VERSION_ATTEMPTS attempts"
+        fi
+        ;;
+    *)
+        S7="FAIL"
+        failure_stage="service_validation"
+        fail_assertion "S7" "installed server did not create a recognized schema v1 or v2 config"
+        ;;
+esac
 
 if [ "$version_response_version" = "$installed_tag" ]; then
     pass_assertion S7
 else
     S7="FAIL"
-    if [ -z "$version_response_version" ]; then
-        failure_stage="service_validation"
-        fail_assertion "S7" "version API (/v3/version, /v2/version, /api/version) did not return a version after $VERSION_ATTEMPTS attempts"
-    fi
     failure_stage="version_mismatch"
     fail_assertion "S7" "${version_response_endpoint:-version API} returned ${version_response_version:-empty}, expected $installed_tag"
 fi

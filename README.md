@@ -65,3 +65,9 @@ QuickTUI is a commercial product; its application source is not open source. Que
 bugs — open an issue or join the [Discord](https://discord.gg/DyJdXEa6q).
 
 <!-- Pages deployment retry: 2026-08-06T14:33:26Z -->
+
+## License
+
+Mixed: the `q.sh` / `q.ps1` bootstrap scripts are MIT; website content and
+brand assets are all rights reserved; released binaries are proprietary.
+See [LICENSE.md](LICENSE.md).

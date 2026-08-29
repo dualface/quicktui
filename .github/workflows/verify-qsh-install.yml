@@ -83,7 +83,27 @@ jobs:
                 channel: $channel,
                 reason: $reason,
                 exit_code: $exit_code,
-                generated_by: "verify-qsh-install workflow fallback"
+                generated_by: "verify-qsh-install workflow fallback",
+                probe_attempts: null,
+                probe_elapsed_seconds: null,
+                probe_last_stage: "",
+                probe_last_curl_status: null,
+                expected: { tag: "" },
+                installed: {
+                  tag: "",
+                  health_response_status: "",
+                  health_response_endpoint: "",
+                  version_response_version: "",
+                  version_response_endpoint: "",
+                  pairing_response_endpoint: "",
+                  pairing_ready: false
+                },
+                timing: {
+                  probe_attempts: null,
+                  probe_elapsed_seconds: null,
+                  probe_last_stage: "",
+                  probe_last_curl_status: null
+                }
               }' > "$QT_VERIFY_ARTIFACT_DIR/qt-verify-result.json"
           fi
 

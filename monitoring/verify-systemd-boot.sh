@@ -54,6 +54,18 @@ json_fail() {
           unit_exec_start: "",
           http_addr: "",
           version_response_version: "",
+          version_response_endpoint: "",
+          health_response_status: "",
+          health_response_endpoint: "",
+          pairing_response_endpoint: "",
+          pairing_response_e2e_protocol: "",
+          pairing_response_auth_schemes: "",
+          pairing_response_fingerprint: "",
+          pairing_ready: false,
+          probe_attempts: null,
+          probe_elapsed_seconds: null,
+          probe_last_stage: "",
+          probe_last_curl_status: null,
           expected: {
             tag: "",
             manifest_tag: "",
@@ -69,12 +81,24 @@ json_fail() {
             service_active: "",
             unit_exec_start: "",
             http_addr: "",
-            version_response_version: ""
+            version_response_version: "",
+            version_response_endpoint: "",
+            health_response_status: "",
+            health_response_endpoint: "",
+            pairing_response_endpoint: "",
+            pairing_response_e2e_protocol: "",
+            pairing_response_auth_schemes: "",
+            pairing_response_fingerprint: "",
+            pairing_ready: false
           },
           timing: {
             start_time: $start_time,
             finish_time: $finish_time,
-            elapsed_seconds: ($elapsed_seconds | tonumber)
+            elapsed_seconds: ($elapsed_seconds | tonumber),
+            probe_attempts: null,
+            probe_elapsed_seconds: null,
+            probe_last_stage: "",
+            probe_last_curl_status: null
           },
           assertions: {
             S1: "SKIP",

@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -s /bin/sh -u 1000 qtuser \
-    && mkdir -p /home/qtuser/.local/bin /home/qtuser/.config/quicktui \
+    && mkdir -p /home/qtuser/.local/bin /home/qtuser/.config/quicktui /home/qtuser/.config/quicktui-server-v2 \
     && chown -R qtuser:qtuser /home/qtuser
 
 COPY monitoring/ /opt/quicktui-verify/

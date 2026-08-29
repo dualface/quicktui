@@ -15,6 +15,9 @@ MANIFEST_TIMEOUT_SECONDS="${QT_VERIFY_MANIFEST_TIMEOUT_SECONDS:-20}"
 INSTALL_TIMEOUT_SECONDS="${QT_VERIFY_INSTALL_TIMEOUT_SECONDS:-300}"
 SERVICE_ATTEMPTS="${QT_VERIFY_SERVICE_ATTEMPTS:-30}"
 VERSION_ATTEMPTS="${QT_VERIFY_VERSION_ATTEMPTS:-100}"
+PROBE_DEADLINE_SECONDS="${QT_VERIFY_PROBE_DEADLINE_SECONDS:-20}"
+PROBE_CONNECT_TIMEOUT_SECONDS="${QT_VERIFY_PROBE_CONNECT_TIMEOUT_SECONDS:-2}"
+PROBE_MAX_TIME_SECONDS="${QT_VERIFY_PROBE_MAX_TIME_SECONDS:-3}"
 START_EPOCH="$(date +%s)"
 START_TIME="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 
@@ -45,6 +48,10 @@ pairing_response_e2e_protocol=""
 pairing_response_auth_schemes=""
 pairing_response_fingerprint=""
 pairing_ready="false"
+probe_attempts=""
+probe_elapsed_seconds=""
+probe_last_stage=""
+probe_last_curl_status=""
 http_addr=""
 override_used="false"
 failure_stage=""
@@ -114,6 +121,10 @@ write_result() {
         --arg pairing_response_auth_schemes "$pairing_response_auth_schemes" \
         --arg pairing_response_fingerprint "$pairing_response_fingerprint" \
         --arg pairing_ready "$pairing_ready" \
+        --arg probe_attempts "$probe_attempts" \
+        --arg probe_elapsed_seconds "$probe_elapsed_seconds" \
+        --arg probe_last_stage "$probe_last_stage" \
+        --arg probe_last_curl_status "$probe_last_curl_status" \
         --arg s1 "$S1" \
         --arg s2 "$S2" \
         --arg s3 "$S3" \
@@ -157,6 +168,10 @@ write_result() {
           pairing_response_auth_schemes: $pairing_response_auth_schemes,
           pairing_response_fingerprint: $pairing_response_fingerprint,
           pairing_ready: ($pairing_ready == "true"),
+          probe_attempts: (if $probe_attempts == "" then null else ($probe_attempts | tonumber?) end),
+          probe_elapsed_seconds: (if $probe_elapsed_seconds == "" then null else ($probe_elapsed_seconds | tonumber?) end),
+          probe_last_stage: $probe_last_stage,
+          probe_last_curl_status: (if $probe_last_curl_status == "" then null else ($probe_last_curl_status | tonumber?) end),
           expected: {
             tag: $expected_tag,
             manifest_tag: $manifest_tag,
@@ -185,7 +200,11 @@ write_result() {
           timing: {
             start_time: $start_time,
             finish_time: $finish_time,
-            elapsed_seconds: ($elapsed_seconds | tonumber)
+            elapsed_seconds: ($elapsed_seconds | tonumber),
+            probe_attempts: (if $probe_attempts == "" then null else ($probe_attempts | tonumber?) end),
+            probe_elapsed_seconds: (if $probe_elapsed_seconds == "" then null else ($probe_elapsed_seconds | tonumber?) end),
+            probe_last_stage: $probe_last_stage,
+            probe_last_curl_status: (if $probe_last_curl_status == "" then null else ($probe_last_curl_status | tonumber?) end)
           },
           assertions: {
             S1: $s1,
@@ -239,7 +258,7 @@ require_positive_int() {
     value=$2
     case "$value" in
         ''|*[!0-9]*) failure_stage="input"; fail_assertion "INPUT" "$name must be a positive integer" ;;
-        0) failure_stage="input"; fail_assertion "INPUT" "$name must be greater than zero" ;;
+        0|0*) failure_stage="input"; fail_assertion "INPUT" "$name must be a positive decimal integer without a leading zero" ;;
     esac
 }
 
@@ -321,62 +340,161 @@ pairing_response_is_ready() {
     ' >/dev/null 2>&1
 }
 
+probe_curl() {
+    connect="${PROBE_CONNECT_TIMEOUT_SECONDS:-2}"
+    maxtime="${PROBE_MAX_TIME_SECONDS:-3}"
+    if [ -n "${PROBE_TIME_LEFT:-}" ]; then
+        if [ "$connect" -gt "$PROBE_TIME_LEFT" ]; then
+            connect=$PROBE_TIME_LEFT
+        fi
+        if [ "$maxtime" -gt "$PROBE_TIME_LEFT" ]; then
+            maxtime=$PROBE_TIME_LEFT
+        fi
+    fi
+    curl -fsS --connect-timeout "$connect" --max-time "$maxtime" "$@"
+}
+
+probe_sleep() {
+    sleep 0.2 2>/dev/null || sleep 1
+}
+
+probe_time_left() {
+    now=$(date +%s)
+    left=$((probe_deadline - now))
+    if [ "$left" -lt 0 ]; then
+        printf '0\n'
+    else
+        printf '%s\n' "$left"
+    fi
+}
+
+probe_clear_sample() {
+    health_json=""
+    health_response_status=""
+    health_response_endpoint=""
+    version_json=""
+    version_response_version=""
+    version_response_endpoint=""
+    pairing_json=""
+    pairing_response_e2e_protocol=""
+    pairing_response_auth_schemes=""
+    pairing_response_fingerprint=""
+    pairing_response_endpoint=""
+    pairing_ready="false"
+}
+
+probe_record_failure() {
+    probe_last_stage=$1
+    probe_last_curl_status=$2
+    probe_elapsed_seconds=$(($(date +%s) - probe_started))
+    printf 'schema_v2 probe attempt %s stage=%s curl_status=%s elapsed=%ss\n' \
+        "$probe_attempts" "$probe_last_stage" "$probe_last_curl_status" "$probe_elapsed_seconds" >>"$LOG_FILE"
+}
+
 probe_schema_v1() {
     token=$1
+    PROBE_TIME_LEFT=""
     i=0
     while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
         for version_endpoint in /v3/version /v2/version /api/version; do
-            version_json="$(curl -fsS -H "Authorization: Bearer ${token}" "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
+            version_json="$(probe_curl -H "Authorization: Bearer ${token}" "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
             version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
             if [ -n "$version_response_version" ]; then
                 version_response_endpoint="$version_endpoint"
                 return 0
             fi
         done
-        sleep 0.2
+        probe_sleep
         i=$((i + 1))
     done
     return 1
 }
 
 probe_schema_v2() {
-    version_json=""
-    health_json=""
-    pairing_json=""
-    i=0
-    while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
+    probe_attempts=0
+    probe_elapsed_seconds=0
+    probe_last_stage=""
+    probe_last_curl_status=""
+    probe_started="$(date +%s)"
+    probe_deadline=$((probe_started + ${PROBE_DEADLINE_SECONDS:-20}))
+    probe_clear_sample
+
+    while [ "$probe_attempts" -lt "$VERSION_ATTEMPTS" ]; do
+        PROBE_TIME_LEFT="$(probe_time_left)"
+        if [ "$PROBE_TIME_LEFT" -le 0 ]; then
+            if [ -z "$probe_last_stage" ]; then
+                probe_record_failure deadline ""
+            fi
+            break
+        fi
+        probe_attempts=$((probe_attempts + 1))
+        probe_clear_sample
+
         health_endpoint=/v3/healthz
-        health_json="$(curl -fsS "http://${http_addr}${health_endpoint}" 2>>"$LOG_FILE" || true)"
+        health_curl_status=0
+        health_json="$(probe_curl "http://${http_addr}${health_endpoint}" 2>>"$LOG_FILE")" || health_curl_status=$?
         health_response_status="$(printf '%s\n' "$health_json" | jq -r '.status // empty' 2>>"$LOG_FILE" || true)"
-        if health_response_is_ready "$health_json"; then
-            health_response_endpoint="$health_endpoint"
+        if ! health_response_is_ready "$health_json"; then
+            probe_record_failure health "$health_curl_status"
+            probe_sleep
+            continue
+        fi
+        health_response_endpoint="$health_endpoint"
+
+        PROBE_TIME_LEFT="$(probe_time_left)"
+        if [ "$PROBE_TIME_LEFT" -le 0 ]; then
+            probe_record_failure deadline ""
+            break
         fi
 
         version_endpoint=/v3/version
-        version_json="$(curl -fsS "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
+        version_curl_status=0
+        version_json="$(probe_curl "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE")" || version_curl_status=$?
         version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
+        version_ready="false"
         if [ -n "$version_response_version" ]; then
             version_response_endpoint="$version_endpoint"
+            if [ -z "${installed_tag:-}" ] || [ "$version_response_version" = "$installed_tag" ]; then
+                version_ready="true"
+            fi
+        fi
+        if [ "$version_ready" != "true" ]; then
+            probe_record_failure version "$version_curl_status"
+            probe_sleep
+            continue
+        fi
+
+        PROBE_TIME_LEFT="$(probe_time_left)"
+        if [ "$PROBE_TIME_LEFT" -le 0 ]; then
+            probe_record_failure deadline ""
+            break
         fi
 
         pairing_endpoint=/.well-known/quicktui-server-capability
-        pairing_json="$(curl -fsS "http://${http_addr}${pairing_endpoint}" 2>>"$LOG_FILE" || true)"
+        pairing_curl_status=0
+        pairing_json="$(probe_curl "http://${http_addr}${pairing_endpoint}" 2>>"$LOG_FILE")" || pairing_curl_status=$?
         pairing_response_e2e_protocol="$(printf '%s\n' "$pairing_json" | jq -r '.e2e_protocol // empty' 2>>"$LOG_FILE" || true)"
         pairing_response_auth_schemes="$(printf '%s\n' "$pairing_json" | jq -c '.auth_schemes // []' 2>>"$LOG_FILE" || true)"
         pairing_response_fingerprint="$(printf '%s\n' "$pairing_json" | jq -r '.identity_fingerprint // empty' 2>>"$LOG_FILE" || true)"
-        if pairing_response_is_ready "$pairing_json" "$http_addr"; then
-            pairing_response_endpoint="$pairing_endpoint"
-            pairing_ready="true"
-        else
-            pairing_ready="false"
+        if ! pairing_response_is_ready "$pairing_json" "$http_addr"; then
+            probe_record_failure capability "$pairing_curl_status"
+            probe_sleep
+            continue
         fi
 
-        if health_response_is_ready "$health_json" && [ -n "$version_response_version" ] && [ "$pairing_ready" = "true" ]; then
-            return 0
-        fi
-        sleep 0.2
-        i=$((i + 1))
+        pairing_response_endpoint="$pairing_endpoint"
+        pairing_ready="true"
+        probe_last_stage=""
+        probe_last_curl_status=""
+        probe_elapsed_seconds=$(($(date +%s) - probe_started))
+        printf 'schema_v2 probe attempt %s succeeded elapsed=%ss\n' \
+            "$probe_attempts" "$probe_elapsed_seconds" >>"$LOG_FILE"
+        return 0
     done
+
+    probe_elapsed_seconds=$(($(date +%s) - probe_started))
+    printf 'schema_v2 probe exhausted attempts=%s elapsed=%ss last_stage=%s curl_status=%s\n' \
+        "$probe_attempts" "$probe_elapsed_seconds" "$probe_last_stage" "$probe_last_curl_status" >>"$LOG_FILE"
     return 1
 }
 
@@ -388,6 +506,9 @@ require_positive_int QT_VERIFY_MANIFEST_TIMEOUT_SECONDS "$MANIFEST_TIMEOUT_SECON
 require_positive_int QT_VERIFY_INSTALL_TIMEOUT_SECONDS "$INSTALL_TIMEOUT_SECONDS"
 require_positive_int QT_VERIFY_SERVICE_ATTEMPTS "$SERVICE_ATTEMPTS"
 require_positive_int QT_VERIFY_VERSION_ATTEMPTS "$VERSION_ATTEMPTS"
+require_positive_int QT_VERIFY_PROBE_DEADLINE_SECONDS "$PROBE_DEADLINE_SECONDS"
+require_positive_int QT_VERIFY_PROBE_CONNECT_TIMEOUT_SECONDS "$PROBE_CONNECT_TIMEOUT_SECONDS"
+require_positive_int QT_VERIFY_PROBE_MAX_TIME_SECONDS "$PROBE_MAX_TIME_SECONDS"
 
 case "$SITE" in
     quicktui.ai|dl.quicktui.cn) ;;
@@ -664,21 +785,30 @@ case "$setup_schema" in
         fi
         ;;
     2)
-        probe_schema_v2 || true
-        if [ "$health_response_status" != "ok" ]; then
+        if ! probe_schema_v2; then
             S7="FAIL"
             failure_stage="service_validation"
-            fail_assertion "S7" "/v3/healthz did not return status ok after $VERSION_ATTEMPTS attempts"
-        fi
-        if [ -z "$version_response_version" ]; then
-            S7="FAIL"
-            failure_stage="service_validation"
-            fail_assertion "S7" "/v3/version did not return a version after $VERSION_ATTEMPTS attempts"
-        fi
-        if [ "$pairing_ready" != "true" ]; then
-            S7="FAIL"
-            failure_stage="service_validation"
-            fail_assertion "S7" "pairing capability did not advertise quicktui.e2e.v1 with device_pop_v1 after $VERSION_ATTEMPTS attempts"
+            case "$probe_last_stage" in
+                health)
+                    fail_assertion "S7" "/v3/healthz did not return status ok after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"
+                    ;;
+                version)
+                    if [ -n "$version_response_version" ] && [ -n "${installed_tag:-}" ] && [ "$version_response_version" != "$installed_tag" ]; then
+                        fail_assertion "S7" "/v3/version returned ${version_response_version}, expected ${installed_tag} after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"
+                    else
+                        fail_assertion "S7" "/v3/version did not return a version after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"
+                    fi
+                    ;;
+                capability)
+                    fail_assertion "S7" "pairing capability did not advertise quicktui.e2e.v1 with device_pop_v1 after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"
+                    ;;
+                deadline)
+                    fail_assertion "S7" "schema v2 probe deadline exceeded after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"
+                    ;;
+                *)
+                    fail_assertion "S7" "schema v2 probe did not converge after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; last_stage=${probe_last_stage:-unknown} curl_status=${probe_last_curl_status:-unknown}"
+                    ;;
+            esac
         fi
         ;;
     *)

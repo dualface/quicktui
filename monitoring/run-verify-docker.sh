@@ -13,12 +13,12 @@ ENV_FILE=""
 usage() {
     cat <<'EOF'
 Usage:
-  sh monitoring/run-verify-docker.sh --site quicktui.ai --script q2.sh --channel preview
+  sh monitoring/run-verify-docker.sh --site quicktui.ai --script q.sh --channel stable
 
 Options:
   --site HOST          Public site hostname, without scheme or path.
-  --script NAME       Installer script basename, for example q2.sh.
-  --channel CHANNEL   stable or preview. q2.sh currently supports preview only.
+  --script NAME       Installer script basename, for example q.sh.
+  --channel CHANNEL   stable or preview.
 
 Test-only environment:
   QT_VERIFY_TEST_MODE=1 QT_VERIFY_EXPECTED_TAG_OVERRIDE=bad-tag

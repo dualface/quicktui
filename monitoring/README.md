@@ -174,9 +174,10 @@ wall-clock deadline, and a new request is not started after the deadline. The
 loop also stops at the attempt cap. Failure artifacts record the actual attempt
 count, last failed stage, curl exit status, and probe elapsed time; result
 fields come from that last observation, not from mixing earlier successes with
-a later failure. The v2 capability must advertise `quicktui.e2e.v1`, the
-same-host `ws://.../e2e` endpoint, `pairing_code_v1`, a valid identity
-fingerprint, and `device_pop_v1` before the install is considered ready.
+a later failure. The v2 capability must advertise `quicktui.e2e.v1` or
+`quicktui.e2e.v2` during the independent release transition, the same-host
+`ws://.../e2e` endpoint, `pairing_code_v1`, a valid identity fingerprint, and
+`device_pop_v1` before the install is considered ready.
 
 The wrapper:
 

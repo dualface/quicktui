@@ -326,13 +326,16 @@ read_installed_version() {
 }
 
 health_response_is_ready() {
+    # jq 1.6 -e skips the filter on empty stdin and still exits 0; reject empty bodies first.
+    [ -n "${1:-}" ] || return 1
     printf '%s\n' "$1" | jq -e '.status == "ok"' >/dev/null 2>&1
 }
 
 pairing_response_is_ready() {
+    [ -n "${1:-}" ] || return 1
     expected_endpoint="ws://${2}/e2e"
     printf '%s\n' "$1" | jq -e --arg expected_endpoint "$expected_endpoint" '
-        .e2e_protocol == "quicktui.e2e.v1" and
+        (.e2e_protocol == "quicktui.e2e.v1" or .e2e_protocol == "quicktui.e2e.v2") and
         .direct_e2e_endpoint == $expected_endpoint and
         .pairing_protocol == "pairing_code_v1" and
         (.auth_schemes | type == "array" and index("device_pop_v1") != null) and
@@ -434,7 +437,7 @@ probe_schema_v2() {
         health_curl_status=0
         health_json="$(probe_curl "http://${http_addr}${health_endpoint}" 2>>"$LOG_FILE")" || health_curl_status=$?
         health_response_status="$(printf '%s\n' "$health_json" | jq -r '.status // empty' 2>>"$LOG_FILE" || true)"
-        if ! health_response_is_ready "$health_json"; then
+        if [ "$health_curl_status" -ne 0 ] || ! health_response_is_ready "$health_json"; then
             probe_record_failure health "$health_curl_status"
             probe_sleep
             continue
@@ -476,7 +479,7 @@ probe_schema_v2() {
         pairing_response_e2e_protocol="$(printf '%s\n' "$pairing_json" | jq -r '.e2e_protocol // empty' 2>>"$LOG_FILE" || true)"
         pairing_response_auth_schemes="$(printf '%s\n' "$pairing_json" | jq -c '.auth_schemes // []' 2>>"$LOG_FILE" || true)"
         pairing_response_fingerprint="$(printf '%s\n' "$pairing_json" | jq -r '.identity_fingerprint // empty' 2>>"$LOG_FILE" || true)"
-        if ! pairing_response_is_ready "$pairing_json" "$http_addr"; then
+        if [ "$pairing_curl_status" -ne 0 ] || ! pairing_response_is_ready "$pairing_json" "$http_addr"; then
             probe_record_failure capability "$pairing_curl_status"
             probe_sleep
             continue
@@ -800,7 +803,7 @@ case "$setup_schema" in
                     fi
                     ;;
                 capability)
-                    fail_assertion "S7" "pairing capability did not advertise quicktui.e2e.v1 with device_pop_v1 after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"
+                    fail_assertion "S7" "pairing capability did not advertise supported quicktui.e2e.v1/v2 with device_pop_v1 after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"
                     ;;
                 deadline)
                     fail_assertion "S7" "schema v2 probe deadline exceeded after ${probe_attempts} attempts in ${probe_elapsed_seconds}s; curl_status=${probe_last_curl_status}"

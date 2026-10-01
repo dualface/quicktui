@@ -26,7 +26,7 @@ jobs:
           # website/monitoring/run-verify-cn-mirror.sh in quicktui-mono.
           - site: quicktui.ai
             script: q.sh
-            channel: stable
+            channel: server2
           - site: quicktui.ai
             script: q.sh
             channel: preview
@@ -178,7 +178,7 @@ jobs:
 
           expected_cells=$(mktemp)
           cat > "$expected_cells" <<'CELLS'
-          quicktui.ai q.sh stable
+          quicktui.ai q.sh server2
           quicktui.ai q.sh preview
           CELLS
 

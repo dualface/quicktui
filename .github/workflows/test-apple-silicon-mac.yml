@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'q.sh'
-      - 'tests/**'
+      - 'website/q.sh'
       - '.github/workflows/test-apple-silicon-mac.yml'
 
 jobs:
@@ -29,7 +28,7 @@ jobs:
         run: brew install tmux
 
       - name: Install and start quicktui-server natively
-        run: sh q.sh -y --port 18023
+        run: sh website/q.sh -y --port 18023
         env:
           TERM: xterm-256color
 
@@ -57,4 +56,4 @@ jobs:
 
       - name: Final cleanup
         if: always()
-        run: sh q.sh --uninstall 2>/dev/null || true
+        run: sh website/q.sh --uninstall 2>/dev/null || true

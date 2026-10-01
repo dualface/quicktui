@@ -1,4 +1,4 @@
-# Stable Install Verifier
+# Public Install Verifier
 
 This directory contains the synthetic monitor for public QuickTUI server
 installs. The scheduled GitHub Actions workflows in this repository run the
@@ -29,7 +29,7 @@ matrix cell:
 
 | site          | script | channel   | install command                                                              |
 | ------------- | ------ | --------- | ---------------------------------------------------------------------------- |
-| `quicktui.ai` | `q.sh` | `stable`  | `curl -fsSL https://quicktui.ai/q.sh \| sh -s -- install --channel stable -y`  |
+| `quicktui.ai` | `q.sh` | `server2`  | `curl -fsSL https://quicktui.ai/q.sh \| sh -s -- install --channel server2 -y`  |
 | `quicktui.ai` | `q.sh` | `preview` | `curl -fsSL https://quicktui.ai/q.sh \| sh -s -- install --channel preview -y` |
 
 GitHub-hosted runners are outside China and cannot reliably reach
@@ -47,7 +47,7 @@ Run from this repository root:
 sh monitoring/run-verify-docker.sh \
   --site quicktui.ai \
   --script q.sh \
-  --channel stable
+  --channel server2
 ```
 
 Wrapper-level environment overrides:
@@ -80,7 +80,7 @@ Test-only modes:
 ```sh
 QT_VERIFY_TEST_MODE=1 QT_VERIFY_PLAN_ONLY=1 \
   sh monitoring/run-verify-docker.sh \
-    --site quicktui.ai --script q.sh --channel stable
+    --site quicktui.ai --script q.sh --channel server2
 ```
 
 Plan-only mode validates argument handling and installer command construction
@@ -89,7 +89,7 @@ without running the public installer.
 ```sh
 QT_VERIFY_TEST_MODE=1 QT_VERIFY_EXPECTED_TAG_OVERRIDE=bad-tag \
   sh monitoring/run-verify-docker.sh \
-    --site quicktui.ai --script q.sh --channel stable
+    --site quicktui.ai --script q.sh --channel server2
 ```
 
 The expected-tag override is only accepted with `QT_VERIFY_TEST_MODE=1`. It is

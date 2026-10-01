@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "configs": {
+    "agent-wizard": {
+      "version": 13,
+      "path": "agent-wizard.json"
+    },
+    "command-palette": {
+      "version": 3,
+      "path": "command-palette.json"
+    }
+  }
+}

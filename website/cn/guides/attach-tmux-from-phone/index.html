@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>如何从手机接入 tmux 会话（iPhone 与 Android）</title>
+<meta name="description" content="从 iPhone、iPad 或 Android 接入电脑上真实的 tmux 会话：命名会话、回滚历史、断线自动重连，端到端加密。" />
+<link rel="canonical" href="https://quicktui.ai/cn/guides/attach-tmux-from-phone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/attach-tmux-from-phone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/attach-tmux-from-phone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/attach-tmux-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="如何从手机接入 tmux 会话（iPhone 与 Android）" />
+<meta property="og:description" content="从 iPhone、iPad 或 Android 接入电脑上真实的 tmux 会话：命名会话、回滚历史、断线自动重连，端到端加密。" />
+<meta property="og:url" content="https://quicktui.ai/cn/guides/attach-tmux-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="article:modified_time" content="2026-09-27" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="如何从手机接入 tmux 会话（iPhone 与 Android）" />
+<meta name="twitter:description" content="从 iPhone、iPad 或 Android 接入电脑上真实的 tmux 会话：命名会话、回滚历史、断线自动重连，端到端加密。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "如何从手机接入 tmux 会话（iPhone 与 Android）",
+  "description": "从 iPhone、iPad 或 Android 接入电脑上真实的 tmux 会话：命名会话、回滚历史、断线自动重连，端到端加密。",
+  "url": "https://quicktui.ai/cn/guides/attach-tmux-from-phone/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "datePublished": "2026-09-27",
+  "dateModified": "2026-09-27"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "可以用 iPhone 接入 tmux 会话吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。在运行 tmux 的电脑上安装 QuickTUI 服务端并完成配对后，tmux 会话会显示为工作区，点开即可接入实时会话。iPad 和 Android（Preview）同样适用。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "关闭 App 后 tmux 会话还在运行吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "在。会话运行在电脑上，而不是手机上。关闭 App、信号中断或切换网络，会话都会继续运行；重新打开 App 即可回到会话。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "需要什么版本的 tmux？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "tmux 3.2 及以上。安装器会使用电脑上已有的 tmux，不会安装或升级它；电脑上既没有 tmux 也没有 Herdr 时，会改为安装 Herdr。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 是通过 SSH 连接的吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不是。设置向导只在安装服务端时用一次 SSH，之后 App 与 QuickTUI 服务端之间使用端到端加密连接。不支持 SSH 登录的电脑，用一条命令安装服务端，再扫码配对即可。"
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/cn/guides/attach-tmux-from-phone/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "从手机接入 tmux",
+      "item": "https://quicktui.ai/cn/guides/attach-tmux-from-phone/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/guides/attach-tmux-from-phone/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/guides/attach-tmux-from-phone/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><span aria-current="page">从手机接入 tmux</span></nav>
+<p class="updated"><time datetime="2026-09-27">更新于 2026 年 9 月 27 日</time></p>
+<p class="eyebrow">指南 · tmux</p>
+<h1>如何从手机接入 tmux 会话</h1>
+<p class="lede">要从手机接入 tmux 会话，在运行 tmux 的电脑上安装 QuickTUI 服务端，再在 iPhone、iPad 或 Android（Preview）上打开 QuickTUI App。App 会列出电脑上的 tmux 会话，点开任意一个，就进入你在电脑前离开时的那个实时会话，窗口、窗格和回滚历史都在。</p>
+
+<figure class="shot phone"><img src="/images/usage/terminal-zh.webp" alt="在 iPhone 上的 QuickTUI 终端中打开 tmux 会话" loading="lazy" width="660" height="1434"><figcaption>QuickTUI 终端中的实时 tmux 会话。</figcaption></figure>
+
+<p>tmux 会在你断开后让电脑上的终端会话继续运行，构建、Agent、日志和 shell 都不会中断。QuickTUI 接入的就是这个 tmux，而不是另开一个 shell，所以无论手机是否连着，会话里的任务都照常运行。</p>
+
+<h2>如何开始</h2>
+<ol class="steps">
+<li>从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_setup">App Store</a> 安装 QuickTUI，或安装 <a href="/cn/android/">Android 应用（Preview）</a>，然后打开设置向导。</li>
+<li>选择 <b>通过 SSH 连接并启用增强功能（推荐）</b>，填写运行 tmux 的 Mac 或 Linux 电脑的 SSH 登录信息。</li>
+<li>点 <b>安装</b>。App 会通过 SSH 安装 QuickTUI 服务端并自动完成配对。</li>
+</ol>
+<p>不支持 SSH 登录的电脑，先在电脑上运行安装命令，再<a href="/cn/install/#pairing">扫码配对</a>：</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>QuickTUI 需要 tmux 3.2 及以上版本。安装器会直接使用电脑上已有的 tmux，不会安装或修改它，安装方法见<a href="/cn/faq/#q-install-tmux">如何安装 tmux</a>。手机与电脑之间的连接端到端加密，默认直连你的电脑。</p>
+
+<h2>接入、重连与新建会话</h2>
+<dl class="ref-list">
+<dt>接入正在运行的会话</dt><dd>tmux 会话在会话管理器中显示为工作区。点开任意一个，即可查看它的实时画面，包括窗口、窗格和回滚历史。</dd>
+<dt>断线后接着用</dt><dd>会话一直在电脑上运行。在 Wi-Fi 与蜂窝网络之间切换、App 退到后台或短暂断线后，App 会自动重连，回到你离开的位置。</dd>
+<dt>新建会话</dt><dd>在会话管理器中点 <b>[+]</b> 新建工作区，或在电脑上运行 <code>tmux new -s work</code>，新会话会出现在列表中。</dd>
+<dt>快速执行 tmux 命令</dt><dd>命令面板内置 tmux 命令分组，常用命令点一下即可执行，不必输入组合键。</dd>
+</dl>
+
+<h2>给会话命名：tmux attach -t claude</h2>
+<p>在手机上，有名字的会话最容易找到。在名为 <code>claude</code> 的会话中启动 Agent：</p>
+<pre><code>tmux new -s claude
+claude</code></pre>
+<p>在电脑前，用 <code>tmux attach -t claude</code> 打开这个会话；在 App 中，它显示为 <b>claude</b> 工作区，点开就是同一个会话。可以按任务或仓库各开一个会话，例如 <code>tmux new -s review</code>，再在列表中切换。完整步骤见<a href="/cn/guides/run-claude-code-from-iphone/">在 iPhone 上运行 Claude Code</a>。</p>
+
+<h2>全屏 Agent 与回滚历史</h2>
+<p>Claude Code、Codex 等 Agent 可能在终端主屏幕上绘制界面，导致 tmux 回滚历史中堆满重复输出。服务端检测到这种情况时，App 会提示如何把 Agent 切换到全屏模式。Claude Code 运行 <code>/tui fullscreen</code> 即可；Codex、Grok Build 与 Pi 的设置方法见 <a href="/cn/faq/#q-tmux-tui-fullscreen">FAQ</a>。</p>
+
+<h2>用 tmux 还是 Herdr？</h2>
+<p>如果你已经习惯 tmux，继续用它就好。如果主要用来运行 AI Agent，可以考虑 <a href="/cn/herdr-ios-app/">Herdr</a>：会话管理器会显示每个 Agent 处于空闲、工作中、等待输入还是已完成。两者可以同时启用；电脑上两者都没有时，安装器会自动安装 Herdr。</p>
+
+<h2>常见问题</h2>
+<h3>可以用 iPhone 接入 tmux 会话吗？</h3>
+<p>可以。在运行 tmux 的电脑上安装 QuickTUI 服务端并完成配对后，tmux 会话会显示为工作区，点开即可接入实时会话。iPad 和 Android（Preview）同样适用。</p>
+<h3>关闭 App 后 tmux 会话还在运行吗？</h3>
+<p>在。会话运行在电脑上，而不是手机上。关闭 App、信号中断或切换网络，会话都会继续运行；重新打开 App 即可回到会话。</p>
+<h3>需要什么版本的 tmux？</h3>
+<p>tmux 3.2 及以上。安装器会使用电脑上已有的 tmux，不会安装或升级它；电脑上既没有 tmux 也没有 Herdr 时，会改为安装 Herdr。</p>
+<h3>App 是通过 SSH 连接的吗？</h3>
+<p>不是。设置向导只在安装服务端时用一次 SSH，之后 App 与 QuickTUI 服务端之间使用端到端加密连接。不支持 SSH 登录的电脑，用一条命令安装服务端，再扫码配对即可。</p>
+
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/tmux-ios-app/">iPhone 和 iPad 上的 tmux</a></li>
+    <li><a href="/cn/herdr-ios-app/">iPhone 和 iPad 上的 Herdr</a></li>
+    <li><a href="/cn/use-cases/control-ai-agents-from-phone/">在手机上掌控 AI Agent</a></li>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">在 iPhone 上运行 Claude Code</a></li>
+    <li><a href="/cn/guides/run-codex-cli-from-phone/">在手机上运行 Codex CLI</a></li>
+    <li><a href="/cn/guides/run-opencode-from-phone/">在手机上运行 OpenCode</a></li>
+    <li><a href="/cn/guides/run-grok-build-from-phone/">在手机上运行 Grok Build</a></li>
+    <li><a href="/cn/guides/run-pi-coding-agent-from-phone/">在手机上运行 Pi</a></li>
+    <li><a href="/cn/guides/run-kimi-code-from-phone/">在手机上运行 Kimi Code</a></li>
+    <li><a href="/cn/guides/run-zcode-from-phone/">在手机上运行 ZCode</a></li>
+    <li><a href="/cn/guides/remote-development-from-ipad/">用 iPad 远程开发</a></li>
+    <li><a href="/cn/install/">安装指南</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

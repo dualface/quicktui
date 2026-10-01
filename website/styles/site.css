@@ -1,0 +1,212 @@
+/*
+ * QuickTUI content-page stylesheet (guides / comparisons / landing pages).
+ *
+ * Self-contained: it re-declares the QT design tokens from index.html's inline
+ * <style> (:root + [data-theme] blocks) so content pages match the QT visual
+ * system without touching the homepage's inline CSS. Tokens rarely change; if
+ * the homepage palette is retuned, mirror the [data-theme] blocks here.
+ * Consumed by pages generated via scripts/gen-content.mjs.
+ */
+
+:root {
+  color-scheme: dark light;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --serif: 'Instrument Serif', 'Times New Roman', serif;
+  /* palette = neutral greys plus one green accent, mirrored from the homepage
+     [data-theme] blocks in src/index.html */
+  --maxw: 1240px;
+  --readw: 760px;
+  --gutter: clamp(20px, 4vw, 48px);
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: oklch(0.150 0.008 150);
+  --bg-1: oklch(0.180 0.009 150);
+  --bg-2: oklch(0.215 0.010 150);
+  --ink: oklch(0.950 0.004 255);
+  --ink-2: oklch(0.720 0.006 255);
+  --ink-3: oklch(0.610 0.008 255);
+  --ink-4: oklch(0.500 0.008 255);
+  --line: oklch(0.270 0.010 150);
+  --line-soft: oklch(0.220 0.010 150);
+  --accent: oklch(0.773 0.091 126);
+  --accent-ink: oklch(0.230 0.030 126);
+  --accent-glow: oklch(0.773 0.091 126 / 0.30);
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: oklch(0.985 0.011 114);
+  --bg-1: oklch(0.970 0.013 114);
+  --bg-2: oklch(0.945 0.015 114);
+  --ink: oklch(0.180 0.006 255);
+  --ink-2: oklch(0.400 0.008 255);
+  --ink-3: oklch(0.525 0.008 255);
+  --ink-4: oklch(0.620 0.006 255);
+  --line: oklch(0.860 0.017 114);
+  --line-soft: oklch(0.910 0.014 114);
+  --accent: oklch(0.536 0.132 137);
+  --accent-ink: oklch(0.985 0.008 137);
+  --accent-glow: oklch(0.536 0.132 137 / 0.20);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { overflow-x: hidden; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.65;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  overflow-x: hidden;
+  position: relative;
+}
+::selection { background: var(--accent); color: var(--accent-ink); }
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ───────── buttons (page header / footer live in src/chrome.css) */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 9px;
+  font-family: var(--mono); font-weight: 600; font-size: 14px;
+  background: var(--accent); color: var(--accent-ink);
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 1px var(--accent-glow);
+}
+.btn:hover { filter: brightness(1.06); }
+.article a.btn { color: var(--accent-ink); text-decoration: none; }
+.article a.btn.ghost { color: var(--ink); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); box-shadow: none; }
+
+
+/* ───────── article */
+main { position: relative; z-index: 2; }
+.article { max-width: var(--readw); margin: 0 auto; padding: 40px var(--gutter) 56px; }
+.breadcrumb { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); margin: 0 0 22px; }
+.breadcrumb a { color: var(--ink-3); }
+.breadcrumb a:hover { color: var(--ink); }
+.breadcrumb .sep { margin: 0 8px; color: var(--ink-4); }
+.breadcrumb [aria-current="page"] { color: var(--ink-2); }
+.updated { font-family: var(--mono); font-size: 12px; color: var(--ink-4); margin: -12px 0 22px; }
+.article figure.shot { margin: 0 0 24px; }
+.article figure.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-1); }
+/* portrait phone screenshots: cap the height instead of stretching to the column */
+.article figure.shot.phone img { width: auto; max-width: 100%; max-height: 560px; margin: 0 auto; border-radius: 22px; }
+.article figure.shot.phone figcaption { text-align: center; }
+.article figure.shot figcaption { margin-top: 8px; font-size: 13px; color: var(--ink-3); font-family: var(--mono); }
+.eyebrow {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--accent);
+  margin: 0 0 14px;
+}
+.article h1 {
+  font-size: clamp(30px, 5vw, 44px); line-height: 1.1; letter-spacing: -0.01em;
+  margin: 0 0 16px; font-weight: 700;
+}
+.lede { font-size: 19px; color: var(--ink-2); margin: 0 0 8px; line-height: 1.55; }
+.article h2 {
+  font-size: 25px; margin: 32px 0 12px; line-height: 1.2; letter-spacing: -0.01em;
+  padding-top: 6px; font-weight: 700;
+}
+.article h3 { font-size: 19px; margin: 24px 0 8px; font-weight: 700; }
+.article h4 { font-size: 16px; margin: 20px 0 8px; font-weight: 700; color: var(--ink-2); }
+.article p { margin: 0 0 16px; color: var(--ink); }
+.article ul, .article ol { margin: 0 0 16px; padding-left: 22px; color: var(--ink); }
+.article li { margin: 6px 0; }
+.article a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--ink-4); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.article a:hover { text-decoration-color: var(--ink); }
+.article strong { color: var(--ink); }
+.article code {
+  font-family: var(--mono); font-size: .88em;
+  background: var(--bg-1); border: 1px solid var(--line-soft);
+  padding: 1px 6px; border-radius: 5px;
+}
+.article pre {
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.6;
+  background: var(--bg-1); border: 1px solid var(--line);
+  border-radius: 11px; padding: 16px 18px; margin: 0 0 18px;
+  overflow-x: auto;
+}
+.article pre code { background: none; border: none; padding: 0; }
+.article pre .com { color: var(--ink-3); }
+.article blockquote {
+  margin: 0 0 18px; padding: 2px 0 2px 18px;
+  border-left: 3px solid var(--accent); color: var(--ink-2);
+}
+
+/* callout */
+.callout {
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  background: var(--bg-1); border-radius: 11px;
+  padding: 14px 18px; margin: 0 0 20px; color: var(--ink-2); font-size: 15px;
+}
+.callout strong { color: var(--ink); }
+.callout.warn {
+  border-color: color-mix(in oklab, var(--accent) 55%, var(--line));
+  border-left-width: 4px;
+  background: color-mix(in oklab, var(--accent) 10%, var(--bg-1));
+  color: var(--ink);
+}
+.callout.warn p { margin: 0 0 10px; color: var(--ink); }
+.callout.warn p:last-child { margin-bottom: 0; }
+.callout.warn pre { margin: 0 0 10px; background: var(--bg); }
+
+/* fact / comparison table */
+.fact-table { width: 100%; border-collapse: collapse; margin: 0 0 22px; font-size: 14.5px; }
+.fact-table th, .fact-table td {
+  text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+.fact-table thead th { color: var(--ink-3); font-family: var(--mono); font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; }
+.fact-table tbody th { font-weight: 600; color: var(--ink-2); }
+.fact-table .yes { color: var(--ink); font-weight: 600; }
+.fact-table .no { color: var(--ink-4); }
+.table-scroll { overflow-x: auto; margin: 0 0 22px; }
+.fact-table code { overflow-wrap: anywhere; }
+.fact-table tbody th { min-width: 7em; white-space: nowrap; }
+.fact-table tbody th code { overflow-wrap: normal; }
+.compare-table { min-width: 520px; }
+.compare-table tbody th { min-width: 0; }
+.compare-table:not(.matrix) tbody tr:first-child th, .compare-table:not(.matrix) tbody tr:first-child td { color: var(--accent); }
+/* reference lists: long names on their own line, description indented below */
+.ref-list { margin: 0 0 22px; border-top: 1px solid var(--line-soft); }
+.ref-list dt { padding: 10px 0 2px; font-size: 14.5px; }
+.ref-list dt code, .ref-list dd code { overflow-wrap: anywhere; }
+.ref-list dd { margin: 0; padding: 0 0 10px 18px; border-bottom: 1px solid var(--line-soft); font-size: 14.5px; color: var(--ink-2); }
+.ref-list dt { font-weight: 600; color: var(--ink); }
+.ref-list .desc, .ref-list .kv { display: block; }
+.ref-list .desc + .kv { margin-top: 4px; }
+.ref-list .kv .k { color: var(--ink-3); font-family: var(--mono); font-size: 13px; }
+.ref-list .yes { color: var(--ink); font-weight: 600; }
+.ref-list .no { color: var(--ink-4); }
+
+/* related links / cross-links */
+.related { margin: 32px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line-soft); }
+.related h2 { font-size: 15px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 0 0 12px; }
+.related ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.related a { color: var(--ink); text-decoration: none; }
+.related a:hover { text-decoration: underline; text-decoration-color: var(--ink-4); text-underline-offset: 3px; }
+
+/* install two-up */
+.install-row { display: grid; gap: 14px; margin: 0 0 18px; }
+@media (min-width: 620px) { .install-row { grid-template-columns: 1fr 1fr; } }
+.install-row .lbl,
+.article p.lbl { font-family: var(--mono); font-size: 12px; color: var(--ink-3); margin: 0 0 6px; text-transform: uppercase; letter-spacing: .06em; }
+
+
+/* mono + accent helpers (used by content fragments, e.g. install) */
+.mono { font-family: var(--mono); }
+.path {
+  font-family: var(--mono); font-size: .88em; color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+  padding: 1px 6px; border-radius: 5px; overflow-wrap: anywhere;
+}
+.article .note { padding-left: 12px; border-left: 2px solid var(--line); color: var(--ink-3); }
+.ac { color: var(--accent); font-style: normal; }

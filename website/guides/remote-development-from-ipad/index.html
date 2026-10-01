@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Remote development from iPad (2026 guide)</title>
+<meta name="description" content="Use your iPad for real remote development: a live terminal on your computer, hardware keyboard, file manager, dev-server previews and coding agents." />
+<link rel="canonical" href="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/remote-development-from-ipad/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="Remote development from iPad (2026 guide)" />
+<meta property="og:description" content="Use your iPad for real remote development: a live terminal on your computer, hardware keyboard, file manager, dev-server previews and coding agents." />
+<meta property="og:url" content="https://quicktui.ai/guides/remote-development-from-ipad/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta property="article:modified_time" content="2026-09-27" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Remote development from iPad (2026 guide)" />
+<meta name="twitter:description" content="Use your iPad for real remote development: a live terminal on your computer, hardware keyboard, file manager, dev-server previews and coding agents." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Remote development from iPad (2026 guide)",
+  "description": "Use your iPad for real remote development: a live terminal on your computer, hardware keyboard, file manager, dev-server previews and coding agents.",
+  "url": "https://quicktui.ai/guides/remote-development-from-ipad/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "datePublished": "2026-09-27",
+  "dateModified": "2026-09-27"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can you do real development on an iPad?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, if the code and tools run on a computer and the iPad connects to it. With QuickTUI, you work in a live terminal on that computer, edit and run code there, and preview web apps through port forwarding."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does QuickTUI support a hardware keyboard on iPad?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Arrow keys, modifiers and Control combinations from a Magic Keyboard or Bluetooth keyboard go straight to the terminal."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I preview a local dev server on my iPad?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use port forwarding: forward the dev server's port and open it in the app's built-in browser. You can switch the browser between mobile and desktop layouts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do long builds keep running if the iPad goes to sleep?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. They run in tmux or Herdr on your computer. When you return, the app reconnects to the same session."
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/guides/remote-development-from-ipad/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Remote development from iPad",
+      "item": "https://quicktui.ai/guides/remote-development-from-ipad/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Enhanced Features</a>
+        <a href="/install/">Install</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/guides/remote-development-from-ipad/" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/guides/remote-development-from-ipad/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span aria-current="page">Remote development from iPad</span></nav>
+<p class="updated"><time datetime="2026-09-27">Updated September 27, 2026</time></p>
+<p class="eyebrow">Guide · iPad</p>
+<h1>Remote development from iPad (2026 guide)</h1>
+<p class="lede">The practical way to do remote development from an iPad is to keep the code, tools and AI agents on a real computer and use the iPad as the screen and keyboard. QuickTUI gives the iPad a live terminal into that computer, plus a file manager, port forwarding with a built-in browser for your dev server, and the Agent Wizard for coding agents.</p>
+
+<figure class="shot phone"><img src="/images/usage/terminal-en.webp" alt="Terminal session in QuickTUI" loading="lazy" width="660" height="1434"><figcaption>A live terminal session on your own computer.</figcaption></figure>
+
+<p>Compilers, repositories and agents all run on your workstation, home computer or cloud server. Nothing heavy runs on the tablet, and the session you open on the iPad is the same one you use at your desk.</p>
+
+<h2>Get set up</h2>
+<ol class="steps">
+<li>Install QuickTUI from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_setup">App Store</a> and open the setup wizard. The same app runs on iPhone and iPad.</li>
+<li>Choose <b>Connect Over SSH — Enable Enhanced Features (Recommended)</b> and enter the SSH login of the Mac or Linux computer that holds your code.</li>
+<li>Tap <b>Install</b>. The app installs the QuickTUI server over SSH and pairs automatically. If your computer has neither tmux nor Herdr, it installs Herdr.</li>
+</ol>
+<p>On a Mac or Linux computer without SSH access, run the install command on the computer, then <a href="/install/#pairing">pair by scanning a QR code</a>:</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>On Windows, get <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">QuickTUI Server from Microsoft Store</a>, open it from the Start menu and scan the QR code it shows. Sessions on Windows run in Herdr, which you install separately; see <a href="/install/#windows">Windows</a> in the install guide.</p>
+<p>Traffic between the iPad and your computer is end-to-end encrypted, and the app connects directly to your computer by default. See the <a href="/install/">install guide</a> for details.</p>
+
+<h2>A terminal that works like a desktop one</h2>
+<dl class="ref-list">
+<dt>Hardware keyboard</dt><dd>With a Magic Keyboard or any Bluetooth keyboard, arrow keys, modifiers and Control combinations go straight to the terminal, so your editor and shell key bindings work as usual.</dd>
+<dt>Shortcuts Bars</dt><dd>Set up to three Shortcuts Bars for the keys and combinations you use most, such as Esc, Tab and Control sequences. Hold a key to repeat it.</dd>
+<dt>Sessions, windows and panes</dt><dd>Your tmux sessions or Herdr workspaces open with their windows, panes and scrollback. Long builds and agent runs keep going on the computer when you close the app.</dd>
+<dt>Copy and themes</dt><dd>Select text to copy it, or use Smart Copy to join a wrapped selection into a single line. Choose separate terminal themes for light and dark mode.</dd>
+</dl>
+
+<h2>Files, previews and uploads</h2>
+<dl class="ref-list">
+<dt>File Manager</dt><dd>Browse, upload and download files on your computer. File browsing is off by default; enable it in the app first. On macOS, you may also need to allow the QuickTUI server in Files &amp; Folders or Full Disk Access (see the <a href="/faq/#q-tcc-macos">FAQ</a>).</dd>
+<dt>Preview your dev server</dt><dd>Forward the port your dev server listens on and open it in the built-in browser, which can switch between mobile and desktop layouts. A port scan shows which ports are listening on the computer.</dd>
+<dt>Attach files to the terminal</dt><dd>From the Input Bar, attach a file, an image or a new photo. It&#39;s uploaded to your computer and its path is inserted into your input, ready to pass to an agent.</dd>
+</dl>
+
+<h2>Run coding agents from the iPad</h2>
+<p>Start Claude Code, Codex, OpenCode or any other CLI agent by typing its command, or open the <b>Agent Wizard</b>, pick the agent, model and working directory, and it opens in a new window or tab. The command palette has ready-made commands for common agents, tmux and Herdr. See <a href="/use-cases/control-ai-agents-from-phone/">controlling AI agents from your phone</a> for the full list of supported agents.</p>
+<p class="note">QuickTUI also has an <a href="/android/">Android (Preview)</a> app that connects to the same server.</p>
+
+<h2>FAQ</h2>
+<h3>Can you do real development on an iPad?</h3>
+<p>Yes, if the code and tools run on a computer and the iPad connects to it. With QuickTUI, you work in a live terminal on that computer, edit and run code there, and preview web apps through port forwarding.</p>
+<h3>Does QuickTUI support a hardware keyboard on iPad?</h3>
+<p>Yes. Arrow keys, modifiers and Control combinations from a Magic Keyboard or Bluetooth keyboard go straight to the terminal.</p>
+<h3>How do I preview a local dev server on my iPad?</h3>
+<p>Use port forwarding: forward the dev server&#39;s port and open it in the app&#39;s built-in browser. You can switch the browser between mobile and desktop layouts.</p>
+<h3>Do long builds keep running if the iPad goes to sleep?</h3>
+<p>Yes. They run in tmux or Herdr on your computer. When you return, the app reconnects to the same session.</p>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/use-cases/control-ai-agents-from-phone/">Control AI agents from your phone</a></li>
+    <li><a href="/guides/attach-tmux-from-phone/">Attach a tmux session from your phone</a></li>
+    <li><a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a></li>
+    <li><a href="/guides/run-codex-cli-from-phone/">Run Codex CLI from your phone</a></li>
+    <li><a href="/guides/run-opencode-from-phone/">Run OpenCode from your phone</a></li>
+    <li><a href="/guides/run-grok-build-from-phone/">Run Grok Build from your phone</a></li>
+    <li><a href="/guides/run-pi-coding-agent-from-phone/">Run the Pi coding agent from your phone</a></li>
+    <li><a href="/guides/run-kimi-code-from-phone/">Run Kimi Code from your phone</a></li>
+    <li><a href="/guides/run-zcode-from-phone/">Run ZCode from your phone</a></li>
+    <li><a href="/tmux-ios-app/">tmux on iPhone &amp; iPad</a></li>
+    <li><a href="/herdr-ios-app/">Herdr on iPhone &amp; iPad</a></li>
+    <li><a href="/install/">Install guide</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

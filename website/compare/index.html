@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI vs Moshi, Happy, Termius, Blink, dotMux &amp; Omnara</title>
+<meta name="description" content="How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each." />
+<link rel="canonical" href="https://quicktui.ai/compare/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI vs Moshi, Happy, Termius, Blink, dotMux &amp; Omnara" />
+<meta property="og:description" content="How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each." />
+<meta property="og:url" content="https://quicktui.ai/compare/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI vs Moshi, Happy, Termius, Blink, dotMux &amp; Omnara" />
+<meta name="twitter:description" content="How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI vs Moshi, Happy, Termius, Blink, dotMux & Omnara",
+  "description": "How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each.",
+  "url": "https://quicktui.ai/compare/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://quicktui.ai/compare/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Enhanced Features</a>
+        <a href="/install/">Install</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/compare/" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/compare/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span aria-current="page">Compare</span></nav>
+
+<p class="eyebrow">Compare</p>
+<h1>QuickTUI compared</h1>
+<p class="lede">There are several ways to run AI agents or use a real terminal from your phone. Each of these tools overlaps with QuickTUI in different ways; here&#39;s a short take on each, with a detailed comparison page for every one.</p>
+
+<p>QuickTUI is a native iPhone, iPad and <a href="/android/">Android (Preview)</a> app that connects to the QuickTUI server on your computer and attaches straight to your running tmux or Herdr sessions, so you can run and supervise any CLI agent. It&#39;s end-to-end encrypted and direct by default, and the setup wizard installs the server over SSH and pairs for you. On iPhone and iPad it&#39;s free for one computer and Pro is a one-time purchase, and it&#39;s available on the App Store in China too; the Android app (Preview) is free during the preview. QuickTUI Relay is an optional subscription.</p>
+
+<h2>At a glance</h2>
+<div class="table-scroll"><table class="fact-table compare-table"><thead><tr><th>Tool</th><th>Interface</th><th>Connection</th><th>tmux / Herdr</th></tr></thead><tbody>
+<tr><th>QuickTUI</th><td>Terminal + chat view</td><td>Own server, end-to-end encrypted, optional Relay</td><td>tmux, Herdr, Luvus</td></tr>
+<tr><th>Moshi</th><td>Terminal + chat view</td><td>Direct SSH (Mosh / ET Pro-only)</td><td>tmux, Herdr, Zellij (Pro-only)</td></tr>
+<tr><th>Happy</th><td>Chat-style</td><td>Wrapper + relay</td><td>Not used</td></tr>
+<tr><th>Termius</th><td>Terminal</td><td>Direct SSH / Mosh</td><td>Not integrated</td></tr>
+<tr><th>Blink Shell</th><td>Terminal</td><td>Direct SSH / Mosh</td><td>Not integrated</td></tr>
+<tr><th>dotMux</th><td>Native tabs and panes</td><td>Direct SSH</td><td>tmux</td></tr>
+<tr><th>Omnara</th><td>Dashboard</td><td>Managed agent platform</td><td>Not used</td></tr>
+</tbody></table></div>
+
+<h2>One by one</h2>
+<dl class="ref-list">
+<dt><a href="/compare/quicktui-vs-moshi/">QuickTUI vs Moshi</a></dt><dd>A mobile terminal for AI agents that connects over SSH straight from your phone, with tmux and Herdr support (Pro-only), sold by subscription.</dd>
+<dt><a href="/compare/quicktui-vs-happy/">QuickTUI vs Happy</a></dt><dd>An open-source, chat-style remote control that launches agents like Claude Code through a wrapper and communicates through a relay.</dd>
+<dt><a href="/compare/quicktui-vs-termius/">QuickTUI vs Termius</a></dt><dd>A mature, cross-platform general-purpose SSH client for managing many servers, now with some AI agent conveniences.</dd>
+<dt><a href="/compare/quicktui-vs-blink/">QuickTUI vs Blink Shell</a></dt><dd>An open-source professional iPad terminal built around Mosh and SSH, for people who like to configure everything themselves.</dd>
+<dt><a href="/compare/quicktui-vs-dotmux/">QuickTUI vs dotMux</a></dt><dd>A lightweight tmux control-mode client that turns tmux windows and panes into native iOS UI, for a one-time price.</dd>
+<dt><a href="/compare/quicktui-vs-omnara/">QuickTUI vs Omnara</a></dt><dd>Formerly an app for controlling agents from your phone, now a managed-agent platform.</dd>
+</dl>
+
+<p class="callout"><strong>The short version:</strong> choose QuickTUI to attach to the tmux or Herdr sessions on your computer and supervise AI agents from your phone, with easy setup, end-to-end encryption and a one-time price. If general-purpose SSH across many servers matters more, a terminal like Termius or Blink fits better.</p>
+
+<p class="note">Information about other tools is based on their websites and App Store listings as of September 2026. Check each tool&#39;s site for the latest details.</p>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/use-cases/control-ai-agents-from-phone/">Control AI agents from your phone</a></li>
+    <li><a href="/herdr-ios-app/">Herdr on iOS</a></li>
+    <li><a href="/tmux-ios-app/">tmux on iOS</a></li>
+    <li><a href="/android/">Android app (Preview)</a></li>
+    <li><a href="/">QuickTUI home</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

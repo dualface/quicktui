@@ -262,8 +262,8 @@ require_positive_int() {
     esac
 }
 
-is_stable_tag() {
-    printf '%s\n' "$1" | grep -Eq '^[0-9]{8}-[0-9]{2}$'
+is_server2_tag() {
+    printf '%s\n' "$1" | grep -Eq '^server2-[0-9]{8}-[0-9]{2}$'
 }
 
 is_preview_tag() {
@@ -326,7 +326,7 @@ read_installed_version() {
 }
 
 health_response_is_ready() {
-    # jq 1.6 -e skips the filter on empty stdin and still exits 0; reject empty bodies first.
+    # jq 1.6 -e skips the filter on empty stdin and exits 0; reject empty bodies first.
     [ -n "${1:-}" ] || return 1
     printf '%s\n' "$1" | jq -e '.status == "ok"' >/dev/null 2>&1
 }
@@ -524,8 +524,8 @@ case "$SCRIPT" in
 esac
 
 case "$CHANNEL" in
-    stable|preview) ;;
-    *) fail_assertion "INPUT" "CHANNEL must be stable or preview" ;;
+    server2|preview) ;;
+    *) fail_assertion "INPUT" "CHANNEL must be server2 or preview" ;;
 esac
 
 install_url="https://${SITE}/${SCRIPT}"
@@ -536,8 +536,8 @@ if [ "${QT_VERIFY_TEST_MODE:-}" = "1" ] && [ -n "${QT_VERIFY_EXPECTED_TAG_OVERRI
 fi
 
 case "$SCRIPT:$CHANNEL" in
-    q.sh:stable)
-        install_flags="install --channel stable -y"
+    q.sh:server2)
+        install_flags="install --channel server2 -y"
         install_command_display="curl -fsSL ${install_url} | sh -s -- ${install_flags}"
         ;;
     q.sh:preview)
@@ -552,8 +552,8 @@ run_install_command() {
         return 42
     fi
     case "$SCRIPT:$CHANNEL" in
-        q.sh:stable)
-            timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- install --channel stable -y' sh "$install_url"
+        q.sh:server2)
+            timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- install --channel server2 -y' sh "$install_url"
             ;;
         q.sh:preview)
             timeout "$INSTALL_TIMEOUT_SECONDS" bash -o pipefail -c 'curl -fsSL "$1" | sh -s -- install --channel preview -y' sh "$install_url"
@@ -639,7 +639,7 @@ if [ -z "$manifest_tag" ] || [ "$manifest_tag" = "null" ]; then
             failure_stage="preview_skip"
             skip_cell "preview manifest tag missing for $CHANNEL"
             ;;
-        stable)
+        server2)
             S4="FAIL"
             failure_stage="manifest_fetch"
             fail_assertion "S4" "manifest channel tag missing for $CHANNEL"
@@ -648,11 +648,11 @@ if [ -z "$manifest_tag" ] || [ "$manifest_tag" = "null" ]; then
 fi
 
 case "$CHANNEL" in
-    stable)
-        if ! is_stable_tag "$manifest_tag"; then
+    server2)
+        if ! is_server2_tag "$manifest_tag"; then
             S4="FAIL"
             failure_stage="manifest_fetch"
-            fail_assertion "S4" "manifest stable tag has invalid shape: $manifest_tag"
+            fail_assertion "S4" "manifest server2 tag has invalid shape: $manifest_tag"
         fi
         ;;
     preview)
@@ -699,13 +699,13 @@ if [ -z "$installed_tag" ]; then
 fi
 
 case "$CHANNEL" in
-    stable)
-        if is_stable_tag "$installed_tag"; then
+    server2)
+        if is_server2_tag "$installed_tag"; then
             pass_assertion S3
         else
             S3="FAIL"
             failure_stage="version_parsing"
-            fail_assertion "S3" "stable installed tag has invalid shape: $installed_tag"
+            fail_assertion "S3" "server2 installed tag has invalid shape: $installed_tag"
         fi
         ;;
     preview)

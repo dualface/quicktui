@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI 对比 Happy</title>
+<meta name="description" content="QuickTUI 与 Happy 的对比：接入 tmux 或 Herdr 会话的真正终端，对比包装特定 Agent 的聊天式远程控制。" />
+<link rel="canonical" href="https://quicktui.ai/cn/compare/quicktui-vs-happy/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/quicktui-vs-happy/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/quicktui-vs-happy/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/quicktui-vs-happy/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 对比 Happy" />
+<meta property="og:description" content="QuickTUI 与 Happy 的对比：接入 tmux 或 Herdr 会话的真正终端，对比包装特定 Agent 的聊天式远程控制。" />
+<meta property="og:url" content="https://quicktui.ai/cn/compare/quicktui-vs-happy/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 对比 Happy" />
+<meta name="twitter:description" content="QuickTUI 与 Happy 的对比：接入 tmux 或 Herdr 会话的真正终端，对比包装特定 Agent 的聊天式远程控制。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI 对比 Happy",
+  "description": "QuickTUI 与 Happy 的对比：接入 tmux 或 Herdr 会话的真正终端，对比包装特定 Agent 的聊天式远程控制。",
+  "url": "https://quicktui.ai/cn/compare/quicktui-vs-happy/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "对比",
+      "item": "https://quicktui.ai/cn/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "对比 Happy",
+      "item": "https://quicktui.ai/cn/compare/quicktui-vs-happy/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/compare/quicktui-vs-happy/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/compare/quicktui-vs-happy/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><a href="/cn/compare/">对比</a><span class="sep">/</span><span aria-current="page">对比 Happy</span></nav>
+
+<p class="eyebrow">对比 · Happy</p>
+<h1>QuickTUI 对比 Happy</h1>
+<p class="lede">QuickTUI 与 Happy 都能帮你在手机上处理终端或 AI Agent 的工作，但出发点不同。本页说明两者的区别。</p>
+
+<h2>Happy 是什么</h2>
+<p><a href="https://happy.engineering" target="_blank" rel="noopener">Happy</a>（Happy Coder）是开源（MIT）的编程 Agent 远程控制工具。你在电脑上用 <code>happy claude</code> 或 <code>happy codex</code> 代替原来的命令启动 Agent，然后在 iOS、Android 或网页上以聊天的形式开始、引导、批准和查看会话，回到电脑前再继续在终端里操作。会话数据经 Happy 的中转服务器传输，官方称端到端加密，也可以自行部署中转服务器。</p>
+
+<h2>QuickTUI 是什么</h2>
+<p>QuickTUI 是原生 iPhone、iPad 与 <a href="/cn/android/">Android（Preview）</a>App，搭配装在你电脑上的 QuickTUI 服务端，让你在手机上直接接入电脑里正在运行的会话，运行和照看任何 CLI Agent。它的优势在于：</p>
+<dl class="ref-list">
+<dt>真正的终端，接入已有会话</dt><dd>直接接入电脑上的 tmux 与 Herdr 会话，不需要用包装器改变 Agent 的启动方式，电脑前和手机上是同一个会话。</dd>
+<dt>Agent 状态一目了然</dt><dd>使用 <a href="/cn/herdr-ios-app/">Herdr</a> 时，会话管理器显示每个 Agent 是空闲、工作中、等待输入还是已完成。</dd>
+<dt>安装配对一步到位</dt><dd>设置向导通过 SSH 一次性装好服务端并自动配对，之后不需要在手机上管理 SSH。</dd>
+<dt>端到端加密，默认直连</dt><dd>手机与电脑之间全程端到端加密；不在同一网络时，可经 VPN、隧道或可选的 QuickTUI Relay 连接，无需开放 SSH。</dd>
+<dt>为手机操作而设计</dt><dd>Agent 向导内置 19 种常用 Agent 的启动配置，命令面板收录 500 多条常用命令，另有可堆叠的快捷栏、支持文件与图片附件的输入栏、文件管理器，以及端口转发与内置浏览器。</dd>
+<dt>一次性买断</dt><dd>iPhone 与 iPad 上，免费版可连接一台电脑，Pro 一次性买断（中国区 App Store 为 168 元），不限电脑数量，中国区 App Store 同样可以下载；Android（Preview）在预览期间免费提供全部功能。</dd>
+</dl>
+
+<h2>逐项对比</h2>
+<dl class="ref-list">
+<dt>界面</dt><dd><span class="kv"><span class="k">QuickTUI</span>：完整终端与聊天视图，加上会话管理器、Agent 向导、文件管理器和端口转发</span><span class="kv"><span class="k">Happy</span>：聊天式界面：工具卡片、差异查看、允许 / 拒绝权限请求，不是终端</span></dd>
+<dt>连接方式</dt><dd><span class="kv"><span class="k">QuickTUI</span>：App 连接你电脑上的 QuickTUI 服务端，可在局域网直连，也可经 VPN、隧道或可选的 QuickTUI Relay；设置向导通过 SSH 一次性安装服务端</span><span class="kv"><span class="k">Happy</span>：电脑上运行 Happy 的 CLI 包装器与后台进程，经中转服务器与手机通信，扫码配对</span></dd>
+<dt>数据是否经过厂商云端</dt><dd><span class="kv"><span class="k">QuickTUI</span>：默认直连你的电脑；使用 Relay 时只转发端到端加密的数据</span><span class="kv"><span class="k">Happy</span>：默认经过 Happy 的中转服务器（官方称端到端加密），可自行部署</span></dd>
+<dt>tmux / Herdr</dt><dd><span class="kv"><span class="k">QuickTUI</span>：原生支持 tmux 与 Herdr，也可手动启用 Luvus；使用 Herdr 时显示每个 Agent 的状态</span><span class="kv"><span class="k">Happy</span>：不使用 tmux，会话由 Happy 自己的包装器保持</span></dd>
+<dt>支持的 Agent</dt><dd><span class="kv"><span class="k">QuickTUI</span>：任何终端里的 CLI Agent；Agent 向导内置 19 种常用 Agent 的启动配置</span><span class="kv"><span class="k">Happy</span>：Claude Code、Codex、Gemini 等特定 Agent</span></dd>
+<dt>平台</dt><dd><span class="kv"><span class="k">QuickTUI</span>：iPhone、iPad 与 <a href="/cn/android/">Android（Preview）</a></span><span class="kv"><span class="k">Happy</span>：iOS、iPad、Android、网页，以及 macOS 桌面 App</span></dd>
+<dt>定价</dt><dd><span class="kv"><span class="k">QuickTUI</span>：免费版可连接一台电脑；Pro 一次性买断（中国区 App Store 为 168 元），不限电脑数量；Relay 为可选订阅；Android（Preview）预览期间免费</span><span class="kv"><span class="k">Happy</span>：免费、开源；语音功能需订阅</span></dd>
+<dt>中国区 App Store</dt><dd><span class="kv"><span class="k">QuickTUI</span>：有</span><span class="kv"><span class="k">Happy</span>：无</span></dd>
+</dl>
+
+<p>QuickTUI 可以从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_compare">App Store</a> 免费下载，安装方法见<a href="/cn/install/">安装指南</a>。</p>
+
+<p class="note">Happy 的信息根据其官网与 App Store 页面整理，截至 2026 年 9 月，最新情况请以对方官网为准。</p>
+
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/compare/">所有对比</a></li>
+    <li><a href="/cn/compare/quicktui-vs-moshi/">QuickTUI 对比 Moshi</a></li>
+    <li><a href="/cn/compare/quicktui-vs-termius/">QuickTUI 对比 Termius</a></li>
+    <li><a href="/cn/compare/quicktui-vs-blink/">QuickTUI 对比 Blink Shell</a></li>
+    <li><a href="/cn/compare/quicktui-vs-dotmux/">QuickTUI 对比 dotMux</a></li>
+    <li><a href="/cn/compare/quicktui-vs-omnara/">QuickTUI 对比 Omnara</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

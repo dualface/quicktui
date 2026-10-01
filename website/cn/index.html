@@ -1,0 +1,2230 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI — 手机、iPad 远程终端 · tmux / Herdr · Claude Code / Codex</title>
+<meta name="description" content="自托管远程终端，支持 iPhone、iPad 与 Android。随时随地接入 tmux 或 Herdr 会话，运行 Claude Code、Codex 或任意 CLI Agent，默认直连。" />
+<link rel="canonical" href="https://quicktui.ai/cn/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI — 在手机上掌控编程 Agent" />
+<meta property="og:description" content="在 iPhone、iPad 或 Android 上接入 tmux 或 Herdr，运行任意 CLI Agent。自托管、默认直连、端到端加密。" />
+<meta property="og:url" content="https://quicktui.ai/cn/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI — 在手机上掌控编程 Agent" />
+<meta name="twitter:description" content="在 iPhone、iPad 或 Android 上接入 tmux 或 Herdr，运行任意 CLI Agent。自托管、默认直连、端到端加密。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "QuickTUI",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "iOS, Android",
+  "url": "https://quicktui.ai/cn/",
+  "description": "自托管远程终端，支持 iPhone、iPad 与 Android。随时随地接入 tmux 或 Herdr 会话，运行 Claude Code、Codex 或任意 CLI Agent，默认直连。",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "为什么要使用 Herdr 或 tmux？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Herdr 和 tmux 都支持多个工作区，并能让会话在后台持续运行：只要电脑没有重启，你的 Agent 会话就会一直保持。 对于大多数用户，推荐使用 Herdr ：它与 Agent 的集成更好，性能也更出色。如果你已经习惯 tmux，QuickTUI 同样完整支持 tmux。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何安装 Herdr？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "# macOS / Linux curl -fsSL https://herdr.dev/install.sh | sh # Windows（PowerShell） powershell -ExecutionPolicy Bypass -c \"irm https://herdr.dev/install.ps1 | iex\" 完整文档： herdr.dev/docs/install"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何安装 tmux？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "多数 Linux 发行版可以直接用包管理器安装，macOS 可以用 Homebrew： # Debian / Ubuntu sudo apt install tmux # Fedora sudo dnf install tmux # macOS（Homebrew） brew install tmux QuickTUI 需要 tmux 3.2 及以上版本。其他系统见 tmux 安装文档 。 tmux 不支持 Windows，Windows 上请使用 Herdr。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "重新运行安装脚本会发生什么？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "安装命令会原地升级已有的服务端：用新版本替换 QuickTUI 服务端并重启服务，替换失败时自动恢复原版本。 已配对的设备、服务端身份和现有配置（端口、会话后端等）都会保留，无需重新配对。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何配对另一台设备？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "在电脑上运行配对引导： # macOS / Linux ~/.local/bin/quicktui-server pairing welcome # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server pairing welcome # Windows（PowerShell） quicktui-server pairing welcome 按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。 二维码出现后，在 App 中： 在服务器列表点 + 。 选择 其他连接方式 。 选择 扫描二维码连接已启用增强功能的电脑 ，点 下一步 。 将摄像头对准二维码，完成配对。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "可以通过公网连接吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。任选一种方式，让手机能访问到你的电脑： QuickTUI Relay 可选订阅，在 App 里开通即可，无需任何网络配置。 VPN 例如 Tailscale ，手机和电脑处在同一个虚拟网络里即可直连。 隧道或反向代理 例如 Cloudflare Tunnel 或带 TLS 的反向代理，指向 http://127.0.0.1:8022 ，然后在 App 里填写公网 HTTPS 域名（不带 :8022 ）。 配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。 通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码： # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows（PowerShell） quicktui-server pairing qrcode --public-url https://your.domain 隧道或反向代理需要保留原始 Host 请求头，并发送 X-Forwarded-Proto ；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。 配对二维码短期有效，请勿泄露。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "QuickTUI 如何认证设备？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "QuickTUI 通过设备配对来认证，全程端到端加密： 配对时 配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。 设备密钥 每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。 每次连接 App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。 经 Relay 转发时 QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。 撤销设备 手机丢失或不再使用时，在电脑上撤销它： # 列出已配对设备 ~/.local/bin/quicktui-server pairing devices list # 撤销指定设备 ~/.local/bin/quicktui-server pairing devices revoke <设备 ID> 撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 quicktui-server 开头。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "无法连接 — connection refused。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先确认服务端正在运行： # macOS launchctl print gui/$(id -u)/ai.quicktui # Linux systemctl --user status quicktui # Linux（以 root 安装） systemctl status quicktui # Windows（PowerShell） Get-Process quicktui-server 没有运行就重启服务： # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux（以 root 安装） sudo systemctl restart quicktui # Windows（PowerShell） quicktui-server service restart 服务在运行但仍然被拒绝时，请确认防火墙、VPN 或隧道放行了服务端端口（默认 8022）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Linux 上退出登录后，服务端就停止了？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Linux 普通用户安装的服务端以 systemd 用户服务运行，默认随登录会话启停。关闭 SSH 连接或退出登录后，服务端可能随之停止，手机将无法连接。开启 linger 即可常驻运行，根据情况选择对应的命令： 1. 直接开启 （本机登录或当前用户有权限时）： loginctl enable-linger 2. 提示权限不足 （如 Access denied 、 Interactive authentication required ，常见于 SSH 远程登录）。有 sudo 权限时： sudo loginctl enable-linger \"$USER\" 没有 sudo 权限时，请管理员代为执行： sudo loginctl enable-linger <你的用户名> 3. 提示 Failed to connect to bus 。如果是用 su 或 sudo -u 切换到该用户后运行的，当前会话缺少用户总线，请改为直接以该用户 SSH 登录后再运行；或先补上运行时目录再开启： export XDG_RUNTIME_DIR=/run/user/$(id -u) loginctl enable-linger systemctl --user restart quicktui 如果系统本身没有以 systemd 启动（部分容器、未启用 systemd 的 WSL），用户服务和 linger 都无法使用，请改用 root 安装，或先为系统启用 systemd。 确认已开启 ：输出 Linger=yes 即可。 loginctl show-user \"$USER\" --property=Linger 开启后服务端会开机自启并常驻运行，与是否登录无关。以 root 安装的系统服务不受此影响。"
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "QuickTUI",
+  "url": "https://quicktui.ai/",
+  "logo": "https://quicktui.ai/images/icon-512.png",
+  "sameAs": [
+    "https://apps.apple.com/app/quicktui/id6761338192",
+    "https://github.com/dualface/quicktui",
+    "https://x.com/dualface"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "QuickTUI",
+  "url": "https://quicktui.ai/"
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=20260930b" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#090C09" />
+<script>
+// EN / CN are separate static pages. Honor ?lang= (App entry) and, on the EN page, the
+// saved or browser language by jumping to the matching page before first paint.
+(() => {
+  const zhPage = document.documentElement.lang.startsWith('zh');
+  const norm = v => { const l = String(v || '').toLowerCase(); return l === 'zh' || l.startsWith('zh-') ? 'zh' : (l === 'en' || l.startsWith('en-') ? 'en' : null); };
+  let want = null;
+  try {
+    const q = new URLSearchParams(location.search).get('lang');
+    if (q) { want = norm(q) || 'en'; localStorage.setItem('quicktui.lang', want); }
+  } catch (_) {}
+  if (!want && !zhPage) {
+    let saved = null;
+    try { saved = localStorage.getItem('quicktui.lang'); } catch (_) {}
+    if (saved === 'zh') want = 'zh';
+    else if (!saved) {
+      const langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+      for (const l of langs) { const n = norm(l); if (n) { want = n; break; } }
+    }
+  }
+  if (want === 'zh' && !zhPage) location.replace('/cn/' + location.hash);
+  else if (want === 'en' && zhPage) location.replace('/' + location.hash);
+})();
+</script>
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ───────────────────────────────────────────────── tokens */
+:root {
+  color-scheme: dark light;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --serif: 'Instrument Serif', 'Times New Roman', serif;
+  /* palette = neutral greys (chroma <= 0.008) plus one green accent, defined in full
+     by each [data-theme] block below. The accent marks actions and key phrases only;
+     the hero phone demo keeps the app's own theme tokens (--sd-*). */
+  --maxw: 1240px;
+  --gutter: clamp(20px, 4vw, 48px);
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: oklch(0.150 0.008 150);
+  --bg-1: oklch(0.180 0.009 150);
+  --bg-2: oklch(0.215 0.010 150);
+  --ink: oklch(0.950 0.004 255);
+  --ink-2: oklch(0.720 0.006 255);
+  --ink-3: oklch(0.610 0.008 255);
+  --ink-4: oklch(0.500 0.008 255);
+  --line: oklch(0.270 0.010 150);
+  --line-soft: oklch(0.220 0.010 150);
+  --accent: oklch(0.773 0.091 126);
+  --accent-ink: oklch(0.230 0.030 126);
+  --accent-glow: oklch(0.773 0.091 126 / 0.30);
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: oklch(0.985 0.011 114);
+  --bg-1: oklch(0.970 0.013 114);
+  --bg-2: oklch(0.945 0.015 114);
+  --ink: oklch(0.180 0.006 255);
+  --ink-2: oklch(0.400 0.008 255);
+  --ink-3: oklch(0.525 0.008 255);
+  --ink-4: oklch(0.620 0.006 255);
+  --line: oklch(0.860 0.017 114);
+  --line-soft: oklch(0.910 0.014 114);
+  --accent: oklch(0.536 0.132 137);
+  --accent-ink: oklch(0.985 0.008 137);
+  --accent-glow: oklch(0.536 0.132 137 / 0.20);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { overflow-x: hidden; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  overflow-x: hidden;
+  position: relative;
+}
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* ───────────────────────────────────────────────── chrome */
+.shell { position: relative; z-index: 2; }
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+
+.mono { font-family: var(--mono); }
+.path {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+  white-space: nowrap;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 6px; height: 6px;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+  border-radius: 1px;
+}
+
+.btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 140ms ease;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--ink-3); }
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 600;
+  box-shadow: 0 0 0 0 var(--accent-glow);
+}
+.btn-primary:hover {
+  box-shadow: 0 0 0 4px var(--accent-glow);
+  border-color: var(--accent);
+}
+.btn-soft {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  font-weight: 600;
+}
+.btn-soft:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.btn .arr { transition: transform 160ms ease; }
+.btn:hover .arr { transform: translateX(2px); }
+.btn-xl {
+  font-size: 15px;
+  padding: 16px 28px;
+  border-radius: 10px;
+  letter-spacing: 0.01em;
+}
+.btn-xl .arr { font-size: 18px; }
+
+/* ───────────────────────────────────────────────── status bar */
+.statusbar {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-4);
+  padding: 8px 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line-soft);
+}
+.statusbar .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 6px var(--accent-glow);
+  vertical-align: middle; margin-right: 6px;
+  animation: blink 2.4s steps(2, end) infinite;
+}
+@keyframes blink { 50% { opacity: .35; } }
+.statusbar .sep { opacity: 0.35; margin: 0 10px; }
+
+/* ───────────────────────────────────────────────── HERO */
+.hero { padding: clamp(28px, 3vw, 44px) 0 clamp(34px, 3.8vw, 56px); position: relative; }
+
+/* hero: brutalist code block */
+.hero { display: flex; flex-direction: row; align-items: flex-start; gap: clamp(32px, 4vw, 56px); }
+.hero > :first-child { flex: 1 1 0; min-width: 0; }
+.v3 .tag { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.2em; margin-top: 0; display: block; }
+.v3 h1 {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(28.8px, 5.04vw, 63.36px);
+  line-height: 1.155;
+  letter-spacing: -0.04em;
+  margin: 18px 0 24px;
+  text-transform: uppercase;
+}
+html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
+.v3 h1 em { font-style: normal; color: var(--accent); white-space: nowrap; }
+.v3 .sub { font-size: 17px; color: var(--ink-2); max-width: 44ch; margin-bottom: 10px; }
+.v3 .ctas { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+
+/* ───────────── hero three-step onboarding */
+.hero-steps {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  counter-reset: hs;
+}
+.hero-steps li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-1);
+  padding: 12px 13px 14px;
+  counter-increment: hs;
+  min-width: 0;
+}
+.hero-steps li::before {
+  content: counter(hs, decimal-leading-zero);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 8px;
+}
+.hero-steps .hs-device {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 8px;
+}
+.hero-steps .hs-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+.hero-steps .hs-body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0;
+}
+.hero-note {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-3);
+  max-width: 58ch;
+  margin: 14px 0 0;
+}
+.hero-note a:not(.btn) { color: var(--ink); text-decoration: underline; text-decoration-color: var(--ink-4); text-underline-offset: 3px; }
+.hero-note a:not(.btn):hover { text-decoration-color: var(--ink); }
+.hero-note.hero-win { margin-top: 10px; }
+.hero-note .btn { vertical-align: middle; margin-left: 6px; }
+
+/* ───────────── manual install box (closing section): one-line install per OS */
+.install-box {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-1);
+  padding: 18px 20px;
+  max-width: 640px;
+  position: relative;
+  scroll-margin-top: 72px;
+}
+.install-box .hi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 10px;
+  flex-wrap: wrap;
+}
+.install-box .hi-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.install-box .hi-src {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.install-box .hi-src-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+.install-box .hi-tabs {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.install-box .hi-tab {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.install-box .hi-tab + .hi-tab { border-left: 1px solid var(--line); }
+.install-box .hi-tab:hover { color: var(--ink); }
+.install-box .hi-tab.on { background: var(--bg-2); color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+.install-box .hi-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 15px;
+}
+.install-box .hi-row + .hi-row { margin-top: 8px; }
+.install-box .hi-row .os-tag {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink-4);
+}
+/* generic OS glyphs (terminal + app window); original marks, no trademarked brand logos */
+.install-box .hi-row .os-tag .os-ico { flex: none; width: 12px; height: 12px; }
+.install-box .hi-row .cmd { color: var(--ink); font-size: 14px; overflow-wrap: anywhere; min-width: 0; }
+.install-box .hi-row .cmd .ac { color: var(--accent); }
+.install-box .hi-row .store-link { color: var(--ink); text-decoration: underline; text-decoration-color: var(--ink-4); text-underline-offset: 3px; }
+.install-box .hi-row .store-link:hover { text-decoration-color: var(--ink); }
+.install-box .cmd-variant { display: none; }
+.install-box .cmd-variant.on { display: inline; }
+.install-box .note-variant { display: none; }
+.install-box .note-variant.on { display: inline; }
+.install-box .hi-row .copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 140ms ease;
+  flex-shrink: 0;
+}
+.install-box .hi-row .copy:hover { color: var(--accent); border-color: var(--accent); }
+.install-box .hi-row .copy.copied { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.install-box .hi-row .copy svg { width: 16px; height: 16px; }
+.install-box .hi-row .copy .ico-done { display: none; }
+.install-box .hi-row .copy.copied .ico-copy { display: none; }
+.install-box .hi-row .copy.copied .ico-done { display: block; }
+.install-box .hi-help {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin: 12px 2px 0;
+}
+.install-box .hi-help p { margin: 0 0 6px; }
+.install-box .hi-help p:last-child { margin-bottom: 0; }
+.install-box .hi-help a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--ink-4); text-underline-offset: 3px; }
+.install-box .hi-help a:hover { text-decoration-color: var(--ink); }
+.install-box .hi-help pre.cmd {
+  margin: 6px 0 10px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.install-box .hi-help pre.cmd .com { color: var(--ink-4); }
+.install-box .hi-help ol.steps,
+.faq-item .a ol.steps { margin: 4px 0 10px; padding-left: 1.4em; }
+.install-box .hi-help ol.steps li,
+.faq-item .a ol.steps li { margin: 2px 0; padding-left: 2px; }
+.install-box .hi-help ol.steps li::marker,
+.faq-item .a ol.steps li::marker { color: var(--ink-3); font-family: var(--mono); font-size: 0.9em; }
+.install-box .hi-note,
+.install-box .hi-deps {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-4);
+  margin: 8px 2px 0;
+  min-height: 1em;
+}
+.install-box .hi-deps { margin-top: 3px; }
+@media (max-width: 520px) {
+  .install-box { padding: 14px 14px; max-width: 100%; }
+  .install-box .hi-row {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .install-box .hi-row .cmd {
+    white-space: normal;
+    word-break: break-all;
+    overflow-x: visible;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .install-box .hi-tab { font-size: 9.5px; padding: 4px 8px; }
+}
+
+/* ───────────────────────────────────────────────── hero setup demo (right column)
+   Replays the app's automatic setup (credentials → install → done → terminal),
+   mirroring the iOS setup wizard demo. The phone screen uses the app's default
+   theme tokens (Dracula dark / Catppuccin Latte light). Scenes are authored at a 390px
+   design width; JS scales the stage into the screen and plays the demo. */
+.hero > .hero-side { flex: 0 0 auto; }
+.hero-side { width: 320px; max-width: 100%; }
+.hero-demo {
+  --sd-bg: #282A36;
+  --sd-surface: #363848;
+  --sd-surface-hi: #44475A;
+  --sd-stroke: rgba(255,255,255,0.08);
+  --sd-text: #F8F8F2;
+  --sd-text2: #BBBBBB;
+  --sd-text3: #6272A4;
+  --sd-accent: #BD93F9;
+  --sd-accent-soft: rgba(189,147,249,0.08);
+  --sd-accent-stroke: rgba(189,147,249,0.55);
+  --sd-log: rgba(0,0,0,0.6);
+  --sd-amber: #FFB86C;
+  --sd-red: #FF5555;
+  --sd-info: #8BE9FD;
+  --sd-dw: 290px;
+  --sd-dh: 592px;
+  --sd-bezel: 10px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 320 / 620;
+  overflow: hidden;
+  border-radius: 28px;
+}
+[data-theme="light"] .hero-demo {
+  --sd-bg: #EFF1F5;
+  --sd-surface: #FFFFFF;
+  --sd-surface-hi: #E6E9EF;
+  --sd-stroke: rgba(60,60,67,0.14);
+  --sd-text: #4C4F69;
+  --sd-text2: #6C6F85;
+  --sd-text3: #9CA0B0;
+  --sd-accent: #8839EF;
+  --sd-accent-soft: #E8DDF9;
+  --sd-accent-stroke: #8839EF;
+  --sd-log: rgba(0,0,0,0.08);
+  --sd-amber: #905C13;
+  --sd-red: #CD0F38;
+  --sd-info: #1C5EE1;
+}
+.sd-camera {
+  position: absolute; inset: 0;
+}
+.sd-device {
+  position: absolute;
+  top: 14px;
+  left: calc(50% - var(--sd-dw) / 2);
+  width: var(--sd-dw);
+  height: var(--sd-dh);
+  border-radius: calc(var(--sd-dw) * 0.18);
+  background: #1C1C1F;
+  border: 1px solid rgba(115,115,115,0.6);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+.sd-screen {
+  position: absolute;
+  inset: var(--sd-bezel);
+  border-radius: calc(var(--sd-dw) * 0.18 - var(--sd-bezel));
+  background: var(--sd-bg);
+  overflow: hidden;
+}
+.sd-stage {
+  position: absolute; left: 0; top: 0;
+  width: 390px;
+  height: 856px;
+  transform-origin: 0 0;
+  font-family: var(--mono);
+  color: var(--sd-text);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.sd-island {
+  position: absolute; top: 12px; left: 140px;
+  width: 110px; height: 32px;
+  border-radius: 16px;
+  background: #000;
+  z-index: 3;
+}
+.sd-steps {
+  position: absolute; top: 58px; left: 0; right: 0;
+  display: flex; justify-content: center; align-items: center; gap: 8px;
+  font-size: 11px;
+  color: var(--sd-text3);
+  white-space: nowrap;
+}
+.sd-step.on { color: var(--sd-accent); }
+.sd-mark { font-style: normal; display: inline-block; width: 1ch; text-align: center; }
+.sd-step.on .sd-mark::after { content: "●"; }
+.sd-sep { color: var(--sd-text3); opacity: .6; }
+.sd-scene {
+  position: absolute; top: 96px; left: 4px; right: 4px; bottom: 0;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.sd-scene.on { opacity: 1; }
+.sd-card {
+  margin: 0 16px;
+  border: 1px solid var(--sd-stroke);
+  border-radius: 14px;
+  background: var(--sd-surface);
+  padding: 30px 16px 18px;
+  position: relative;
+}
+.sd-card-label {
+  position: absolute; top: 10px; left: 16px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--sd-text3);
+}
+.sd-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.sd-lbl { flex: 0 0 64px; text-align: right; color: var(--sd-text2); font-size: 13px; }
+.sd-field, .sd-port {
+  flex: 1;
+  min-height: 42px;
+  display: flex; align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--sd-stroke);
+  border-radius: 10px;
+  background: var(--sd-surface-hi);
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sd-port { flex: 0 0 72px; color: var(--sd-text2); }
+.sd-field.focus { border-color: var(--sd-accent-stroke); }
+.sd-caret {
+  display: none;
+  width: 2px; height: 18px; margin-left: 1px;
+  background: var(--sd-accent);
+  animation: blink 1s steps(2, end) infinite;
+}
+.sd-field.focus .sd-caret { display: inline-block; }
+.sd-seg {
+  flex: 1;
+  display: grid; grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--sd-stroke);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 13px;
+  text-align: center;
+}
+.sd-seg span { padding: 11px 0; color: var(--sd-text2); }
+.sd-seg span.on { background: var(--sd-accent-soft); color: var(--sd-accent); }
+.sd-next {
+  margin: 20px 16px 0;
+  min-height: 50px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--sd-accent-stroke);
+  border-radius: 12px;
+  background: var(--sd-accent-soft);
+  color: var(--sd-accent);
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  transition: filter 150ms ease, transform 150ms ease;
+}
+.sd-next.pressed { filter: brightness(1.35); transform: scale(0.98); }
+.sd-log {
+  margin-top: 4px;
+  height: 330px;
+  border-radius: 10px;
+  background: var(--sd-log);
+  padding: 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  overflow: hidden;
+  color: var(--sd-text2);
+}
+.sd-log-line { display: none; overflow-wrap: anywhere; min-height: 1.5em; }
+.sd-log-line.on { display: block; }
+.sd-log-line.ok { color: var(--sd-accent); }
+.sd-success {
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 170px;
+  text-align: center;
+}
+.sd-badge {
+  width: 88px; height: 88px;
+  color: var(--sd-accent);
+  opacity: 0; transform: scale(0.4);
+  transition: opacity 350ms ease, transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sd-success-title, .sd-success-sub {
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 400ms ease 150ms, transform 400ms ease 150ms;
+}
+.sd-success-title { margin-top: 22px; font-size: 22px; font-weight: 700; font-family: var(--sans); }
+.sd-success-sub { margin-top: 8px; font-size: 13px; color: var(--sd-text2); }
+.sd-success.show .sd-badge { opacity: 1; transform: none; }
+.sd-success.show .sd-success-title, .sd-success.show .sd-success-sub { opacity: 1; transform: none; }
+.sd-confetti { position: absolute; left: 50%; top: 214px; width: 0; height: 0; }
+.sd-confetti i {
+  position: absolute; left: -4px; top: -6px;
+  width: 8px; height: 12px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: sd-confetti var(--d) cubic-bezier(0.2, 0.7, 0.4, 1) forwards;
+}
+@keyframes sd-confetti {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0) scale(0.6); }
+  30% { opacity: 1; transform: translate(var(--dx), var(--dy)) rotate(calc(var(--r) * 0.4)) scale(1); }
+  100% { opacity: 0; transform: translate(calc(var(--dx) * 1.2), calc(var(--dy) + 320px)) rotate(var(--r)) scale(1); }
+}
+.sd-term {
+  left: 0; right: 0; top: 56px;
+  display: flex; flex-direction: column;
+  background: var(--sd-bg);
+  font-size: 13px;
+}
+.sd-tbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; color: var(--sd-text2); font-size: 12px; }
+.sd-tbar .sd-tname { flex: 1; }
+.sd-dot { width: 14px; height: 14px; border-radius: 50%; }
+.sd-dot.y { background: #E5B84B; }
+.sd-dot.g { background: #3FB950; }
+.sd-thead {
+  display: flex; justify-content: space-between;
+  padding: 8px 14px 2px;
+  border-top: 1px solid var(--sd-stroke);
+  background: var(--sd-surface);
+}
+.sd-thead .sd-ok { color: var(--sd-accent); }
+.sd-thead .sd-dim, .sd-tmeta { color: var(--sd-text2); font-size: 12px; }
+.sd-tmeta { padding: 0 14px 8px; background: var(--sd-surface); border-bottom: 1px solid var(--sd-stroke); }
+.sd-tbody { flex: 1; padding: 18px 14px; }
+.sd-banner b { color: var(--sd-text); }
+.sd-banner .sd-spark { color: #D97757; }
+.sd-tbody .sd-dim { color: var(--sd-text2); font-size: 12px; margin-top: 4px; }
+.sd-tline { margin-top: 14px; }
+.sd-tline.sd-dim { margin-top: 4px; }
+.sd-tline .sd-ok { color: var(--sd-accent); }
+.sd-tin { padding: 10px 14px; border-top: 1px solid var(--sd-stroke); min-height: 64px; overflow-wrap: anywhere; }
+.sd-cur { color: var(--sd-accent); animation: blink 1s steps(2, end) infinite; }
+.sd-tstatus { padding: 6px 14px; font-size: 12px; border-top: 1px solid var(--sd-stroke); }
+.sd-tstatus .sd-red { color: var(--sd-red); }
+.sd-tstatus b { color: var(--sd-info); }
+.sd-keys {
+  display: flex; justify-content: space-between;
+  padding: 12px 14px 34px;
+  font-size: 11px;
+  color: var(--sd-text2);
+}
+.sd-tap {
+  position: absolute; left: 0; top: 0;
+  width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border: 2px solid var(--sd-accent);
+  border-radius: 50%;
+  background: var(--sd-accent-soft);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.sd-tap.go { animation: sd-tap 560ms ease-out forwards; }
+@keyframes sd-tap {
+  0% { opacity: 0; transform: scale(1.6); }
+  35% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.7); }
+}
+.sd-caption {
+  margin: 10px 0 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-4);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-demo *, .hero-demo *::before, .hero-demo *::after { animation: none !important; transition: none !important; }
+}
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ───────────────────────────────────────────────── sections */
+.section {
+  padding: clamp(34px, 3.8vw, 56px) 0;
+  border-top: 1px solid var(--line);
+}
+.section-head {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 700px);
+  gap: clamp(20px, 3vw, 40px);
+  margin-bottom: 26px;
+  align-items: end;
+}
+.section-head h2 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: clamp(28px, 4.2vw, 44px);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin: 12px 0 0;
+  text-wrap: balance;
+}
+.section-head h2 em { font-style: normal; color: var(--accent); white-space: nowrap; }
+.ac { color: var(--accent); font-style: normal; }
+.section-head h2 .serif { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+.section-head p {
+  font-size: 16px;
+  color: var(--ink-2);
+  max-width: 52ch;
+  margin: 0;
+}
+/* ───────────── product demo (In Action) */
+.demo {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-1);
+  overflow: hidden;
+}
+.demo-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.demo-tab {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--line-soft);
+  padding: 12px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.demo-tab:hover { color: var(--ink); background: var(--bg-1); }
+.demo-tab.on {
+  color: var(--ink);
+  background: var(--bg-2);
+}
+/* Panels share one grid cell so the stage always takes the tallest panel's height:
+   switching tabs never changes the page height. */
+.demo-stage { padding: clamp(20px, 3vw, 36px); display: grid; }
+.demo-panel { grid-area: 1 / 1; display: grid; grid-template-columns: 1fr 1.1fr; gap: 28px; align-items: center; visibility: hidden; }
+.demo-panel.on { visibility: visible; }
+.demo-copy .idx {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+.demo-copy h3 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+.demo-copy p {
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 42ch;
+}
+/* 1.9.0 iPhone screenshots are full portrait screens; cap the height so a
+   panel fits the viewport, and show paired shots side by side. */
+.demo-shot {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+/* All screenshots are 660x1434. Give each a definite width and aspect ratio so the
+   box is reserved before the (lazy) image loads and switching tabs never shifts the page. */
+.demo-shot img {
+  display: block;
+  width: min(100%, 285px);
+  height: auto;
+  aspect-ratio: 660 / 1434;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--bg-2);
+}
+.demo-shot.pair img { width: min(calc(50% - 8px), 285px); }
+@media (max-width: 860px) {
+  .demo-panel { grid-template-columns: 1fr; align-content: start; }
+  .demo-tab { font-size: 11px; padding: 10px 10px; }
+  .demo-shot img { width: min(100%, 248px); }
+  .demo-shot.pair img { width: min(calc(50% - 8px), 248px); }
+}
+
+/* ───────────── resources compact */
+.res-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.res-grid a {
+  background: var(--bg);
+  padding: 16px 18px;
+  font-family: var(--mono);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: background 160ms ease;
+}
+.res-grid a:hover { background: var(--bg-1); }
+.res-grid a .idx {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+@media (max-width: 860px) {
+  .res-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .res-grid { grid-template-columns: 1fr; }
+}
+
+/* ───────────── closing CTA */
+.cta-close {
+  padding: clamp(34px, 3.8vw, 56px) 0;
+  border-top: 1px solid var(--line);
+}
+.cta-close .box {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-1);
+  padding: clamp(24px, 4vw, 40px);
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 28px;
+  align-items: start;
+}
+.cta-close .box > * { min-width: 0; }
+.cta-close h2 {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: clamp(24px, 3.5vw, 34px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0 0 10px;
+}
+.cta-close h2 em { font-style: normal; color: var(--accent); }
+.cta-close p.lead {
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0 0 18px;
+  max-width: 42ch;
+}
+.cta-close .app-cta { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 860px) {
+  .cta-close .box { grid-template-columns: 1fr; }
+}
+
+/* ───────────── FAQ more link */
+.faq-more {
+  margin-top: 22px;
+  font-family: var(--mono);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.faq-more a { color: var(--ink); }
+.faq-more a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ───────────── FAQ */
+.faq {
+  border-top: 1px solid var(--line);
+}
+.faq-item {
+  border-bottom: 1px solid var(--line-soft);
+  padding: 22px 0;
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
+  gap: 24px;
+  cursor: pointer;
+  transition: opacity 180ms;
+}
+.faq-item:hover { opacity: 1; }
+.faq-item .n { font-family: var(--mono); font-size: 12px; color: var(--ink-4); padding-top: 4px; }
+.faq-item .q { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+.faq-item .a { grid-column: 2; color: var(--ink-2); font-size: 14px; line-height: 1.7; max-width: 88ch; margin-top: 14px; display: none; cursor: text; }
+.faq-item.open .a { display: block; }
+.faq-item .a p { margin: 0 0 10px; }
+.faq-item .a p:last-child { margin-bottom: 0; }
+.faq-item .a pre.cmd {
+  margin: 10px 0;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+}
+.faq-item .a pre.cmd .com { color: var(--ink-4); }
+.faq-item .a a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--ink-4); text-underline-offset: 3px; }
+.faq-item .a a:hover { text-decoration-color: var(--ink); }
+.faq-item .a .note { padding-left: 12px; border-left: 2px solid var(--line); color: var(--ink-3); }
+.faq-item .a .ref-list { margin: 10px 0; border-top: 1px solid var(--line-soft); }
+.faq-item .a .ref-list dt { padding: 8px 0 2px; font-weight: 600; color: var(--ink); }
+.faq-item .a .ref-list dd { margin: 0; padding: 0 0 8px 16px; border-bottom: 1px solid var(--line-soft); }
+.faq-item .a .ref-list dd pre.cmd { margin: 8px 0; }
+.faq-item .plus {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--ink-3);
+  width: 22px;
+  height: 22px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 200ms ease, color 200ms ease;
+  line-height: 1;
+}
+.faq-item.open .plus { transform: rotate(45deg); color: var(--accent); }
+
+/* ───────────────────────────────────────────────── i18n */
+html[lang="zh-Hans"] body { font-feature-settings: normal; }
+
+
+/* ───────────── responsive */
+@media (max-width: 900px) {
+  .section-head { grid-template-columns: 1fr; }
+  /* stack the hero before the fixed-width shot starves the copy column —
+     h1 em is nowrap and would otherwise clip under overflow-x: hidden */
+  .hero { flex-direction: column; gap: 24px; }
+  .v3 > *, .section-head > *, .faq-item, .faq-item > * { min-width: 0; }
+  .hero-steps { grid-template-columns: 1fr; }
+  .hero-side { align-self: center; }
+}
+@media (max-width: 400px) {
+  /* h1 font-size has bottomed out at the clamp min here, so let the accent
+     phrase wrap rather than clip if the mono font falls back to a wider face */
+  .v3 h1 em { white-space: normal; }
+}
+@media (max-width: 520px) {
+  .statusbar .sep + span:nth-child(4), .statusbar > span:last-child { display: none; }
+}
+
+/* ───── ZH mode: no italics ───── */
+html[lang="zh-Hans"] .serif,
+html[lang="zh-Hans"] em,
+html[lang="zh-Hans"] i:not(.plus) {
+  font-style: normal !important;
+  font-family: var(--sans) !important;
+}
+html[lang="zh-Hans"] h1 .serif,
+html[lang="zh-Hans"] h2 .serif,
+html[lang="zh-Hans"] h3 .serif {
+  font-family: inherit !important;
+}
+
+</style>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+
+<div class="shell">
+
+  <header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="#action"><span class="n">01</span>增强能力展示</a>
+        <a href="#faq"><span class="n">02</span>常见问题</a>
+        <a href="#resources"><span class="n">03</span>进一步阅读</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- status bar -->
+    <div class="statusbar">
+      <span data-i-html="status.ready"><span class="dot"></span>会话 / 就绪</span>
+      <span class="mono">
+        <span>TMUX 3.2+ / HERDR</span><span class="sep">·</span>
+        <span>iOS 16.4+ / iPadOS / ANDROID 8.0+</span><span class="sep">·</span>
+        <span>MACOS / LINUX / WINDOWS</span>
+      </span>
+    </div>
+
+    <!-- ───────── HERO ───────── -->
+    <section class="hero" id="quick-start">
+      <div class="hero v3">
+        <div>
+          <div class="tag">────  REMOTE CONTROL FOR AI AGENTS  ────</div>
+          <h1 data-i-html="hero3.h1">电脑里的 Agent,<br><em>手机实时操作</em></h1>
+          <p class="sub" data-i="hero3.sub">Claude Code、Codex、OpenCode、Grok — 随时接入，秒级确认。</p>
+          <ol class="hero-steps">
+            <li>
+              <div class="hs-device" data-i="hero.steps.device.phone">在手机上</div>
+              <strong class="hs-title" data-i="hero.steps.1.title">安装 App</strong>
+              <p class="hs-body" data-i="hero.steps.1.body">免费下载 iOS App（适用于 iPhone / iPad），以及 Android App。</p>
+            </li>
+            <li>
+              <div class="hs-device" data-i="hero.steps.device.wizard">在 App 里</div>
+              <strong class="hs-title" data-i="hero.steps.2.title">连接你的电脑</strong>
+              <p class="hs-body" data-i="hero.steps.2.body">在设置向导里填写电脑的 SSH 登录信息，自动完成增强功能安装和连接配对。</p>
+            </li>
+            <li>
+              <div class="hs-device" data-i="hero.steps.device.anywhere">随时随地</div>
+              <strong class="hs-title" data-i="hero.steps.3.title">掌控你的 Agent</strong>
+              <p class="hs-body" data-i="hero.steps.3.body">电脑上 tmux 或 Herdr 里运行的 Agent 会话，在手机上实时操作。</p>
+            </li>
+          </ol>
+          <div class="ctas">
+            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="hero" data-i-html="in.cta">iOS 应用 <span class="arr">→</span></a>
+            <a class="btn btn-primary btn-xl" href="/cn/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android 应用 <span class="arr">→</span></a>
+            <a class="btn btn-xl" href="#action" data-i-html="cta.getQt">增强能力展示 <span class="arr">→</span></a>
+          </div>
+          <p class="hero-note"><span data-i-html="hero.note">Mac/Linux 电脑可以通过 SSH 登录自动安装服务端；无法使用 SSH 登录时，需要<a href="#manual-install">手动安装</a>。</span></p>
+          <p class="hero-note hero-win"><span data-i-html="hero.win">Windows 电脑请从 Microsoft Store 安装服务端：<a class="btn btn-primary" href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">Windows 服务端 <span class="arr">→</span></a></span></p>
+        </div>
+        <div class="hero-side">
+          <div class="hero-demo" id="setupDemo" aria-hidden="true">
+            <div class="sd-camera">
+              <div class="sd-device">
+                <div class="sd-screen">
+                  <div class="sd-stage">
+                    <div class="sd-island"></div>
+                    <div class="sd-steps">
+                      <span class="sd-step" data-step="0">[<i class="sd-mark"></i>] credentials</span><span class="sd-sep">──</span>
+                      <span class="sd-step" data-step="1">[<i class="sd-mark"></i>] install</span><span class="sd-sep">──</span>
+                      <span class="sd-step" data-step="2">[<i class="sd-mark"></i>] terminal</span>
+                    </div>
+                    <div class="sd-scene sd-cred">
+                      <div class="sd-card">
+                        <div class="sd-card-label" data-i="sd.card.cred">凭据</div>
+                        <div class="sd-row">
+                          <span class="sd-lbl" data-i="sd.host">主机 =</span>
+                          <span class="sd-field" data-sd-field="host" data-value="macbook">&gt;&nbsp;<span class="sd-v"></span><span class="sd-caret"></span></span>
+                          <span class="sd-port">: 22</span>
+                        </div>
+                        <div class="sd-row">
+                          <span class="sd-lbl" data-i="sd.user">用户 =</span>
+                          <span class="sd-field" data-sd-field="user" data-value="dualface">&gt;&nbsp;<span class="sd-v"></span><span class="sd-caret"></span></span>
+                        </div>
+                        <div class="sd-row">
+                          <span class="sd-lbl" data-i="sd.auth">认证 =</span>
+                          <span class="sd-seg"><span class="on" data-i="sd.auth.pass">密码</span><span data-i="sd.auth.key">SSH 密钥</span></span>
+                        </div>
+                        <div class="sd-row">
+                          <span class="sd-lbl" data-i="sd.pass">密码 =</span>
+                          <span class="sd-field" data-sd-field="pass" data-value="hunter2pass" data-secret>&gt;&nbsp;<span class="sd-v"></span><span class="sd-caret"></span></span>
+                        </div>
+                      </div>
+                      <div class="sd-next" data-i="sd.next">下一步 →</div>
+                    </div>
+                    <div class="sd-scene sd-install">
+                      <div class="sd-card">
+                        <div class="sd-card-label" data-i="sd.card.install">安装日志</div>
+                        <div class="sd-log">
+                          <div class="sd-log-line" data-i="sd.log.connecting">正在连接 macbook:22 …</div>
+                          <div class="sd-log-line" data-i="sd.log.connected">已连接，开始安装 …</div>
+                          <div class="sd-log-line"></div>
+                          <div class="sd-log-line">Downloading installer asset: quicktui-installer-darwin-arm64</div>
+                          <div class="sd-log-line">Downloading URL: https://github.com/dualface/quicktui/releases/download/installer-20260926-01/quicktui-installer-darwin-arm64</div>
+                          <div class="sd-log-line">Downloading URL: https://github.com/dualface/quicktui/releases/download/installer-20260926-01/quicktui-installer-darwin-arm64.sha256</div>
+                          <div class="sd-log-line">Installing quicktui-server …</div>
+                          <div class="sd-log-line">Starting quicktui-server …</div>
+                          <div class="sd-log-line ok" data-i="sd.log.done">安装完成。</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="sd-scene sd-success">
+                      <svg class="sd-badge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10.2" fill="currentColor" fill-opacity="0.14"></circle><path d="M7.4 12.4 10.5 15.4 16.6 9"></path></svg>
+                      <div class="sd-success-title" data-i="sd.success">恭喜配置完成</div>
+                      <div class="sd-success-sub">dualface@macbook</div>
+                      <div class="sd-confetti"></div>
+                    </div>
+                    <div class="sd-scene sd-term">
+                      <div class="sd-tbar"><span class="sd-dot y"></span><span class="sd-dot g"></span><span class="sd-tname">quicktui-mono</span><span>▭&nbsp;&nbsp;⇆</span></div>
+                      <div class="sd-thead"><span><span class="sd-ok">○</span> <b>quicktui-mono</b></span><span class="sd-dim">tab 1 · 1/1</span></div>
+                      <div class="sd-tmeta">all idle</div>
+                      <div class="sd-tbody">
+                        <div class="sd-banner"><span class="sd-spark">✻</span> <b>Claude Code</b></div>
+                        <div class="sd-dim">~/works/quicktui-mono</div>
+                        <div class="sd-tline">❯ run the test suite</div>
+                        <div class="sd-tline"><span class="sd-ok">●</span> Bash(npm test)</div>
+                        <div class="sd-tline sd-dim">&nbsp;&nbsp;⎿ 128 passed, 0 failed</div>
+                        <div class="sd-tline"><span class="sd-ok">●</span> All tests pass. Ready for the next task.</div>
+                      </div>
+                      <div class="sd-tin">❯ <span class="sd-prompt-typed"></span><span class="sd-cur">▍</span></div>
+                      <div class="sd-tstatus"><span class="sd-red">▸▸</span> <b>~/works/quicktui-mono</b></div>
+                      <div class="sd-keys"><span>ESC</span><span>TAB</span><span>↑</span><span>↓</span><span>←</span><span>→</span><span>⏎</span><span>^C</span></div>
+                      <span hidden data-sd-prompt data-i="sd.prompt">给设置向导加一段演示动画</span>
+                    </div>
+                    <div class="sd-tap"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="sd-caption" data-i="hero.demo.caption">App 内自动配置 · 演示动画</p>
+          <p class="sr-only" data-i="hero.demo.sr">动画演示：在 QuickTUI App 的设置向导中填写电脑的 SSH 主机、用户名和密码，App 自动安装 QuickTUI 服务端，提示配置完成，并打开运行 Claude Code 的终端会话。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── IN ACTION (product demo) ───────── -->
+    <section id="action" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="ia.eyebrow">§ 01 / 增强能力展示</div>
+          <h2 data-i-html="ia.h2">舒适、高效</h2>
+        </div>
+        <div>
+          <p data-i="ia.desc">每一项功能，都为移动设备精心打造。</p>
+        </div>
+      </div>
+
+      <div class="demo" id="productDemo">
+        <div class="demo-tabs" role="tablist">
+          <button type="button" class="demo-tab on" data-demo="terminal" role="tab" aria-selected="true" data-i="usage.terminal.t">终端</button>
+          <button type="button" class="demo-tab" data-demo="wizard" role="tab" aria-selected="false" data-i="usage.wizard.t">Agent 向导</button>
+          <button type="button" class="demo-tab" data-demo="switcher" role="tab" aria-selected="false" data-i="usage.switcher.t">会话管理器</button>
+          <button type="button" class="demo-tab" data-demo="files" role="tab" aria-selected="false" data-i="usage.files.t">文件管理器</button>
+          <button type="button" class="demo-tab" data-demo="ports" role="tab" aria-selected="false" data-i="usage.ports.t">端口转发</button>
+          <button type="button" class="demo-tab" data-demo="palette" role="tab" aria-selected="false" data-i="usage.palette.t">命令面板</button>
+          <button type="button" class="demo-tab" data-demo="inputbar" role="tab" aria-selected="false" data-i="usage.inputbar.t">输入栏</button>
+          <button type="button" class="demo-tab" data-demo="shortcuts" role="tab" aria-selected="false" data-i="usage.shortcuts.t">快捷栏</button>
+        </div>
+        <div class="demo-stage">
+          <div class="demo-panel on" data-demo="terminal">
+            <div class="demo-copy">
+              <div class="idx">D.01</div>
+              <h3 data-i="usage.terminal.t">终端</h3>
+              <p data-i="usage.terminal.b">从自动断线重连、会话恢复、自适应布局，到快速输入与复制粘贴，所有细节都针对移动设备做了充分优化，提供最舒适的使用体验。</p>
+            </div>
+            <div class="demo-shot"><img src="/images/usage/terminal-zh.webp" data-lang-src-en="/images/usage/terminal-en.webp" data-lang-src-zh="/images/usage/terminal-zh.webp" alt="iPhone 上 QuickTUI 终端里运行的 Claude Code" data-i-alt="usage.alt.terminal" width="660" height="1434" loading="lazy"></div>
+          </div>
+          <div class="demo-panel" data-demo="wizard">
+            <div class="demo-copy">
+              <div class="idx">D.02</div>
+              <h3 data-i="usage.wizard.t">Agent 向导</h3>
+              <p data-i="usage.wizard.b">快速启动各种 Agent，无需再手动输入命令来选择模型和推理等级。在设置界面里添加自定义参数组合，随时复用。</p>
+            </div>
+            <div class="demo-shot"><img src="/images/usage/agent-wizard-zh.webp" data-lang-src-en="/images/usage/agent-wizard-en.webp" data-lang-src-zh="/images/usage/agent-wizard-zh.webp" alt="Agent 向导选择要启动的 Agent" data-i-alt="usage.alt.agent-wizard" width="660" height="1434" loading="lazy"></div>
+          </div>
+          <div class="demo-panel" data-demo="switcher">
+            <div class="demo-copy">
+              <div class="idx">D.03</div>
+              <h3 data-i="usage.switcher.t">会话管理器</h3>
+              <p data-i="usage.switcher.b">展示电脑上所有的 tmux 与 Herdr 工作区和会话，让你可以快速跳转。新建、重命名、关闭等常用功能也样样具备。</p>
+            </div>
+            <div class="demo-shot"><img src="/images/usage/switcher-zh.webp" data-lang-src-en="/images/usage/switcher-en.webp" data-lang-src-zh="/images/usage/switcher-zh.webp" alt="会话管理器展示工作区与会话" data-i-alt="usage.alt.switcher" width="660" height="1434" loading="lazy"></div>
+          </div>
+          <div class="demo-panel" data-demo="files">
+            <div class="demo-copy">
+              <div class="idx">D.04</div>
+              <h3 data-i="usage.files.t">文件管理器</h3>
+              <p data-i="usage.files.b">浏览电脑上的文件，预览图片、Markdown 和代码。下载电脑文件或者上传文件到电脑，都可以在文件管理器中完成。还支持压缩与解压，以及快速切换目录的收藏夹。</p>
+            </div>
+            <div class="demo-shot"><img src="/images/usage/files-zh.webp" data-lang-src-en="/images/usage/files-en.webp" data-lang-src-zh="/images/usage/files-zh.webp" alt="文件管理器列出电脑上的目录" data-i-alt="usage.alt.files" width="660" height="1434" loading="lazy"></div>
+          </div>
+          <div class="demo-panel" data-demo="ports">
+            <div class="demo-copy">
+              <div class="idx">D.05</div>
+              <h3 data-i="usage.ports.t">端口转发</h3>
+              <p data-i="usage.ports.b">自动扫描电脑上打开的 Web 服务等端口，用内置浏览器预览页面。Agent 的改动立即就可以看到效果。再也不用依赖缓慢的远程桌面工具。</p>
+            </div>
+            <div class="demo-shot pair"><img src="/images/usage/port-forward-zh.webp" data-lang-src-en="/images/usage/port-forward-en.webp" data-lang-src-zh="/images/usage/port-forward-zh.webp" alt="端口转发列表显示检测到的服务器端口" data-i-alt="usage.alt.port-forward" width="660" height="1434" loading="lazy"><img src="/images/usage/mini-browser-zh.webp" data-lang-src-en="/images/usage/mini-browser-en.webp" data-lang-src-zh="/images/usage/mini-browser-zh.webp" alt="内置浏览器打开转发的开发服务器" data-i-alt="usage.alt.mini-browser" width="660" height="1434" loading="lazy"></div>
+          </div>
+          <div class="demo-panel" data-demo="palette">
+            <div class="demo-copy">
+              <div class="idx">D.06</div>
+              <h3 data-i="usage.palette.t">命令面板</h3>
+              <p data-i="usage.palette.b">支持绝大多数 Agent 和各种常用终端操作的命令入口，无需查阅命令行参数，直接快速输入到 Agent 或终端。目前已添加超过 500 个命令。命令清单自动更新，还能在设置界面中自定义。</p>
+            </div>
+            <div class="demo-shot"><img src="/images/usage/command-palette-zh.webp" data-lang-src-en="/images/usage/command-palette-en.webp" data-lang-src-zh="/images/usage/command-palette-zh.webp" alt="命令面板搜索 Agent 命令" data-i-alt="usage.alt.command-palette" width="660" height="1434" loading="lazy"></div>
+          </div>
+          <div class="demo-panel" data-demo="inputbar">
+            <div class="demo-copy">
+              <div class="idx">D.07</div>
+              <h3 data-i="usage.inputbar.t">输入栏</h3>
+              <p data-i="usage.inputbar.b">支持语音输入、附件上传，编辑好内容一次性发送给终端。高效、易用。</p>
+            </div>
+            <div class="demo-shot"><img src="/images/usage/input-bar-zh.webp" data-lang-src-en="/images/usage/input-bar-en.webp" data-lang-src-zh="/images/usage/input-bar-zh.webp" alt="键盘上方带图片附件的输入栏" data-i-alt="usage.alt.input-bar" width="660" height="1434" loading="lazy"></div>
+          </div>
+          <div class="demo-panel" data-demo="shortcuts">
+            <div class="demo-copy">
+              <div class="idx">D.08</div>
+              <h3 data-i="usage.shortcuts.t">快捷栏</h3>
+              <p data-i="usage.shortcuts.b">最多可以堆叠三个完全自定义的快捷栏，用于执行命令、发送组合键、打开功能 UI 等高频操作。</p>
+            </div>
+            <div class="demo-shot"><img src="/images/usage/shortcuts-editor-zh.webp" data-lang-src-en="/images/usage/shortcuts-editor-en.webp" data-lang-src-zh="/images/usage/shortcuts-editor-zh.webp" alt="快捷栏编辑器" data-i-alt="usage.alt.shortcuts-editor" width="660" height="1434" loading="lazy"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <!-- ───────── FAQ ───────── -->
+    <section id="faq" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="faq.eyebrow">§ 02 / 常见问题</div>
+          <h2 data-i-html="faq.h2">常见问题。</h2>
+        </div>
+        <div>
+          <p data-i-html="faq.desc">最常被问到的问题。完整文档见 FAQ 专页。</p>
+        </div>
+      </div>
+
+      <div class="faq" id="faqList">
+        <div class="faq-item open">
+          <div class="n">Q.01</div>
+          <div>
+            <div class="q" data-i="qmux.q">为什么要使用 Herdr 或 tmux？</div>
+            <div class="a" data-i-html="qmux.a"><p>Herdr 和 tmux 都支持多个工作区，并能让会话在后台持续运行：只要电脑没有重启，你的 Agent 会话就会一直保持。</p><p>对于大多数用户，推荐使用 <b>Herdr</b>：它与 Agent 的集成更好，性能也更出色。如果你已经习惯 tmux，QuickTUI 同样完整支持 tmux。</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.02</div>
+          <div>
+            <div class="q" data-i="qherdr.q">如何安装 Herdr？</div>
+            <div class="a" data-i-html="qherdr.a"><pre class="cmd"><span class="com"># macOS / Linux</span>
+curl -fsSL https://herdr.dev/install.sh | sh
+
+<span class="com"># Windows（PowerShell）</span>
+powershell -ExecutionPolicy Bypass -c "irm https://herdr.dev/install.ps1 | iex"</pre><p>完整文档：<a href="https://herdr.dev/docs/install/" target="_blank" rel="noopener">herdr.dev/docs/install</a></p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.03</div>
+          <div>
+            <div class="q" data-i="qtmux.q">如何安装 tmux？</div>
+            <div class="a" data-i-html="qtmux.a"><p>多数 Linux 发行版可以直接用包管理器安装，macOS 可以用 Homebrew：</p><pre class="cmd"><span class="com"># Debian / Ubuntu</span>
+sudo apt install tmux
+
+<span class="com"># Fedora</span>
+sudo dnf install tmux
+
+<span class="com"># macOS（Homebrew）</span>
+brew install tmux</pre><p>QuickTUI 需要 tmux 3.2 及以上版本。其他系统见 <a href="https://github.com/tmux/tmux/wiki/Installing" target="_blank" rel="noopener">tmux 安装文档</a>。</p><p class="note">tmux 不支持 Windows，Windows 上请使用 Herdr。</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.04</div>
+          <div>
+            <div class="q" data-i="q3.q">重新运行安装脚本会发生什么？</div>
+            <div class="a" data-i-html="q3.a"><p>安装命令会原地升级已有的服务端：用新版本替换 QuickTUI 服务端并重启服务，替换失败时自动恢复原版本。</p><p>已配对的设备、服务端身份和现有配置（端口、会话后端等）都会保留，无需重新配对。</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.05</div>
+          <div>
+            <div class="q" data-i="q7.q">如何配对另一台设备？</div>
+            <div class="a" data-i-html="q7.a"><p>在电脑上运行配对引导：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing welcome
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo /usr/local/bin/quicktui-server pairing welcome
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server pairing welcome</pre><p>按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。</p><p>二维码出现后，在 App 中：</p><ol class="steps"><li>在服务器列表点 <b>+</b>。</li><li>选择 <b>其他连接方式</b>。</li><li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li><li>将摄像头对准二维码，完成配对。</li></ol></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.06</div>
+          <div>
+            <div class="q" data-i="q16.q">可以通过公网连接吗？</div>
+            <div class="a" data-i-html="q16.a"><p>可以。任选一种方式，让手机能访问到你的电脑：</p><dl class="ref-list"><dt>QuickTUI Relay</dt><dd>可选订阅，在 App 里开通即可，无需任何网络配置。</dd><dt>VPN</dt><dd>例如 <b>Tailscale</b>，手机和电脑处在同一个虚拟网络里即可直连。</dd><dt>隧道或反向代理</dt><dd>例如 <b>Cloudflare Tunnel</b> 或带 TLS 的反向代理，指向 <span class="mono">http://127.0.0.1:8022</span>，然后在 App 里填写公网 HTTPS 域名（不带 <span class="mono">:8022</span>）。</dd></dl><p>配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。</p><p>通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server pairing qrcode --public-url https://your.domain</pre><p>隧道或反向代理需要保留原始 <span class="mono">Host</span> 请求头，并发送 <span class="mono">X-Forwarded-Proto</span>；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。</p><p class="note">配对二维码短期有效，请勿泄露。</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.07</div>
+          <div>
+            <div class="q" data-i="q15.q">QuickTUI 如何认证设备？</div>
+            <div class="a" data-i-html="q15.a"><p>QuickTUI 通过设备配对来认证，全程端到端加密：</p><dl class="ref-list"><dt>配对时</dt><dd>配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。</dd><dt>设备密钥</dt><dd>每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。</dd><dt>每次连接</dt><dd>App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。</dd><dt>经 Relay 转发时</dt><dd>QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。</dd><dt>撤销设备</dt><dd>手机丢失或不再使用时，在电脑上撤销它：<pre class="cmd"><span class="com"># 列出已配对设备</span>
+~/.local/bin/quicktui-server pairing devices list
+
+<span class="com"># 撤销指定设备</span>
+~/.local/bin/quicktui-server pairing devices revoke &lt;设备 ID&gt;</pre><p class="note">撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 <span class="mono">quicktui-server</span> 开头。</p></dd></dl></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.08</div>
+          <div>
+            <div class="q" data-i="q8.q">无法连接 — connection refused。</div>
+            <div class="a" data-i-html="q8.a"><p>先确认服务端正在运行：</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl print gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user status quicktui
+
+<span class="com"># Linux（以 root 安装）</span>
+systemctl status quicktui
+
+<span class="com"># Windows（PowerShell）</span>
+Get-Process quicktui-server</pre><p>没有运行就重启服务：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo systemctl restart quicktui
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server service restart</pre><p>服务在运行但仍然被拒绝时，请确认防火墙、VPN 或隧道放行了服务端端口（默认 8022）。</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+        <div class="faq-item">
+          <div class="n">Q.09</div>
+          <div>
+            <div class="q" data-i="qlinger.q">Linux 上退出登录后，服务端就停止了？</div>
+            <div class="a" data-i-html="qlinger.a"><p>Linux 普通用户安装的服务端以 systemd 用户服务运行，默认随登录会话启停。关闭 SSH 连接或退出登录后，服务端可能随之停止，手机将无法连接。开启 linger 即可常驻运行，根据情况选择对应的命令：</p><p><b>1. 直接开启</b>（本机登录或当前用户有权限时）：</p>
+<pre class="cmd">loginctl enable-linger</pre>
+<p><b>2. 提示权限不足</b>（如 <code>Access denied</code>、<code>Interactive authentication required</code>，常见于 SSH 远程登录）。有 sudo 权限时：</p>
+<pre class="cmd">sudo loginctl enable-linger "$USER"</pre>
+<p>没有 sudo 权限时，请管理员代为执行：</p>
+<pre class="cmd">sudo loginctl enable-linger &lt;你的用户名&gt;</pre>
+<p><b>3. 提示 <code>Failed to connect to bus</code></b>。如果是用 <code>su</code> 或 <code>sudo -u</code> 切换到该用户后运行的，当前会话缺少用户总线，请改为直接以该用户 SSH 登录后再运行；或先补上运行时目录再开启：</p>
+<pre class="cmd">export XDG_RUNTIME_DIR=/run/user/$(id -u)
+loginctl enable-linger
+systemctl --user restart quicktui</pre>
+<p>如果系统本身没有以 systemd 启动（部分容器、未启用 systemd 的 WSL），用户服务和 linger 都无法使用，请改用 root 安装，或先为系统启用 systemd。</p>
+<p><b>确认已开启</b>：输出 <code>Linger=yes</code> 即可。</p>
+<pre class="cmd">loginctl show-user "$USER" --property=Linger</pre><p>开启后服务端会开机自启并常驻运行，与是否登录无关。以 root 安装的系统服务不受此影响。</p></div>
+          </div>
+          <div class="plus">+</div>
+        </div>
+      </div>
+      <div class="faq-more"><a href="/cn/faq/" data-lang-href-en="/faq/" data-lang-href-zh="/cn/faq/" data-i="faq.all">查看全部 30 个问题 →</a></div>
+    </section>
+
+    <!-- ───────── RESOURCES ───────── -->
+    <section id="resources" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="res.eyebrow">§ 03 / 资源</div>
+          <h2 data-i="res.h2">进一步阅读</h2>
+        </div>
+        <div>
+          <p data-i="res.desc">更深入的配置指南与产品对比。</p>
+        </div>
+      </div>
+      <div class="res-grid">
+        <a href="/cn/install/" data-lang-href-en="/install/" data-lang-href-zh="/cn/install/"><span class="idx">R.01</span><span data-i="res.r8">配置与安装指南</span></a>
+        <a href="/cn/faq/" data-lang-href-en="/faq/" data-lang-href-zh="/cn/faq/"><span class="idx">R.02</span><span data-i="res.r9">完整 FAQ</span></a>
+        <a href="/cn/tmux-ios-app/" data-lang-href-en="/tmux-ios-app/" data-lang-href-zh="/cn/tmux-ios-app/"><span class="idx">R.03</span><span data-i="res.r1">iOS 上的 tmux</span></a>
+        <a href="/cn/herdr-ios-app/" data-lang-href-en="/herdr-ios-app/" data-lang-href-zh="/cn/herdr-ios-app/"><span class="idx">R.04</span><span data-i="res.herdr">iOS 上的 Herdr</span></a>
+        <a href="/cn/guides/attach-tmux-from-phone/" data-lang-href-en="/guides/attach-tmux-from-phone/" data-lang-href-zh="/cn/guides/attach-tmux-from-phone/"><span class="idx">R.05</span><span data-i="res.r2">从手机接入 tmux</span></a>
+        <a href="/cn/guides/run-claude-code-from-iphone/" data-lang-href-en="/guides/run-claude-code-from-iphone/" data-lang-href-zh="/cn/guides/run-claude-code-from-iphone/"><span class="idx">R.06</span><span data-i="res.r3">iPhone 运行 Claude Code</span></a>
+        <a href="/cn/guides/run-codex-cli-from-phone/" data-lang-href-en="/guides/run-codex-cli-from-phone/" data-lang-href-zh="/cn/guides/run-codex-cli-from-phone/"><span class="idx">R.07</span><span data-i="res.r4">手机运行 Codex CLI</span></a>
+        <a href="/cn/guides/run-grok-build-from-phone/" data-lang-href-en="/guides/run-grok-build-from-phone/" data-lang-href-zh="/cn/guides/run-grok-build-from-phone/"><span class="idx">R.08</span><span data-i="res.grok">手机运行 Grok Build</span></a>
+        <a href="/cn/guides/run-opencode-from-phone/" data-lang-href-en="/guides/run-opencode-from-phone/" data-lang-href-zh="/cn/guides/run-opencode-from-phone/"><span class="idx">R.09</span><span data-i="res.opencode">手机运行 OpenCode</span></a>
+        <a href="/cn/guides/run-pi-coding-agent-from-phone/" data-lang-href-en="/guides/run-pi-coding-agent-from-phone/" data-lang-href-zh="/cn/guides/run-pi-coding-agent-from-phone/"><span class="idx">R.10</span><span data-i="res.pi">手机运行 Pi</span></a>
+        <a href="/cn/guides/run-kimi-code-from-phone/" data-lang-href-en="/guides/run-kimi-code-from-phone/" data-lang-href-zh="/cn/guides/run-kimi-code-from-phone/"><span class="idx">R.11</span><span data-i="res.kimi">手机运行 Kimi Code</span></a>
+        <a href="/cn/guides/run-zcode-from-phone/" data-lang-href-en="/guides/run-zcode-from-phone/" data-lang-href-zh="/cn/guides/run-zcode-from-phone/"><span class="idx">R.12</span><span data-i="res.zcode">手机运行 ZCode</span></a>
+        <a href="/cn/guides/remote-development-from-ipad/" data-lang-href-en="/guides/remote-development-from-ipad/" data-lang-href-zh="/cn/guides/remote-development-from-ipad/"><span class="idx">R.13</span><span data-i="res.r5">iPad 远程开发</span></a>
+        <a href="/cn/use-cases/control-ai-agents-from-phone/" data-lang-href-en="/use-cases/control-ai-agents-from-phone/" data-lang-href-zh="/cn/use-cases/control-ai-agents-from-phone/"><span class="idx">R.14</span><span data-i="res.r6">掌控 AI Agent</span></a>
+        <a href="/cn/compare/" data-lang-href-en="/compare/" data-lang-href-zh="/cn/compare/"><span class="idx">R.15</span><span data-i="res.r7">对比竞品</span></a>
+        <a href="/cn/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/"><span class="idx">R.16</span><span data-i="res.android">Android 应用（Preview）</span></a>
+      </div>
+    </section>
+
+
+    <!-- ───────── CLOSING CTA + MANUAL INSTALL ───────── -->
+    <section class="cta-close" id="get-started">
+      <div class="box">
+        <div>
+          <h2 data-i-html="ctaClose.h2">手动安装，<br><em>一行命令搞定</em></h2>
+          <p class="lead" data-i="ctaClose.p">不支持 SSH 登录的 Mac/Linux 电脑，只需在电脑上运行一行命令安装 QuickTUI 服务端；Windows 电脑从 Microsoft Store 安装。之后用 App 扫码完成配对。能用 SSH 登录的电脑，App 的设置向导会自动完成这一切。</p>
+          <div class="app-cta">
+            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="cta_close" data-i-html="in.cta">iOS 应用 <span class="arr">→</span></a>
+            <a class="btn btn-primary btn-xl" href="/cn/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android 应用 <span class="arr">→</span></a>
+          </div>
+        </div>
+        <div class="install-box" id="manual-install">
+          <div class="hi-head">
+            <div class="hi-label" data-i="manual.label">手动安装 · 在电脑上</div>
+            <div class="hi-src">
+              <span class="hi-src-label" id="hiSrcLabel" data-i="manual.source">安装源：</span>
+              <div class="hi-tabs" role="tablist" aria-labelledby="hiSrcLabel">
+                <button type="button" class="hi-tab on" data-region="global" role="tab" aria-selected="true">Global</button>
+                <button type="button" class="hi-tab" data-region="cn" role="tab" aria-selected="false">CN</button>
+              </div>
+            </div>
+          </div>
+          <div class="hi-row">
+            <span class="os-tag"><svg class="os-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"></rect><path d="M4.5 6.5 6.5 8 4.5 9.5"></path><path d="M8 10h3.5"></path></svg>MAC·LINUX</span>
+            <span class="cmd">
+              <span class="cmd-variant on" data-region="global" data-copy="curl -fsSL https://quicktui.ai/q.sh | sh"><span class="ac">curl</span> -fsSL https://quicktui.ai/q.sh | <span class="ac">sh</span></span>
+              <span class="cmd-variant" data-region="cn" data-copy="curl -fsSL https://dl.quicktui.cn/q.sh | sh"><span class="ac">curl</span> -fsSL https://dl.quicktui.cn/q.sh | <span class="ac">sh</span></span>
+            </span>
+            <button type="button" class="copy" data-i-label="manual.copy" aria-label="复制" title="复制"><svg class="ico-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"></rect><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"></path></svg><svg class="ico-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5"></path></svg></button>
+          </div>
+          <div class="hi-row">
+            <span class="os-tag"><svg class="os-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"></rect><path d="M1.5 5.5h13"></path><path d="M3.5 4h1.2"></path></svg>WINDOWS</span>
+            <span class="cmd">
+              <span class="cmd-variant on" data-region="global"><a class="store-link" href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener" data-i-html="manual.win.store">从 Microsoft Store 获取 QuickTUI Server <span class="arr">→</span></a></span>
+              <span class="cmd-variant" data-region="cn"><a class="store-link" href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener" data-i-html="manual.win.store">从 Microsoft Store 获取 QuickTUI Server <span class="arr">→</span></a></span>
+            </span>
+          </div>
+          <div class="hi-note"><span class="note-variant on" data-region="global" data-i="manual.note.global">默认镜像 · 经 Cloudflare 的 GitHub Releases。</span><span class="note-variant" data-region="cn" data-i="manual.note.cn">中国镜像只用于分发 QuickTUI。Herdr 只能从官方源下载。</span></div>
+          <div class="hi-deps" data-i="manual.deps">安装器会复用已有的 tmux 或 Herdr，两者都没有时自动安装 Herdr。Windows 上请先自行安装 Herdr。</div>
+          <div class="hi-help" data-i-html="manual.help"><p><b>配对</b>：在电脑上运行下面的命令，按向导显示配对二维码：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing welcome
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server pairing welcome</pre><p><b>扫码</b>：在 App 里：</p><ol class="steps"><li>在服务器列表点 <b>+</b>。</li><li>选择 <b>其他连接方式</b>。</li><li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li><li>将摄像头对准二维码，完成配对。</li></ol></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+
+
+
+// Manual install: region tabs + copy
+document.querySelectorAll('.install-box').forEach(box => {
+  const tabs = box.querySelectorAll('.hi-tab');
+  const variants = box.querySelectorAll('.cmd-variant');
+
+  const setRegion = region => {
+    tabs.forEach(t => {
+      const on = t.getAttribute('data-region') === region;
+      t.classList.toggle('on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    variants.forEach(v => v.classList.toggle('on', v.getAttribute('data-region') === region));
+    // Hide rows without an authored command variant for the selected region.
+    // Backend prerequisites are documented separately from mirror availability.
+    box.querySelectorAll('.hi-row').forEach(row => {
+      const has = row.querySelector('.cmd-variant[data-region="' + region + '"]');
+      row.style.display = has ? '' : 'none';
+    });
+    box.querySelectorAll('.note-variant').forEach(v => v.classList.toggle('on', v.getAttribute('data-region') === region));
+  };
+  tabs.forEach(t => t.addEventListener('click', () => setRegion(t.getAttribute('data-region'))));
+
+  box.querySelectorAll('.hi-row').forEach(row => {
+    const copyBtn = row.querySelector('.copy');
+    if (!copyBtn) return;
+    copyBtn.addEventListener('click', async () => {
+      const active = row.querySelector('.cmd-variant.on');
+      const text = active ? active.getAttribute('data-copy') : '';
+      if (!text) return;
+      const osTag = (row.querySelector('.os-tag')?.textContent || '').toUpperCase();
+      const os = osTag.includes('WINDOWS') ? 'windows' : 'mac';
+      const region = active.getAttribute('data-region') || 'global';
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (!ok) return;
+        }
+        copyBtn.classList.add('copied');
+        window.zaraz?.track('install_copy', { os, region, placement: 'manual' });
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+        }, 1400);
+      } catch (_) { /* ignore */ }
+    });
+  });
+});
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+
+// FAQ toggles — ignore clicks inside the answer body so users can select/copy text
+document.querySelectorAll('.faq-item').forEach(it => {
+  it.addEventListener('click', e => {
+    if (e.target.closest('.a')) return;
+    // don't toggle if user was selecting text
+    const sel = window.getSelection();
+    if (sel && sel.toString().length > 0) return;
+    it.classList.toggle('open');
+  });
+});
+
+// Product demo tabs (In Action)
+document.querySelectorAll('#productDemo').forEach(box => {
+  const tabs = box.querySelectorAll('.demo-tab');
+  const panels = box.querySelectorAll('.demo-panel');
+  const setDemo = id => {
+    tabs.forEach(t => {
+      const on = t.getAttribute('data-demo') === id;
+      t.classList.toggle('on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(p => p.classList.toggle('on', p.getAttribute('data-demo') === id));
+  };
+  tabs.forEach(t => t.addEventListener('click', () => setDemo(t.getAttribute('data-demo'))));
+});
+
+// Hero setup demo — replays the app's automatic setup on a loop, following the
+// timeline of the iOS setup wizard demo (client/ios/.../SetupWizard/Demo).
+// Decorative (aria-hidden); still frame under reduced motion; paused off-screen.
+(function setupDemo() {
+  const root = document.getElementById('setupDemo');
+  if (!root) return;
+  const DESIGN_W = 390;
+  const TYPE_MS = 70;
+  const PAUSE_MS = 700;
+  const CROSSFADE_MS = 500;
+  const CONFETTI = ['#BD93F9', '#FF79C6', '#8BE9FD', '#50FA7B', '#F1FA8C', '#FFB86C'];
+  const device = root.querySelector('.sd-device');
+  const stage = root.querySelector('.sd-stage');
+  const scenes = {
+    cred: root.querySelector('.sd-cred'),
+    install: root.querySelector('.sd-install'),
+    success: root.querySelector('.sd-success'),
+    term: root.querySelector('.sd-term'),
+  };
+  const steps = root.querySelectorAll('.sd-step');
+  const fields = {};
+  root.querySelectorAll('.sd-field[data-sd-field]').forEach(f => { fields[f.getAttribute('data-sd-field')] = f; });
+  const nextBtn = root.querySelector('.sd-next');
+  const logLines = root.querySelectorAll('.sd-log-line');
+  const promptOut = root.querySelector('.sd-prompt-typed');
+  const promptSrc = root.querySelector('[data-sd-prompt]');
+  const confetti = root.querySelector('.sd-confetti');
+  const tap = root.querySelector('.sd-tap');
+  const reduced = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+
+  // Geometry of the stage inside the frame, in unscaled frame pixels.
+  const geo = { x: 0, y: 0, k: 1 };
+  let generation = 0;
+  let timers = [];
+  let visible = false;
+
+  function layout() {
+    const h = root.clientHeight;
+    if (!h) return;
+    const dh = h - 28;
+    const dw = Math.round(dh * 0.49);
+    const bezel = Math.round(dw * 0.035);
+    root.style.setProperty('--sd-dh', dh + 'px');
+    root.style.setProperty('--sd-dw', dw + 'px');
+    root.style.setProperty('--sd-bezel', bezel + 'px');
+    const k = (dw - 2 * bezel) / DESIGN_W;
+    stage.style.height = ((dh - 2 * bezel) / k) + 'px';
+    stage.style.transform = 'scale(' + k + ')';
+    geo.k = k;
+    geo.x = (root.clientWidth - dw) / 2 + 1 + bezel;
+    geo.y = 14 + 1 + bezel;
+  }
+
+  function box(el) {
+    let x = 0;
+    let y = 0;
+    for (let n = el; n && n !== stage; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; }
+    return { x: geo.x + x * geo.k, y: geo.y + y * geo.k, w: el.offsetWidth * geo.k, h: el.offsetHeight * geo.k };
+  }
+
+  function show(name, step) {
+    Object.keys(scenes).forEach(k => scenes[k].classList.toggle('on', k === name));
+    steps.forEach(st => st.classList.toggle('on', Number(st.getAttribute('data-step')) === step));
+  }
+
+  function setField(name, text) {
+    const f = fields[name];
+    const shown = f.hasAttribute('data-secret') ? '•'.repeat(text.length) : text;
+    f.querySelector('.sd-v').textContent = shown;
+  }
+
+  function setFocusField(name) {
+    Object.keys(fields).forEach(k => fields[k].classList.toggle('focus', k === name));
+  }
+
+  function at(ms, fn) {
+    const token = generation;
+    timers.push(setTimeout(() => { if (token === generation) fn(); }, ms));
+  }
+
+  function type(name, start) {
+    const value = fields[name].getAttribute('data-value');
+    let t = start;
+    for (let i = 1; i <= value.length; i++) {
+      at(t, () => setField(name, value.slice(0, i)));
+      t += TYPE_MS;
+    }
+    return t;
+  }
+
+  function press(el) {
+    const r = box(el);
+    tap.style.left = ((r.x + r.w / 2 - geo.x) / geo.k) + 'px';
+    tap.style.top = ((r.y + r.h / 2 - geo.y) / geo.k) + 'px';
+    tap.classList.remove('go');
+    void tap.offsetWidth;
+    tap.classList.add('go');
+    at(180, () => el.classList.add('pressed'));
+    at(480, () => el.classList.remove('pressed'));
+  }
+
+  function celebrate() {
+    scenes.success.classList.add('show');
+    confetti.textContent = '';
+    for (let i = 0; i < 70; i++) {
+      const piece = document.createElement('i');
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 60 + Math.random() * 110;
+      piece.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      piece.style.setProperty('--dy', Math.sin(angle) * dist - 40 + 'px');
+      piece.style.setProperty('--r', (Math.random() * 720 - 360) + 'deg');
+      piece.style.setProperty('--d', (1800 + Math.random() * 900) + 'ms');
+      piece.style.background = CONFETTI[i % CONFETTI.length];
+      confetti.appendChild(piece);
+    }
+  }
+
+  function reset() {
+    Object.keys(fields).forEach(k => setField(k, ''));
+    setFocusField(null);
+    logLines.forEach(l => l.classList.remove('on'));
+    promptOut.textContent = '';
+    scenes.success.classList.remove('show');
+    confetti.textContent = '';
+    nextBtn.classList.remove('pressed');
+    tap.classList.remove('go');
+  }
+
+  function stop() {
+    generation++;
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function run() {
+    stop();
+    reset();
+    if (reduced && reduced.matches) {
+      promptOut.textContent = promptSrc.textContent;
+      show('term', 2);
+      return;
+    }
+    let t = 0;
+    at(t, () => show('cred', 0));
+    t += 800;
+    at(t, () => { setFocusField('host'); });
+    t = type('host', t + PAUSE_MS) + 200;
+    at(t, () => { setFocusField('user'); });
+    t = type('user', t + 400) + 200;
+    at(t, () => { setFocusField('pass'); });
+    t = type('pass', t + 400) + 300;
+    at(t, () => setFocusField(null));
+    t += PAUSE_MS;
+    at(t, () => press(nextBtn));
+    t += 700;
+    at(t, () => show('install', 1));
+    t += 600;
+    logLines.forEach(line => {
+      at(t, () => line.classList.add('on'));
+      t += 450;
+    });
+    t += 600;
+    at(t, () => show('success', 1));
+    at(t + CROSSFADE_MS, celebrate);
+    t += 3400;
+    at(t, () => show('term', 2));
+    t += 900;
+    const prompt = promptSrc.textContent;
+    for (let i = 1; i <= prompt.length; i++) {
+      at(t, () => { promptOut.textContent = prompt.slice(0, i); });
+      t += TYPE_MS * 0.8;
+    }
+    t += 1800;
+    at(t + PAUSE_MS, () => scenes.term.classList.remove('on'));
+    at(t + PAUSE_MS + CROSSFADE_MS, run);
+  }
+
+  function sync() {
+    const active = visible && !document.hidden;
+    if (active && !timers.length) run();
+    if (!active && timers.length) { stop(); reset(); show('cred', 0); }
+  }
+
+  layout();
+  show('cred', 0);
+  if (window.ResizeObserver) new ResizeObserver(layout).observe(root);
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(entries => {
+      visible = entries[entries.length - 1].isIntersecting;
+      sync();
+    }, { threshold: 0.25 }).observe(root);
+  } else {
+    visible = true;
+    sync();
+  }
+  document.addEventListener('visibilitychange', sync);
+  if (reduced) {
+    const onMotionChange = () => { stop(); if (visible && !document.hidden) run(); };
+    if (reduced.addEventListener) reduced.addEventListener('change', onMotionChange);
+    else if (reduced.addListener) reduced.addListener(onMotionChange);
+  }
+})();
+
+// FAQ deeplinks — clients link to #q-tcc-macos etc. Full FAQ moved to /faq/;
+// if the anchor is not on this page, send users there with the same hash.
+function openFaqByHash() {
+  const hash = (location.hash || '').replace(/^#/, '');
+  if (!hash) return;
+  const target = document.getElementById(hash);
+  if (!target) {
+    if (/^q-/.test(hash)) {
+      const base = location.pathname.indexOf('/cn/') === 0 ? '/cn/faq/' : '/faq/';
+      location.replace(base + '#' + hash);
+    }
+    return;
+  }
+  if (!target.classList.contains('faq-item')) return;
+  document.querySelectorAll('.faq-item.open').forEach(it => {
+    if (it !== target) it.classList.remove('open');
+  });
+  target.classList.add('open');
+  requestAnimationFrame(() => {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+window.addEventListener('hashchange', openFaqByHash);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', openFaqByHash);
+} else {
+  openFaqByHash();
+}
+</script>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

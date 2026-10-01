@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>安装 QuickTUI 服务端 — 安装升级、配对、配置、命令与卸载</title>
+<meta name="description" content="QuickTUI 服务端完整参考：App 向导与手动安装、覆盖升级、设备配对、配置文件与全部配置项、安装添加的 hook 与服务、命令行参数与卸载。" />
+<link rel="canonical" href="https://quicktui.ai/cn/install/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/install/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/install/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/install/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="安装 QuickTUI 服务端 — 安装升级、配对、配置、命令与卸载" />
+<meta property="og:description" content="QuickTUI 服务端完整参考：App 向导与手动安装、覆盖升级、设备配对、配置文件与全部配置项、安装添加的 hook 与服务、命令行参数与卸载。" />
+<meta property="og:url" content="https://quicktui.ai/cn/install/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="安装 QuickTUI 服务端 — 安装升级、配对、配置、命令与卸载" />
+<meta name="twitter:description" content="QuickTUI 服务端完整参考：App 向导与手动安装、覆盖升级、设备配对、配置文件与全部配置项、安装添加的 hook 与服务、命令行参数与卸载。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "安装 QuickTUI 服务端 — 安装升级、配对、配置、命令与卸载",
+  "description": "QuickTUI 服务端完整参考：App 向导与手动安装、覆盖升级、设备配对、配置文件与全部配置项、安装添加的 hook 与服务、命令行参数与卸载。",
+  "url": "https://quicktui.ai/cn/install/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "安装",
+      "item": "https://quicktui.ai/cn/install/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/install/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/install/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><span aria-current="page">安装</span></nav>
+
+<p class="eyebrow">安装</p>
+<h1>在电脑上安装 QuickTUI 服务端</h1>
+<p class="lede">QuickTUI 服务端运行在你自己的电脑上，为手机端接入 tmux 或 Herdr 中的会话，双方通信全程端到端加密。本页介绍服务端的安装与升级、设备配对、配置、命令行与卸载。</p>
+<ul>
+<li><a href="#install">安装与升级</a></li>
+<li><a href="#windows">Windows（Microsoft Store）</a></li>
+<li><a href="#pairing">配对设备</a></li>
+<li><a href="#config">配置文件</a></li>
+<li><a href="#hooks">安装后添加的 hook 与服务</a></li>
+<li><a href="#cli">命令行参数</a></li>
+<li><a href="#uninstall">卸载</a></li>
+</ul>
+
+<h2 id="install">安装与升级</h2>
+
+<h3>方式一：App 设置向导（推荐）</h3>
+<p>适用于可以通过 SSH 登录的 Mac 或 Linux 电脑，全部操作在手机上完成。</p>
+<ol>
+<li>在 iPhone 或 iPad 上从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="install_step2">App Store</a> 安装 QuickTUI，或安装 <a href="/cn/android/">Android 应用（Preview）</a>。首次打开时会自动进入设置向导；之后添加电脑，在服务器列表点 <b>+</b>。</li>
+<li>选择 <b>通过 SSH 连接并启用增强功能（推荐）</b>，点 <b>下一步</b>。</li>
+<li>填写电脑的地址、端口和用户名，选择密码或 SSH 密钥登录。点 <b>测试连接</b>，连接成功后点 <b>下一步</b>。</li>
+<li>选择安装源（Global 或中国，默认与手机所在地区一致），点 <b>安装</b>。App 会通过 SSH 登录电脑安装服务端，并自动完成配对。</li>
+</ol>
+<p>SSH 密码和密钥仅用于本次安装，App 不会保存。</p>
+
+<h3 id="manual-install">方式二：手动安装</h3>
+<p>适用于无法通过 SSH 登录的 Mac / Linux 电脑，或希望自行安装的情况。Windows 电脑请改用 <a href="#windows">Microsoft Store</a>。在电脑上运行对应的命令：</p>
+<p class="lbl">Global · macOS / Linux</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p class="lbl">中国镜像 · macOS / Linux</p>
+<pre><code>curl -fsSL https://dl.quicktui.cn/q.sh | sh</code></pre>
+<p>命令会根据系统和 CPU 架构下载对应的安装器，校验 sha256 后运行。安装器会安装服务端、写入配置、为 Agent 添加 hook、注册并启动后台服务，最后引导你配对设备（见<a href="#pairing">配对设备</a>）。</p>
+<p>如果电脑上已有 tmux 或 Herdr，安装器会直接使用；两者都没有时，会从 Herdr 官方源安装 Herdr。安装器不会安装 tmux。Herdr 下载失败时只给出警告，服务端安装照常完成；自行安装 Herdr 后重新运行安装命令即可。</p>
+
+<h3 id="mirror">安装源：Global 与中国镜像</h3>
+<p>两个安装源提供相同的安装器与服务端，中国用户使用镜像下载更快。镜像只分发 QuickTUI 自身的文件，Herdr 始终从其官方源下载。</p>
+<p>服务端之后的自动更新会沿用安装时的安装源。如需切换，用另一个安装源的命令重新安装一次。在 App 中升级服务端时，也可以为单次升级选择下载源。</p>
+
+<h3 id="upgrade">覆盖安装（升级）</h3>
+<p>重新运行安装命令，或在 App 中对同一台电脑再次运行设置向导，即可覆盖安装：</p>
+<ul>
+<li>服务端替换为所选通道的最新版本，并重启服务；替换失败时自动恢复原版本。</li>
+<li>已配对的设备、服务端身份、Relay 绑定和现有配置全部保留，无需重新配对。只有命令中显式指定的参数（如 <code>--port</code>）会覆盖对应配置。</li>
+<li>Agent hook 更新为指向新版本。</li>
+</ul>
+<p>也可以由服务端自行升级：</p>
+<pre><code>~/.local/bin/quicktui-server upgrade check
+~/.local/bin/quicktui-server upgrade install</code></pre>
+
+<h3 id="locations">安装位置</h3>
+<dl class="ref-list">
+<dt>macOS</dt><dd><span class="desc">二进制：<code>~/.local/bin/quicktui-server</code><br>配置目录：<code>~/.config/quicktui-server-v2/</code><br>后台服务：LaunchAgent <code>ai.quicktui</code></span></dd>
+<dt>Linux（普通用户）</dt><dd><span class="desc">二进制：<code>~/.local/bin/quicktui-server</code><br>配置目录：<code>~/.config/quicktui-server-v2/</code><br>后台服务：systemd 用户服务 <code>quicktui</code></span></dd>
+<dt>Linux（root）</dt><dd><span class="desc">二进制：<code>/usr/local/bin/quicktui-server</code><br>配置目录：<code>/root/.config/quicktui-server-v2/</code><br>后台服务：systemd 系统服务 <code>quicktui</code></span></dd>
+<dt>Windows</dt><dd><span class="desc">应用：Microsoft Store 中的 <b>QuickTUI Server</b>，命令为 <code>quicktui-server</code><br>配置目录：<code>%USERPROFILE%\.config\quicktui-server-v2\</code><br>后台服务：启动应用 <b>QuickTUI Server</b></span></dd>
+</dl>
+<p>在 macOS 和 Linux 上，安装器不会修改 <code>PATH</code> 或 shell 配置。<code>~/.local/bin</code> 不在 <code>PATH</code> 中时，需要用完整路径运行 <code>quicktui-server</code>，因此下文命令均使用完整路径。</p>
+<p>在 Linux 上以 root 运行安装命令时，会安装为系统服务：开机自动启动，不依赖用户登录，并以 root 身份运行。同一台机器上 root 安装和普通用户安装的是两个独立实例，请勿混用各自的配置、服务或程序；已经混用时，参见 <a href="/cn/faq/#q-linux-mixed-identity">FAQ Q.14</a> 修复。</p>
+
+<div class="callout warn" id="linux-linger"><p><strong>Linux 普通用户安装：请开启 linger，否则退出登录后服务端会停止。</strong></p><p>systemd 用户服务默认随用户登录会话启停。关闭 SSH 连接或退出桌面登录后，服务端可能随之停止，手机将无法连接。根据情况选择对应的命令：</p><p><b>1. 直接开启</b>（本机登录或当前用户有权限时）：</p>
+<pre><code>loginctl enable-linger</code></pre>
+<p><b>2. 提示权限不足</b>（如 <code>Access denied</code>、<code>Interactive authentication required</code>，常见于 SSH 远程登录）。有 sudo 权限时：</p>
+<pre><code>sudo loginctl enable-linger "$USER"</code></pre>
+<p>没有 sudo 权限时，请管理员代为执行：</p>
+<pre><code>sudo loginctl enable-linger &lt;你的用户名&gt;</code></pre>
+<p><b>3. 提示 <code>Failed to connect to bus</code></b>。如果是用 <code>su</code> 或 <code>sudo -u</code> 切换到该用户后运行的，当前会话缺少用户总线，请改为直接以该用户 SSH 登录后再运行；或先补上运行时目录再开启：</p>
+<pre><code>export XDG_RUNTIME_DIR=/run/user/$(id -u)
+loginctl enable-linger
+systemctl --user restart quicktui</code></pre>
+<p>如果系统本身没有以 systemd 启动（部分容器、未启用 systemd 的 WSL），用户服务和 linger 都无法使用，请改用 root 安装，或先为系统启用 systemd。</p>
+<p><b>确认已开启</b>：输出 <code>Linger=yes</code> 即可。</p>
+<pre><code>loginctl show-user "$USER" --property=Linger</code></pre><p>开启后服务端会开机自启并常驻运行，与是否登录无关。以 root 安装的系统服务不受此影响。</p></div>
+
+<h3 id="windows">Windows：Microsoft Store</h3>
+<p>在 Windows 上，从 Microsoft Store 安装 QuickTUI Server：</p>
+<ol>
+<li>安装 Herdr。Windows 上的会话运行在 Herdr 中，Store 应用不会自动安装它：
+<pre><code>powershell -ExecutionPolicy Bypass -c "irm https://herdr.dev/install.ps1 | iex"</code></pre></li>
+<li>从 <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">Microsoft Store 获取 QuickTUI Server</a> 并安装。</li>
+<li>从开始菜单打开 <b>QuickTUI Server</b>。首次打开会在后台启动服务端、开启登录时自动启动，并打开配对引导（见<a href="#pairing">配对设备</a>）。</li>
+</ol>
+<p>首次请从开始菜单打开：在终端里直接运行 <code>quicktui-server</code> 不会开启登录时自动启动。不想让它登录时启动，可在任务管理器的「启动应用」中关闭 <b>QuickTUI Server</b>。</p>
+<p>Microsoft Store 会自动更新服务端，因此 Windows 上不能使用 <code>upgrade install</code>。在 PowerShell 中以 <code>quicktui-server &lt;命令&gt;</code> 运行命令，例如 <code>quicktui-server pairing welcome</code>。服务端首次监听端口时，Windows 可能询问是否允许其通过防火墙。</p>
+<p>之前用 PowerShell 安装脚本安装过？首次打开 Store 应用时会移除旧的计划任务或启动项，并停止旧的服务端。已配对的设备和配置都会保留，无需重新配对。如果旧计划任务由管理员创建，应用会提示你在管理员 PowerShell 中运行 <code>schtasks /Delete /TN QuickTUI /F</code> 删除它。之后可以删除旧的 <code>%LOCALAPPDATA%\QuickTUI\quicktui-server.exe</code>。</p>
+
+<h3 id="windows-herdr">Windows 与 Herdr</h3>
+<p>服务端按以下顺序查找 Herdr：配置文件中的 <code>herdr_bin</code>、环境变量 <code>QUICKTUI_HERDR_BIN</code>、<code>PATH</code>、Herdr 官方安装位置。如需使用自己安装的 Herdr，将 <code>herdr_bin</code> 设为其完整路径，再运行 <code>quicktui-server service restart</code>。</p>
+<p>原生 Windows 运行与 ARM64 电脑上的 Herdr 尚未完成全面验证，如遇问题欢迎反馈。</p>
+
+<h3 id="installer-options">安装命令的用法</h3>
+<p>在 macOS 和 Linux 上，安装脚本的完整写法是「命令 + 参数」：</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- &lt;命令&gt; [参数]</code></pre>
+<p>不写命令时默认执行 <code>install</code>，安装当前正式版服务端，无需指定通道。</p>
+<h4>命令</h4>
+<dl class="ref-list">
+<dt><code>install</code></dt><dd><span class="desc">安装服务端，已安装时覆盖安装</span></dd>
+<dt><code>check</code></dt><dd><span class="desc">检查运行时依赖，不安装任何内容</span></dd>
+<dt><code>prepare</code></dt><dd><span class="desc">只安装缺失的依赖，不安装服务端</span></dd>
+<dt><code>uninstall</code></dt><dd><span class="desc">移除后台服务与 Agent hook（见<a href="#uninstall">卸载</a>），不接受参数</span></dd>
+<dt><code>help</code></dt><dd><span class="desc">显示帮助</span></dd>
+</dl>
+<h4><code>install</code> 的参数</h4>
+<dl class="ref-list">
+<dt><code>--channel preview</code></dt><dd><span class="desc">安装预览版服务端</span></dd>
+<dt><code>--tag &lt;tag&gt;</code></dt><dd><span class="desc">安装指定的发布版本</span></dd>
+<dt><code>--server &lt;绝对路径&gt;</code></dt><dd><span class="desc">安装本地的服务端二进制文件</span></dd>
+<dt><code>-y, --yes</code></dt><dd><span class="desc">以非交互方式安装，不打开配对引导</span></dd>
+<dt><code>--addr &lt;地址&gt;</code></dt><dd><span class="desc">监听地址：主机、<code>host:port</code> 或 <code>http(s)://host:port</code>；只写主机时端口为 8022。默认 <code>0.0.0.0:8022</code>。IPv6 需加方括号并带端口，如 <code>[::1]:9000</code></span></dd>
+<dt><code>--port &lt;端口&gt;</code></dt><dd><span class="desc">只修改监听端口（默认 8022）；不能与已带端口的 <code>--addr</code> 同时使用</span></dd>
+<dt><code>--term &lt;值&gt;</code></dt><dd><span class="desc">会话的 <code>TERM</code>（默认 <code>xterm-256color</code>），仅对 tmux 后端生效</span></dd>
+<dt><code>--lang &lt;值&gt;</code></dt><dd><span class="desc">会话的 <code>LANG</code>（默认 <code>en_US.UTF-8</code>），仅对 tmux 后端生效</span></dd>
+<dt><code>--no-service</code></dt><dd><span class="desc">不注册后台服务，也不打开配对引导；仍会安装服务端、写入配置并更新 hook</span></dd>
+</dl>
+<p><code>--channel</code>、<code>--tag</code>、<code>--server</code> 只能指定其一。例如，以非交互方式安装并监听 9000 端口：</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- install -y --port 9000</code></pre>
+<h4><code>check</code> 与 <code>prepare</code> 的参数</h4>
+<dl class="ref-list">
+<dt><code>--server &lt;绝对路径&gt;</code></dt><dd><span class="desc">检查或准备指定的本地服务端二进制。省略时使用已安装的服务端；尚未安装时，临时下载并校验当前正式版服务端，用完即删除</span></dd>
+</dl>
+
+<h2 id="pairing">配对设备</h2>
+<p>每台手机或平板需要分别配对。通过设置向导安装时会自动完成配对；手动安装或添加新设备时，按以下步骤操作。</p>
+<p>手动安装完成后，安装器通常会直接打开配对引导。使用了 <code>-y</code> 或 <code>--no-service</code>、未在交互终端中运行，或电脑已有配对设备时，不会自动打开。在 Windows 上，每次从开始菜单打开 <b>QuickTUI Server</b> 都会打开配对引导。其他情况请手动执行以下步骤。</p>
+<p><b>第一步：在电脑上显示配对二维码</b></p>
+<pre><code># macOS / Linux
+~/.local/bin/quicktui-server pairing welcome
+
+# Windows（PowerShell）
+quicktui-server pairing welcome</code></pre>
+<p>按引导选择显示方式。推荐在浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。</p>
+<p><b>第二步：在 App 中扫码</b></p>
+<ol>
+<li>在服务器列表点 <b>+</b>。</li>
+<li>选择 <b>其他连接方式</b>。</li>
+<li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li>
+<li>扫描二维码并确认，完成配对。</li>
+</ol>
+<p>二维码包含一次性配对码，有效期 15 分钟，使用后立即失效。有效期内任何人扫描都可以完成配对，请勿分享或公开。</p>
+<p>也可以跳过引导，用 <code>pairing qrcode</code> 直接生成二维码，可选参数如下：</p>
+<ul>
+<li><code>--browser</code>：在电脑的默认浏览器中显示。</li>
+<li><code>--select-address</code>：电脑有多个网络地址时，手动选择写入二维码的地址。</li>
+<li><code>--public-url &lt;host:port|URL&gt;</code>：指定写入二维码的地址，例如隧道或反向代理的公网 HTTPS 地址。不能与 <code>--select-address</code> 同时使用。</li>
+<li><code>--print-code</code>：同时输出配对码。不能与 <code>--browser</code>、<code>--select-address</code> 同时使用。</li>
+</ul>
+<p>运行 <code>pairing addresses</code> 可查看可用的网络地址。</p>
+<p>已配对的设备可以随时查看和撤销：</p>
+<pre><code># 列出已配对设备
+~/.local/bin/quicktui-server pairing devices list
+
+# 撤销指定设备
+~/.local/bin/quicktui-server pairing devices revoke &lt;设备 ID&gt;</code></pre>
+<p>设备撤销后立即无法建立新连接，已有连接会在 5 分钟内断开，需重新配对才能继续使用。如需一次性移除所有设备，使用 <code>pairing identity rotate</code>：它会更换服务端身份并清空全部配对，运行前需先停止服务。</p>
+
+<h2 id="config">配置文件</h2>
+<p>配置保存在配置目录下的 <code>config.toml</code> 中，采用 TOML 格式，目录位置见<a href="#locations">安装位置</a>。macOS 同样位于 <code>~/.config</code>，而非 <code>~/Library</code>。大多数命令支持用 <code>--config &lt;路径&gt;</code> 指定其他配置文件，服务端的其他数据会存放在该文件所在目录。</p>
+<p>服务端仅在启动时读取配置，手动修改后需重启服务使其生效：</p>
+<pre><code>~/.local/bin/quicktui-server service restart</code></pre>
+<p>常用配置项也可以通过 <code>config set</code> 修改，该命令会自动重启服务：</p>
+<pre><code>~/.local/bin/quicktui-server config show
+~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000</code></pre>
+<p>服务端运行时只读取配置文件，不读取 <code>QUICKTUI_*</code> 环境变量。这类环境变量仅在安装时生效，由安装器写入配置文件。</p>
+<h3>配置项</h3>
+<dl class="ref-list">
+<dt><code>addr</code></dt><dd><span class="desc">监听地址 <code>host:port</code>。写成 <code>http(s)://</code> 形式时会去掉前缀，服务端始终监听明文 HTTP，所有配对后的流量在端到端加密隧道内</span><span class="kv"><span class="k">默认值</span>：<code>0.0.0.0:8022</code></span></dd>
+<dt><code>session_backend</code></dt><dd><span class="desc">默认会话后端：<code>tmux</code>、<code>herdr</code>、<code>luvus</code>、<code>shell</code>，必须包含在 <code>session_backends</code> 中</span><span class="kv"><span class="k">默认值</span>：启用列表中有 Herdr 时为 <code>herdr</code>，否则为第一个启用的后端</span></dd>
+<dt><code>session_backends</code></dt><dd><span class="desc">启用的后端，逗号分隔。自动检测只添加不删除；手动修改后不再自动检测，清空 <code>session_backend</code>、<code>session_backends</code>、<code>session_backends_auto</code> 可恢复自动检测</span><span class="kv"><span class="k">默认值</span>：每次启动时按检测到的 tmux / Herdr 自动补充</span></dd>
+<dt><code>term</code></dt><dd><span class="desc">会话的 <code>TERM</code>；对应 terminfo 不存在时回退到 <code>xterm-256color</code></span><span class="kv"><span class="k">默认值</span>：<code>xterm-256color</code></span></dd>
+<dt><code>lang</code></dt><dd><span class="desc">会话的 <code>LANG</code>；该 locale 不存在时回退到 <code>C.UTF-8</code></span><span class="kv"><span class="k">默认值</span>：<code>en_US.UTF-8</code></span></dd>
+<dt><code>tmux_socket</code></dt><dd><span class="desc">tmux 服务器 socket 的绝对路径；默认与你自己的 tmux 共用同一个服务器</span><span class="kv"><span class="k">默认值</span>：<code>$TMUX_TMPDIR</code> 或 <code>/tmp</code> 下的 <code>tmux-&lt;uid&gt;/default</code></span></dd>
+<dt><code>tmux_bin</code></dt><dd><span class="desc">tmux 可执行文件的绝对路径；无效时给出警告并重新查找</span><span class="kv"><span class="k">默认值</span>：自动查找</span></dd>
+<dt><code>herdr_bin</code></dt><dd><span class="desc">Herdr 可执行文件路径</span><span class="kv"><span class="k">默认值</span>：自动查找</span></dd>
+<dt><code>herdr_client_retention</code></dt><dd><span class="desc">终端释放后保留 Herdr 客户端的时长（Go 时长格式），<code>0</code> 表示不保留</span><span class="kv"><span class="k">默认值</span>：<code>5m</code></span></dd>
+<dt><code>luvus_bin</code></dt><dd><span class="desc">Luvus 后端的可执行文件路径</span><span class="kv"><span class="k">默认值</span>：无</span></dd>
+<dt><code>tmux_env_&lt;名称&gt;</code></dt><dd><span class="desc">在会话中设置环境变量 <code>&lt;名称&gt;</code>（自动转为大写），如 <code>tmux_env_editor = "vim"</code></span><span class="kv"><span class="k">默认值</span>：无</span></dd>
+<dt><code>tmux_env_unset</code></dt><dd><span class="desc">在会话中移除的环境变量，逗号分隔</span><span class="kv"><span class="k">默认值</span>：无</span></dd>
+<dt><code>[agent_bins]</code></dt><dd><span class="desc">按 Agent 指定可执行文件路径的表，如 <code>claude = "/abs/path/claude"</code></span><span class="kv"><span class="k">默认值</span>：无</span></dd>
+<dt><code>trusted_proxies</code></dt><dd><span class="desc">受信任的反向代理 IP / CIDR，逗号分隔；只信任这些地址转发的来源头</span><span class="kv"><span class="k">默认值</span>：空</span></dd>
+<dt><code>files_enabled</code></dt><dd><span class="desc">是否开启文件浏览，通常在 App 里切换</span><span class="kv"><span class="k">默认值</span>：<code>false</code></span></dd>
+<dt><code>update_channel</code></dt><dd><span class="desc">自动更新通道：<code>server2</code>、<code>preview</code>（<code>stable</code> 为旧版服务端）</span><span class="kv"><span class="k">默认值</span>：安装时写入</span></dd>
+<dt><code>update_region</code></dt><dd><span class="desc">更新下载区域：<code>global</code> 或 <code>cn</code></span><span class="kv"><span class="k">默认值</span>：按更新清单地址判断</span></dd>
+<dt><code>update_manifest_url</code></dt><dd><span class="desc">更新清单地址，由安装源决定</span><span class="kv"><span class="k">默认值</span>：内置地址</span></dd>
+<dt><code>releases</code></dt><dd><span class="desc">发布文件下载地址，由安装源决定</span><span class="kv"><span class="k">默认值</span>：内置地址</span></dd>
+<dt><code>debug</code></dt><dd><span class="desc">输出调试日志</span><span class="kv"><span class="k">默认值</span>：<code>false</code></span></dd>
+<dt><code>verbose</code></dt><dd><span class="desc">输出更详细的日志，需同时开启 <code>debug</code></span><span class="kv"><span class="k">默认值</span>：<code>false</code></span></dd>
+</dl>
+<p>键名须为小写。文件中的 <code>session_backends_auto</code>、<code>tmux_bin_auto</code>、<code>herdr_bin_auto</code> 由服务端自动维护，请勿手动修改。旧版的 <code>token</code> 已废弃，服务端会自动移除。</p>
+<h3>配置目录中的其他文件</h3>
+<dl class="ref-list">
+<dt><code>pairing_auth.json</code></dt><dd>已配对设备与配对凭据</dd>
+<dt><code>e2e_identity.json</code></dt><dd>服务端的端到端加密身份，<code>pairing identity rotate</code> 会替换它</dd>
+<dt><code>relay.json</code><br><code>relay_registration_identity.json</code></dt><dd>QuickTUI Relay 绑定与注册身份</dd>
+<dt><code>account_auth.json</code></dt><dd><code>auth login</code> 的账号登录状态</dd>
+<dt><code>herdr-sids.json</code><br><code>session-sids.json</code><br><code>session-default-cwd.json</code></dt><dd>会话 ID 与新会话默认工作目录</dd>
+<dt><code>agent-wizard*.json</code></dt><dd>从 quicktui.ai 下载的 Agent 启动配置及其签名缓存</dd>
+<dt><code>agentbridge2/</code></dt><dd>Agent 状态数据与各 Agent 的 hook 启用设置</dd>
+<dt><code>*.lock</code></dt><dd>写入配置、配对与身份时使用的锁文件</dd>
+</dl>
+<p>日志位置：macOS 位于 <code>~/Library/Logs/QuickTUI/</code>；Linux 用以下命令查看：</p>
+<pre><code># 普通用户安装
+journalctl --user -u quicktui
+
+# root 安装
+journalctl -u quicktui</code></pre>
+
+<h2 id="hooks">安装后添加的 hook 与服务</h2>
+<h3>Agent hook</h3>
+<p>各 Agent 配置中的 hook 会把 Agent 事件（例如等待审批、任务完成或出错）报告给服务端，服务端据此发送 Agent 通知（见 <a href="/cn/faq/#q-agent-notifications">FAQ Q.29</a>）。安装器会为以下 Agent 添加 hook：</p>
+<dl class="ref-list">
+<dt>Claude Code</dt><dd><span class="desc">添加会话开始 / 结束、提交提示词、通知、停止、工具调用前后、权限请求等事件的 hook</span><span class="kv"><span class="k">修改的文件</span>：<code>~/.claude/settings.json</code>（设置了 <code>CLAUDE_CONFIG_DIR</code> 时在该目录下）</span></dd>
+<dt>Codex</dt><dd><span class="desc">添加 hook，并清理旁边 <code>config.toml</code> 中 QuickTUI 的旧条目。需要在 Codex CLI 里用 <code>/hooks</code> 信任后才会生效</span><span class="kv"><span class="k">修改的文件</span>：<code>~/.codex/hooks.json</code>（或 <code>CODEX_HOME</code> 下）</span></dd>
+<dt>Grok</dt><dd><span class="desc">QuickTUI 独占的 hook 文件</span><span class="kv"><span class="k">修改的文件</span>：<code>~/.grok/hooks/ab2.json</code>（或 <code>GROK_HOME</code> 下）</span></dd>
+<dt>OpenCode</dt><dd><span class="desc">插件文件，不修改 <code>opencode.json</code>；可能需要重启 OpenCode 才会加载</span><span class="kv"><span class="k">修改的文件</span>：<code>~/.config/opencode/plugins/agentbridge2.js</code>（或 <code>OPENCODE_CONFIG_DIR</code> 下）</span></dd>
+</dl>
+<p>每个 hook 都运行 <code>quicktui-server ab2hook --agent &lt;名称&gt;</code>，将 Agent 事件记录并转交给服务端。hook 出错时会静默退出，不影响 Agent 运行。QuickTUI 只修改自己添加的条目，不会改动你已有的 hook。</p>
+<p>每次运行安装器或启动服务端时，都会更新 hook 使其指向当前服务端，并清理旧版 hook。可用以下命令关闭或重新开启：</p>
+<pre><code># 关闭并移除所有 Agent 的 hook，之后不再自动添加
+~/.local/bin/quicktui-server hooks uninstall
+
+# 重新开启，并为所有 Agent 安装 hook
+~/.local/bin/quicktui-server hooks install</code></pre>
+<p><code>service uninstall</code> 同样会移除 hook，但保持开启状态，下次安装或启动服务端时会重新添加。</p>
+<h3>后台服务</h3>
+<dl class="ref-list">
+<dt>macOS</dt><dd><span class="desc"><code>~/Library/LaunchAgents/ai.quicktui.plist</code> 与启动脚本 <code>ai.quicktui.sh</code>，登录后自动启动并保持运行</span></dd>
+<dt>Linux（普通用户）</dt><dd><span class="desc">systemd 用户服务 <code>~/.config/systemd/user/quicktui.service</code>，已启用</span></dd>
+<dt>Linux（root）</dt><dd><span class="desc">systemd 系统服务 <code>/etc/systemd/system/quicktui.service</code>，开机自启</span></dd>
+<dt>Windows</dt><dd><span class="desc">Microsoft Store 应用自带的启动应用 <b>QuickTUI Server</b>，首次从开始菜单打开应用时启用；可在任务管理器的「启动应用」中管理</span></dd>
+</dl>
+<p>重启服务不会结束 tmux 会话。除上述内容外，安装器不修改其他系统配置，包括 <code>.bashrc</code>、<code>.zshrc</code> 与 <code>PATH</code>。Linux 普通用户安装的服务需要开启 linger 才能在退出登录后继续运行，见<a href="#linux-linger">上文</a>。</p>
+
+<h2 id="cli">命令行参数</h2>
+<p><code>quicktui-server</code> 没有全局参数，参数均属于各个子命令。任意命令加 <code>-h</code> 或 <code>--help</code> 可查看帮助；标有 <code>[--config]</code> 的命令可指定配置文件。</p>
+<dl class="ref-list">
+<dt><code>serve</code></dt><dd>前台运行服务端（后台服务运行的就是它）。参数：<code>--config</code>、<code>--debug-addr &lt;地址&gt;</code>（临时覆盖监听地址）、<code>--term</code>、<code>--lang</code>、<code>--tmux-socket</code>、<code>--debug</code>、<code>--verbose</code>（需同时带 <code>--debug</code>）</dd>
+<dt><code>pairing welcome [--config]</code></dt><dd>配对引导</dd>
+<dt><code>pairing qrcode [--config]</code></dt><dd>显示配对二维码，参数见<a href="#pairing">配对设备</a></dd>
+<dt><code>pairing addresses [--config]</code></dt><dd>列出可写入二维码的网络地址</dd>
+<dt><code>pairing devices list [--config]</code></dt><dd>列出已配对设备</dd>
+<dt><code>pairing devices revoke &lt;设备 ID&gt; [--config]</code></dt><dd>撤销设备</dd>
+<dt><code>pairing identity rotate [--config]</code></dt><dd>更换服务端身份并清空全部配对，需先停止服务</dd>
+<dt><code>upgrade check [--config]</code></dt><dd>检查是否有新版本</dd>
+<dt><code>upgrade install [--config] [--channel server2|preview]</code></dt><dd>升级服务端并重启服务；带 <code>--channel</code> 时切换通道。Windows 不支持，由 Microsoft Store 负责更新</dd>
+<dt><code>service install</code></dt><dd>注册后台服务，参数同 <code>serve</code>，传入的参数会写入配置文件</dd>
+<dt><code>service uninstall [--config]</code></dt><dd>移除后台服务与 Agent hook</dd>
+<dt><code>service restart</code></dt><dd>刷新服务定义并重启服务</dd>
+<dt><code>hooks install [--config]</code></dt><dd>为所有 Agent 开启并安装 hook</dd>
+<dt><code>hooks uninstall [--config]</code></dt><dd>为所有 Agent 关闭并移除 hook</dd>
+<dt><code>config show [--config]</code></dt><dd>显示配置文件内容</dd>
+<dt><code>config set [--config] [--addr] [--term] [--lang] [--tmux-socket]</code></dt><dd>修改配置并重启服务</dd>
+<dt><code>config relay set &lt;QTRID&gt; &lt;WS 地址&gt; [--config]</code></dt><dd>手动保存 Relay 绑定（通常由 App 完成）</dd>
+<dt><code>config relay delete [--config]</code></dt><dd>删除 Relay 绑定</dd>
+<dt><code>auth login &lt;CODE&gt;</code><br><code>auth logout</code></dt><dd>登录 / 退出 QuickTUI Cloud 账号</dd>
+<dt><code>auth bind [QTRID]</code><br><code>auth unbind [QTRID]</code><br><code>auth usage</code></dt><dd>绑定 / 解绑 Relay，查看用量</dd>
+<dt><code>doctor [--config]</code></dt><dd>检查 tmux、Herdr 与各 Agent 可执行文件的查找结果</dd>
+<dt><code>version</code></dt><dd>显示版本号</dd>
+</dl>
+<p><code>installer</code>、<code>ab2hook</code>、<code>ab2ctl</code> 与 <code>service win-autostart</code> 供安装器、hook 和 Windows 启动应用内部调用，无需手动运行。</p>
+
+<h2 id="uninstall">卸载</h2>
+<p>在 macOS 和 Linux 上，在安装命令后加 <code>uninstall</code>，或直接让服务端卸载服务：</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- uninstall
+
+# 或直接运行
+~/.local/bin/quicktui-server service uninstall</code></pre>
+<p>卸载会停止并移除后台服务，同时移除 Agent hook。<b>服务端程序和配置目录会保留</b>，其中包括配对记录，因此重新安装后无需重新配对。卸载仅作用于当前用户的安装，root 与普通用户的安装需分别卸载。tmux、Herdr 及其中的会话不受影响。</p>
+<p>在 Windows 上，先在 PowerShell 中停止服务端并移除 Agent hook，再到「设置 &gt; 应用 &gt; 已安装的应用」中卸载 <b>QuickTUI Server</b>。配置目录会保留，其中包括配对记录：</p>
+<pre><code>quicktui-server service uninstall</code></pre>
+<h3>完全移除</h3>
+<ol>
+<li>关闭 Agent hook：<pre><code># macOS / Linux
+~/.local/bin/quicktui-server hooks uninstall
+
+# Windows（PowerShell）
+quicktui-server hooks uninstall</code></pre></li>
+<li>按上文卸载。</li>
+<li>删除程序和配置目录：
+<ul>
+<li>macOS：<code>~/.local/bin/quicktui-server</code>、<code>~/.config/quicktui-server-v2/</code>、<code>~/Library/Logs/QuickTUI/</code></li>
+<li>Linux 普通用户：<code>~/.local/bin/quicktui-server</code>、<code>~/.config/quicktui-server-v2/</code></li>
+<li>Linux root：<code>/usr/local/bin/quicktui-server</code>、<code>/root/.config/quicktui-server-v2/</code></li>
+<li>Windows：<code>%USERPROFILE%\.config\quicktui-server-v2\</code>；如果之前用 PowerShell 安装脚本安装过，还有 <code>%LOCALAPPDATA%\QuickTUI\</code></li>
+</ul>
+</li>
+<li>tmux 与 Herdr 为独立安装，如不再需要，请自行卸载。</li>
+</ol>
+<p>删除配置目录会同时清除配对记录，重新安装后需要重新配对所有设备。</p>
+
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/faq/">完整 FAQ</a></li>
+    <li><a href="/cn/">返回首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,4770 @@
+{
+  "schema_version": 1,
+  "version": 3,
+  "items": [
+    {
+      "id": "agent-common",
+      "alias": "Common Agent Commands",
+      "children": [
+        {
+          "id": "agent-common-clear",
+          "alias": "/clear",
+          "caption": "Session · Clear conversation",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/clear{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-clear-args",
+          "alias": "/clear …",
+          "caption": "Session · Clear and name conversation",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/clear "
+          }
+        },
+        {
+          "id": "agent-common-resume",
+          "alias": "/resume",
+          "caption": "Session · Resume session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/resume{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-resume-args",
+          "alias": "/resume …",
+          "caption": "Session · Resume session by ID or name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/resume "
+          }
+        },
+        {
+          "id": "agent-common-rename",
+          "alias": "/rename",
+          "caption": "Session · Rename session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/rename{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-rename-args",
+          "alias": "/rename …",
+          "caption": "Session · Rename session to name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/rename "
+          }
+        },
+        {
+          "id": "agent-common-branch",
+          "alias": "/branch",
+          "caption": "Session · Branch conversation here",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/branch{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-fork",
+          "alias": "/fork",
+          "caption": "Session · Fork session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/fork{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-fork-args",
+          "alias": "/fork …",
+          "caption": "Session · Fork session with prompt or name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/fork "
+          }
+        },
+        {
+          "id": "agent-common-rewind",
+          "alias": "/rewind",
+          "caption": "Session · Rewind conversation or code",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/rewind{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-btw-args",
+          "alias": "/btw …",
+          "caption": "Session · Ask side question",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/btw "
+          }
+        },
+        {
+          "id": "agent-common-export",
+          "alias": "/export",
+          "caption": "Session · Export conversation",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/export{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-export-args",
+          "alias": "/export …",
+          "caption": "Session · Export to file",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/export "
+          }
+        },
+        {
+          "id": "agent-common-copy",
+          "alias": "/copy",
+          "caption": "Session · Copy last response",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/copy{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-copy-2",
+          "alias": "/copy 2",
+          "caption": "Session · Copy second-to-last response",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/copy 2{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-tasks",
+          "alias": "/tasks",
+          "caption": "Session · Background tasks",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/tasks{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-remote-control",
+          "alias": "/remote-control",
+          "caption": "Session · Enable Remote Control",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/remote-control{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-add-dir-args",
+          "alias": "/add-dir …",
+          "caption": "Session · Add working directory",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/add-dir "
+          }
+        },
+        {
+          "id": "agent-common-exit",
+          "alias": "/exit",
+          "caption": "Session · Exit agent",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/exit{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-new",
+          "alias": "/new",
+          "caption": "Session · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/new{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-sessions",
+          "alias": "/sessions",
+          "caption": "Session · List and switch sessions",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/sessions{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-undo",
+          "alias": "/undo",
+          "caption": "Session · Undo last turn",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/undo{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-quit",
+          "alias": "/quit",
+          "caption": "Session · Quit agent",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/quit{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-context",
+          "alias": "/context",
+          "caption": "Context · Context usage",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/context{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-compact",
+          "alias": "/compact",
+          "caption": "Context · Compact conversation",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/compact{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-compact-args",
+          "alias": "/compact …",
+          "caption": "Context · Compact with instructions",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/compact "
+          }
+        },
+        {
+          "id": "agent-common-memory",
+          "alias": "/memory",
+          "caption": "Context · Manage memory",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/memory{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-init",
+          "alias": "/init",
+          "caption": "Context · Create project instructions file",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/init{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-model",
+          "alias": "/model",
+          "caption": "Model · Open model picker",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort",
+          "alias": "/effort",
+          "caption": "Model · Effort picker",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort-low",
+          "alias": "/effort low",
+          "caption": "Model · Effort: low",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort low{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort-medium",
+          "alias": "/effort medium",
+          "caption": "Model · Effort: medium",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort medium{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort-high",
+          "alias": "/effort high",
+          "caption": "Model · Effort: high",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort high{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort-xhigh",
+          "alias": "/effort xhigh",
+          "caption": "Model · Effort: xhigh",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort xhigh{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort-max",
+          "alias": "/effort max",
+          "caption": "Model · Effort: max",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort max{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort-auto",
+          "alias": "/effort auto",
+          "caption": "Model · Effort: auto",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort auto{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-fast",
+          "alias": "/fast",
+          "caption": "Model · Toggle fast mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/fast{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-plan",
+          "alias": "/plan",
+          "caption": "Model · Enter plan mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/plan{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-plan-args",
+          "alias": "/plan …",
+          "caption": "Model · Plan a task",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/plan "
+          }
+        },
+        {
+          "id": "agent-common-goal",
+          "alias": "/goal",
+          "caption": "Model · Show goal",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/goal{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-goal-args",
+          "alias": "/goal …",
+          "caption": "Model · Set goal",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/goal "
+          }
+        },
+        {
+          "id": "agent-common-goal-clear",
+          "alias": "/goal clear",
+          "caption": "Model · Clear goal",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/goal clear{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-sandbox",
+          "alias": "/sandbox",
+          "caption": "Model · Sandbox settings",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/sandbox{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-goal-pause",
+          "alias": "/goal pause",
+          "caption": "Model · Pause goal",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/goal pause{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-goal-resume",
+          "alias": "/goal resume",
+          "caption": "Model · Resume goal",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/goal resume{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-model-args",
+          "alias": "/model …",
+          "caption": "Model · Switch to model",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model "
+          }
+        },
+        {
+          "id": "agent-common-auto",
+          "alias": "/auto",
+          "caption": "Model · Toggle auto mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/auto{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-effort-off",
+          "alias": "/effort off",
+          "caption": "Model · Effort: off",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort off{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-diff",
+          "alias": "/diff",
+          "caption": "Review · Review working tree changes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/diff{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-simplify",
+          "alias": "/simplify",
+          "caption": "Review · Clean up changed code",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/simplify{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-verify",
+          "alias": "/verify",
+          "caption": "Review · Build, run and verify change",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/verify{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-run",
+          "alias": "/run",
+          "caption": "Review · Run and drive the app",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/run{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-review",
+          "alias": "/review",
+          "caption": "Review · Review changes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/review{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-review-args",
+          "alias": "/review …",
+          "caption": "Review · Review with instructions",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/review "
+          }
+        },
+        {
+          "id": "agent-common-batch-args",
+          "alias": "/batch …",
+          "caption": "Orchestrate · Parallel large-scale change",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/batch "
+          }
+        },
+        {
+          "id": "agent-common-subtask-args",
+          "alias": "/subtask …",
+          "caption": "Orchestrate · Spawn forked subagent",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/subtask "
+          }
+        },
+        {
+          "id": "agent-common-loop",
+          "alias": "/loop",
+          "caption": "Orchestrate · Self-paced loop",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/loop{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-loop-5m-args",
+          "alias": "/loop 5m …",
+          "caption": "Orchestrate · Loop every 5 minutes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/loop 5m "
+          }
+        },
+        {
+          "id": "agent-common-deep-research-args",
+          "alias": "/deep-research …",
+          "caption": "Orchestrate · Cited web research report",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/deep-research "
+          }
+        },
+        {
+          "id": "agent-common-loop-args",
+          "alias": "/loop …",
+          "caption": "Orchestrate · Run prompt on an interval",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/loop "
+          }
+        },
+        {
+          "id": "agent-common-mcp",
+          "alias": "/mcp",
+          "caption": "Extensions · Manage MCP servers",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/mcp{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-skills",
+          "alias": "/skills",
+          "caption": "Extensions · Browse skills",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/skills{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-agents",
+          "alias": "/agents",
+          "caption": "Extensions · Manage agents",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/agents{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-hooks",
+          "alias": "/hooks",
+          "caption": "Extensions · Manage hooks",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/hooks{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-mcps",
+          "alias": "/mcps",
+          "caption": "Extensions · Toggle MCP servers",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/mcps{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-ide",
+          "alias": "/ide",
+          "caption": "Integrations · IDE integration",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/ide{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-config",
+          "alias": "/config",
+          "caption": "Settings · Open config",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/config{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-permissions",
+          "alias": "/permissions",
+          "caption": "Settings · Permission rules",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/permissions{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-settings",
+          "alias": "/settings",
+          "caption": "Settings · Open settings",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/settings{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-theme",
+          "alias": "/theme",
+          "caption": "UI · Change theme",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/theme{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-voice",
+          "alias": "/voice",
+          "caption": "UI · Toggle voice input",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/voice{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-thinking",
+          "alias": "/thinking",
+          "caption": "UI · Thinking settings",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-usage",
+          "alias": "/usage",
+          "caption": "Account · Usage and limits",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/usage{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-login",
+          "alias": "/login",
+          "caption": "Account · Sign in",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/login{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-help",
+          "alias": "/help",
+          "caption": "Help · Help",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/help{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-status",
+          "alias": "/status",
+          "caption": "Help · Show status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/status{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-doctor",
+          "alias": "/doctor",
+          "caption": "Help · Diagnose setup",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/doctor{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-bug",
+          "alias": "/bug",
+          "caption": "Help · Report bug",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/bug{{Enter}}"
+          }
+        },
+        {
+          "id": "agent-common-feedback",
+          "alias": "/feedback",
+          "caption": "Help · Send feedback",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/feedback{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-code",
+      "alias": "Claude Code",
+      "children": [
+        {
+          "id": "claude-code-claude",
+          "alias": "claude",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "claude{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-claude-c",
+          "alias": "claude -c",
+          "caption": "Launch · Continue last session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "claude --continue{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-claude-r",
+          "alias": "claude -r",
+          "caption": "Launch · Pick session to resume",
+          "action": {
+            "tag": "sendKeys",
+            "value": "claude --resume{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-claude-yolo",
+          "alias": "claude YOLO",
+          "caption": "Launch · Skip all permission prompts",
+          "action": {
+            "tag": "sendKeys",
+            "value": "claude --dangerously-skip-permissions{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-claude-plan-mode",
+          "alias": "claude plan mode",
+          "caption": "Launch · Start in plan mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "claude --permission-mode plan{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-claude-p",
+          "alias": "claude -p",
+          "caption": "Launch · One-shot prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "claude --print \""
+          }
+        },
+        {
+          "id": "claude-code-background",
+          "alias": "/background",
+          "caption": "Session · Detach to background",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/background{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-background-args",
+          "alias": "/background …",
+          "caption": "Session · Send prompt, then detach",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/background "
+          }
+        },
+        {
+          "id": "claude-code-teleport",
+          "alias": "/teleport",
+          "caption": "Session · Pull cloud session here",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/teleport{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-model-fable",
+          "alias": "/model fable",
+          "caption": "Model · Switch to Fable 5.1",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model fable{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-model-opus-1m",
+          "alias": "/model opus[1m]",
+          "caption": "Model · Switch to Opus (1M)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model opus[1m]{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-model-sonnet-1m",
+          "alias": "/model sonnet[1m]",
+          "caption": "Model · Switch to Sonnet (1M)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model sonnet[1m]{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-code-review",
+          "alias": "/code-review",
+          "caption": "Review · Review current diff",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/code-review{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-code-review-high",
+          "alias": "/code-review high",
+          "caption": "Review · Review at high effort",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/code-review high{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-code-review-max",
+          "alias": "/code-review max",
+          "caption": "Review · Review at max effort",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/code-review max{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-code-review-ultra",
+          "alias": "/code-review ultra",
+          "caption": "Review · Cloud multi-agent review",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/code-review ultra{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-code-review-fix",
+          "alias": "/code-review --fix",
+          "caption": "Review · Review and apply fixes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/code-review --fix{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-code-review-comment",
+          "alias": "/code-review --comment",
+          "caption": "Review · Review and post PR comments",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/code-review --comment{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-code-review-args",
+          "alias": "/code-review …",
+          "caption": "Review · Review PR, branch or path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/code-review "
+          }
+        },
+        {
+          "id": "claude-code-security-review",
+          "alias": "/security-review",
+          "caption": "Review · Security review of branch",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/security-review{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-default",
+          "alias": "/color default",
+          "caption": "UI · Reset prompt bar color",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color default{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-red",
+          "alias": "/color red",
+          "caption": "UI · Prompt bar color: red",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color red{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-blue",
+          "alias": "/color blue",
+          "caption": "UI · Prompt bar color: blue",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color blue{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-green",
+          "alias": "/color green",
+          "caption": "UI · Prompt bar color: green",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color green{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-yellow",
+          "alias": "/color yellow",
+          "caption": "UI · Prompt bar color: yellow",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color yellow{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-purple",
+          "alias": "/color purple",
+          "caption": "UI · Prompt bar color: purple",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color purple{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-orange",
+          "alias": "/color orange",
+          "caption": "UI · Prompt bar color: orange",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color orange{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-pink",
+          "alias": "/color pink",
+          "caption": "UI · Prompt bar color: pink",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color pink{{Enter}}"
+          }
+        },
+        {
+          "id": "claude-code-color-cyan",
+          "alias": "/color cyan",
+          "caption": "UI · Prompt bar color: cyan",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/color cyan{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "codex",
+      "alias": "Codex",
+      "children": [
+        {
+          "id": "codex-codex",
+          "alias": "codex",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-resume-last",
+          "alias": "codex resume --last",
+          "caption": "Launch · Continue last session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex resume --last{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-resume",
+          "alias": "codex resume",
+          "caption": "Launch · Pick session to resume",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex resume{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-fork-last",
+          "alias": "codex fork --last",
+          "caption": "Launch · Fork last session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex fork --last{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-yolo",
+          "alias": "codex YOLO",
+          "caption": "Launch · Bypass approvals and sandbox",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex --dangerously-bypass-approvals-and-sandbox{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-worktree",
+          "alias": "codex --worktree",
+          "caption": "Launch · Start in new Git worktree",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex --worktree{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-exec",
+          "alias": "codex exec",
+          "caption": "Launch · One-shot prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex exec \""
+          }
+        },
+        {
+          "id": "codex-codex-m-gpt-6-astra",
+          "alias": "codex -m gpt-6-astra",
+          "caption": "Launch · Start with gpt-6-astra",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex -m gpt-6-astra{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-m-gpt-5-6-sol",
+          "alias": "codex -m gpt-5.6-sol",
+          "caption": "Launch · Start with gpt-5.6-sol",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex -m gpt-5.6-sol{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-m-gpt-6-sol",
+          "alias": "codex -m gpt-6-sol",
+          "caption": "Launch · Start with gpt-6-sol",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex -m gpt-6-sol{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-codex-m-gpt-6-luna",
+          "alias": "codex -m gpt-6-luna",
+          "caption": "Launch · Start with gpt-6-luna",
+          "action": {
+            "tag": "sendKeys",
+            "value": "codex -m gpt-6-luna{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-new-args",
+          "alias": "/new …",
+          "caption": "Session · Start new chat with name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/new "
+          }
+        },
+        {
+          "id": "codex-side",
+          "alias": "/side",
+          "caption": "Session · Side chat in ephemeral fork",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/side{{Enter}}"
+          }
+        },
+        {
+          "id": "codex-side-args",
+          "alias": "/side …",
+          "caption": "Session · Ask side question",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/side "
+          }
+        },
+        {
+          "id": "codex-worktree",
+          "alias": "/worktree",
+          "caption": "Session · Continue in new worktree",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/worktree{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "opencode",
+      "alias": "OpenCode",
+      "children": [
+        {
+          "id": "opencode-opencode",
+          "alias": "opencode",
+          "caption": "Launch · Start TUI",
+          "action": {
+            "tag": "sendKeys",
+            "value": "opencode{{Enter}}"
+          }
+        },
+        {
+          "id": "opencode-opencode-c",
+          "alias": "opencode -c",
+          "caption": "Launch · Continue last session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "opencode --continue{{Enter}}"
+          }
+        },
+        {
+          "id": "opencode-opencode-c-fork",
+          "alias": "opencode -c --fork",
+          "caption": "Launch · Fork last session and continue",
+          "action": {
+            "tag": "sendKeys",
+            "value": "opencode --continue --fork{{Enter}}"
+          }
+        },
+        {
+          "id": "opencode-opencode-yolo",
+          "alias": "opencode YOLO",
+          "caption": "Launch · Auto-approve permissions",
+          "action": {
+            "tag": "sendKeys",
+            "value": "opencode --auto{{Enter}}"
+          }
+        },
+        {
+          "id": "opencode-opencode-plan-agent",
+          "alias": "opencode plan agent",
+          "caption": "Launch · Start with plan agent",
+          "action": {
+            "tag": "sendKeys",
+            "value": "opencode --agent plan{{Enter}}"
+          }
+        },
+        {
+          "id": "opencode-opencode-run-args",
+          "alias": "opencode run …",
+          "caption": "Launch · One-shot prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "opencode run \""
+          }
+        },
+        {
+          "id": "opencode-models",
+          "alias": "/models",
+          "caption": "Model · Switch model",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/models{{Enter}}"
+          }
+        },
+        {
+          "id": "opencode-variants",
+          "alias": "/variants",
+          "caption": "Model · Switch model variant",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/variants{{Enter}}"
+          }
+        },
+        {
+          "id": "opencode-themes",
+          "alias": "/themes",
+          "caption": "UI · Switch theme",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/themes{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "grok",
+      "alias": "Grok",
+      "children": [
+        {
+          "id": "grok-grok",
+          "alias": "grok",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "grok{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-grok-c",
+          "alias": "grok -c",
+          "caption": "Launch · Continue last session here",
+          "action": {
+            "tag": "sendKeys",
+            "value": "grok --continue{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-grok-r",
+          "alias": "grok -r",
+          "caption": "Launch · Resume most recent session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "grok --resume{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-grok-yolo",
+          "alias": "grok YOLO",
+          "caption": "Launch · Auto-approve all tool calls",
+          "action": {
+            "tag": "sendKeys",
+            "value": "grok --always-approve{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-grok-plan-mode",
+          "alias": "grok plan mode",
+          "caption": "Launch · Start in plan mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "grok --permission-mode plan{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-grok-w",
+          "alias": "grok -w",
+          "caption": "Launch · Start in a new git worktree",
+          "action": {
+            "tag": "sendKeys",
+            "value": "grok --worktree{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-grok-p",
+          "alias": "grok -p",
+          "caption": "Launch · One-shot prompt, print and exit",
+          "action": {
+            "tag": "sendKeys",
+            "value": "grok -p \""
+          }
+        },
+        {
+          "id": "grok-dashboard",
+          "alias": "/dashboard",
+          "caption": "Session · Open Agent Dashboard",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/dashboard{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-model-grok-4-7",
+          "alias": "/model grok-4.7",
+          "caption": "Model · Switch to grok-4.7",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model grok-4.7{{Enter}}"
+          }
+        },
+        {
+          "id": "grok-loop-30m-args",
+          "alias": "/loop 30m …",
+          "caption": "Orchestrate · Run prompt every 30 minutes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/loop 30m "
+          }
+        },
+        {
+          "id": "grok-edit-prompt",
+          "alias": "/edit-prompt",
+          "caption": "UI · Edit prompt in external editor",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/edit-prompt{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pi",
+      "alias": "Pi",
+      "children": [
+        {
+          "id": "pi-pi",
+          "alias": "pi",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "pi{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-pi-c",
+          "alias": "pi -c",
+          "caption": "Launch · Continue last session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "pi --continue{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-pi-r",
+          "alias": "pi -r",
+          "caption": "Launch · Pick session to resume",
+          "action": {
+            "tag": "sendKeys",
+            "value": "pi --resume{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-pi-p",
+          "alias": "pi -p",
+          "caption": "Launch · One-shot prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "pi -p \""
+          }
+        },
+        {
+          "id": "pi-name-args",
+          "alias": "/name …",
+          "caption": "Session · Set session display name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/name "
+          }
+        },
+        {
+          "id": "pi-model-deepseek-flash",
+          "alias": "/model deepseek-flash",
+          "caption": "Model · Switch to DeepSeek Flash",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model deepseek-flash{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-thinking-off",
+          "alias": "/thinking off",
+          "caption": "Model · Thinking: off",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking off{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-thinking-minimal",
+          "alias": "/thinking minimal",
+          "caption": "Model · Thinking: minimal",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking minimal{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-thinking-low",
+          "alias": "/thinking low",
+          "caption": "Model · Thinking: low",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking low{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-thinking-medium",
+          "alias": "/thinking medium",
+          "caption": "Model · Thinking: medium",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking medium{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-thinking-high",
+          "alias": "/thinking high",
+          "caption": "Model · Thinking: high",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking high{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-thinking-xhigh",
+          "alias": "/thinking xhigh",
+          "caption": "Model · Thinking: xhigh",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking xhigh{{Enter}}"
+          }
+        },
+        {
+          "id": "pi-thinking-max",
+          "alias": "/thinking max",
+          "caption": "Model · Thinking: max",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/thinking max{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cursor",
+      "alias": "Cursor",
+      "children": [
+        {
+          "id": "cursor-cursor-agent",
+          "alias": "cursor-agent",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-cursor-agent-continue",
+          "alias": "cursor-agent --continue",
+          "caption": "Launch · Continue previous session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent --continue{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-cursor-agent-resume",
+          "alias": "cursor-agent resume",
+          "caption": "Launch · Resume latest chat",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent resume{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-cursor-agent-ls",
+          "alias": "cursor-agent ls",
+          "caption": "Launch · Pick chat to resume",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent ls{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-cursor-agent-yolo",
+          "alias": "cursor-agent --yolo",
+          "caption": "Launch · Run Everything, skip approvals",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent --yolo{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-cursor-agent-plan",
+          "alias": "cursor-agent --plan",
+          "caption": "Launch · Start in Plan mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent --plan{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-cursor-agent-w",
+          "alias": "cursor-agent -w",
+          "caption": "Launch · Start in new git worktree",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent -w{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-cursor-agent-p",
+          "alias": "cursor-agent -p",
+          "caption": "Launch · One-shot prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "cursor-agent -p \""
+          }
+        },
+        {
+          "id": "cursor-summarize",
+          "alias": "/summarize",
+          "caption": "Context · Summarize to reduce context",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/summarize{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-ask",
+          "alias": "/ask",
+          "caption": "Model · Toggle Ask mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/ask{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-run-everything",
+          "alias": "/run-everything",
+          "caption": "Model · Toggle Run Everything",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/run-everything{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-run-everything-on",
+          "alias": "/run-everything on",
+          "caption": "Model · Run Everything: on",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/run-everything on{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-run-everything-off",
+          "alias": "/run-everything off",
+          "caption": "Model · Run Everything: off",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/run-everything off{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-auto-review",
+          "alias": "/auto-review",
+          "caption": "Model · Toggle Auto-review",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/auto-review{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-auto-review-on",
+          "alias": "/auto-review on",
+          "caption": "Model · Auto-review: on",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/auto-review on{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-auto-review-off",
+          "alias": "/auto-review off",
+          "caption": "Model · Auto-review: off",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/auto-review off{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-shell",
+          "alias": "/shell",
+          "caption": "Model · Enter Shell Mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/shell{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-shell-args",
+          "alias": "/shell …",
+          "caption": "Model · Run shell command",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/shell "
+          }
+        },
+        {
+          "id": "cursor-changes",
+          "alias": "/changes",
+          "caption": "Review · Review conversation and git changes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/changes{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-commit",
+          "alias": "/commit",
+          "caption": "Review · Agent stages and commits",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/commit{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-jobs",
+          "alias": "/jobs",
+          "caption": "Orchestrate · Active tasks list",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/jobs{{Enter}}"
+          }
+        },
+        {
+          "id": "cursor-update",
+          "alias": "/update",
+          "caption": "Help · Update Cursor Agent",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/update{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "kimi",
+      "alias": "Kimi",
+      "children": [
+        {
+          "id": "kimi-kimi",
+          "alias": "kimi",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "kimi{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-kimi-c",
+          "alias": "kimi -c",
+          "caption": "Launch · Continue last session here",
+          "action": {
+            "tag": "sendKeys",
+            "value": "kimi --continue{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-kimi-s",
+          "alias": "kimi -S",
+          "caption": "Launch · Pick session to resume",
+          "action": {
+            "tag": "sendKeys",
+            "value": "kimi --session{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-kimi-yolo",
+          "alias": "kimi YOLO",
+          "caption": "Launch · Ask When Needed mode (auto-edits)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "kimi --yolo{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-kimi-plan",
+          "alias": "kimi --plan",
+          "caption": "Launch · Start in plan mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "kimi --plan{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-kimi-p",
+          "alias": "kimi -p",
+          "caption": "Launch · One-shot prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "kimi --prompt \""
+          }
+        },
+        {
+          "id": "kimi-title-args",
+          "alias": "/title …",
+          "caption": "Session · Set session title",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/title "
+          }
+        },
+        {
+          "id": "kimi-undo-args",
+          "alias": "/undo …",
+          "caption": "Session · Undo last N prompts",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/undo "
+          }
+        },
+        {
+          "id": "kimi-export-md",
+          "alias": "/export-md",
+          "caption": "Session · Export session as Markdown",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/export-md{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-model-k3",
+          "alias": "/model k3",
+          "caption": "Model · Switch to k3",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model k3{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-effort-on",
+          "alias": "/effort on",
+          "caption": "Model · Thinking on",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/effort on{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-permission",
+          "alias": "/permission",
+          "caption": "Model · Select permission mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/permission{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-yolo",
+          "alias": "/yolo",
+          "caption": "Model · Ask When Needed mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/yolo{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-plan-on",
+          "alias": "/plan on",
+          "caption": "Model · Plan mode on",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/plan on{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-plan-off",
+          "alias": "/plan off",
+          "caption": "Model · Plan mode off",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/plan off{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-plan-clear",
+          "alias": "/plan clear",
+          "caption": "Model · Clear current plan",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/plan clear{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-goal-cancel",
+          "alias": "/goal cancel",
+          "caption": "Orchestrate · Cancel and remove goal",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/goal cancel{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-swarm",
+          "alias": "/swarm",
+          "caption": "Orchestrate · Toggle swarm mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/swarm{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-swarm-on",
+          "alias": "/swarm on",
+          "caption": "Orchestrate · Swarm mode on",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/swarm on{{Enter}}"
+          }
+        },
+        {
+          "id": "kimi-swarm-off",
+          "alias": "/swarm off",
+          "caption": "Orchestrate · Swarm mode off",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/swarm off{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qoder",
+      "alias": "Qoder",
+      "children": [
+        {
+          "id": "qoder-qodercli",
+          "alias": "qodercli",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "qodercli{{Enter}}"
+          }
+        },
+        {
+          "id": "qoder-qodercli-c",
+          "alias": "qodercli -c",
+          "caption": "Launch · Continue last session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "qodercli --continue{{Enter}}"
+          }
+        },
+        {
+          "id": "qoder-qodercli-r",
+          "alias": "qodercli -r",
+          "caption": "Launch · Pick session to resume",
+          "action": {
+            "tag": "sendKeys",
+            "value": "qodercli --resume{{Enter}}"
+          }
+        },
+        {
+          "id": "qoder-qodercli-yolo",
+          "alias": "qodercli YOLO",
+          "caption": "Launch · Skip all permission prompts",
+          "action": {
+            "tag": "sendKeys",
+            "value": "qodercli --dangerously-skip-permissions{{Enter}}"
+          }
+        },
+        {
+          "id": "qoder-qodercli-plan-mode",
+          "alias": "qodercli plan mode",
+          "caption": "Launch · Start in plan mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "qodercli --permission-mode plan{{Enter}}"
+          }
+        },
+        {
+          "id": "qoder-qodercli-worktree",
+          "alias": "qodercli --worktree",
+          "caption": "Launch · Start in new git worktree",
+          "action": {
+            "tag": "sendKeys",
+            "value": "qodercli --worktree{{Enter}}"
+          }
+        },
+        {
+          "id": "qoder-qodercli-p",
+          "alias": "qodercli -p",
+          "caption": "Launch · One-shot prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "qodercli --print \""
+          }
+        },
+        {
+          "id": "qoder-continue",
+          "alias": "/continue",
+          "caption": "Session · Resume most recent session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/continue{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini",
+      "alias": "Gemini",
+      "children": [
+        {
+          "id": "gemini-gemini",
+          "alias": "gemini",
+          "caption": "Launch · Start new session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gemini{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-gemini-r-latest",
+          "alias": "gemini -r latest",
+          "caption": "Launch · Continue most recent session",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gemini --resume latest{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-gemini-yolo",
+          "alias": "gemini YOLO",
+          "caption": "Launch · Auto-approve all actions",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gemini --approval-mode=yolo{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-gemini-plan-mode",
+          "alias": "gemini plan mode",
+          "caption": "Launch · Start in read-only Plan Mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gemini --approval-mode=plan{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-gemini-p",
+          "alias": "gemini -p",
+          "caption": "Launch · One-shot non-interactive prompt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gemini -p \""
+          }
+        },
+        {
+          "id": "gemini-directory-add-args",
+          "alias": "/directory add …",
+          "caption": "Session · Add workspace directories",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/directory add "
+          }
+        },
+        {
+          "id": "gemini-quit-delete",
+          "alias": "/quit --delete",
+          "caption": "Session · Exit and delete session history",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/quit --delete{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-compress",
+          "alias": "/compress",
+          "caption": "Context · Replace context with a summary",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/compress{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-memory-show",
+          "alias": "/memory show",
+          "caption": "Context · Show loaded GEMINI.md memory",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/memory show{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-model",
+          "alias": "/model",
+          "caption": "Model · Open model dialog",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model manage{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-model-set-pro",
+          "alias": "/model set pro",
+          "caption": "Model · Switch to Pro",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/model set pro{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-agents",
+          "alias": "/agents",
+          "caption": "Orchestrate · Manage subagents",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/agents list{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-skills",
+          "alias": "/skills",
+          "caption": "Extensions · List agent skills",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/skills list{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-hooks",
+          "alias": "/hooks",
+          "caption": "Extensions · Show hooks and status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/hooks panel{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-mcp",
+          "alias": "/mcp",
+          "caption": "Integrations · List MCP servers and tools",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/mcp list{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-auth",
+          "alias": "/auth",
+          "caption": "Account · Sign in or change auth method",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/auth{{Enter}}"
+          }
+        },
+        {
+          "id": "gemini-stats",
+          "alias": "/stats",
+          "caption": "Account · Session usage statistics",
+          "action": {
+            "tag": "sendKeys",
+            "value": "/stats{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "alias": "git",
+      "children": [
+        {
+          "id": "git-status",
+          "alias": "git status",
+          "caption": "Working tree status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git status{{Enter}}"
+          }
+        },
+        {
+          "id": "git-status-short",
+          "alias": "git status -sb",
+          "caption": "Compact branch status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git status -sb{{Enter}}"
+          }
+        },
+        {
+          "id": "git-diff",
+          "alias": "git diff",
+          "caption": "Unstaged diff",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git diff{{Enter}}"
+          }
+        },
+        {
+          "id": "git-diff-cached",
+          "alias": "git diff --cached",
+          "caption": "Staged diff",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git diff --cached{{Enter}}"
+          }
+        },
+        {
+          "id": "git-diff-stat",
+          "alias": "git diff --stat",
+          "caption": "Diff summary",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git diff --stat{{Enter}}"
+          }
+        },
+        {
+          "id": "git-diff-name-status",
+          "alias": "git diff --name-status",
+          "caption": "Changed paths and status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git diff --name-status{{Enter}}"
+          }
+        },
+        {
+          "id": "git-diff-check",
+          "alias": "git diff --check",
+          "caption": "Check whitespace errors",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git diff --check{{Enter}}"
+          }
+        },
+        {
+          "id": "git-log",
+          "alias": "git log",
+          "caption": "Recent commits",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git log -n {{param:limit}}{{Enter}}"
+          },
+          "parameters": [
+            {
+              "name": "limit",
+              "type": "int",
+              "default": 20,
+              "min": 1,
+              "max": 1000
+            }
+          ]
+        },
+        {
+          "id": "git-log-oneline",
+          "alias": "git log --oneline",
+          "caption": "Compact recent commits",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git log --oneline --decorate -n {{param:limit}}{{Enter}}"
+          },
+          "parameters": [
+            {
+              "name": "limit",
+              "type": "int",
+              "default": 20,
+              "min": 1,
+              "max": 1000
+            }
+          ]
+        },
+        {
+          "id": "git-log-graph",
+          "alias": "git log --graph",
+          "caption": "Graph all refs",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git log --graph --oneline --decorate --all -n {{param:limit}}{{Enter}}"
+          },
+          "parameters": [
+            {
+              "name": "limit",
+              "type": "int",
+              "default": 20,
+              "min": 1,
+              "max": 1000
+            }
+          ]
+        },
+        {
+          "id": "git-log-path",
+          "alias": "git log path",
+          "caption": "History for path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git log -- "
+          }
+        },
+        {
+          "id": "git-branch-vv",
+          "alias": "git branch -vv",
+          "caption": "Branches and upstreams",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git branch -vv{{Enter}}"
+          }
+        },
+        {
+          "id": "git-branch-current",
+          "alias": "git current branch",
+          "caption": "Show current branch",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git branch --show-current{{Enter}}"
+          }
+        },
+        {
+          "id": "git-branch-merged",
+          "alias": "git merged branches",
+          "caption": "Branches merged into HEAD",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git branch --merged{{Enter}}"
+          }
+        },
+        {
+          "id": "git-branch-unmerged",
+          "alias": "git unmerged branches",
+          "caption": "Branches not merged into HEAD",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git branch --no-merged{{Enter}}"
+          }
+        },
+        {
+          "id": "git-show-stat",
+          "alias": "git show --stat",
+          "caption": "Latest commit summary",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git show --stat{{Enter}}"
+          }
+        },
+        {
+          "id": "git-remote-v",
+          "alias": "git remote -v",
+          "caption": "Configured remotes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git remote -v{{Enter}}"
+          }
+        },
+        {
+          "id": "git-root",
+          "alias": "git repo root",
+          "caption": "Show repository root",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git rev-parse --show-toplevel{{Enter}}"
+          }
+        },
+        {
+          "id": "git-add",
+          "alias": "git add",
+          "caption": "Stage path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git add "
+          }
+        },
+        {
+          "id": "git-add-p",
+          "alias": "git add -p",
+          "caption": "Interactive stage",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git add -p"
+          }
+        },
+        {
+          "id": "git-commit",
+          "alias": "git commit",
+          "caption": "Enter message and closing quote",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git commit -m \""
+          }
+        },
+        {
+          "id": "git-pull",
+          "alias": "git pull",
+          "caption": "Pull current branch",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git pull{{Enter}}"
+          }
+        },
+        {
+          "id": "git-push",
+          "alias": "git push",
+          "caption": "Push current branch",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git push{{Enter}}"
+          }
+        },
+        {
+          "id": "git-fetch",
+          "alias": "git fetch",
+          "caption": "Fetch remote",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git fetch "
+          }
+        },
+        {
+          "id": "git-fetch-all-prune",
+          "alias": "git fetch all prune",
+          "caption": "Fetch all and prune",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git fetch --all --prune"
+          }
+        },
+        {
+          "id": "git-stash",
+          "alias": "git stash",
+          "caption": "Stash changes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git stash{{Enter}}"
+          }
+        },
+        {
+          "id": "git-stash-pop",
+          "alias": "git stash pop",
+          "caption": "Pop latest stash",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git stash pop{{Enter}}"
+          }
+        },
+        {
+          "id": "git-stash-list",
+          "alias": "git stash list",
+          "caption": "List stashes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git stash list{{Enter}}"
+          }
+        },
+        {
+          "id": "git-stash-show",
+          "alias": "git stash show -p",
+          "caption": "Show latest stash patch",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git stash show -p{{Enter}}"
+          }
+        },
+        {
+          "id": "git-stash-message",
+          "alias": "git stash message",
+          "caption": "Enter message and closing quote",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git stash push -m \""
+          }
+        },
+        {
+          "id": "git-switch",
+          "alias": "git switch",
+          "caption": "Switch branch",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git switch "
+          }
+        },
+        {
+          "id": "git-switch-create",
+          "alias": "git switch -c",
+          "caption": "Create and switch branch",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git switch -c "
+          }
+        },
+        {
+          "id": "git-restore",
+          "alias": "git restore",
+          "caption": "Restore path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git restore "
+          }
+        },
+        {
+          "id": "git-restore-staged",
+          "alias": "git restore --staged",
+          "caption": "Unstage path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git restore --staged "
+          }
+        },
+        {
+          "id": "git-merge",
+          "alias": "git merge",
+          "caption": "Merge ref",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git merge "
+          }
+        },
+        {
+          "id": "git-rebase",
+          "alias": "git rebase",
+          "caption": "Rebase onto ref",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git rebase "
+          }
+        },
+        {
+          "id": "git-cherry-pick",
+          "alias": "git cherry-pick",
+          "caption": "Cherry-pick commit",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git cherry-pick "
+          }
+        },
+        {
+          "id": "git-revert",
+          "alias": "git revert",
+          "caption": "Revert commit",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git revert "
+          }
+        },
+        {
+          "id": "git-worktree-list",
+          "alias": "git worktree list",
+          "caption": "List worktrees",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git worktree list{{Enter}}"
+          }
+        },
+        {
+          "id": "git-worktree-porcelain",
+          "alias": "git worktree porcelain",
+          "caption": "Machine-readable worktrees",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git worktree list --porcelain{{Enter}}"
+          }
+        },
+        {
+          "id": "git-worktree-add",
+          "alias": "git worktree add",
+          "caption": "Add worktree",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git worktree add "
+          }
+        },
+        {
+          "id": "git-tag-list",
+          "alias": "git tag --list",
+          "caption": "List tags",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git tag --list{{Enter}}"
+          }
+        },
+        {
+          "id": "git-reflog",
+          "alias": "git reflog",
+          "caption": "Recent reflog entries",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git reflog -n 30{{Enter}}"
+          }
+        },
+        {
+          "id": "git-clean-dry-run",
+          "alias": "git clean -nd",
+          "caption": "Dry-run untracked cleanup",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git clean -nd{{Enter}}"
+          }
+        },
+        {
+          "id": "git-blame",
+          "alias": "git blame",
+          "caption": "Blame path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git blame "
+          }
+        },
+        {
+          "id": "git-blame-lines",
+          "alias": "git blame -L",
+          "caption": "Blame line range",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git blame -L "
+          }
+        },
+        {
+          "id": "git-grep",
+          "alias": "git grep -n",
+          "caption": "Search tracked files",
+          "action": {
+            "tag": "sendKeys",
+            "value": "git grep -n "
+          }
+        }
+      ]
+    },
+    {
+      "id": "terminal",
+      "alias": "Terminal",
+      "children": [
+        {
+          "id": "terminal-ctrl-c",
+          "alias": "Ctrl+C",
+          "caption": "Interrupt",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+C}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-d",
+          "alias": "Ctrl+D",
+          "caption": "EOF",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+D}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-l",
+          "alias": "Ctrl+L",
+          "caption": "Clear screen",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+L}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-z",
+          "alias": "Ctrl+Z",
+          "caption": "Suspend",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+Z}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-r",
+          "alias": "Ctrl+R",
+          "caption": "Reverse search",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+R}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-a",
+          "alias": "Ctrl+A",
+          "caption": "Line start",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+A}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-e",
+          "alias": "Ctrl+E",
+          "caption": "Line end",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+E}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-u",
+          "alias": "Ctrl+U",
+          "caption": "Kill line",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+U}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-k",
+          "alias": "Ctrl+K",
+          "caption": "Kill to end",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+K}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-w",
+          "alias": "Ctrl+W",
+          "caption": "Delete previous word",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+W}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-t",
+          "alias": "Ctrl+T",
+          "caption": "Transpose characters",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+T}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-o",
+          "alias": "Ctrl+O",
+          "caption": "Run and select next history",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+O}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-b",
+          "alias": "Ctrl+B",
+          "caption": "Move backward one character",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-f",
+          "alias": "Ctrl+F",
+          "caption": "Move forward one character",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+F}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-p",
+          "alias": "Ctrl+P",
+          "caption": "Previous history entry",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+P}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-n",
+          "alias": "Ctrl+N",
+          "caption": "Next history entry",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+N}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-h",
+          "alias": "Ctrl+H",
+          "caption": "Backward delete",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+H}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-g",
+          "alias": "Ctrl+G",
+          "caption": "Cancel current search",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+G}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-y",
+          "alias": "Ctrl+Y",
+          "caption": "Yank killed text",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+Y}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-v",
+          "alias": "Ctrl+V",
+          "caption": "Quote next character",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+V}}"
+          }
+        },
+        {
+          "id": "terminal-ctrl-q",
+          "alias": "Ctrl+Q",
+          "caption": "Resume terminal output",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+Q}}"
+          }
+        },
+        {
+          "id": "terminal-alt-b",
+          "alias": "Alt+B",
+          "caption": "Move backward one word",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Alt+B}}"
+          }
+        },
+        {
+          "id": "terminal-alt-f",
+          "alias": "Alt+F",
+          "caption": "Move forward one word",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Alt+F}}"
+          }
+        },
+        {
+          "id": "terminal-alt-d",
+          "alias": "Alt+D",
+          "caption": "Delete next word",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001bd"
+          }
+        },
+        {
+          "id": "terminal-alt-dot",
+          "alias": "Alt+.",
+          "caption": "Insert last argument",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b."
+          }
+        },
+        {
+          "id": "terminal-up",
+          "alias": "Up",
+          "caption": "Previous history entry",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Up}}"
+          }
+        },
+        {
+          "id": "terminal-down",
+          "alias": "Down",
+          "caption": "Next history entry",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Down}}"
+          }
+        },
+        {
+          "id": "terminal-left",
+          "alias": "Left",
+          "caption": "Move cursor left",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Left}}"
+          }
+        },
+        {
+          "id": "terminal-right",
+          "alias": "Right",
+          "caption": "Move cursor right",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Right}}"
+          }
+        },
+        {
+          "id": "terminal-backspace",
+          "alias": "Backspace",
+          "caption": "Delete previous character",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Backspace}}"
+          }
+        },
+        {
+          "id": "terminal-delete",
+          "alias": "Delete",
+          "caption": "Delete next character",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Del}}"
+          }
+        },
+        {
+          "id": "terminal-home",
+          "alias": "Home",
+          "caption": "Move to line start",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Home}}"
+          }
+        },
+        {
+          "id": "terminal-end",
+          "alias": "End",
+          "caption": "Move to line end",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{End}}"
+          }
+        },
+        {
+          "id": "terminal-shift-tab",
+          "alias": "Shift+Tab",
+          "caption": "Reverse tab",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Shift-Tab}}"
+          }
+        },
+        {
+          "id": "terminal-enter",
+          "alias": "Enter",
+          "caption": "Submit line",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Enter}}"
+          }
+        },
+        {
+          "id": "terminal-edit-command",
+          "alias": "Ctrl+X Ctrl+E",
+          "caption": "Edit command in editor",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+X}}{{Ctrl+E}}"
+          }
+        },
+        {
+          "id": "terminal-escape",
+          "alias": "Esc",
+          "caption": "Escape",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Esc}}"
+          }
+        },
+        {
+          "id": "terminal-tab",
+          "alias": "Tab",
+          "caption": "Complete",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Tab}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "tmux",
+      "alias": "tmux",
+      "children": [
+        {
+          "id": "tmux-rename-window",
+          "alias": "C-b ,",
+          "caption": "Rename current window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.rename-window"
+          },
+          "parameters": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "id": "tmux-new-window",
+          "alias": "C-b c",
+          "caption": "New window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.new-window"
+          }
+        },
+        {
+          "id": "tmux-next-window",
+          "alias": "C-b n",
+          "caption": "Next window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.next-window"
+          }
+        },
+        {
+          "id": "tmux-prev-window",
+          "alias": "C-b p",
+          "caption": "Previous window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.prev-window"
+          }
+        },
+        {
+          "id": "tmux-move-window-left",
+          "alias": "Move window left",
+          "caption": "Swap with previous window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.move-window-left"
+          }
+        },
+        {
+          "id": "tmux-move-window-right",
+          "alias": "Move window right",
+          "caption": "Swap with next window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.move-window-right"
+          }
+        },
+        {
+          "id": "tmux-split-lr",
+          "alias": "C-b %",
+          "caption": "Split left/right",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.split-h"
+          }
+        },
+        {
+          "id": "tmux-split-ud",
+          "alias": "C-b \"",
+          "caption": "Split up/down",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.split-v"
+          }
+        },
+        {
+          "id": "tmux-move-pane-up",
+          "alias": "C-b {",
+          "caption": "Swap with previous pane",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.move-pane-up"
+          }
+        },
+        {
+          "id": "tmux-move-pane-down",
+          "alias": "C-b }",
+          "caption": "Swap with next pane",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.move-pane-down"
+          }
+        },
+        {
+          "id": "tmux-join-pane-prev",
+          "alias": "Join pane previous",
+          "caption": "Join into previous window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.join-pane-prev"
+          }
+        },
+        {
+          "id": "tmux-join-pane-next",
+          "alias": "Join pane next",
+          "caption": "Join into next window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.join-pane-next"
+          }
+        },
+        {
+          "id": "tmux-break-pane",
+          "alias": "C-b !",
+          "caption": "Break pane to new window",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.break-pane"
+          }
+        },
+        {
+          "id": "tmux-clear-history",
+          "alias": "Clear history",
+          "caption": "Clear scrollback",
+          "action": {
+            "tag": "executeRemote",
+            "value": "tmux.clear-history"
+          }
+        }
+      ]
+    },
+    {
+      "id": "herdr",
+      "alias": "Herdr (Default Keys)",
+      "children": [
+        {
+          "id": "herdr-new-tab",
+          "alias": "C-b c",
+          "caption": "New tab",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}c"
+          }
+        },
+        {
+          "id": "herdr-next-tab",
+          "alias": "C-b n",
+          "caption": "Next tab",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}n"
+          }
+        },
+        {
+          "id": "herdr-previous-tab",
+          "alias": "C-b p",
+          "caption": "Previous tab",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}p"
+          }
+        },
+        {
+          "id": "herdr-tab-1",
+          "alias": "C-b 1",
+          "caption": "Select tab 1",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}1"
+          }
+        },
+        {
+          "id": "herdr-tab-2",
+          "alias": "C-b 2",
+          "caption": "Select tab 2",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}2"
+          }
+        },
+        {
+          "id": "herdr-tab-3",
+          "alias": "C-b 3",
+          "caption": "Select tab 3",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}3"
+          }
+        },
+        {
+          "id": "herdr-tab-4",
+          "alias": "C-b 4",
+          "caption": "Select tab 4",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}4"
+          }
+        },
+        {
+          "id": "herdr-tab-5",
+          "alias": "C-b 5",
+          "caption": "Select tab 5",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}5"
+          }
+        },
+        {
+          "id": "herdr-tab-6",
+          "alias": "C-b 6",
+          "caption": "Select tab 6",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}6"
+          }
+        },
+        {
+          "id": "herdr-tab-7",
+          "alias": "C-b 7",
+          "caption": "Select tab 7",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}7"
+          }
+        },
+        {
+          "id": "herdr-tab-8",
+          "alias": "C-b 8",
+          "caption": "Select tab 8",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}8"
+          }
+        },
+        {
+          "id": "herdr-tab-9",
+          "alias": "C-b 9",
+          "caption": "Select tab 9",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}9"
+          }
+        },
+        {
+          "id": "herdr-workspace-navigation",
+          "alias": "C-b w",
+          "caption": "Workspace navigation",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}w"
+          }
+        },
+        {
+          "id": "herdr-session-navigator",
+          "alias": "C-b g",
+          "caption": "Session navigator",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}g"
+          }
+        },
+        {
+          "id": "herdr-composer",
+          "alias": "C-b /",
+          "caption": "Open composer",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}/"
+          }
+        },
+        {
+          "id": "herdr-new-workspace",
+          "alias": "C-b N",
+          "caption": "New workspace",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}N"
+          }
+        },
+        {
+          "id": "herdr-new-worktree",
+          "alias": "C-b G",
+          "caption": "New worktree",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}G"
+          }
+        },
+        {
+          "id": "herdr-rename-workspace",
+          "alias": "C-b W",
+          "caption": "Rename workspace",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}W"
+          }
+        },
+        {
+          "id": "herdr-close-workspace",
+          "alias": "C-b D",
+          "caption": "Close workspace",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}D"
+          }
+        },
+        {
+          "id": "herdr-focus-left",
+          "alias": "C-b h",
+          "caption": "Focus pane left",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}h"
+          }
+        },
+        {
+          "id": "herdr-focus-down",
+          "alias": "C-b j",
+          "caption": "Focus pane down",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}j"
+          }
+        },
+        {
+          "id": "herdr-focus-up",
+          "alias": "C-b k",
+          "caption": "Focus pane up",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}k"
+          }
+        },
+        {
+          "id": "herdr-focus-right",
+          "alias": "C-b l",
+          "caption": "Focus pane right",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}l"
+          }
+        },
+        {
+          "id": "herdr-split-vertical",
+          "alias": "C-b v",
+          "caption": "Split pane left/right",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}v"
+          }
+        },
+        {
+          "id": "herdr-split-horizontal",
+          "alias": "C-b -",
+          "caption": "Split pane up/down",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}-"
+          }
+        },
+        {
+          "id": "herdr-close-pane",
+          "alias": "C-b x",
+          "caption": "Close pane",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}x"
+          }
+        },
+        {
+          "id": "herdr-toggle-sidebar",
+          "alias": "C-b b",
+          "caption": "Toggle sidebar",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}b"
+          }
+        },
+        {
+          "id": "herdr-toggle-zoom",
+          "alias": "C-b z",
+          "caption": "Toggle pane zoom",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}z"
+          }
+        },
+        {
+          "id": "herdr-resize-mode",
+          "alias": "C-b r",
+          "caption": "Enter resize mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}r"
+          }
+        },
+        {
+          "id": "herdr-copy-mode",
+          "alias": "C-b [",
+          "caption": "Enter copy mode",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}["
+          }
+        },
+        {
+          "id": "herdr-detach",
+          "alias": "C-b q",
+          "caption": "Detach",
+          "action": {
+            "tag": "sendKeys",
+            "value": "{{Ctrl+B}}q"
+          }
+        },
+        {
+          "id": "herdr-direct-left",
+          "alias": "Ctrl+Left",
+          "caption": "Focus pane left directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;5D"
+          }
+        },
+        {
+          "id": "herdr-direct-right",
+          "alias": "Ctrl+Right",
+          "caption": "Focus pane right directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;5C"
+          }
+        },
+        {
+          "id": "herdr-direct-up",
+          "alias": "Ctrl+Up",
+          "caption": "Focus pane up directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;5A"
+          }
+        },
+        {
+          "id": "herdr-direct-down",
+          "alias": "Ctrl+Down",
+          "caption": "Focus pane down directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;5B"
+          }
+        },
+        {
+          "id": "herdr-direct-split-left",
+          "alias": "Ctrl+Alt+Left",
+          "caption": "Split pane left directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;7D"
+          }
+        },
+        {
+          "id": "herdr-direct-split-right",
+          "alias": "Ctrl+Alt+Right",
+          "caption": "Split pane right directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;7C"
+          }
+        },
+        {
+          "id": "herdr-direct-split-up",
+          "alias": "Ctrl+Alt+Up",
+          "caption": "Split pane up directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;7A"
+          }
+        },
+        {
+          "id": "herdr-direct-split-down",
+          "alias": "Ctrl+Alt+Down",
+          "caption": "Split pane down directly",
+          "action": {
+            "tag": "sendKeys",
+            "value": "\u001b[1;7B"
+          }
+        }
+      ]
+    },
+    {
+      "id": "files-search",
+      "alias": "Files / Search",
+      "children": [
+        {
+          "id": "files-pwd",
+          "alias": "pwd",
+          "caption": "Current directory",
+          "action": {
+            "tag": "sendKeys",
+            "value": "pwd{{Enter}}"
+          }
+        },
+        {
+          "id": "files-ls-lah",
+          "alias": "ls -lah",
+          "caption": "Detailed listing",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ls -lah{{Enter}}"
+          }
+        },
+        {
+          "id": "files-ls-lt",
+          "alias": "ls -lt",
+          "caption": "Sort by modified time",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ls -lt{{Enter}}"
+          }
+        },
+        {
+          "id": "files-ls-ls",
+          "alias": "ls -lS",
+          "caption": "Sort by size",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ls -lS{{Enter}}"
+          }
+        },
+        {
+          "id": "files-rg-files",
+          "alias": "rg --files",
+          "caption": "List files (optional rg)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rg --files{{Enter}}"
+          }
+        },
+        {
+          "id": "files-tree",
+          "alias": "tree -a -L 2",
+          "caption": "Tree depth 2 (optional tree)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tree -a -L 2{{Enter}}"
+          }
+        },
+        {
+          "id": "files-du-depth",
+          "alias": "du by directory",
+          "caption": "Directory sizes (GNU du)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "du -h --max-depth=1 | sort -h{{Enter}}"
+          }
+        },
+        {
+          "id": "files-df-h",
+          "alias": "df -h",
+          "caption": "Filesystem usage",
+          "action": {
+            "tag": "sendKeys",
+            "value": "df -h{{Enter}}"
+          }
+        },
+        {
+          "id": "files-df-i",
+          "alias": "df -i",
+          "caption": "Filesystem inode usage",
+          "action": {
+            "tag": "sendKeys",
+            "value": "df -i{{Enter}}"
+          }
+        },
+        {
+          "id": "files-rg",
+          "alias": "rg -n",
+          "caption": "Search with line numbers",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rg -n "
+          }
+        },
+        {
+          "id": "files-rg-i",
+          "alias": "rg -ni",
+          "caption": "Case-insensitive search",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rg -ni "
+          }
+        },
+        {
+          "id": "files-rg-fixed",
+          "alias": "rg -F",
+          "caption": "Fixed-string search",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rg -F "
+          }
+        },
+        {
+          "id": "files-rg-glob",
+          "alias": "rg -g",
+          "caption": "Search with glob",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rg -g "
+          }
+        },
+        {
+          "id": "files-find-name",
+          "alias": "find by name",
+          "caption": "Find path by name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "find . -name "
+          }
+        },
+        {
+          "id": "files-find-file",
+          "alias": "find file by name",
+          "caption": "Find file by name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "find . -type f -name "
+          }
+        },
+        {
+          "id": "files-find-mtime",
+          "alias": "find recent files",
+          "caption": "Append number of days",
+          "action": {
+            "tag": "sendKeys",
+            "value": "find . -type f -mtime -"
+          }
+        },
+        {
+          "id": "files-find-size",
+          "alias": "find large files",
+          "caption": "Append size such as 100M",
+          "action": {
+            "tag": "sendKeys",
+            "value": "find . -type f -size +"
+          }
+        },
+        {
+          "id": "files-less",
+          "alias": "less",
+          "caption": "Page through file",
+          "action": {
+            "tag": "sendKeys",
+            "value": "less "
+          }
+        },
+        {
+          "id": "files-head",
+          "alias": "head -n",
+          "caption": "Enter line count and path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "head -n "
+          }
+        },
+        {
+          "id": "files-tail",
+          "alias": "tail -n",
+          "caption": "Enter line count and path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tail -n "
+          }
+        },
+        {
+          "id": "files-tail-follow",
+          "alias": "tail -f",
+          "caption": "Follow file",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tail -f "
+          }
+        },
+        {
+          "id": "files-du-sh",
+          "alias": "du -sh",
+          "caption": "Size of path",
+          "action": {
+            "tag": "sendKeys",
+            "value": "du -sh "
+          }
+        }
+      ]
+    },
+    {
+      "id": "processes",
+      "alias": "Processes",
+      "children": [
+        {
+          "id": "processes-ps-ef",
+          "alias": "ps -ef",
+          "caption": "All processes",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ps -ef{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-ps-aux",
+          "alias": "ps aux",
+          "caption": "BSD-style process list",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ps aux{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-ps-cpu",
+          "alias": "ps by CPU",
+          "caption": "Sort by CPU (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ps aux --sort=-%cpu{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-ps-memory",
+          "alias": "ps by memory",
+          "caption": "Sort by memory (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ps aux --sort=-%mem{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-ps-tree",
+          "alias": "ps process tree",
+          "caption": "Detailed process tree (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ps -eo pid,ppid,user,stat,%cpu,%mem,etime,command --forest{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-top",
+          "alias": "top",
+          "caption": "Interactive process monitor",
+          "action": {
+            "tag": "sendKeys",
+            "value": "top{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-top-cpu",
+          "alias": "top by CPU",
+          "caption": "Sort by CPU",
+          "action": {
+            "tag": "sendKeys",
+            "value": "top -o %CPU{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-top-memory",
+          "alias": "top by memory",
+          "caption": "Sort by memory",
+          "action": {
+            "tag": "sendKeys",
+            "value": "top -o %MEM{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-lsof-network",
+          "alias": "lsof network",
+          "caption": "Open network sockets",
+          "action": {
+            "tag": "sendKeys",
+            "value": "lsof -i -nP{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-lsof-listen",
+          "alias": "lsof listening TCP",
+          "caption": "Listening TCP sockets",
+          "action": {
+            "tag": "sendKeys",
+            "value": "lsof -iTCP -sTCP:LISTEN -nP{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-jobs",
+          "alias": "jobs -l",
+          "caption": "Shell jobs",
+          "action": {
+            "tag": "sendKeys",
+            "value": "jobs -l{{Enter}}"
+          }
+        },
+        {
+          "id": "processes-pgrep",
+          "alias": "pgrep -af",
+          "caption": "Find process by pattern",
+          "action": {
+            "tag": "sendKeys",
+            "value": "pgrep -af "
+          }
+        },
+        {
+          "id": "processes-lsof-port",
+          "alias": "lsof port",
+          "caption": "Open sockets by port",
+          "action": {
+            "tag": "sendKeys",
+            "value": "lsof -i :"
+          }
+        },
+        {
+          "id": "processes-fg",
+          "alias": "fg",
+          "caption": "Resume job in foreground",
+          "action": {
+            "tag": "sendKeys",
+            "value": "fg %"
+          }
+        },
+        {
+          "id": "processes-bg",
+          "alias": "bg",
+          "caption": "Resume job in background",
+          "action": {
+            "tag": "sendKeys",
+            "value": "bg %"
+          }
+        },
+        {
+          "id": "processes-kill-term",
+          "alias": "kill -TERM",
+          "caption": "Enter PID; does not auto-run",
+          "action": {
+            "tag": "sendKeys",
+            "value": "kill -TERM "
+          }
+        }
+      ]
+    },
+    {
+      "id": "docker",
+      "alias": "Docker",
+      "children": [
+        {
+          "id": "docker-ps",
+          "alias": "docker ps",
+          "caption": "Running containers",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker ps{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-ps-all",
+          "alias": "docker ps -a",
+          "caption": "All containers",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker ps -a{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-ps-table",
+          "alias": "docker ps table",
+          "caption": "Names, status, and ports",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}'{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-images",
+          "alias": "docker images",
+          "caption": "Local images",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker images{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-stats",
+          "alias": "docker stats",
+          "caption": "Live resource usage",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker stats{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-stats-once",
+          "alias": "docker stats once",
+          "caption": "One resource snapshot",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker stats --no-stream{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-compose-ps",
+          "alias": "docker compose ps",
+          "caption": "Compose services",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose ps{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-compose-config",
+          "alias": "docker compose config",
+          "caption": "Render Compose config",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose config{{Enter}}"
+          }
+        },
+        {
+          "id": "docker-logs-tail",
+          "alias": "docker logs tail",
+          "caption": "Last 100 lines for container",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker logs --tail 100 "
+          }
+        },
+        {
+          "id": "docker-logs-since",
+          "alias": "docker logs since",
+          "caption": "Logs from the last hour",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker logs --since 1h "
+          }
+        },
+        {
+          "id": "docker-logs-follow",
+          "alias": "docker logs follow",
+          "caption": "Follow container logs",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker logs -f "
+          }
+        },
+        {
+          "id": "docker-inspect",
+          "alias": "docker inspect",
+          "caption": "Inspect object",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker inspect "
+          }
+        },
+        {
+          "id": "docker-exec-sh",
+          "alias": "docker exec sh",
+          "caption": "Append CONTAINER sh",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker exec -it "
+          }
+        },
+        {
+          "id": "docker-exec-bash",
+          "alias": "docker exec bash",
+          "caption": "Append CONTAINER bash",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker exec -it "
+          }
+        },
+        {
+          "id": "docker-compose-logs-tail",
+          "alias": "compose logs tail",
+          "caption": "Last 100 service log lines",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose logs --tail=100 "
+          }
+        },
+        {
+          "id": "docker-compose-logs-follow",
+          "alias": "compose logs follow",
+          "caption": "Follow service logs",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose logs -f "
+          }
+        },
+        {
+          "id": "docker-compose-exec",
+          "alias": "docker compose exec",
+          "caption": "Run command in service",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose exec "
+          }
+        },
+        {
+          "id": "docker-compose-up",
+          "alias": "docker compose up -d",
+          "caption": "Start selected services",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose up -d "
+          }
+        },
+        {
+          "id": "docker-compose-restart",
+          "alias": "docker compose restart",
+          "caption": "Choose services; does not auto-run",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose restart "
+          }
+        },
+        {
+          "id": "docker-compose-down",
+          "alias": "docker compose down",
+          "caption": "Complete options; does not auto-run",
+          "action": {
+            "tag": "sendKeys",
+            "value": "docker compose down "
+          }
+        }
+      ]
+    },
+    {
+      "id": "github-cli",
+      "alias": "GitHub CLI",
+      "children": [
+        {
+          "id": "gh-auth-status",
+          "alias": "gh auth status",
+          "caption": "Authentication status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh auth status{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-status",
+          "alias": "gh status",
+          "caption": "Assigned and requested work",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh status{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-status",
+          "alias": "gh pr status",
+          "caption": "Pull request status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr status{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-list",
+          "alias": "gh pr list",
+          "caption": "Recent pull requests",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr list --limit 30{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-list-mine",
+          "alias": "gh PRs by me",
+          "caption": "Pull requests authored by me",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr list --author @me{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-review-requested",
+          "alias": "gh PR reviews",
+          "caption": "Reviews requested from me",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr list --review-requested @me{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-web",
+          "alias": "gh pr view --web",
+          "caption": "Open current PR in browser",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr view --web{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-diff",
+          "alias": "gh pr diff",
+          "caption": "Current pull request diff",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr diff{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-checks",
+          "alias": "gh pr checks",
+          "caption": "Pull request checks",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr checks{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-checks-watch",
+          "alias": "gh pr checks --watch",
+          "caption": "Watch pull request checks",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr checks --watch{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-pr-create",
+          "alias": "gh pr create",
+          "caption": "Review options before running",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh pr create"
+          }
+        },
+        {
+          "id": "gh-issue-list",
+          "alias": "gh issue list",
+          "caption": "Recent issues",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh issue list --limit 30{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-issue-view",
+          "alias": "gh issue view",
+          "caption": "Enter issue number",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh issue view "
+          }
+        },
+        {
+          "id": "gh-run-list",
+          "alias": "gh run list",
+          "caption": "Recent workflow runs",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh run list --limit 20{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-run-view",
+          "alias": "gh run view",
+          "caption": "Enter run ID",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh run view "
+          }
+        },
+        {
+          "id": "gh-run-failed",
+          "alias": "gh run failed logs",
+          "caption": "Enter run ID",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh run view --log-failed "
+          }
+        },
+        {
+          "id": "gh-run-watch",
+          "alias": "gh run watch",
+          "caption": "Enter run ID",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh run watch "
+          }
+        },
+        {
+          "id": "gh-workflow-list",
+          "alias": "gh workflow list",
+          "caption": "Repository workflows",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh workflow list{{Enter}}"
+          }
+        },
+        {
+          "id": "gh-repo-view",
+          "alias": "gh repo view",
+          "caption": "Repository overview",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gh repo view{{Enter}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ssh-transfer",
+      "alias": "SSH / Transfer",
+      "children": [
+        {
+          "id": "ssh-add-list",
+          "alias": "ssh-add -l",
+          "caption": "Loaded SSH keys",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ssh-add -l{{Enter}}"
+          }
+        },
+        {
+          "id": "ssh-connect",
+          "alias": "ssh",
+          "caption": "Connect to host",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ssh "
+          }
+        },
+        {
+          "id": "ssh-verbose",
+          "alias": "ssh -v",
+          "caption": "Verbose connection",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ssh -v "
+          }
+        },
+        {
+          "id": "ssh-jump",
+          "alias": "ssh -J",
+          "caption": "Connect through jump host",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ssh -J "
+          }
+        },
+        {
+          "id": "ssh-local-forward",
+          "alias": "ssh local forward",
+          "caption": "Enter LOCAL:HOST:REMOTE TARGET",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ssh -N -L "
+          }
+        },
+        {
+          "id": "ssh-remote-forward",
+          "alias": "ssh remote forward",
+          "caption": "Enter REMOTE:HOST:LOCAL TARGET",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ssh -N -R "
+          }
+        },
+        {
+          "id": "scp-copy",
+          "alias": "scp",
+          "caption": "Copy files",
+          "action": {
+            "tag": "sendKeys",
+            "value": "scp "
+          }
+        },
+        {
+          "id": "scp-recursive",
+          "alias": "scp -r",
+          "caption": "Copy directory recursively",
+          "action": {
+            "tag": "sendKeys",
+            "value": "scp -r "
+          }
+        },
+        {
+          "id": "sftp-connect",
+          "alias": "sftp",
+          "caption": "Interactive file transfer",
+          "action": {
+            "tag": "sendKeys",
+            "value": "sftp "
+          }
+        },
+        {
+          "id": "rsync-progress",
+          "alias": "rsync progress",
+          "caption": "Archive copy with progress",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rsync -avh --progress "
+          }
+        },
+        {
+          "id": "rsync-dry-run",
+          "alias": "rsync dry-run",
+          "caption": "Preview archive copy",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rsync -avhn "
+          }
+        },
+        {
+          "id": "rsync-delete-dry-run",
+          "alias": "rsync delete dry-run",
+          "caption": "Preview destination deletion only",
+          "action": {
+            "tag": "sendKeys",
+            "value": "rsync -avhn --delete "
+          }
+        }
+      ]
+    },
+    {
+      "id": "system",
+      "alias": "System",
+      "children": [
+        {
+          "id": "system-uname",
+          "alias": "uname -a",
+          "caption": "Kernel and architecture",
+          "action": {
+            "tag": "sendKeys",
+            "value": "uname -a{{Enter}}"
+          }
+        },
+        {
+          "id": "system-uptime",
+          "alias": "uptime",
+          "caption": "System uptime and load",
+          "action": {
+            "tag": "sendKeys",
+            "value": "uptime{{Enter}}"
+          }
+        },
+        {
+          "id": "system-free",
+          "alias": "free -h",
+          "caption": "Memory usage (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "free -h{{Enter}}"
+          }
+        },
+        {
+          "id": "system-free-watch",
+          "alias": "free every 2s",
+          "caption": "Memory usage every 2s (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "free -h -s 2{{Enter}}"
+          }
+        },
+        {
+          "id": "system-failed",
+          "alias": "systemctl --failed",
+          "caption": "Failed units (systemd)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "systemctl --failed{{Enter}}"
+          }
+        },
+        {
+          "id": "system-services",
+          "alias": "systemctl services",
+          "caption": "Loaded services (systemd)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "systemctl list-units --type=service{{Enter}}"
+          }
+        },
+        {
+          "id": "system-journal-boot",
+          "alias": "journal current boot",
+          "caption": "Current boot logs (systemd)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "journalctl -b{{Enter}}"
+          }
+        },
+        {
+          "id": "system-journal-errors",
+          "alias": "journal boot errors",
+          "caption": "Current boot errors (systemd)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "journalctl -p err -b{{Enter}}"
+          }
+        },
+        {
+          "id": "system-status",
+          "alias": "systemctl status",
+          "caption": "Service status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "systemctl status "
+          }
+        },
+        {
+          "id": "system-user-status",
+          "alias": "systemctl user status",
+          "caption": "User service status",
+          "action": {
+            "tag": "sendKeys",
+            "value": "systemctl --user status "
+          }
+        },
+        {
+          "id": "system-journal-unit",
+          "alias": "journalctl unit",
+          "caption": "Enter unit name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "journalctl -u "
+          }
+        },
+        {
+          "id": "system-journal-unit-recent",
+          "alias": "journal unit recent",
+          "caption": "Append UNIT -n 100 --no-pager",
+          "action": {
+            "tag": "sendKeys",
+            "value": "journalctl -u "
+          }
+        },
+        {
+          "id": "system-journal-unit-follow",
+          "alias": "journal unit follow",
+          "caption": "Append UNIT -f",
+          "action": {
+            "tag": "sendKeys",
+            "value": "journalctl -u "
+          }
+        },
+        {
+          "id": "system-journal-since",
+          "alias": "journalctl --since",
+          "caption": "Enter time expression",
+          "action": {
+            "tag": "sendKeys",
+            "value": "journalctl --since "
+          }
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "alias": "Network",
+      "children": [
+        {
+          "id": "network-ss-summary",
+          "alias": "ss -s",
+          "caption": "Socket summary (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -s{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ss-tcp-listen",
+          "alias": "ss TCP listening",
+          "caption": "Listening TCP sockets (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -lntp{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ss-udp-listen",
+          "alias": "ss UDP listening",
+          "caption": "Listening UDP sockets (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -lnup{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ss-all-listen",
+          "alias": "ss all listening",
+          "caption": "Listening TCP and UDP (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -lntup{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ss-all-tcp",
+          "alias": "ss all TCP",
+          "caption": "All TCP sockets (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -antp{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ss-established",
+          "alias": "ss established",
+          "caption": "Established TCP sockets (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -tan state established{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ss-time-wait",
+          "alias": "ss time-wait",
+          "caption": "TIME-WAIT TCP sockets (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -tan state time-wait{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ss-port",
+          "alias": "ss listening port",
+          "caption": "Append port and closing quote",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -lntp 'sport = :"
+          }
+        },
+        {
+          "id": "network-ss-destination",
+          "alias": "ss destination",
+          "caption": "Enter destination host",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ss -tp dst "
+          }
+        },
+        {
+          "id": "network-netstat-tcp",
+          "alias": "netstat TCP listening",
+          "caption": "Optional legacy TCP listeners (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "netstat -lntp{{Enter}}"
+          }
+        },
+        {
+          "id": "network-netstat-udp",
+          "alias": "netstat UDP listening",
+          "caption": "Optional legacy UDP listeners (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "netstat -lnup{{Enter}}"
+          }
+        },
+        {
+          "id": "network-netstat-all-tcp",
+          "alias": "netstat all TCP",
+          "caption": "Optional legacy all TCP sockets (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "netstat -antp{{Enter}}"
+          }
+        },
+        {
+          "id": "network-netstat-routes",
+          "alias": "netstat routes",
+          "caption": "Optional legacy routing table",
+          "action": {
+            "tag": "sendKeys",
+            "value": "netstat -rn{{Enter}}"
+          }
+        },
+        {
+          "id": "network-netstat-interfaces",
+          "alias": "netstat interfaces",
+          "caption": "Optional legacy interface table",
+          "action": {
+            "tag": "sendKeys",
+            "value": "netstat -i{{Enter}}"
+          }
+        },
+        {
+          "id": "network-netstat-stats",
+          "alias": "netstat statistics",
+          "caption": "Optional legacy protocol statistics",
+          "action": {
+            "tag": "sendKeys",
+            "value": "netstat -s{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ip-address",
+          "alias": "ip addresses",
+          "caption": "Brief addresses (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ip -br addr{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ip-route",
+          "alias": "ip route",
+          "caption": "Routing table (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ip route{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ip-neigh",
+          "alias": "ip neigh",
+          "caption": "Neighbor table (Linux)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ip neigh{{Enter}}"
+          }
+        },
+        {
+          "id": "network-ping",
+          "alias": "ping 4 times",
+          "caption": "Enter host",
+          "action": {
+            "tag": "sendKeys",
+            "value": "ping -c 4 "
+          }
+        },
+        {
+          "id": "network-dig-short",
+          "alias": "dig short",
+          "caption": "Enter DNS name",
+          "action": {
+            "tag": "sendKeys",
+            "value": "dig +short "
+          }
+        },
+        {
+          "id": "network-dig-mx",
+          "alias": "dig MX",
+          "caption": "Enter domain",
+          "action": {
+            "tag": "sendKeys",
+            "value": "dig MX "
+          }
+        },
+        {
+          "id": "network-curl-head",
+          "alias": "curl headers",
+          "caption": "Fetch response headers",
+          "action": {
+            "tag": "sendKeys",
+            "value": "curl -I "
+          }
+        },
+        {
+          "id": "network-curl-follow",
+          "alias": "curl follow headers",
+          "caption": "Follow redirects and show headers",
+          "action": {
+            "tag": "sendKeys",
+            "value": "curl -IL "
+          }
+        },
+        {
+          "id": "network-curl-verbose",
+          "alias": "curl verbose",
+          "caption": "Verbose request",
+          "action": {
+            "tag": "sendKeys",
+            "value": "curl -v "
+          }
+        },
+        {
+          "id": "network-curl-fail",
+          "alias": "curl fail-fast",
+          "caption": "Silent fail-fast request",
+          "action": {
+            "tag": "sendKeys",
+            "value": "curl -fsS "
+          }
+        },
+        {
+          "id": "network-wget-spider",
+          "alias": "wget spider",
+          "caption": "Check URL without download",
+          "action": {
+            "tag": "sendKeys",
+            "value": "wget --spider "
+          }
+        },
+        {
+          "id": "network-nc",
+          "alias": "nc port check",
+          "caption": "Enter HOST PORT",
+          "action": {
+            "tag": "sendKeys",
+            "value": "nc -vz "
+          }
+        },
+        {
+          "id": "network-traceroute",
+          "alias": "traceroute",
+          "caption": "Trace route to host",
+          "action": {
+            "tag": "sendKeys",
+            "value": "traceroute "
+          }
+        }
+      ]
+    },
+    {
+      "id": "archives",
+      "alias": "Archives",
+      "children": [
+        {
+          "id": "archives-tar-create-gzip",
+          "alias": "tar create gzip",
+          "caption": "Append ARCHIVE.tar.gz PATHS",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -czf "
+          }
+        },
+        {
+          "id": "archives-tar-create-xz",
+          "alias": "tar create xz",
+          "caption": "Append ARCHIVE.tar.xz PATHS",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -cJf "
+          }
+        },
+        {
+          "id": "archives-tar-create-zstd",
+          "alias": "tar create zstd",
+          "caption": "Append ARCHIVE.tar.zst PATHS (GNU tar)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar --zstd -cf "
+          }
+        },
+        {
+          "id": "archives-tar-create",
+          "alias": "tar create",
+          "caption": "Append ARCHIVE.tar PATHS",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -cf "
+          }
+        },
+        {
+          "id": "archives-zip-create",
+          "alias": "zip create",
+          "caption": "Append ARCHIVE.zip PATHS",
+          "action": {
+            "tag": "sendKeys",
+            "value": "zip -r "
+          }
+        },
+        {
+          "id": "archives-gzip-keep",
+          "alias": "gzip keep",
+          "caption": "Compress file and keep original",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gzip -k "
+          }
+        },
+        {
+          "id": "archives-tar-extract-gzip",
+          "alias": "tar extract gzip",
+          "caption": "Append ARCHIVE.tar.gz",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -xzf "
+          }
+        },
+        {
+          "id": "archives-tar-extract-xz",
+          "alias": "tar extract xz",
+          "caption": "Append ARCHIVE.tar.xz",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -xJf "
+          }
+        },
+        {
+          "id": "archives-tar-extract-zstd",
+          "alias": "tar extract zstd",
+          "caption": "Append ARCHIVE.tar.zst (GNU tar)",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar --zstd -xf "
+          }
+        },
+        {
+          "id": "archives-tar-extract",
+          "alias": "tar extract",
+          "caption": "Append ARCHIVE.tar",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -xf "
+          }
+        },
+        {
+          "id": "archives-tar-extract-directory",
+          "alias": "tar extract to directory",
+          "caption": "Append ARCHIVE -C DIR",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -xzf "
+          }
+        },
+        {
+          "id": "archives-unzip",
+          "alias": "unzip",
+          "caption": "Append ARCHIVE.zip",
+          "action": {
+            "tag": "sendKeys",
+            "value": "unzip "
+          }
+        },
+        {
+          "id": "archives-unzip-directory",
+          "alias": "unzip to directory",
+          "caption": "Append ARCHIVE.zip -d DIR",
+          "action": {
+            "tag": "sendKeys",
+            "value": "unzip "
+          }
+        },
+        {
+          "id": "archives-gunzip-keep",
+          "alias": "gunzip keep",
+          "caption": "Decompress and keep archive",
+          "action": {
+            "tag": "sendKeys",
+            "value": "gunzip -k "
+          }
+        },
+        {
+          "id": "archives-tar-list-gzip",
+          "alias": "tar list gzip",
+          "caption": "Append ARCHIVE.tar.gz",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -tzf "
+          }
+        },
+        {
+          "id": "archives-tar-list-xz",
+          "alias": "tar list xz",
+          "caption": "Append ARCHIVE.tar.xz",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -tJf "
+          }
+        },
+        {
+          "id": "archives-tar-list",
+          "alias": "tar list",
+          "caption": "Append ARCHIVE.tar",
+          "action": {
+            "tag": "sendKeys",
+            "value": "tar -tf "
+          }
+        },
+        {
+          "id": "archives-unzip-list",
+          "alias": "unzip list",
+          "caption": "Append ARCHIVE.zip",
+          "action": {
+            "tag": "sendKeys",
+            "value": "unzip -l "
+          }
+        },
+        {
+          "id": "archives-unzip-test",
+          "alias": "unzip test",
+          "caption": "Append ARCHIVE.zip",
+          "action": {
+            "tag": "sendKeys",
+            "value": "unzip -t "
+          }
+        }
+      ]
+    }
+  ]
+}

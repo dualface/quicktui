@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn how QuickTUI handles connection data, device credentials, cloud accounts, subscriptions, relay traffic, and optional Agent notifications.">
+<link rel="canonical" href="https://quicktui.ai/privacy">
+<title>Privacy Policy - QuickTUI</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c">
+<meta name="theme-color" content="#090C09">
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="Privacy Policy - QuickTUI" />
+<meta property="og:description" content="Learn how QuickTUI handles connection data, device credentials, cloud accounts, subscriptions, relay traffic, and optional Agent notifications." />
+<meta property="og:url" content="https://quicktui.ai/privacy" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Privacy Policy - QuickTUI" />
+<meta name="twitter:description" content="Learn how QuickTUI handles connection data, device credentials, cloud accounts, subscriptions, relay traffic, and optional Agent notifications." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css">
+<style>
+.updated { color: var(--ink-3); font-family: var(--mono); font-size: 13px; }
+</style>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Enhanced Features</a>
+        <a href="/install/">Install</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/privacy" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<h1>Privacy Policy</h1>
+<p class="updated">Last updated: September 27, 2026</p>
+<p>This policy covers the QuickTUI apps for iPhone, iPad and Android (&quot;the App&quot;), the QuickTUI server you install on your own computer, the optional QuickTUI Cloud services (account, subscriptions and Relay), and the quicktui.ai website.</p>
+<p>The App contains no analytics, advertising or crash-reporting SDKs. Most features work without an account; a QuickTUI Cloud account is only needed for the optional cloud features described below.</p>
+
+<h2>Data on Your Devices</h2>
+<ul>
+<li>Server profiles and each server&#39;s pinned identity are stored in the App&#39;s local storage on your device.</li>
+<li>Each device creates its own private key when it pairs. On iPhone and iPad it is kept in the Secure Enclave or the Keychain; on Android, in the Android Keystore. It never leaves the device.</li>
+<li>SSH keys, and the passwords of SSH profiles you choose to save, are kept in the Keychain on iOS or in encrypted storage on Android, on this device only.</li>
+<li>Clipboard history and App preferences stay on the device.</li>
+</ul>
+<p>When you use the setup wizard, your SSH login is used to install the QuickTUI server on your computer. It is not saved unless you choose to save an SSH profile, and it is never sent to QuickTUI.</p>
+
+<h2>Pairing and Connections</h2>
+<p>Pairing uses a one-time code that expires after 15 minutes. It registers your device&#39;s public key and a device label (the device model and a short identifier) on your QuickTUI server. After pairing, everything between your device and your server, including terminal, file and Agent traffic, is end-to-end encrypted. When you connect through QuickTUI Relay, the Relay only forwards encrypted data and cannot read it. The one exception is Agent notifications, described below. You can list and revoke paired devices on your server at any time.</p>
+
+<h2>Your QuickTUI Server</h2>
+<p>The QuickTUI server runs on a computer you control. Terminal sessions, files, logs and pairing records stay on that computer. To work properly, the server makes these requests:</p>
+<ul>
+<li>It checks for server updates every 2 hours, identifying itself with its version number, and downloads updates from GitHub Releases.</li>
+<li>It downloads the Agent launch configuration used by the Agent Wizard.</li>
+<li>If you use QuickTUI Relay, it connects to the Relay and fetches the Relay policy.</li>
+<li>When it installs a session backend for you, it downloads Herdr from herdr.dev or tmux from GitHub.</li>
+</ul>
+
+<h2>Requests Made by the App</h2>
+<ul>
+<li>The App fetches announcements and remote configuration, such as Agent Wizard and Command Palette updates.</li>
+<li>On iPhone and iPad, the App asks the App Store whether a newer version is available, sending the App&#39;s identifier and your region. The Android preview checks GitHub Releases instead.</li>
+</ul>
+<p>Update checks, announcements and configuration from quicktui.ai are served by Cloudflare&#39;s network and do not send any information to QuickTUI. As with any website, Cloudflare processes technical connection data, such as IP addresses, as our infrastructure provider.</p>
+
+<h2>QuickTUI Cloud Account (Optional)</h2>
+<p>You sign in with Apple (on iPhone and iPad) or with Google (on Android). We store:</p>
+<ul>
+<li>The account identifier provided by Apple or Google. Apple&#39;s identifier is specific to QuickTUI; Google&#39;s is your Google account identifier. It does not give us access to your Apple or Google account.</li>
+<li>Your verified email address, stored only as a one-way SHA-256 hash, never in plain text.</li>
+<li>Sign-in times and hashed session tokens that keep you signed in.</li>
+<li>If you sign in with Apple, an encrypted Apple token used only to revoke Sign in with Apple when you delete your account.</li>
+<li>If your QuickTUI server signs in to your account, the server&#39;s public key and fingerprint.</li>
+</ul>
+<p>Sign-in credentials on your device are kept in the Keychain on iOS or in secure storage on Android. Users in mainland China are served by QuickTUI&#39;s services in China.</p>
+
+<h2>Purchases and Subscriptions</h2>
+<p>QuickTUI Pro (a one-time purchase) and QuickTUI Cloud subscriptions are currently available on iPhone and iPad through the App Store. Apple processes payment; we never receive your payment details. QuickTUI Pro is verified on your device with the App Store. For QuickTUI Cloud subscriptions, we store your plan, status, purchase and expiry dates, transaction identifiers, and the App Store notifications Apple sends us about your subscription, to keep your subscription status accurate. Purchases are not currently available in the Android App.</p>
+
+<h2>QuickTUI Relay</h2>
+<p>If your subscription includes QuickTUI Relay, we store what is needed to run it: your Relay IDs, the public key and fingerprint of the QuickTUI server bound to each Relay ID, the Relay server assigned to it, and usage counters such as bytes transferred, connection counts, and first and last connection times, used to enforce plan limits. Relay traffic is end-to-end encrypted between your device and your QuickTUI server; the Relay cannot read terminal, file or Agent content. Agent notifications are the only content that passes through the Relay unencrypted, as described below.</p>
+
+<h2>Agent Notifications (Optional)</h2>
+<p>Agent notifications require QuickTUI Relay and are sent only to devices that have granted notification permission and registered for notifications. Each QuickTUI server has its own preferences that control whether notifications are sent, which events trigger them and which optional details appear.</p>
+<p>A server can notify you when an Agent needs approval, finishes a task, reports an error or ends a session, or when an Agent provider needs attention. By default a notification only says what happened. If enabled, it can also include the Agent type, the project folder name, the Agent session identifier, and a task or error summary. Notifications never include full terminal output, source code or credentials, although names and summaries may contain text written by you or an Agent.</p>
+<p>To deliver and open a notification, it also carries routing data: the device ID, event category, notification ID and revision, collapse ID, time sent, and references to the Agent session and request. Long references are replaced with one-way hashes that only your App can match against data from your server.</p>
+<p>Your QuickTUI server stores its notification preferences and each device&#39;s push registration. For delivery, it sends the notification, routing data and the device&#39;s push token through QuickTUI Relay to Apple Push Notification service (APNs) or Firebase Cloud Messaging (FCM). The Relay does not store push tokens or notification content; it keeps short-lived in-memory data (up to 2 minutes) to avoid duplicate delivery, and logs each delivery&#39;s status and category with a partial Relay ID. On Android, notifications are received through Firebase Cloud Messaging, which may create an installation identifier; Apple and Google process push tokens and notification content under their own terms.</p>
+<p>To stop notifications, turn off notifications for QuickTUI in your device&#39;s system settings. Removing the last server profile that uses a device&#39;s credential also removes that device&#39;s push registration from the server. A notification already accepted by APNs or FCM cannot be recalled.</p>
+
+
+<h2>The quicktui.ai Website</h2>
+<p>The website is served by Cloudflare. It uses Cloudflare Zaraz to count two events: copying an install command and clicking an App Store link, together with where on the page it happened and, for install commands, the operating system and install source. The website shows no ads and does no cross-site tracking.</p>
+
+<h2>How We Use and Share Data</h2>
+<p>We use the data above only to provide QuickTUI and its cloud services, keep them secure and prevent abuse. We do not sell your data or use it for advertising. We share it only with the service providers that make QuickTUI work, and where required by law:</p>
+<ul>
+<li>Apple: App Store purchases and subscriptions, Sign in with Apple, push notifications and App update checks.</li>
+<li>Google: Sign-In and Firebase Cloud Messaging on Android.</li>
+<li>Cloudflare: the website, downloads, update checks, announcements and configuration.</li>
+<li>GitHub: server and installer release downloads, and Android preview update checks.</li>
+</ul>
+<p>Our cloud services keep technical logs of requests, including IP addresses, for security, abuse prevention and troubleshooting. Routine logs are kept for 72 hours and error logs for up to 90 days. They are not used for marketing or profiling.</p>
+
+<h2>Data Retention and Account Deletion</h2>
+<p>Account and subscription data is kept while your account exists. On iPhone and iPad you can delete your account in the App with <b>Delete Account</b>. To delete an account created with Google, contact us at the address below.</p>
+<p>Deleting your account permanently removes your account identifier, email hash, subscription records, sessions and Relay data from our servers, and revokes Sign in with Apple. We keep only a hashed App Store account token, used to handle App Store notifications about past purchases, and technical logs until they expire as described above.</p>
+<p>Deleting your account does not cancel an active App Store subscription. To stop billing, cancel the subscription in your Apple Account settings.</p>
+
+<h2>Security</h2>
+<p>Traffic between your devices and your QuickTUI server is end-to-end encrypted, and all communication with QuickTUI Cloud uses TLS. Email addresses are stored only as one-way hashes, and credentials on your device are kept in the platform&#39;s secure storage.</p>
+
+<h2>Changes and Contact</h2>
+<p>We may update this policy on this page and will change the date above when we do.</p>
+<p>For privacy questions or requests, visit the <a href="/support">Support page</a> or email <a href="mailto:dualface@gmail.com">dualface@gmail.com</a>.</p>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

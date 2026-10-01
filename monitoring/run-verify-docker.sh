@@ -13,12 +13,12 @@ ENV_FILE=""
 usage() {
     cat <<'EOF'
 Usage:
-  sh monitoring/run-verify-docker.sh --site quicktui.ai --script q.sh --channel stable
+  sh monitoring/run-verify-docker.sh --site quicktui.ai --script q.sh --channel server2
 
 Options:
   --site HOST          Public site hostname, without scheme or path.
   --script NAME       Installer script basename, for example q.sh.
-  --channel CHANNEL   stable or preview.
+  --channel CHANNEL   server2 or preview.
 
 Test-only environment:
   QT_VERIFY_TEST_MODE=1 QT_VERIFY_EXPECTED_TAG_OVERRIDE=bad-tag
@@ -120,12 +120,12 @@ case "$SCRIPT" in
 esac
 
 case "$CHANNEL" in
-    stable|preview) ;;
-    *) die "--channel must be stable or preview" ;;
+    server2|preview) ;;
+    *) die "--channel must be server2 or preview" ;;
 esac
 
-if [ "$SCRIPT:$CHANNEL" = "q2.sh:stable" ]; then
-    die "q2.sh stable is not a supported monitor cell; q2.sh currently supports preview only"
+if [ "$SCRIPT:$CHANNEL" = "q2.sh:server2" ]; then
+    die "q2.sh server2 is not a supported monitor cell; q2.sh currently supports preview only"
 fi
 
 case "$TIMEOUT_SECONDS" in

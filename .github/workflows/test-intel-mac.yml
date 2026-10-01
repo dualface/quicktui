@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'q.sh'
-      - 'tests/**'
+      - 'website/q.sh'
       - '.github/workflows/test-intel-mac.yml'
 
 jobs:
@@ -30,7 +29,7 @@ jobs:
 
       - name: Run q.sh under Rosetta 2
         run: |
-          arch -x86_64 sh q.sh -y --port 18022
+          arch -x86_64 sh website/q.sh -y --port 18022
         env:
           TERM: xterm-256color
 
@@ -84,7 +83,7 @@ jobs:
 
       - name: Test uninstall (unregisters service)
         run: |
-          sh q.sh --uninstall
+          sh website/q.sh --uninstall
           # The Rust q.sh delegates uninstall to the server's --uninstall-service:
           # it unregisters the launchd service (removes the plist) and stops it, but
           # intentionally leaves the installed binary and config in place. Full file
@@ -95,7 +94,7 @@ jobs:
 
       - name: Test reinstall after uninstall
         run: |
-          arch -x86_64 sh q.sh -y --port 18022
+          arch -x86_64 sh website/q.sh -y --port 18022
           arch -x86_64 "$HOME/.local/bin/quicktui-server" --version
           attempt=1
           while [ "$attempt" -le 30 ]; do
@@ -115,4 +114,4 @@ jobs:
       - name: Final cleanup
         if: always()
         run: |
-          sh q.sh --uninstall 2>/dev/null || true
+          sh website/q.sh --uninstall 2>/dev/null || true

@@ -1,14 +1,12 @@
 # Public Install Verifier
 
-This directory contains the synthetic monitor for public QuickTUI server
-installs. The scheduled GitHub Actions workflows in this repository run the
-same public `curl | sh` installer paths that users run from `quicktui.ai`
-inside a disposable privileged Linux container with user systemd enabled.
+This directory contains local checks for public QuickTUI server installs. Run
+the public `curl | sh` installer paths from `quicktui.ai` inside a disposable
+privileged Linux container with user systemd enabled.
 
-The monitor is read-only with respect to release state. It does not publish,
-tag, upload, or modify manifests. Its only remote side effect is the GitHub
-Actions reporting jobs that create, comment on, or close fixed monitor Issues
-when the scheduled workflows run.
+This repository has no GitHub Actions workflows. Run the checks manually using
+the commands below. The monitor does not publish, tag, upload, modify manifests,
+or create or update GitHub Issues.
 
 These scripts are synced from `quicktui-mono` `website/monitoring/`. Public
 paths and Docker layout stay local to this repository:
@@ -22,22 +20,21 @@ paths and Docker layout stay local to this repository:
   builds `monitoring/Dockerfile.verify`; it does not import monorepo Docker
   environment lock scripts
 
-## Matrix
+## Supported Checks
 
-`.github/workflows/verify-qsh-install.yml` runs one disposable container per
-matrix cell:
+Run one disposable container for each supported channel:
 
 | site          | script | channel   | install command                                                              |
 | ------------- | ------ | --------- | ---------------------------------------------------------------------------- |
 | `quicktui.ai` | `q.sh` | `server2`  | `curl -fsSL https://quicktui.ai/q.sh \| sh -s -- install --channel server2 -y`  |
 | `quicktui.ai` | `q.sh` | `preview` | `curl -fsSL https://quicktui.ai/q.sh \| sh -s -- install --channel preview -y` |
 
-GitHub-hosted runners are outside China and cannot reliably reach
-`dl.quicktui.cn`. CN mirror verification stays local-only in `quicktui-mono`.
+The public wrapper checks `quicktui.ai`. CN mirror verification uses separate
+local tooling.
 
-Preview cells exit `skip` when the site's `server-manifest.json` has no usable
-preview tag. Skip is a green monitor state. Any non-skip failure is a hard
-failure for that workflow.
+Preview checks exit `skip` when the site's `server-manifest.json` has no usable
+preview tag. Skip is a successful monitor state. Any non-skip failure exits
+nonzero.
 
 ## Local Reproduction
 
@@ -61,7 +58,7 @@ Wrapper-level environment overrides:
 
 The container verifier uses these defaults internally. The wrapper does not
 currently forward host environment values for these variables into the
-container; change the wrapper or workflow deliberately if an operations run
+container; change the wrapper deliberately if an operations run
 needs to tune them.
 
 | variable                                  | default | purpose                                                |
@@ -126,34 +123,11 @@ Important result fields:
 | `probe_last_curl_status`              | Curl exit status of the last failed v2 request. Null on success or unused.                      |
 | `timing.probe_*`                      | The same probe diagnostic fields nested under `timing`.                                         |
 | `assertions.S1` through `assertions.S7` | Install, binary, tag shape, manifest, version match, service, and version API checks.         |
-| `log_tail`, `journal_tail`            | Sanitized tails used by the Actions summary and monitor Issue.                                  |
+| `log_tail`, `journal_tail`            | Sanitized tails available for local failure diagnosis.                                  |
 
-Each workflow uploads result and log artifacts for every cell with
-`if: always()`. Each summary job treats missing or invalid result artifacts as
-hard failures so a failed cell cannot disappear from the monitor.
-
-## Reporting
-
-`.github/workflows/verify-qsh-install.yml` runs daily and supports manual
-dispatch. Its summary job is serialized with the workflow concurrency group
-`verify-qsh-install-monitor`, so concurrent runs do not race its fixed monitor
-Issue.
-
-When hard-fail cells exist, the summary job creates or comments on the open
-Issue for the installer:
-
-```text
-[monitor] q.sh install verification failing
-```
-
-When no hard-fail cells remain, the summary job comments on its open monitor
-Issue and closes it. The Issue body includes the run link and a sanitized
-hard-failure table. Per-cell scalar fields, log tails, and the final Issue body
-are bounded before they are sent to GitHub; use the uploaded artifacts for full
-logs.
-
-The q.sh workflow also closes any open legacy Issue titled
-`[monitor] stable install verification failing` with a superseded comment.
+Result and log artifacts stay in `QT_VERIFY_ARTIFACT_DIR` on the host. Inspect
+`qt-verify-result.json` and `qt-verify-install.log` after each local run; there
+is no automatic GitHub Actions upload, summary, or Issue reporting.
 
 ## Host-Side Boundary
 
@@ -194,9 +168,6 @@ monitor. Use `run-verify-docker.sh`.
 
 ## Known Limitations
 
-- GitHub-hosted runners are Linux amd64, so this does not cover macOS, Windows,
-  arm64, or launchd paths.
-- CN mirror reachability from GitHub-hosted runners can be noisy. CN cells are
-  not part of this workflow matrix.
-- Live GitHub Actions dispatch and live Issue behavior can only be validated
-  after the workflow file exists on the default branch.
+- These Linux systemd checks do not cover macOS, Windows, or launchd paths.
+- The public wrapper checks the global site; CN mirror reachability is outside
+  these local checks.

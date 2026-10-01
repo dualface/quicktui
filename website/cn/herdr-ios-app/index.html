@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>iPhone 和 iPad 上的 Herdr：在手机上操作电脑里的 Agent</title>
+<meta name="description" content="在 iPhone 和 iPad 上打开电脑里的 Herdr 工作区，随时操作 AI Agent。QuickTUI 可自动安装 Herdr，端到端加密连接。" />
+<link rel="canonical" href="https://quicktui.ai/cn/herdr-ios-app/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/herdr-ios-app/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/herdr-ios-app/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/herdr-ios-app/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="iPhone 和 iPad 上的 Herdr：在手机上操作电脑里的 Agent" />
+<meta property="og:description" content="在 iPhone 和 iPad 上打开电脑里的 Herdr 工作区，随时操作 AI Agent。QuickTUI 可自动安装 Herdr，端到端加密连接。" />
+<meta property="og:url" content="https://quicktui.ai/cn/herdr-ios-app/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="iPhone 和 iPad 上的 Herdr：在手机上操作电脑里的 Agent" />
+<meta name="twitter:description" content="在 iPhone 和 iPad 上打开电脑里的 Herdr 工作区，随时操作 AI Agent。QuickTUI 可自动安装 Herdr，端到端加密连接。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "iPhone 和 iPad 上的 Herdr：在手机上操作电脑里的 Agent",
+  "description": "在 iPhone 和 iPad 上打开电脑里的 Herdr 工作区，随时操作 AI Agent。QuickTUI 可自动安装 Herdr，端到端加密连接。",
+  "url": "https://quicktui.ai/cn/herdr-ios-app/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "需要先手动启动 Herdr 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不需要。QuickTUI 服务端会在需要时自动启动 Herdr。在 App 中断开连接也不会停止 Herdr 或关闭任何窗格。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "iPad 上能用吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "能。同一个 App 支持 iPhone 与 iPad。另有 Android 应用（Preview） 。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "收费吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Herdr 是开源软件。iPhone 与 iPad 上，QuickTUI 免费下载，免费版可以连接一台电脑；QuickTUI Pro 为一次性买断，解锁不限数量的电脑。Android 应用（Preview）在预览期间免费提供全部功能。QuickTUI Relay 是可选的订阅服务，只在无法直连时需要。"
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/cn/herdr-ios-app/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "iOS 上的 Herdr",
+      "item": "https://quicktui.ai/cn/herdr-ios-app/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/herdr-ios-app/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/herdr-ios-app/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><span aria-current="page">iOS 上的 Herdr</span></nav>
+
+<p class="eyebrow">Herdr · iOS</p>
+<h1>iPhone 和 iPad 上的 Herdr：在手机上操作电脑里的 Agent</h1>
+<p class="lede">Herdr 是为 AI 编程 Agent 设计的终端工作区管理器，让每个 Agent 在自己的终端里持续运行。QuickTUI 让你在 iPhone 和 iPad 上打开这些工作区，随时查看每个 Agent 的状态并接手操作。</p>
+
+<figure class="shot phone"><img src="/images/usage/switcher-zh.webp" alt="会话管理器展示 Herdr 工作区与 Agent 状态" loading="lazy" width="660" height="1434"><figcaption>会话管理器：每个 Herdr 标签页都显示 Agent 当前的状态。</figcaption></figure>
+
+<h2>Herdr 是什么</h2>
+<p><a href="https://herdr.dev" target="_blank" rel="noopener">Herdr</a> 是一个开源（Apache 2.0）的终端工作区管理器，以单个 Rust 程序的形式在后台运行，终端都运行在它里面。它支持 macOS、Linux 和 Windows。</p>
+<p>和 tmux 一样，Herdr 会在你断开后让终端继续运行；不同的是，它能识别哪些终端里运行着 Agent，并判断每个 Agent 是在工作、等待输入还是已经空闲。</p>
+
+<h2>为什么推荐在 QuickTUI 中使用 Herdr</h2>
+<dl class="ref-list">
+<dt>Agent 状态一目了然</dt><dd>会话管理器中的每个标签页和窗格都显示 Agent 状态：空闲、工作中、等待输入或已完成。离开电脑时，也能在手机上看到哪个 Agent 需要你处理。</dd>
+<dt>Agent 向导直接启动</dt><dd>在 App 中用 Agent 向导选择 Agent、模型和参数，QuickTUI 会在 Herdr 中新建标签页并启动它。ZCode、Mistral Vibe、Crush、Goose 和 Auggie 不能以这种方式在 Herdr 中启动，可以改用 tmux，或在 Herdr 标签页中直接输入命令。</dd>
+<dt>默认后端</dt><dd>Herdr 可用时，服务端默认使用 Herdr；电脑上没有 tmux 和 Herdr 时，安装器会自动安装 Herdr。</dd>
+<dt>Windows 也能用</dt><dd>Windows 上的会话都运行在 Herdr 中，QuickTUI 在 Windows 上只支持 Herdr。</dd>
+<dt>断线后接着用</dt><dd>短暂断线后重新连接时，会继续使用原来的终端画面。保留时长由配置项 <code>herdr_client_retention</code> 控制，默认 5 分钟。</dd>
+</dl>
+
+<h2>如何开始</h2>
+<ol class="steps">
+<li>从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_setup">App Store</a> 安装 QuickTUI，打开设置向导。</li>
+<li>选择 <b>通过 SSH 连接并启用增强功能（推荐）</b>，填写电脑的 SSH 登录信息。</li>
+<li>点 <b>安装</b>。电脑上还没有 tmux 或 Herdr 时，安装器会自动安装 Herdr，并完成配对。</li>
+</ol>
+<p>不支持 SSH 登录的 Mac 或 Linux 电脑，在电脑上运行安装命令，再扫码配对：</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>Windows 电脑请从 <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">Microsoft Store 获取 QuickTUI Server</a>，从开始菜单打开后扫描它显示的二维码。Windows 上的会话运行在 Herdr 中，Herdr 需另行安装，见安装指南的 <a href="/cn/install/#windows">Windows</a> 一节。</p>
+<p>已经装有 tmux、想改用 Herdr 时，先安装 Herdr，再重启 QuickTUI 服务：</p>
+<pre><code># macOS / Linux
+curl -fsSL https://herdr.dev/install.sh | sh
+~/.local/bin/quicktui-server service restart</code></pre>
+<p>服务端会自动检测并启用 Herdr，也会在需要时自动启动它，无需手动运行。QuickTUI 需要 Herdr v0.8.0 及以上版本，复制模式需要 v0.9.0 及以上。更多安装方式见 <a href="/cn/faq/#q-install-herdr">FAQ</a>。</p>
+
+<h2>Herdr 在 App 中的对应关系</h2>
+<dl class="ref-list">
+<dt>Herdr 工作区</dt><dd>在 App 中显示为 <b>工作区</b>，顺序与 Herdr 侧边栏一致。</dd>
+<dt>Herdr 标签页</dt><dd>在 App 中显示为 <b>会话</b>，并带有 Agent 状态图标。</dd>
+<dt>Herdr 窗格</dt><dd>在 App 中仍是窗格，可以切换、放大和关闭。</dd>
+</dl>
+
+<figure class="shot phone"><img src="/images/usage/agent-wizard-zh.webp" alt="Agent 向导选择要启动的 Agent" loading="lazy" width="660" height="1434"><figcaption>Agent 向导：选好 Agent、模型和参数，一键在 Herdr 中启动。</figcaption></figure>
+
+<h2>在手机上能做什么</h2>
+<dl class="ref-list">
+<dt>工作区</dt><dd>新建和重命名工作区。关闭工作区需要在电脑上的 Herdr 中操作。</dd>
+<dt>会话（标签页）</dt><dd>新建、重命名和关闭标签页。每个工作区至少保留一个标签页。</dd>
+<dt>窗格</dt><dd>切换、放大和关闭窗格。拆分窗格和调整布局需要在电脑上操作。</dd>
+<dt>滚动与复制</dt><dd>滚动浏览输出，复制模式下输出不会暂停（需要 Herdr v0.9.0 及以上）。</dd>
+</dl>
+
+<h2>同时使用 tmux</h2>
+<p>tmux 与 Herdr 可以同时启用，App 会分别列出两个后端的工作区，新建时可以选择后端。关于 tmux 的支持，见 <a href="/cn/tmux-ios-app/">iPhone 和 iPad 上的 tmux</a>。</p>
+
+<h2>常见问题</h2>
+<h3>需要先手动启动 Herdr 吗？</h3>
+<p>不需要。QuickTUI 服务端会在需要时自动启动 Herdr。在 App 中断开连接也不会停止 Herdr 或关闭任何窗格。</p>
+<h3>iPad 上能用吗？</h3>
+<p>能。同一个 App 支持 iPhone 与 iPad。另有 <a href="/cn/android/">Android 应用（Preview）</a>。</p>
+<h3>收费吗？</h3>
+<p>Herdr 是开源软件。iPhone 与 iPad 上，QuickTUI 免费下载，免费版可以连接一台电脑；QuickTUI Pro 为一次性买断，解锁不限数量的电脑。Android 应用（Preview）在预览期间免费提供全部功能。QuickTUI Relay 是可选的订阅服务，只在无法直连时需要。</p>
+
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/tmux-ios-app/">iPhone 和 iPad 上的 tmux</a></li>
+    <li><a href="/cn/use-cases/control-ai-agents-from-phone/">在手机上掌控 AI Agent</a></li>
+    <li><a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a></li>
+    <li><a href="/cn/install/">安装指南</a></li>
+    <li><a href="/cn/faq/">常见问题</a></li>
+    <li><a href="/cn/">QuickTUI 首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

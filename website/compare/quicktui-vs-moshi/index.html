@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI vs Moshi</title>
+<meta name="description" content="QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription." />
+<link rel="canonical" href="https://quicktui.ai/compare/quicktui-vs-moshi/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/compare/quicktui-vs-moshi/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/compare/quicktui-vs-moshi/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/compare/quicktui-vs-moshi/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI vs Moshi" />
+<meta property="og:description" content="QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription." />
+<meta property="og:url" content="https://quicktui.ai/compare/quicktui-vs-moshi/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI vs Moshi" />
+<meta name="twitter:description" content="QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "QuickTUI vs Moshi",
+  "description": "QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription.",
+  "url": "https://quicktui.ai/compare/quicktui-vs-moshi/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Compare",
+      "item": "https://quicktui.ai/compare/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "vs Moshi",
+      "item": "https://quicktui.ai/compare/quicktui-vs-moshi/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Enhanced Features</a>
+        <a href="/install/">Install</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/compare/quicktui-vs-moshi/" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/compare/quicktui-vs-moshi/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><a href="/compare/">Compare</a><span class="sep">/</span><span aria-current="page">vs Moshi</span></nav>
+
+<p class="eyebrow">Compare · Moshi</p>
+<h1>QuickTUI vs Moshi</h1>
+<p class="lede">QuickTUI and Moshi both help you work with terminals or AI agents from your phone, but they start from different places. This page explains how they differ.</p>
+
+<h2>What Moshi is</h2>
+<p><a href="https://getmoshi.app" target="_blank" rel="noopener">Moshi</a> is a mobile terminal designed for AI coding agents, calling itself &quot;the baby monitor for your AI agents.&quot; It connects from your phone straight to your computer over SSH (Mosh and Eternal Terminal are Pro-only), integrates deeply with tmux, Herdr and Zellij, and offers a chat view on top of the terminal for agents such as Claude Code and Codex. With the optional <code>moshi-hook</code> daemon on your computer, you also get approvals and push notifications on your phone.</p>
+
+<h2>What QuickTUI is</h2>
+<p>QuickTUI is a native iPhone, iPad and <a href="/android/">Android (Preview)</a> app that works with the QuickTUI server on your computer, so you can attach to the sessions already running there and run and supervise any CLI agent from your phone. What sets it apart:</p>
+<dl class="ref-list">
+<dt>A real terminal on your existing sessions</dt><dd>Attaches straight to the tmux and Herdr sessions on your computer. No wrapper changes how you launch agents, and your desk and your phone share the same session.</dd>
+<dt>Agent status at a glance</dt><dd>With <a href="/herdr-ios-app/">Herdr</a>, the Session Manager shows whether each agent is idle, working, waiting for input or done.</dd>
+<dt>Setup and pairing in one step</dt><dd>The setup wizard installs the server over SSH once and pairs automatically; you never manage SSH on your phone after that.</dd>
+<dt>End-to-end encrypted, direct by default</dt><dd>Everything between your phone and your computer is end-to-end encrypted. Away from your network, connect through a VPN, a tunnel or the optional QuickTUI Relay without opening SSH.</dd>
+<dt>Built for working on a phone</dt><dd>The Agent Wizard includes launch settings for 19 popular agents and the Command Palette has more than 500 commands, plus stackable Shortcuts Bars, an Input Bar with file and image attachments, a file manager, and port forwarding with a built-in browser.</dd>
+<dt>A one-time purchase</dt><dd>On iPhone and iPad, the free version connects to one computer, and Pro is a one-time purchase ($39.99 on the US App Store) for unlimited computers; it&#39;s available on the App Store in China too. The Android (Preview) app includes every feature for free during the preview.</dd>
+</dl>
+
+<h2>What only QuickTUI offers</h2>
+<p>Moshi and QuickTUI both support tmux and Herdr, which makes them the two closest products. Compared with Moshi, QuickTUI offers:</p>
+<dl class="ref-list">
+<dt>No SSH exposure required</dt><dd>Moshi needs your phone to reach your computer directly over SSH (Pro adds Mosh and Eternal Terminal). QuickTUI uses its own end-to-end encrypted server, and away from your network it can connect through the optional QuickTUI Relay, so your computer never has to open SSH to the outside.</dd>
+<dt>Agent data stays off third-party servers</dt><dd>Moshi sends approval and notification summaries, including parts of prompts and responses, through Moshi&#39;s servers. With QuickTUI, terminal traffic, agent status and approvals travel end-to-end encrypted between your phone and your computer.</dd>
+<dt>A setup wizard that installs and pairs</dt><dd>Enter your SSH login once in the app and QuickTUI installs the server on your computer and pairs automatically, installing Herdr too if your computer has neither tmux nor Herdr. After that, there&#39;s no SSH configuration to keep on your phone.</dd>
+<dt>tmux and Herdr included for free</dt><dd>Multiplexer integration is Pro-only in Moshi. QuickTUI&#39;s tmux and Herdr support works in the free version, and it also supports the Luvus backend.</dd>
+<dt>A one-time purchase, no subscription</dt><dd>Moshi Pro is a monthly or yearly subscription, or $249 lifetime (US App Store). QuickTUI Pro is a one-time purchase ($39.99 on the US App Store) for unlimited computers, and the free version already connects to one computer.</dd>
+</dl>
+
+<h2>Side by side</h2>
+<dl class="ref-list">
+<dt>Interface</dt><dd><span class="kv"><span class="k">QuickTUI</span>: A full terminal and a chat view, plus a Session Manager, Agent Wizard, file manager and port forwarding</span><span class="kv"><span class="k">Moshi</span>: A real terminal with an optional chat view; the diff viewer is Pro-only, and the free version includes only 5 trial agent inbox actions</span></dd>
+<dt>How it connects</dt><dd><span class="kv"><span class="k">QuickTUI</span>: The app connects to the QuickTUI server on your computer, directly on your network or through a VPN, a tunnel or the optional QuickTUI Relay. The setup wizard installs the server once over SSH</span><span class="kv"><span class="k">Moshi</span>: Direct SSH from your phone to your computer, with Mosh and Eternal Terminal Pro-only; the optional <code>moshi-hook</code> daemon handles approvals and push</span></dd>
+<dt>Vendor cloud in the path</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Direct to your computer by default; with Relay, only end-to-end encrypted data is forwarded</span><span class="kv"><span class="k">Moshi</span>: Terminal traffic doesn&#39;t go through Moshi; approval and notification summaries (including parts of prompts and responses) go through Moshi&#39;s servers</span></dd>
+<dt>tmux / Herdr</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Native tmux and Herdr support, with Luvus available when enabled manually; with Herdr, each agent&#39;s status is shown</span><span class="kv"><span class="k">Moshi</span>: Native tmux, Herdr and Zellij support (Pro-only)</span></dd>
+<dt>Agents</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Any CLI agent that runs in a terminal; the Agent Wizard includes launch settings for 19 popular agents</span><span class="kv"><span class="k">Moshi</span>: Any CLI agent; a dozen or so agents, including Claude Code and Codex, get the chat view</span></dd>
+<dt>Platforms</dt><dd><span class="kv"><span class="k">QuickTUI</span>: iPhone, iPad and <a href="/android/">Android (Preview)</a></span><span class="kv"><span class="k">Moshi</span>: iOS, iPad, Android, Apple Watch and desktop apps</span></dd>
+<dt>Pricing</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Free for one computer; Pro is a one-time purchase ($39.99 on the US App Store) for unlimited computers; Relay is an optional subscription; the Android (Preview) app is free during the preview</span><span class="kv"><span class="k">Moshi</span>: The free version covers basic SSH; Pro is $7.99 a month or $69.99 a year on the US App Store, or $249 lifetime</span></dd>
+<dt>China App Store</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Yes</span><span class="kv"><span class="k">Moshi</span>: Yes</span></dd>
+</dl>
+
+<p>QuickTUI is free to download from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_compare">App Store</a>; see the <a href="/install/">install guide</a> to set it up.</p>
+
+<p class="note">Information about Moshi is based on its website and App Store listing as of September 2026. Check Moshi&#39;s site for the latest details.</p>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/compare/">All comparisons</a></li>
+    <li><a href="/compare/quicktui-vs-happy/">QuickTUI vs Happy</a></li>
+    <li><a href="/compare/quicktui-vs-termius/">QuickTUI vs Termius</a></li>
+    <li><a href="/compare/quicktui-vs-blink/">QuickTUI vs Blink Shell</a></li>
+    <li><a href="/compare/quicktui-vs-dotmux/">QuickTUI vs dotMux</a></li>
+    <li><a href="/compare/quicktui-vs-omnara/">QuickTUI vs Omnara</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

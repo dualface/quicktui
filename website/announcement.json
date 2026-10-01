@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "announcement": {
+    "id": "2026-09-29-pairing-uppercase-hostname",
+    "severity": "warning",
+    "title": {
+      "en": "iOS 1.9.0 Pairing Issue",
+      "cn": "iOS 1.9.0 版配对问题"
+    },
+    "message": {
+      "en": "In iOS version 1.9.0, pairing fails if the host name contains uppercase letters. This is fixed in version 1.9.1, which is awaiting App Store review. In the meantime, pair using the IP address, or change the host name to all lowercase.",
+      "cn": "iOS 1.9.0 版在配对时，如果主机名包含大写字符将会配对失败。问题已在 1.9.1 版修复，正等待 AppStore 审核。当前可以用 IP 地址或将主机名改为全小写来确保配对成功。"
+    }
+  }
+}

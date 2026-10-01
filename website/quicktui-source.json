@@ -1,0 +1,13 @@
+{
+  "live_sha256": {
+    "announcement.json": "fa403f05e27c3d138a99e0abffea48fa633c41c93a226d94c57ab2b4ff739ca8",
+    "configs/agent-wizard.json": "ceb5f35b0a53fd1d58827b39fff6e112b2a8d2089ec6355063c9ec16abc5bf46",
+    "configs/agent-wizard.json.minisig": "764bc89854d55e4b77a40fd1f2f3e862d6a52a50478c997dd09da9786ee4bdab",
+    "configs/client-config-manifest.json": "ed78c698d39a98fccdba04766b61bda933cf39022245cbc0d1fa5042514a8464",
+    "configs/command-palette.json": "bb3c7d1844cd80f33c582927da8cbe73b37e96146aed65aa49bfd7b6ab0d4070",
+    "q.ps1": "247176b1be81ac7e4655304f1e8eb0faaf5be55af2d5d3883bda70be9cbeb073",
+    "q.sh": "c4434f3436983312bc79eca57d73db7ef627fb76fbd6b4aa2fe9a216050bda6a"
+  },
+  "mirror_schema_version": 1,
+  "source_sha": "3586406b7e9654e3617f07c1b3989b92e7e03a83"
+}

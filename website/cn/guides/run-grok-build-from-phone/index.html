@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>在手机上运行 Grok Build（官方 Grok CLI）</title>
+<meta name="description" content="在电脑上运行 xAI 官方的 Grok Build，用 QuickTUI 从 iPhone、iPad 或 Android 操作它；关闭 App 后 Agent 继续工作。" />
+<link rel="canonical" href="https://quicktui.ai/cn/guides/run-grok-build-from-phone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/run-grok-build-from-phone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/run-grok-build-from-phone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/run-grok-build-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="在手机上运行 Grok Build（官方 Grok CLI）" />
+<meta property="og:description" content="在电脑上运行 xAI 官方的 Grok Build，用 QuickTUI 从 iPhone、iPad 或 Android 操作它；关闭 App 后 Agent 继续工作。" />
+<meta property="og:url" content="https://quicktui.ai/cn/guides/run-grok-build-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="article:modified_time" content="2026-09-27" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="在手机上运行 Grok Build（官方 Grok CLI）" />
+<meta name="twitter:description" content="在电脑上运行 xAI 官方的 Grok Build，用 QuickTUI 从 iPhone、iPad 或 Android 操作它；关闭 App 后 Agent 继续工作。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "在手机上运行 Grok Build（官方 Grok CLI）",
+  "description": "在电脑上运行 xAI 官方的 Grok Build，用 QuickTUI 从 iPhone、iPad 或 Android 操作它；关闭 App 后 Agent 继续工作。",
+  "url": "https://quicktui.ai/cn/guides/run-grok-build-from-phone/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "datePublished": "2026-09-27",
+  "dateModified": "2026-09-27"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "可以在手机上使用 Grok CLI 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。Grok Build 运行在你的电脑上，QuickTUI 在 iPhone、iPad 或 Android 上显示它的终端界面，你可以在手机上下达任务、回答问题、批准工具调用。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "关闭 App 后，Grok Build 还会继续运行吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "会。它运行在电脑上的 tmux 或 Herdr 会话中，关闭 App 后照常工作。重新打开 App 即可回到正在运行的会话。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "本文说的是哪个 Grok CLI？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "xAI 官方的 Grok Build。社区项目 grok-cli 是另一个工具，和其他终端 Agent 一样也能在 QuickTUI 中运行，但本文的安装步骤和技巧针对 Grok Build。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "我的代码会经过 QuickTUI 的服务器吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不会。App 默认直连你的电脑，全程端到端加密。Grok Build 本身照常与 xAI 通信。"
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/cn/guides/run-grok-build-from-phone/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "在手机上运行 Grok Build",
+      "item": "https://quicktui.ai/cn/guides/run-grok-build-from-phone/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/guides/run-grok-build-from-phone/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/guides/run-grok-build-from-phone/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><span aria-current="page">在手机上运行 Grok Build</span></nav>
+<p class="updated"><time datetime="2026-09-27">更新于 2026 年 9 月 27 日</time></p>
+<p class="eyebrow">指南 · Grok Build</p>
+<h1>在手机上运行 Grok Build（官方 Grok CLI）</h1>
+<p class="lede">要在手机上使用 Grok Build，做法是让它在你自己的电脑上运行，再用 QuickTUI 连接。你在 iPhone、iPad 或 Android 上看到的是真实的 Grok 终端界面，放下手机后 Agent 也会继续工作。</p>
+
+<figure class="shot phone"><img src="/images/usage/agent-wizard-zh.webp" alt="在手机上用 QuickTUI 的 Agent 向导启动 Grok Build" loading="lazy" width="660" height="1434"><figcaption>Agent 向导按你选择的模型和模式启动 Grok Build。</figcaption></figure>
+
+<h2>Grok Build 是什么</h2>
+<p><a href="https://docs.x.ai/build/overview" target="_blank" rel="noopener">Grok Build</a> 是 xAI 官方的终端编程 Agent，以 Apache 2.0 协议开源（<a href="https://github.com/xai-org/grok-build" target="_blank" rel="noopener">xai-org/grok-build</a>），安装后的命令为 <code>grok</code>。它可以作为全屏终端界面运行，也可以用 <code>grok -p</code> 在脚本中无界面运行，或通过 ACP 接入其他工具。</p>
+<p>它和社区项目 <code>superagent-ai/grok-cli</code> 不是同一个工具。后者同样安装 <code>grok</code> 命令，但与 xAI 无关。本文介绍的是官方的 Grok Build。</p>
+
+<h2>安装 Grok Build 与 QuickTUI</h2>
+<ol class="steps">
+<li>在要运行 Grok Build 的电脑上安装：
+<pre><code># macOS / Linux / WSL
+curl -fsSL https://x.ai/cli/install.sh | bash
+
+# Windows（PowerShell）
+irm https://x.ai/cli/install.ps1 | iex</code></pre></li>
+<li>运行一次 <code>grok</code> 并登录。首次运行会打开浏览器登录 xAI 账号；电脑上没有浏览器时，使用 <code>grok login --device-auth</code>（见下方技巧）。</li>
+<li>在手机上安装 QuickTUI：iPhone 和 iPad 从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_setup">App Store</a> 下载，Android 使用 <a href="/cn/android/">Android 应用（Preview）</a>。</li>
+<li>在 App 的设置向导中选择 <b>通过 SSH 连接并启用增强功能（推荐）</b>，填写电脑的 SSH 登录信息，点 <b>安装</b>。App 会安装 QuickTUI 服务端并自动完成配对；电脑上没有 tmux 和 Herdr 时，会自动安装 Herdr。</li>
+</ol>
+<p>不支持 SSH 登录的 Mac 或 Linux 电脑，先在电脑上运行安装命令，再<a href="/cn/install/#pairing">扫码配对</a>：</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>Windows 电脑请从 <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">Microsoft Store 获取 QuickTUI Server</a>，从开始菜单打开后扫描它显示的二维码。Windows 上的会话运行在 Herdr 中，Herdr 需另行安装，见安装指南的 <a href="/cn/install/#windows">Windows</a> 一节。</p>
+<p>手机与电脑之间的连接全程端到端加密，默认直连。详见<a href="/cn/install/">安装指南</a>。</p>
+
+<h2>从手机启动 Grok Build</h2>
+<p>在 App 中打开 <b>Agent 向导</b>，选择 Grok，QuickTUI 会在当前 tmux 会话中新建窗口，或在当前 Herdr 工作区中新建标签页来启动它。Luvus 后端不支持 Agent 向导。</p>
+<dl class="ref-list">
+<dt>模式</dt><dd><b>Default</b> 保留 Grok Build 的正常审批提示。<b>YOLO</b> 会加上 <code>--always-approve</code>，执行工具时不再询问，只建议在允许它随意修改的仓库中使用。</dd>
+<dt>模型</dt><dd><code>grok-4.7</code>，通过 <code>--model</code> 传入。也可以在「设置 &gt; Agent 模型」中添加自定义模型。</dd>
+<dt>推理强度</dt><dd>通过 <code>--reasoning-effort</code> 传入。</dd>
+<dt>恢复会话</dt><dd>用 <code>--resume</code> 继续之前的会话。工作区运行在 Herdr 上时不支持恢复。</dd>
+<dt>工作目录</dt><dd>选择项目文件夹，最近用过的文件夹可以直接点选。常用组合可以保存为预设。</dd>
+</dl>
+<p>也可以在电脑上自己启动，放在一个有名字的 tmux 会话里，之后在 App 中就能找到：</p>
+<pre><code>tmux new-session -s grok
+grok</code></pre>
+
+<h2>在手机上使用 Grok Build 的建议</h2>
+<dl class="ref-list">
+<dt>无浏览器登录</dt><dd><code>grok login --device-auth</code> 会显示一个验证码，可以在任何设备上完成登录，包括你手里的手机。也可以在电脑上设置 <code>XAI_API_KEY</code>。</dd>
+<dt>tmux 设置</dt><dd>Grok Build 文档建议开启真彩色，并在 tmux 中加入以下设置，以获得完整的颜色与剪贴板支持：
+<pre><code>set -g default-terminal "tmux-256color"
+set -as terminal-features ",*:RGB"
+set -g set-clipboard on
+set -g allow-passthrough on</code></pre>
+在 Grok Build 中运行 <code>/terminal-setup</code> 可以检查终端配置。如果 tmux 回滚历史被重复输出填满，在 <span class="path">~/.grok/pager.toml</span> 中设置 <code>alt_screen = "always"</code>，详见 <a href="/cn/faq/#q-tmux-tui-fullscreen">FAQ</a>。</dd>
+<dt>发送截图</dt><dd>在输入栏中附加文件、图片或相机照片。文件会上传到电脑（上限 10 MiB），并把路径填入输入内容，Grok Build 就能读取它。</dd>
+<dt>常用命令一键发送</dt><dd>命令面板内置 Grok Build 分组，收录了常用命令，不必在手机键盘上逐字输入。</dd>
+<dt>看清哪个会话需要你</dt><dd>使用 <a href="/cn/herdr-ios-app/">Herdr</a> 时，会话管理器会用图标标出每个 Grok Build 会话，并显示它是空闲、工作中、等待输入还是已完成。</dd>
+</dl>
+
+<h2>常见问题</h2>
+<h3>可以在手机上使用 Grok CLI 吗？</h3>
+<p>可以。Grok Build 运行在你的电脑上，QuickTUI 在 iPhone、iPad 或 Android 上显示它的终端界面，你可以在手机上下达任务、回答问题、批准工具调用。</p>
+<h3>关闭 App 后，Grok Build 还会继续运行吗？</h3>
+<p>会。它运行在电脑上的 tmux 或 Herdr 会话中，关闭 App 后照常工作。重新打开 App 即可回到正在运行的会话。</p>
+<h3>本文说的是哪个 Grok CLI？</h3>
+<p>xAI 官方的 Grok Build。社区项目 <code>grok-cli</code> 是另一个工具，和其他终端 Agent 一样也能在 QuickTUI 中运行，但本文的安装步骤和技巧针对 Grok Build。</p>
+<h3>我的代码会经过 QuickTUI 的服务器吗？</h3>
+<p>不会。App 默认直连你的电脑，全程端到端加密。Grok Build 本身照常与 xAI 通信。</p>
+
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/use-cases/control-ai-agents-from-phone/">在手机上掌控 AI Agent</a></li>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">在 iPhone 上运行 Claude Code</a></li>
+    <li><a href="/cn/guides/run-codex-cli-from-phone/">在手机上运行 Codex CLI</a></li>
+    <li><a href="/cn/guides/run-opencode-from-phone/">在手机上运行 OpenCode</a></li>
+    <li><a href="/cn/guides/run-pi-coding-agent-from-phone/">在手机上运行 Pi</a></li>
+    <li><a href="/cn/guides/run-kimi-code-from-phone/">在手机上运行 Kimi Code</a></li>
+    <li><a href="/cn/guides/run-zcode-from-phone/">在手机上运行 ZCode</a></li>
+    <li><a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a></li>
+    <li><a href="/cn/guides/remote-development-from-ipad/">用 iPad 远程开发</a></li>
+    <li><a href="/cn/install/">安装指南</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

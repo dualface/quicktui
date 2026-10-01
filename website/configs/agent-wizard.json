@@ -1,0 +1,1340 @@
+{
+  "schema_version": 2,
+  "version": 13,
+  "search": {
+    "standard_paths": [
+      "/usr/local/bin",
+      "/usr/bin",
+      "/usr/sbin",
+      "/usr/local/sbin",
+      "/opt/homebrew/bin",
+      "/opt/homebrew/sbin"
+    ]
+  },
+  "agents": [
+    {
+      "id": "claude",
+      "display_name": "Claude",
+      "executable": "claude",
+      "known_paths": [
+        "~/.local/bin/claude",
+        "~/.claude/bin/claude",
+        "~/.nvm/versions/node/*/bin/claude",
+        "~/.fnm/node-versions/*/installation/bin/claude",
+        "~/.volta/bin/claude",
+        "/opt/homebrew/bin/claude"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--dangerously-skip-permissions"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "--effort",
+          "{effort}"
+        ],
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": [
+        {
+          "id": "fable[1m]",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "id": "opus[1m]",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "id": "sonnet[1m]",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        },
+        {
+          "id": "haiku",
+          "efforts": []
+        }
+      ]
+    },
+    {
+      "id": "codex",
+      "display_name": "Codex",
+      "executable": "codex",
+      "known_paths": [
+        "~/.nvm/versions/node/*/bin/codex",
+        "~/.fnm/node-versions/*/installation/bin/codex",
+        "~/.volta/bin/codex",
+        "/opt/homebrew/bin/codex",
+        "~/.local/bin/codex"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--dangerously-bypass-approvals-and-sandbox"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "-c",
+          "model_reasoning_effort={effort}"
+        ],
+        "resume": [
+          "resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": [
+        {
+          "id": "gpt-6-astra",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max",
+            "ultra"
+          ]
+        },
+        {
+          "id": "gpt-5.6-sol",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max",
+            "ultra"
+          ]
+        },
+        {
+          "id": "gpt-6-sol",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max",
+            "ultra"
+          ]
+        },
+        {
+          "id": "gpt-6-luna",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "opencode",
+      "display_name": "OpenCode",
+      "executable": "opencode",
+      "known_paths": [
+        "~/.opencode/bin/opencode",
+        "~/.local/bin/opencode",
+        "~/.nvm/versions/node/*/bin/opencode",
+        "~/.fnm/node-versions/*/installation/bin/opencode",
+        "~/.volta/bin/opencode",
+        "~/go/bin/opencode"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--auto"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "resume": [
+          "--session",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model"
+      ],
+      "models": [
+        {
+          "id": "opencode/gemini-3.8-flash",
+          "efforts": []
+        },
+        {
+          "id": "opencode/gpt-6-astra",
+          "efforts": []
+        },
+        {
+          "id": "opencode/gpt-5.6-terra",
+          "efforts": []
+        },
+        {
+          "id": "opencode/gpt-5.6-sol",
+          "efforts": []
+        },
+        {
+          "id": "opencode/gpt-5.6-luna",
+          "efforts": []
+        },
+        {
+          "id": "opencode/grok-4.6",
+          "efforts": []
+        },
+        {
+          "id": "opencode/deepseek-v4-pro",
+          "efforts": []
+        },
+        {
+          "id": "opencode/deepseek-v4-flash",
+          "efforts": []
+        },
+        {
+          "id": "opencode/glm-5.3-flash",
+          "efforts": []
+        },
+        {
+          "id": "opencode/glm-5.3",
+          "efforts": []
+        },
+        {
+          "id": "opencode/minimax-m3",
+          "efforts": []
+        },
+        {
+          "id": "opencode/kimi-k3",
+          "efforts": []
+        },
+        {
+          "id": "opencode/qwen3.6-plus",
+          "efforts": []
+        },
+        {
+          "id": "opencode/muse-spark-1.3-contributor-free",
+          "efforts": []
+        },
+        {
+          "id": "opencode/muse-spark-1.3",
+          "efforts": []
+        },
+        {
+          "id": "opencode/ling-3.0-flash-fin-free",
+          "efforts": []
+        },
+        {
+          "id": "opencode/mimo-v2.5-free",
+          "efforts": []
+        },
+        {
+          "id": "opencode/nemotron-3.5-lightning-free",
+          "efforts": []
+        }
+      ]
+    },
+    {
+      "id": "grok",
+      "display_name": "Grok",
+      "executable": "grok",
+      "known_paths": [
+        "~/.grok/bin/grok",
+        "~/.local/bin/grok",
+        "~/.nvm/versions/node/*/bin/grok",
+        "~/.fnm/node-versions/*/installation/bin/grok",
+        "~/.volta/bin/grok"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--always-approve"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "--reasoning-effort",
+          "{effort}"
+        ],
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": [
+        {
+          "id": "grok-4.7",
+          "efforts": [
+            "low",
+            "medium",
+            "high",
+            "xhigh"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pi",
+      "display_name": "Pi",
+      "executable": "pi",
+      "known_paths": [
+        "~/.pi/agent/bin/pi",
+        "~/.local/bin/pi",
+        "~/bin/pi",
+        "~/.npm-global/bin/pi",
+        "~/.nvm/versions/node/*/bin/pi",
+        "~/.fnm/node-versions/*/installation/bin/pi",
+        "~/.volta/bin/pi",
+        "/opt/homebrew/bin/pi"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "--thinking",
+          "{effort}"
+        ],
+        "resume": [
+          "--session",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": [
+        {
+          "id": "deepseek-flash",
+          "efforts": [
+            "low",
+            "high",
+            "max"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cursor",
+      "display_name": "Cursor",
+      "executable": "cursor-agent",
+      "known_paths": [
+        "~/.local/bin/cursor-agent",
+        "~/.local/share/cursor-agent/versions/*/cursor-agent",
+        "/opt/homebrew/bin/cursor-agent"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model"
+      ],
+      "models": [
+        {
+          "id": "auto",
+          "efforts": []
+        },
+        {
+          "id": "cursor-grok-4.6-high",
+          "efforts": []
+        },
+        {
+          "id": "composer-2.5",
+          "efforts": []
+        },
+        {
+          "id": "claude-opus-5-thinking-high",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-sol-high",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-sol-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-thinking-high",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-thinking-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-luna-high",
+          "efforts": []
+        },
+        {
+          "id": "cursor-grok-4.6-medium",
+          "efforts": []
+        },
+        {
+          "id": "cursor-grok-4.6-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "composer-2.5-fast",
+          "efforts": []
+        },
+        {
+          "id": "claude-opus-5-medium",
+          "efforts": []
+        },
+        {
+          "id": "claude-opus-5-high",
+          "efforts": []
+        },
+        {
+          "id": "claude-opus-5-thinking-medium",
+          "efforts": []
+        },
+        {
+          "id": "claude-opus-5-thinking-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "claude-opus-5-thinking-max",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-sol-none",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-sol-medium",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-sol-max",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-medium",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-high",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-max",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-thinking-medium",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-thinking-high",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-thinking-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "claude-fable-5-1-thinking-max",
+          "efforts": []
+        },
+        {
+          "id": "gemini-3.8-flash-medium",
+          "efforts": []
+        },
+        {
+          "id": "gemini-3.8-flash-high",
+          "efforts": []
+        },
+        {
+          "id": "muse-spark-1.3-minimal",
+          "efforts": []
+        },
+        {
+          "id": "muse-spark-1.3-medium",
+          "efforts": []
+        },
+        {
+          "id": "muse-spark-1.3-high",
+          "efforts": []
+        },
+        {
+          "id": "muse-spark-1.3-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "muse-spark-1.3-max",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-terra-none",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-terra-medium",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-terra-high",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-terra-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-terra-max",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-medium",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-high",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-max",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-thinking-medium",
+          "efforts": []
+        },
+        {
+          "id": "claude-sonnet-5-thinking-max",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-luna-none",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-luna-medium",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-luna-xhigh",
+          "efforts": []
+        },
+        {
+          "id": "gpt-5.6-luna-max",
+          "efforts": []
+        },
+        {
+          "id": "kimi-k3-high",
+          "efforts": []
+        },
+        {
+          "id": "kimi-k3-max",
+          "efforts": []
+        }
+      ]
+    },
+    {
+      "id": "kimi",
+      "display_name": "Kimi",
+      "executable": "kimi",
+      "known_paths": [
+        "~/.kimi-code/bin/kimi",
+        "~/.local/bin/kimi",
+        "~/.nvm/versions/node/*/bin/kimi",
+        "~/.fnm/node-versions/*/installation/bin/kimi",
+        "~/.volta/bin/kimi",
+        "/opt/homebrew/bin/kimi"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "resume": [
+          "--session",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model"
+      ],
+      "models": [
+        {
+          "id": "k3-256k",
+          "efforts": []
+        },
+        {
+          "id": "kimi-for-coding-highspeed",
+          "efforts": []
+        },
+        {
+          "id": "k3",
+          "efforts": []
+        },
+        {
+          "id": "kimi-for-coding",
+          "efforts": []
+        }
+      ]
+    },
+    {
+      "id": "qoder",
+      "display_name": "Qoder",
+      "executable": "qodercli",
+      "known_paths": [
+        "~/.local/bin/qodercli",
+        "~/.qoder/bin/qodercli/qodercli-*",
+        "~/.nvm/versions/node/*/bin/qodercli",
+        "~/.fnm/node-versions/*/installation/bin/qodercli",
+        "~/.volta/bin/qodercli",
+        "/opt/homebrew/bin/qodercli"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--dangerously-skip-permissions"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "--reasoning-effort",
+          "{effort}"
+        ],
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": [
+        {
+          "id": "auto",
+          "efforts": []
+        },
+        {
+          "id": "ultimate",
+          "efforts": []
+        },
+        {
+          "id": "performance",
+          "efforts": []
+        },
+        {
+          "id": "efficient",
+          "efforts": []
+        }
+      ]
+    },
+    {
+      "id": "gemini",
+      "display_name": "Gemini",
+      "executable": "gemini",
+      "known_paths": [
+        "~/.local/bin/gemini",
+        "~/.nvm/versions/node/*/bin/gemini",
+        "~/.fnm/node-versions/*/installation/bin/gemini",
+        "~/.volta/bin/gemini",
+        "/opt/homebrew/bin/gemini"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--approval-mode=yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model"
+      ],
+      "models": [
+        {
+          "id": "auto",
+          "efforts": []
+        },
+        {
+          "id": "pro",
+          "efforts": []
+        },
+        {
+          "id": "flash",
+          "efforts": []
+        },
+        {
+          "id": "flash-lite",
+          "efforts": []
+        }
+      ]
+    },
+    {
+      "id": "copilot",
+      "display_name": "GitHub Copilot",
+      "executable": "copilot",
+      "known_paths": [
+        "~/.local/bin/copilot",
+        "~/.nvm/versions/node/*/bin/copilot",
+        "~/.fnm/node-versions/*/installation/bin/copilot",
+        "~/.volta/bin/copilot",
+        "/opt/homebrew/bin/copilot"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "plan",
+          "display_name": "Plan",
+          "args": [
+            "--plan"
+          ]
+        },
+        {
+          "id": "autopilot",
+          "display_name": "Autopilot",
+          "args": [
+            "--autopilot"
+          ]
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "--reasoning-effort",
+          "{effort}"
+        ],
+        "resume": [
+          "--resume={session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": [
+        {
+          "id": "auto",
+          "efforts": []
+        }
+      ]
+    },
+    {
+      "id": "qwen",
+      "display_name": "Qwen Code",
+      "executable": "qwen",
+      "known_paths": [
+        "~/.local/bin/qwen",
+        "~/.nvm/versions/node/*/bin/qwen",
+        "~/.fnm/node-versions/*/installation/bin/qwen",
+        "~/.volta/bin/qwen",
+        "/opt/homebrew/bin/qwen"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "plan",
+          "display_name": "Plan",
+          "args": [
+            "--approval-mode=plan"
+          ]
+        },
+        {
+          "id": "auto-edit",
+          "display_name": "Auto Edit",
+          "args": [
+            "--approval-mode=auto-edit"
+          ]
+        },
+        {
+          "id": "auto",
+          "display_name": "Auto",
+          "args": [
+            "--approval-mode=auto"
+          ]
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--approval-mode=yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model"
+      ],
+      "models": []
+    },
+    {
+      "id": "kiro",
+      "display_name": "Kiro",
+      "executable": "kiro-cli",
+      "known_paths": [
+        "~/.local/bin/kiro-cli",
+        "/opt/homebrew/bin/kiro-cli"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": [
+            "chat"
+          ]
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "chat",
+            "--trust-all-tools"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "--effort",
+          "{effort}"
+        ],
+        "resume": [
+          "--resume-id",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": []
+    },
+    {
+      "id": "droid",
+      "display_name": "Factory Droid",
+      "executable": "droid",
+      "known_paths": [
+        "~/.local/bin/droid",
+        "~/.nvm/versions/node/*/bin/droid",
+        "~/.fnm/node-versions/*/installation/bin/droid",
+        "~/.volta/bin/droid",
+        "/opt/homebrew/bin/droid"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "auto-low",
+          "display_name": "Auto Low",
+          "args": [
+            "--auto",
+            "low"
+          ]
+        },
+        {
+          "id": "auto-medium",
+          "display_name": "Auto Medium",
+          "args": [
+            "--auto",
+            "medium"
+          ]
+        },
+        {
+          "id": "auto-high",
+          "display_name": "Auto High",
+          "args": [
+            "--auto",
+            "high"
+          ]
+        },
+        {
+          "id": "spec",
+          "display_name": "Spec",
+          "args": [
+            "--use-spec"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [],
+      "models": []
+    },
+    {
+      "id": "vibe",
+      "display_name": "Mistral Vibe",
+      "executable": "vibe",
+      "known_paths": [
+        "~/.local/bin/vibe",
+        "~/.cargo/bin/vibe",
+        "/opt/homebrew/bin/vibe"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "ask",
+          "display_name": "Ask",
+          "args": [
+            "--agent",
+            "ask"
+          ]
+        },
+        {
+          "id": "plan",
+          "display_name": "Plan",
+          "args": [
+            "--agent",
+            "plan"
+          ]
+        },
+        {
+          "id": "accept-edits",
+          "display_name": "Accept Edits",
+          "args": [
+            "--agent",
+            "accept-edits"
+          ]
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [],
+      "models": []
+    },
+    {
+      "id": "zcode",
+      "display_name": "ZCode",
+      "executable": "zcode",
+      "known_paths": [
+        "~/.local/bin/zcode",
+        "/opt/homebrew/bin/zcode"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "build",
+          "display_name": "Build",
+          "args": [
+            "--mode",
+            "build"
+          ]
+        },
+        {
+          "id": "edit",
+          "display_name": "Edit",
+          "args": [
+            "--mode",
+            "edit"
+          ]
+        },
+        {
+          "id": "plan",
+          "display_name": "Plan",
+          "args": [
+            "--mode",
+            "plan"
+          ]
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--mode",
+            "yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [],
+      "models": []
+    },
+    {
+      "id": "crush",
+      "display_name": "Crush",
+      "executable": "crush",
+      "known_paths": [
+        "~/.local/bin/crush",
+        "~/go/bin/crush",
+        "/opt/homebrew/bin/crush"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "yolo",
+          "display_name": "YOLO",
+          "args": [
+            "--yolo"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "resume": [
+          "--session",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [],
+      "models": []
+    },
+    {
+      "id": "amp",
+      "display_name": "Amp",
+      "executable": "amp",
+      "known_paths": [
+        "~/.local/bin/amp",
+        "~/.nvm/versions/node/*/bin/amp",
+        "~/.fnm/node-versions/*/installation/bin/amp",
+        "~/.volta/bin/amp",
+        "/opt/homebrew/bin/amp"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "low",
+          "display_name": "Low",
+          "args": [
+            "--mode",
+            "low"
+          ]
+        },
+        {
+          "id": "medium",
+          "display_name": "Medium",
+          "args": [
+            "--mode",
+            "medium"
+          ]
+        },
+        {
+          "id": "high",
+          "display_name": "High",
+          "args": [
+            "--mode",
+            "high"
+          ]
+        },
+        {
+          "id": "ultra",
+          "display_name": "Ultra",
+          "args": [
+            "--mode",
+            "ultra"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "resume": [
+          "threads",
+          "continue",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [],
+      "models": []
+    },
+    {
+      "id": "goose",
+      "display_name": "Goose",
+      "executable": "goose",
+      "known_paths": [
+        "~/.local/bin/goose",
+        "~/.cargo/bin/goose",
+        "/opt/homebrew/bin/goose"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": [
+            "session"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "resume": [
+          "--resume",
+          "--session-id",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model"
+      ],
+      "models": []
+    },
+    {
+      "id": "auggie",
+      "display_name": "Auggie",
+      "executable": "auggie",
+      "known_paths": [
+        "~/.local/bin/auggie",
+        "~/.nvm/versions/node/*/bin/auggie",
+        "~/.fnm/node-versions/*/installation/bin/auggie",
+        "~/.volta/bin/auggie",
+        "/opt/homebrew/bin/auggie"
+      ],
+      "modes": [
+        {
+          "id": "default",
+          "display_name": "Default",
+          "args": []
+        },
+        {
+          "id": "ask",
+          "display_name": "Ask",
+          "args": [
+            "--ask"
+          ]
+        }
+      ],
+      "arg_groups": {
+        "model": [
+          "--model",
+          "{model}"
+        ],
+        "effort": [
+          "--reasoning-effort",
+          "{effort}"
+        ],
+        "resume": [
+          "--resume",
+          "{session_id}"
+        ]
+      },
+      "arg_group_order": [
+        "model",
+        "effort"
+      ],
+      "models": []
+    }
+  ]
+}

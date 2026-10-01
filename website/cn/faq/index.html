@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI 常见问题 — 安装、服务端、tmux 与 Herdr</title>
+<meta name="description" content="完整 QuickTUI FAQ：安装排错、服务端与服务配置、tmux 与 Herdr 会话、移动 App。" />
+<link rel="canonical" href="https://quicktui.ai/cn/faq/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/faq/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/faq/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/faq/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 常见问题 — 安装、服务端、tmux 与 Herdr" />
+<meta property="og:description" content="完整 QuickTUI FAQ：安装排错、服务端与服务配置、tmux 与 Herdr 会话、移动 App。" />
+<meta property="og:url" content="https://quicktui.ai/cn/faq/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 常见问题 — 安装、服务端、tmux 与 Herdr" />
+<meta name="twitter:description" content="完整 QuickTUI FAQ：安装排错、服务端与服务配置、tmux 与 Herdr 会话、移动 App。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "安装时提示 sha256 校验失败。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "安装过程有两道校验：安装脚本校验安装器本身，提示 installer sha256 mismatch ；安装器再校验服务端文件与签名，提示 quicktui-server-… sha256 mismatch 或签名校验失败。 通常是下载中断或内容损坏，重新运行同一条安装命令即可。仍然失败时，换用另一个安装源（Global 或中国镜像）重试，并检查网络中是否有缓存或篡改下载内容的代理。 签名校验失败时请不要设法绕过，请把完整输出反馈给我们。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "需要先安装 Herdr 或 tmux 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "需要。QuickTUI 服务端至少需要 Herdr 或 tmux（3.2 及以上）其中一个，推荐使用 Herdr（原因见 Q.03 ）。 安装时如果电脑上已有其中一个，安装器会直接使用；两者都没有时，安装器会尝试从 Herdr 官方源自动安装 Herdr，装到 ~/.local/bin/herdr （以 root 安装时为 /root/.local/bin/herdr ）。Windows 上只支持 Herdr，Microsoft Store 中的 QuickTUI Server 不会安装它，请先自行安装 Herdr（见 Q.04 ）。 自动安装失败时（例如网络无法访问 Herdr 官方源），安装器只给出警告，服务端照常安装，但在装好 Herdr 或 tmux 之前无法使用会话。请手动安装其中一个（见 Q.04 与 Q.05 ），再重新运行安装命令。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "为什么要使用 Herdr 或 tmux？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Herdr 和 tmux 都支持多个工作区，并能让会话在后台持续运行：只要电脑没有重启，你的 Agent 会话就会一直保持。 对于大多数用户，推荐使用 Herdr ：它与 Agent 的集成更好，性能也更出色。如果你已经习惯 tmux，QuickTUI 同样完整支持 tmux。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何安装 Herdr？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "# macOS / Linux curl -fsSL https://herdr.dev/install.sh | sh # Windows（PowerShell） powershell -ExecutionPolicy Bypass -c \"irm https://herdr.dev/install.ps1 | iex\" 完整文档： herdr.dev/docs/install"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何安装 tmux？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "多数 Linux 发行版可以直接用包管理器安装，macOS 可以用 Homebrew： # Debian / Ubuntu sudo apt install tmux # Fedora sudo dnf install tmux # macOS（Homebrew） brew install tmux QuickTUI 需要 tmux 3.2 及以上版本。其他系统见 tmux 安装文档 。 tmux 不支持 Windows，Windows 上请使用 Herdr。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "重新运行安装脚本会发生什么？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "安装命令会原地升级已有的服务端：用新版本替换 QuickTUI 服务端并重启服务，替换失败时自动恢复原版本。 已配对的设备、服务端身份和现有配置（端口、会话后端等）都会保留，无需重新配对。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "可以在安装前检查或准备依赖吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS 和 Linux 上可以。 check 只检查运行时依赖，不安装服务端、不写配置、不注册服务： curl -fsSL https://quicktui.ai/q.sh | sh -s -- check 已安装服务端时， check 默认检查已安装的版本；尚未安装时，会临时下载并校验当前正式版服务端，据此检查运行时依赖，完成后自动删除。要检查指定的本地二进制，请用 --server 传入绝对路径，例如 check --server \"$HOME/Downloads/quicktui-server\" 。已安装文件损坏时会报错，不会转而下载。 prepare 只安装缺失的依赖（如 Herdr），同样不安装服务端： curl -fsSL https://quicktui.ai/q.sh | sh -s -- prepare"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何修改服务端设置？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "设置保存在 ~/.config/quicktui-server-v2/config.toml （Windows 为 %USERPROFILE%\\.config\\quicktui-server-v2\\config.toml ）。监听地址、TERM、LANG 和 tmux socket 可以用 config set 修改，它会写入配置并自动重启服务： ~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000 其他配置项需要直接编辑配置文件，然后重启服务： # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server service restart # Windows（PowerShell） quicktui-server service restart 全部配置项及说明见安装指南的 配置文件 。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何升级或重启服务端？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "最简单的方式是在 App 中升级：升级完成后会自动重启服务。 在 macOS 和 Linux 上也可以用命令升级；已是最新版本时不做任何改动： ~/.local/bin/quicktui-server upgrade check ~/.local/bin/quicktui-server upgrade install 以 root 安装时，把路径换成 /usr/local/bin/quicktui-server 并加 sudo 。Windows 上由 Microsoft Store 自动更新服务端，App 和命令行都不会升级它。 只重启服务： # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server service restart # Windows（PowerShell） quicktui-server service restart"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何修改监听地址或端口？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "用 config set --addr 修改，服务会自动重启： # macOS / Linux ~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000 # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server config set --addr 0.0.0.0:9000 # Windows（PowerShell） quicktui-server config set --addr 0.0.0.0:9000 地址格式为 host:port ，IPv6 需加方括号，如 [::1]:9000 。修改后，手机需要用新地址连接；可以运行 pairing qrcode 显示包含新地址的二维码。 安装时也可以直接指定： install --port 9000 或 --addr 127.0.0.1:9000 。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何查看服务端日志？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS 与 Linux： # macOS tail -f ~/Library/Logs/QuickTUI/stderr.log ~/Library/Logs/QuickTUI/stdout.log # Linux（普通用户） journalctl --user -u quicktui -f # Linux（以 root 安装） journalctl -u quicktui -f Windows 上服务端不写日志文件。需要查看输出时，先停止服务，再在前台运行服务端： quicktui-server service uninstall quicktui-server serve --debug service uninstall 会同时移除 Agent hook，服务端启动时会自动恢复。排查完成后按 Ctrl+C，再运行 quicktui-server service install 让服务端回到后台运行。 需要更详细的日志时，在配置文件中设置 debug = true 后重启服务。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何卸载 QuickTUI？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "在 macOS 和 Linux 上，在安装命令后加 uninstall ： curl -fsSL https://quicktui.ai/q.sh | sh -s -- uninstall 卸载会移除后台服务与 Agent hook，服务端程序和配置（含配对记录）会保留。在 Windows 上，先在 PowerShell 中运行 quicktui-server service uninstall ，再到「设置 > 应用 > 已安装的应用」中卸载 QuickTUI Server ，配置与配对记录会保留。需要完全移除时，参见安装指南的 卸载 。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Linux 上可以用 root 安装 QuickTUI 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。在带 systemd 的 Linux 上以 root 运行安装命令，会安装为系统服务，开机自启，不依赖用户登录： 普通用户安装 程序 ： ~/.local/bin/quicktui-server 服务 ：systemd 用户服务，用 systemctl --user 管理 配置 ： ~/.config/quicktui-server-v2/ root 安装 程序 ： /usr/local/bin/quicktui-server 服务 ： /etc/systemd/system/quicktui.service ，用 systemctl 管理 配置 ： /root/.config/quicktui-server-v2/ root 安装的服务以 root 身份运行。系统没有 systemd 时，只会安装程序，不注册服务。同一台机器上的 root 安装和普通用户安装是两个独立实例，请勿混用，见 Q.14 。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "root 和普通用户混用后，服务起不来。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "QuickTUI 不会接管其他账号的文件，检测到混用时会报错： quicktui: unsupported mixed identity: <ID> ，错误信息中附有期望的 euid、实际属主和路径。常见的 ID 有三种： mixed-config root 安装时，配置目录路径上有目录不属于 root、可被其他用户写入，或是符号链接。 mixed-binary root 安装时，服务端程序路径不满足同样的要求。出现在安装或服务注册的输出中。 mixed-socket tmux socket 目录属于其他用户，或 TMUX_TMPDIR 指向其他用户的目录。普通用户与 root 都可能遇到。 用以下命令确认身份与属主，并查看完整错误： id -u stat ~/.config/quicktui-server-v2 # 普通用户 journalctl --user -u quicktui -e # root journalctl -u quicktui -e 修复方法是让每个实例只使用自己账号下的配置、程序和 socket：用原账号卸载误装的实例，再以正确的身份重新安装。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Linux 上退出登录后，服务端就停止了？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Linux 普通用户安装的服务端以 systemd 用户服务运行，默认随登录会话启停。关闭 SSH 连接或退出登录后，服务端可能随之停止，手机将无法连接。开启 linger 即可常驻运行，根据情况选择对应的命令： 1. 直接开启 （本机登录或当前用户有权限时）： loginctl enable-linger 2. 提示权限不足 （如 Access denied 、 Interactive authentication required ，常见于 SSH 远程登录）。有 sudo 权限时： sudo loginctl enable-linger \"$USER\" 没有 sudo 权限时，请管理员代为执行： sudo loginctl enable-linger <你的用户名> 3. 提示 Failed to connect to bus 。如果是用 su 或 sudo -u 切换到该用户后运行的，当前会话缺少用户总线，请改为直接以该用户 SSH 登录后再运行；或先补上运行时目录再开启： export XDG_RUNTIME_DIR=/run/user/$(id -u) loginctl enable-linger systemctl --user restart quicktui 如果系统本身没有以 systemd 启动（部分容器、未启用 systemd 的 WSL），用户服务和 linger 都无法使用，请改用 root 安装，或先为系统启用 systemd。 确认已开启 ：输出 Linger=yes 即可。 loginctl show-user \"$USER\" --property=Linger 开启后服务端会开机自启并常驻运行，与是否登录无关。以 root 安装的系统服务不受此影响。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "如何配对另一台设备？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "在电脑上运行配对引导： # macOS / Linux ~/.local/bin/quicktui-server pairing welcome # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server pairing welcome # Windows（PowerShell） quicktui-server pairing welcome 按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。 二维码出现后，在 App 中： 在服务器列表点 + 。 选择 其他连接方式 。 选择 扫描二维码连接已启用增强功能的电脑 ，点 下一步 。 将摄像头对准二维码，完成配对。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "无法连接 — connection refused。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "先确认服务端正在运行： # macOS launchctl print gui/$(id -u)/ai.quicktui # Linux systemctl --user status quicktui # Linux（以 root 安装） systemctl status quicktui # Windows（PowerShell） Get-Process quicktui-server 没有运行就重启服务： # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux（以 root 安装） sudo systemctl restart quicktui # Windows（PowerShell） quicktui-server service restart 服务在运行但仍然被拒绝时，请确认防火墙、VPN 或隧道放行了服务端端口（默认 8022）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "可以通过公网连接吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。任选一种方式，让手机能访问到你的电脑： QuickTUI Relay 可选订阅，在 App 里开通即可，无需任何网络配置。 VPN 例如 Tailscale ，手机和电脑处在同一个虚拟网络里即可直连。 隧道或反向代理 例如 Cloudflare Tunnel 或带 TLS 的反向代理，指向 http://127.0.0.1:8022 ，然后在 App 里填写公网 HTTPS 域名（不带 :8022 ）。 配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。 通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码： # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows（PowerShell） quicktui-server pairing qrcode --public-url https://your.domain 隧道或反向代理需要保留原始 Host 请求头，并发送 X-Forwarded-Proto ；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。 配对二维码短期有效，请勿泄露。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "QuickTUI 如何认证设备？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "QuickTUI 通过设备配对来认证，全程端到端加密： 配对时 配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。 设备密钥 每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。 每次连接 App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。 经 Relay 转发时 QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。 撤销设备 手机丢失或不再使用时，在电脑上撤销它： # 列出已配对设备 ~/.local/bin/quicktui-server pairing devices list # 撤销指定设备 ~/.local/bin/quicktui-server pairing devices revoke <设备 ID> 撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 quicktui-server 开头。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "工作区列表是空的。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "列表显示电脑上所有已启用后端（Herdr、tmux 或两者）中的工作区。列表为空时，点右上角 [+] 新建一个工作区；有多个后端可用时，会先让你选择后端。 服务端会在需要时自动启动 Herdr 或 tmux。App 提示「服务器已连接，但没有可用的会话后端」时，说明电脑上还没有 Herdr 或 tmux，请先安装其中一个（见 Q.04 与 Q.05 ），再重启服务。 推荐使用 Herdr。 它与 Agent 的集成更好、性能更出色，也是安装器在两者都没有时默认安装的后端。Herdr 与 tmux 同时可用时，服务端默认使用 Herdr（见 Q.23 ）。 在电脑上已有的工作区会自动出现在列表中：在本机 Herdr 中新建的工作区，刷新列表后即可看到；tmux 会话也一样，例如： tmux new-session -s mysession"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 提示没有可用的会话后端，或显示后端错误。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "说明服务端找不到可用的 tmux 或 Herdr，或者无法启动它们。按以下顺序排查： 确认电脑上已安装 Herdr 或 tmux，安装方法见 Q.04 与 Q.05 。 在电脑上运行 doctor ，查看 tmux、Herdr 与各 Agent 的查找结果： ~/.local/bin/quicktui-server doctor 如果在配置文件中设置了 tmux_bin 或 herdr_bin ，确认它们是指向真实程序的绝对路径；tmux 需要 3.2 及以上版本。修改后重启服务。 仍未解决时，查看服务端日志，见 Q.11 。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 提示「工作区已经关闭」。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "正在打开的工作区已不存在。常见原因是工作区在电脑上被关闭，或 tmux / Herdr 重启过，原来的工作区标识随之失效。返回列表，重新选择或点 [+] 新建工作区即可。 服务端正在升级或重启时也可能短暂出现，稍等片刻重新连接即可。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "QuickTUI 支持 Herdr 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "支持。tmux 与 Herdr 都是会话后端，可以同时启用。服务端每次启动时会自动检测电脑上的 tmux 与 Herdr 并启用它们；Herdr 可用时默认使用 Herdr。安装 Herdr 后重启服务，它就会出现在 App 中： # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server service restart # Windows（PowerShell） quicktui-server service restart 除 tmux 与 Herdr 外，QuickTUI 也支持 Luvus 后端，它不会被自动检测，需要在配置文件的 session_backends 中手动加入 luvus 并设置 luvus_bin 。需要更改默认后端时，编辑配置文件中的 session_backend ，详见安装指南的 配置文件 。Windows 始终使用 Herdr；原生 Windows 与 ARM64 电脑上的 Herdr 尚未完成全面验证。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "在 tmux 中运行 Agent 后，回滚历史出现重复或错位的文字。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Claude Code、Codex 等 Agent 使用全屏界面。如果它在终端的主屏幕而不是备用屏幕（alternate screen）上绘制，每次重绘都会写进 tmux 的回滚历史，表现为重复或错位的文字。解决方法是让 Agent 改用备用屏幕： Claude Code ：运行 /tui fullscreen （v2.1.89 及以上）。要对所有会话默认生效，在 ~/.claude/settings.json 的 env 小节中加入 CLAUDE_CODE_NO_FLICKER ，文件已有其他内容时合并进去即可： { \"env\": { \"CLAUDE_CODE_NO_FLICKER\": \"1\" } } Codex ：由配置项 tui.alternate_screen 控制（默认 auto ）。如果设成了 never ，在 ~/.codex/config.toml 中改为 always ： [tui] alternate_screen = \"always\" Grok Build ：在 ~/.grok/pager.toml 中设置 alt_screen = \"always\" 。 Pi ：在 /settings 中从普通模式切换到全屏模式。 aider ：默认使用备用屏幕，检查启动参数（如 --no-fancy-input ）是否关闭了它。 已经写进回滚历史的内容可以清除： tmux clear-history 在 App 中切换到 tmux 里仍以主屏幕绘制的 Claude Code、Codex 或 aider 窗格时，App 会显示提示横幅（同一窗格 60 秒内最多一次），点击可打开本条说明。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "终端应用的输入框里反复出现 11;rgb:2828/2c2c/3434 这类乱码。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "这是终端颜色查询的回包被当成了输入。某些终端应用启动时会查询终端背景色，如果回包没有被正确处理，就会显示在输入框里。App 检测到这种情况时，会显示「检测到终端颜色回包泄漏」提示。 解决方法是在该应用中设置固定主题，不再查询终端颜色，例如在 Claude Code 中运行 /theme 选择一个具体主题。 如果同一个 tmux 会话还被其他终端同时连接，这些终端也可能产生回包，可以先断开它们再观察。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "终端里的文字显示错乱。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "服务端为会话设置的 TERM 默认为 xterm-256color ，电脑缺少对应 terminfo 时会自动回退。如果你修改过 term 配置（例如改成 xterm-ghostty ），而电脑上的 tmux 不支持它，就可能出现渲染错乱。改回默认值即可，服务会自动重启： ~/.local/bin/quicktui-server config set --term xterm-256color Herdr 后端始终使用 xterm-256color ，不受此配置影响。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 的文件管理器无法打开 Mac 上的桌面、文稿、下载等目录。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "在 App 的文件管理器中浏览 Mac 时，打开 ~/Desktop （桌面）、 ~/Documents （文稿）、 ~/Downloads （下载）等目录会失败，App 提示「macOS 隐私设置阻止访问」。iCloud 云盘、外接磁盘和网络宗卷也可能出现同样的情况。 原因是这些目录受 macOS 隐私保护，访问前需要用户授权。QuickTUI 服务端在后台运行，macOS 不会为它弹出授权对话框，因此需要你手动为服务端开启「完全磁盘访问权限」。 解决步骤： 在 App 的服务器列表中，点该服务器卡片上的 文件 图标打开文件管理器。如果显示「文件浏览已关闭」，先点 启用文件浏览 。 在 Mac 上打开 系统设置 → 隐私与安全性 → 完全磁盘访问权限 （macOS 12 及更早版本为 系统偏好设置 → 安全性与隐私 → 隐私 → 完全磁盘访问权限 ）。 点列表下方的 + ，按提示输入 Mac 登录密码或使用触控 ID。 在文件选择窗口中按 ⌘⇧G ，输入 ~/.local/bin/quicktui-server 并回车，选中 quicktui-server 后点 打开 。 .local 是隐藏目录，直接在访达中浏览看不到，请用路径输入的方式。 确认列表中出现 quicktui-server ，并且右侧开关已打开。 回到 App，点提示中的 已授权, 重测 ，重新检查访问权限。 仍然无法访问时，在 Mac 上重启服务后再试： ~/.local/bin/quicktui-server service restart 升级或重新安装服务端后，程序文件会被替换。如果再次出现无法访问的情况，在「完全磁盘访问权限」中先移除 quicktui-server，再按上面的步骤重新添加。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Linux 上文件浏览提示 permission denied 或 403。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "按以下几种原因排查： 文件浏览未开启 先在 App 中开启文件浏览。 在主目录以外修改文件 出于安全考虑，编辑、上传、新建、重命名和删除只允许在服务端运行用户的主目录内进行；主目录以外只能读取。root 安装的主目录为 /root 。 系统权限不足 服务端以安装时的用户身份运行（root 安装为 root），只能访问该用户有权限的文件。 检查路径上每一级目录的权限与 ACL： namei -l /path/to/file getfacl /path/to/file 把服务端运行用户加入新的用户组后，需要重启服务才能生效： ~/.local/bin/quicktui-server service restart 启用了 SELinux 时，可用 getenforce 和 sudo ausearch -m AVC -ts recent 查看是否有拦截记录。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Agent 通知会发送哪些数据？如何关闭？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Agent 通知需要服务端已连接 QuickTUI Relay，并且 Agent hook 已安装。通知由服务端经 Relay 转交 Apple 或 Google 的推送服务投递到手机。 默认情况下，通知只包含事件类别，例如「Agent 需要审批」「任务已完成」「Agent 出错」「会话已结束」，不含项目名、会话名或任务内容。可选开启的附加内容包括 Agent 类型、项目名、会话标识和任务或错误摘要。通知不会包含完整的终端输出、源代码或凭据。 要停止接收通知，在 iPhone 或 Android 的系统设置中关闭 QuickTUI 的通知权限即可。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "有 Android 版吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "有，目前处于预览阶段。从 GitHub 下载 APK 安装，支持 Android 8.0 及以上，和 iPhone、iPad 版使用同一个服务端。预览期间全部功能免费。下载、安装与更新见 QuickTUI Android 应用（Preview） 。"
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/cn/faq/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "常见问题",
+      "item": "https://quicktui.ai/cn/faq/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/faq/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/faq/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><span aria-current="page">常见问题</span></nav>
+
+<p class="eyebrow">FAQ</p>
+<h1>常见问题</h1>
+<p class="lede">按主题分组的完整 FAQ：安装、服务端、连接与配对、会话、文件浏览、通知与 App。</p>
+<ul>
+<li><a href="#installation">安装</a></li>
+<li><a href="#server">服务端</a></li>
+<li><a href="#connecting-pairing">连接与配对</a></li>
+<li><a href="#sessions">会话</a></li>
+<li><a href="#file-browsing">文件浏览</a></li>
+<li><a href="#notifications">通知</a></li>
+<li><a href="#apps">App</a></li>
+</ul>
+
+<h2 id="installation">安装</h2>
+<h3 id="q-checksum">Q.01 — 安装时提示 sha256 校验失败。</h3>
+<p>安装过程有两道校验：安装脚本校验安装器本身，提示 <span class="mono">installer sha256 mismatch</span>；安装器再校验服务端文件与签名，提示 <span class="mono">quicktui-server-… sha256 mismatch</span> 或签名校验失败。</p><p>通常是下载中断或内容损坏，重新运行同一条安装命令即可。仍然失败时，换用另一个安装源（Global 或中国镜像）重试，并检查网络中是否有缓存或篡改下载内容的代理。</p><p class="note">签名校验失败时请不要设法绕过，请把完整输出反馈给我们。</p>
+<h3 id="q-need-backend">Q.02 — 需要先安装 Herdr 或 tmux 吗？</h3>
+<p>需要。QuickTUI 服务端至少需要 Herdr 或 tmux（3.2 及以上）其中一个，推荐使用 Herdr（原因见 <a href="#q-why-herdr-tmux">Q.03</a>）。</p><p>安装时如果电脑上已有其中一个，安装器会直接使用；两者都没有时，安装器会尝试从 Herdr 官方源自动安装 Herdr，装到 <span class="path">~/.local/bin/herdr</span>（以 root 安装时为 <span class="path">/root/.local/bin/herdr</span>）。Windows 上只支持 Herdr，Microsoft Store 中的 QuickTUI Server 不会安装它，请先自行安装 Herdr（见 <a href="#q-install-herdr">Q.04</a>）。</p><p>自动安装失败时（例如网络无法访问 Herdr 官方源），安装器只给出警告，服务端照常安装，但在装好 Herdr 或 tmux 之前无法使用会话。请手动安装其中一个（见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>），再重新运行安装命令。</p>
+<h3 id="q-why-herdr-tmux">Q.03 — 为什么要使用 Herdr 或 tmux？</h3>
+<p>Herdr 和 tmux 都支持多个工作区，并能让会话在后台持续运行：只要电脑没有重启，你的 Agent 会话就会一直保持。</p><p>对于大多数用户，推荐使用 <b>Herdr</b>：它与 Agent 的集成更好，性能也更出色。如果你已经习惯 tmux，QuickTUI 同样完整支持 tmux。</p>
+<h3 id="q-install-herdr">Q.04 — 如何安装 Herdr？</h3>
+<pre class="cmd"><span class="com"># macOS / Linux</span>
+curl -fsSL https://herdr.dev/install.sh | sh
+
+<span class="com"># Windows（PowerShell）</span>
+powershell -ExecutionPolicy Bypass -c "irm https://herdr.dev/install.ps1 | iex"</pre><p>完整文档：<a href="https://herdr.dev/docs/install/" target="_blank" rel="noopener">herdr.dev/docs/install</a></p>
+<h3 id="q-install-tmux">Q.05 — 如何安装 tmux？</h3>
+<p>多数 Linux 发行版可以直接用包管理器安装，macOS 可以用 Homebrew：</p><pre class="cmd"><span class="com"># Debian / Ubuntu</span>
+sudo apt install tmux
+
+<span class="com"># Fedora</span>
+sudo dnf install tmux
+
+<span class="com"># macOS（Homebrew）</span>
+brew install tmux</pre><p>QuickTUI 需要 tmux 3.2 及以上版本。其他系统见 <a href="https://github.com/tmux/tmux/wiki/Installing" target="_blank" rel="noopener">tmux 安装文档</a>。</p><p class="note">tmux 不支持 Windows，Windows 上请使用 Herdr。</p>
+<h3 id="q-reinstall">Q.06 — 重新运行安装脚本会发生什么？</h3>
+<p>安装命令会原地升级已有的服务端：用新版本替换 QuickTUI 服务端并重启服务，替换失败时自动恢复原版本。</p><p>已配对的设备、服务端身份和现有配置（端口、会话后端等）都会保留，无需重新配对。</p>
+<h3 id="q-check-deps">Q.07 — 可以在安装前检查或准备依赖吗？</h3>
+<p>macOS 和 Linux 上可以。<code>check</code> 只检查运行时依赖，不安装服务端、不写配置、不注册服务：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- check</pre><p>已安装服务端时，<code>check</code> 默认检查已安装的版本；尚未安装时，会临时下载并校验当前正式版服务端，据此检查运行时依赖，完成后自动删除。要检查指定的本地二进制，请用 <code>--server</code> 传入绝对路径，例如 <code>check --server "$HOME/Downloads/quicktui-server"</code>。已安装文件损坏时会报错，不会转而下载。</p><p><code>prepare</code> 只安装缺失的依赖（如 Herdr），同样不安装服务端：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- prepare</pre>
+
+<h2 id="server">服务端</h2>
+<h3 id="q-settings">Q.08 — 如何修改服务端设置？</h3>
+<p>设置保存在 <span class="path">~/.config/quicktui-server-v2/config.toml</span>（Windows 为 <span class="path">%USERPROFILE%\.config\quicktui-server-v2\config.toml</span>）。监听地址、TERM、LANG 和 tmux socket 可以用 <code>config set</code> 修改，它会写入配置并自动重启服务：</p><pre class="cmd">~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000</pre><p>其他配置项需要直接编辑配置文件，然后重启服务：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo /usr/local/bin/quicktui-server service restart
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server service restart</pre><p>全部配置项及说明见安装指南的<a href="/cn/install/#config">配置文件</a>。</p>
+<h3 id="q-upgrade">Q.09 — 如何升级或重启服务端？</h3>
+<p>最简单的方式是在 App 中升级：升级完成后会自动重启服务。</p><p>在 macOS 和 Linux 上也可以用命令升级；已是最新版本时不做任何改动：</p><pre class="cmd">~/.local/bin/quicktui-server upgrade check
+~/.local/bin/quicktui-server upgrade install</pre><p>以 root 安装时，把路径换成 <span class="path">/usr/local/bin/quicktui-server</span> 并加 <code>sudo</code>。Windows 上由 Microsoft Store 自动更新服务端，App 和命令行都不会升级它。</p><p>只重启服务：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo /usr/local/bin/quicktui-server service restart
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server service restart</pre>
+<h3 id="q-listen-address">Q.10 — 如何修改监听地址或端口？</h3>
+<p>用 <code>config set --addr</code> 修改，服务会自动重启：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo /usr/local/bin/quicktui-server config set --addr 0.0.0.0:9000
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server config set --addr 0.0.0.0:9000</pre><p>地址格式为 <code>host:port</code>，IPv6 需加方括号，如 <code>[::1]:9000</code>。修改后，手机需要用新地址连接；可以运行 <code>pairing qrcode</code> 显示包含新地址的二维码。</p><p>安装时也可以直接指定：<code>install --port 9000</code> 或 <code>--addr 127.0.0.1:9000</code>。</p>
+<h3 id="q-logs">Q.11 — 如何查看服务端日志？</h3>
+<p>macOS 与 Linux：</p><pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stderr.log ~/Library/Logs/QuickTUI/stdout.log
+
+<span class="com"># Linux（普通用户）</span>
+journalctl --user -u quicktui -f
+
+<span class="com"># Linux（以 root 安装）</span>
+journalctl -u quicktui -f</pre><p>Windows 上服务端不写日志文件。需要查看输出时，先停止服务，再在前台运行服务端：</p><pre class="cmd">quicktui-server service uninstall
+quicktui-server serve --debug</pre><p class="note"><code>service uninstall</code> 会同时移除 Agent hook，服务端启动时会自动恢复。排查完成后按 Ctrl+C，再运行 <code>quicktui-server service install</code> 让服务端回到后台运行。</p><p>需要更详细的日志时，在配置文件中设置 <code>debug = true</code> 后重启服务。</p>
+<h3 id="q-uninstall">Q.12 — 如何卸载 QuickTUI？</h3>
+<p>在 macOS 和 Linux 上，在安装命令后加 <code>uninstall</code>：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- uninstall</pre><p>卸载会移除后台服务与 Agent hook，服务端程序和配置（含配对记录）会保留。在 Windows 上，先在 PowerShell 中运行 <code>quicktui-server service uninstall</code>，再到「设置 &gt; 应用 &gt; 已安装的应用」中卸载 <b>QuickTUI Server</b>，配置与配对记录会保留。需要完全移除时，参见安装指南的<a href="/cn/install/#uninstall">卸载</a>。</p>
+<h3 id="q-linux-root-install">Q.13 — Linux 上可以用 root 安装 QuickTUI 吗？</h3>
+<p>可以。在带 systemd 的 Linux 上以 root 运行安装命令，会安装为系统服务，开机自启，不依赖用户登录：</p><dl class="ref-list"><dt>普通用户安装</dt><dd><span class="kv"><span class="k">程序</span>：<span class="path">~/.local/bin/quicktui-server</span></span><span class="kv"><span class="k">服务</span>：systemd 用户服务，用 <code>systemctl --user</code> 管理</span><span class="kv"><span class="k">配置</span>：<span class="path">~/.config/quicktui-server-v2/</span></span></dd><dt>root 安装</dt><dd><span class="kv"><span class="k">程序</span>：<span class="path">/usr/local/bin/quicktui-server</span></span><span class="kv"><span class="k">服务</span>：<span class="path">/etc/systemd/system/quicktui.service</span>，用 <code>systemctl</code> 管理</span><span class="kv"><span class="k">配置</span>：<span class="path">/root/.config/quicktui-server-v2/</span></span></dd></dl><p>root 安装的服务以 root 身份运行。系统没有 systemd 时，只会安装程序，不注册服务。同一台机器上的 root 安装和普通用户安装是两个独立实例，请勿混用，见 <a href="#q-linux-mixed-identity">Q.14</a>。</p>
+<h3 id="q-linux-mixed-identity">Q.14 — root 和普通用户混用后，服务起不来。</h3>
+<p>QuickTUI 不会接管其他账号的文件，检测到混用时会报错：<span class="mono">quicktui: unsupported mixed identity: &lt;ID&gt;</span>，错误信息中附有期望的 euid、实际属主和路径。常见的 ID 有三种：</p><dl class="ref-list"><dt><code>mixed-config</code></dt><dd>root 安装时，配置目录路径上有目录不属于 root、可被其他用户写入，或是符号链接。</dd><dt><code>mixed-binary</code></dt><dd>root 安装时，服务端程序路径不满足同样的要求。出现在安装或服务注册的输出中。</dd><dt><code>mixed-socket</code></dt><dd>tmux socket 目录属于其他用户，或 <code>TMUX_TMPDIR</code> 指向其他用户的目录。普通用户与 root 都可能遇到。</dd></dl><p>用以下命令确认身份与属主，并查看完整错误：</p><pre class="cmd">id -u
+stat ~/.config/quicktui-server-v2
+
+<span class="com"># 普通用户</span>
+journalctl --user -u quicktui -e
+
+<span class="com"># root</span>
+journalctl -u quicktui -e</pre><p>修复方法是让每个实例只使用自己账号下的配置、程序和 socket：用原账号卸载误装的实例，再以正确的身份重新安装。</p>
+<h3 id="q-linux-linger">Q.15 — Linux 上退出登录后，服务端就停止了？</h3>
+<p>Linux 普通用户安装的服务端以 systemd 用户服务运行，默认随登录会话启停。关闭 SSH 连接或退出登录后，服务端可能随之停止，手机将无法连接。开启 linger 即可常驻运行，根据情况选择对应的命令：</p><p><b>1. 直接开启</b>（本机登录或当前用户有权限时）：</p>
+<pre class="cmd">loginctl enable-linger</pre>
+<p><b>2. 提示权限不足</b>（如 <code>Access denied</code>、<code>Interactive authentication required</code>，常见于 SSH 远程登录）。有 sudo 权限时：</p>
+<pre class="cmd">sudo loginctl enable-linger "$USER"</pre>
+<p>没有 sudo 权限时，请管理员代为执行：</p>
+<pre class="cmd">sudo loginctl enable-linger &lt;你的用户名&gt;</pre>
+<p><b>3. 提示 <code>Failed to connect to bus</code></b>。如果是用 <code>su</code> 或 <code>sudo -u</code> 切换到该用户后运行的，当前会话缺少用户总线，请改为直接以该用户 SSH 登录后再运行；或先补上运行时目录再开启：</p>
+<pre class="cmd">export XDG_RUNTIME_DIR=/run/user/$(id -u)
+loginctl enable-linger
+systemctl --user restart quicktui</pre>
+<p>如果系统本身没有以 systemd 启动（部分容器、未启用 systemd 的 WSL），用户服务和 linger 都无法使用，请改用 root 安装，或先为系统启用 systemd。</p>
+<p><b>确认已开启</b>：输出 <code>Linger=yes</code> 即可。</p>
+<pre class="cmd">loginctl show-user "$USER" --property=Linger</pre><p>开启后服务端会开机自启并常驻运行，与是否登录无关。以 root 安装的系统服务不受此影响。</p>
+
+<h2 id="connecting-pairing">连接与配对</h2>
+<h3 id="q-pair-device">Q.16 — 如何配对另一台设备？</h3>
+<p>在电脑上运行配对引导：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing welcome
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo /usr/local/bin/quicktui-server pairing welcome
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server pairing welcome</pre><p>按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。</p><p>二维码出现后，在 App 中：</p><ol class="steps"><li>在服务器列表点 <b>+</b>。</li><li>选择 <b>其他连接方式</b>。</li><li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li><li>将摄像头对准二维码，完成配对。</li></ol>
+<h3 id="q-connection-refused">Q.17 — 无法连接 — connection refused。</h3>
+<p>先确认服务端正在运行：</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl print gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user status quicktui
+
+<span class="com"># Linux（以 root 安装）</span>
+systemctl status quicktui
+
+<span class="com"># Windows（PowerShell）</span>
+Get-Process quicktui-server</pre><p>没有运行就重启服务：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo systemctl restart quicktui
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server service restart</pre><p>服务在运行但仍然被拒绝时，请确认防火墙、VPN 或隧道放行了服务端端口（默认 8022）。</p>
+<h3 id="q-internet">Q.18 — 可以通过公网连接吗？</h3>
+<p>可以。任选一种方式，让手机能访问到你的电脑：</p><dl class="ref-list"><dt>QuickTUI Relay</dt><dd>可选订阅，在 App 里开通即可，无需任何网络配置。</dd><dt>VPN</dt><dd>例如 <b>Tailscale</b>，手机和电脑处在同一个虚拟网络里即可直连。</dd><dt>隧道或反向代理</dt><dd>例如 <b>Cloudflare Tunnel</b> 或带 TLS 的反向代理，指向 <span class="mono">http://127.0.0.1:8022</span>，然后在 App 里填写公网 HTTPS 域名（不带 <span class="mono">:8022</span>）。</dd></dl><p>配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。</p><p>通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server pairing qrcode --public-url https://your.domain</pre><p>隧道或反向代理需要保留原始 <span class="mono">Host</span> 请求头，并发送 <span class="mono">X-Forwarded-Proto</span>；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。</p><p class="note">配对二维码短期有效，请勿泄露。</p>
+<h3 id="q-device-auth">Q.19 — QuickTUI 如何认证设备？</h3>
+<p>QuickTUI 通过设备配对来认证，全程端到端加密：</p><dl class="ref-list"><dt>配对时</dt><dd>配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。</dd><dt>设备密钥</dt><dd>每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。</dd><dt>每次连接</dt><dd>App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。</dd><dt>经 Relay 转发时</dt><dd>QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。</dd><dt>撤销设备</dt><dd>手机丢失或不再使用时，在电脑上撤销它：<pre class="cmd"><span class="com"># 列出已配对设备</span>
+~/.local/bin/quicktui-server pairing devices list
+
+<span class="com"># 撤销指定设备</span>
+~/.local/bin/quicktui-server pairing devices revoke &lt;设备 ID&gt;</pre><p class="note">撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 <span class="mono">quicktui-server</span> 开头。</p></dd></dl>
+
+<h2 id="sessions">会话</h2>
+<h3 id="q-empty-workspaces">Q.20 — 工作区列表是空的。</h3>
+<p>列表显示电脑上所有已启用后端（Herdr、tmux 或两者）中的工作区。列表为空时，点右上角 <b>[+]</b> 新建一个工作区；有多个后端可用时，会先让你选择后端。</p><p>服务端会在需要时自动启动 Herdr 或 tmux。App 提示「服务器已连接，但没有可用的会话后端」时，说明电脑上还没有 Herdr 或 tmux，请先安装其中一个（见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>），再重启服务。</p><p><b>推荐使用 Herdr。</b>它与 Agent 的集成更好、性能更出色，也是安装器在两者都没有时默认安装的后端。Herdr 与 tmux 同时可用时，服务端默认使用 Herdr（见 <a href="#q-herdr-backend">Q.23</a>）。</p><p>在电脑上已有的工作区会自动出现在列表中：在本机 Herdr 中新建的工作区，刷新列表后即可看到；tmux 会话也一样，例如：</p><pre class="cmd">tmux new-session -s mysession</pre>
+<h3 id="q-no-backend">Q.21 — App 提示没有可用的会话后端，或显示后端错误。</h3>
+<p>说明服务端找不到可用的 tmux 或 Herdr，或者无法启动它们。按以下顺序排查：</p><ol class="steps"><li>确认电脑上已安装 Herdr 或 tmux，安装方法见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>。</li><li>在电脑上运行 <code>doctor</code>，查看 tmux、Herdr 与各 Agent 的查找结果：<pre class="cmd">~/.local/bin/quicktui-server doctor</pre></li><li>如果在配置文件中设置了 <code>tmux_bin</code> 或 <code>herdr_bin</code>，确认它们是指向真实程序的绝对路径；tmux 需要 3.2 及以上版本。修改后重启服务。</li><li>仍未解决时，查看服务端日志，见 <a href="#q-logs">Q.11</a>。</li></ol>
+<h3 id="q-workspace-closed">Q.22 — App 提示「工作区已经关闭」。</h3>
+<p>正在打开的工作区已不存在。常见原因是工作区在电脑上被关闭，或 tmux / Herdr 重启过，原来的工作区标识随之失效。返回列表，重新选择或点 <b>[+]</b> 新建工作区即可。</p><p>服务端正在升级或重启时也可能短暂出现，稍等片刻重新连接即可。</p>
+<h3 id="q-herdr-backend">Q.23 — QuickTUI 支持 Herdr 吗？</h3>
+<p>支持。tmux 与 Herdr 都是会话后端，可以同时启用。服务端每次启动时会自动检测电脑上的 tmux 与 Herdr 并启用它们；Herdr 可用时默认使用 Herdr。安装 Herdr 后重启服务，它就会出现在 App 中：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux（以 root 安装）</span>
+sudo /usr/local/bin/quicktui-server service restart
+
+<span class="com"># Windows（PowerShell）</span>
+quicktui-server service restart</pre><p>除 tmux 与 Herdr 外，QuickTUI 也支持 Luvus 后端，它不会被自动检测，需要在配置文件的 <code>session_backends</code> 中手动加入 <code>luvus</code> 并设置 <code>luvus_bin</code>。需要更改默认后端时，编辑配置文件中的 <code>session_backend</code>，详见安装指南的<a href="/cn/install/#config">配置文件</a>。Windows 始终使用 Herdr；原生 Windows 与 ARM64 电脑上的 Herdr 尚未完成全面验证。</p>
+<h3 id="q-tmux-tui-fullscreen">Q.24 — 在 tmux 中运行 Agent 后，回滚历史出现重复或错位的文字。</h3>
+<p>Claude Code、Codex 等 Agent 使用全屏界面。如果它在终端的主屏幕而不是备用屏幕（alternate screen）上绘制，每次重绘都会写进 tmux 的回滚历史，表现为重复或错位的文字。解决方法是让 Agent 改用备用屏幕：</p><ul><li><b>Claude Code</b>：运行 <code>/tui fullscreen</code>（v2.1.89 及以上）。要对所有会话默认生效，在 <span class="path">~/.claude/settings.json</span> 的 <code>env</code> 小节中加入 <code>CLAUDE_CODE_NO_FLICKER</code>，文件已有其他内容时合并进去即可：<pre class="cmd">{
+  "env": {
+    "CLAUDE_CODE_NO_FLICKER": "1"
+  }
+}</pre></li><li><b>Codex</b>：由配置项 <code>tui.alternate_screen</code> 控制（默认 <code>auto</code>）。如果设成了 <code>never</code>，在 <span class="path">~/.codex/config.toml</span> 中改为 <code>always</code>：<pre class="cmd">[tui]
+alternate_screen = "always"</pre></li><li><b>Grok Build</b>：在 <span class="path">~/.grok/pager.toml</span> 中设置 <code>alt_screen = "always"</code>。</li><li><b>Pi</b>：在 <code>/settings</code> 中从普通模式切换到全屏模式。</li><li><b>aider</b>：默认使用备用屏幕，检查启动参数（如 <code>--no-fancy-input</code>）是否关闭了它。</li></ul><p>已经写进回滚历史的内容可以清除：</p><pre class="cmd">tmux clear-history</pre><p>在 App 中切换到 tmux 里仍以主屏幕绘制的 Claude Code、Codex 或 aider 窗格时，App 会显示提示横幅（同一窗格 60 秒内最多一次），点击可打开本条说明。</p>
+<h3 id="q-osc-color-leak">Q.25 — 终端应用的输入框里反复出现 11;rgb:2828/2c2c/3434 这类乱码。</h3>
+<p>这是终端颜色查询的回包被当成了输入。某些终端应用启动时会查询终端背景色，如果回包没有被正确处理，就会显示在输入框里。App 检测到这种情况时，会显示「检测到终端颜色回包泄漏」提示。</p><p>解决方法是在该应用中设置固定主题，不再查询终端颜色，例如在 Claude Code 中运行 <code>/theme</code> 选择一个具体主题。</p><p>如果同一个 tmux 会话还被其他终端同时连接，这些终端也可能产生回包，可以先断开它们再观察。</p>
+<h3 id="q-garbled-text">Q.26 — 终端里的文字显示错乱。</h3>
+<p>服务端为会话设置的 <code>TERM</code> 默认为 <code>xterm-256color</code>，电脑缺少对应 terminfo 时会自动回退。如果你修改过 <code>term</code> 配置（例如改成 <code>xterm-ghostty</code>），而电脑上的 tmux 不支持它，就可能出现渲染错乱。改回默认值即可，服务会自动重启：</p><pre class="cmd">~/.local/bin/quicktui-server config set --term xterm-256color</pre><p>Herdr 后端始终使用 <code>xterm-256color</code>，不受此配置影响。</p>
+
+<h2 id="file-browsing">文件浏览</h2>
+<h3 id="q-tcc-macos">Q.27 — App 的文件管理器无法打开 Mac 上的桌面、文稿、下载等目录。</h3>
+<p>在 App 的文件管理器中浏览 Mac 时，打开 <span class="path">~/Desktop</span>（桌面）、<span class="path">~/Documents</span>（文稿）、<span class="path">~/Downloads</span>（下载）等目录会失败，App 提示「macOS 隐私设置阻止访问」。iCloud 云盘、外接磁盘和网络宗卷也可能出现同样的情况。</p><p>原因是这些目录受 macOS 隐私保护，访问前需要用户授权。QuickTUI 服务端在后台运行，macOS 不会为它弹出授权对话框，因此需要你手动为服务端开启「完全磁盘访问权限」。</p><p><b>解决步骤：</b></p><ol class="steps"><li>在 App 的服务器列表中，点该服务器卡片上的 <b>文件</b> 图标打开文件管理器。如果显示「文件浏览已关闭」，先点 <b>启用文件浏览</b>。</li><li>在 Mac 上打开 <b>系统设置 → 隐私与安全性 → 完全磁盘访问权限</b>（macOS 12 及更早版本为 <b>系统偏好设置 → 安全性与隐私 → 隐私 → 完全磁盘访问权限</b>）。</li><li>点列表下方的 <b>+</b>，按提示输入 Mac 登录密码或使用触控 ID。</li><li>在文件选择窗口中按 <b>⌘⇧G</b>，输入 <span class="path">~/.local/bin/quicktui-server</span> 并回车，选中 <b>quicktui-server</b> 后点 <b>打开</b>。<span class="path">.local</span> 是隐藏目录，直接在访达中浏览看不到，请用路径输入的方式。</li><li>确认列表中出现 <b>quicktui-server</b>，并且右侧开关已打开。</li><li>回到 App，点提示中的 <b>已授权, 重测</b>，重新检查访问权限。</li><li>仍然无法访问时，在 Mac 上重启服务后再试：<pre class="cmd">~/.local/bin/quicktui-server service restart</pre></li></ol><p class="note">升级或重新安装服务端后，程序文件会被替换。如果再次出现无法访问的情况，在「完全磁盘访问权限」中先移除 quicktui-server，再按上面的步骤重新添加。</p>
+<h3 id="q-permission-linux">Q.28 — Linux 上文件浏览提示 permission denied 或 403。</h3>
+<p>按以下几种原因排查：</p><dl class="ref-list"><dt>文件浏览未开启</dt><dd>先在 App 中开启文件浏览。</dd><dt>在主目录以外修改文件</dt><dd>出于安全考虑，编辑、上传、新建、重命名和删除只允许在服务端运行用户的主目录内进行；主目录以外只能读取。root 安装的主目录为 <span class="path">/root</span>。</dd><dt>系统权限不足</dt><dd>服务端以安装时的用户身份运行（root 安装为 root），只能访问该用户有权限的文件。</dd></dl><p>检查路径上每一级目录的权限与 ACL：</p><pre class="cmd">namei -l /path/to/file
+getfacl /path/to/file</pre><p>把服务端运行用户加入新的用户组后，需要重启服务才能生效：</p><pre class="cmd">~/.local/bin/quicktui-server service restart</pre><p>启用了 SELinux 时，可用 <code>getenforce</code> 和 <code>sudo ausearch -m AVC -ts recent</code> 查看是否有拦截记录。</p>
+
+<h2 id="notifications">通知</h2>
+<h3 id="q-agent-notifications">Q.29 — Agent 通知会发送哪些数据？如何关闭？</h3>
+<p>Agent 通知需要服务端已连接 QuickTUI Relay，并且 Agent hook 已安装。通知由服务端经 Relay 转交 Apple 或 Google 的推送服务投递到手机。</p><p>默认情况下，通知只包含事件类别，例如「Agent 需要审批」「任务已完成」「Agent 出错」「会话已结束」，不含项目名、会话名或任务内容。可选开启的附加内容包括 Agent 类型、项目名、会话标识和任务或错误摘要。通知不会包含完整的终端输出、源代码或凭据。</p><p>要停止接收通知，在 iPhone 或 Android 的系统设置中关闭 QuickTUI 的通知权限即可。</p>
+
+<h2 id="apps">App</h2>
+<h3 id="q-android">Q.30 — 有 Android 版吗？</h3>
+<p>有，目前处于预览阶段。从 GitHub 下载 APK 安装，支持 Android 8.0 及以上，和 iPhone、iPad 版使用同一个服务端。预览期间全部功能免费。下载、安装与更新见 <a href="/cn/android/">QuickTUI Android 应用（Preview）</a>。</p>
+
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/install/">安装指南</a></li>
+    <li><a href="/cn/">返回首页</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

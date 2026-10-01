@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Run Codex CLI from your phone (iPhone &amp; Android)</title>
+<meta name="description" content="Run OpenAI Codex CLI on your computer and drive it from iPhone, iPad or Android in a real terminal. Setup, Agent Wizard options and tips for mobile use." />
+<link rel="canonical" href="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guides/run-codex-cli-from-phone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="Run Codex CLI from your phone (iPhone &amp; Android)" />
+<meta property="og:description" content="Run OpenAI Codex CLI on your computer and drive it from iPhone, iPad or Android in a real terminal. Setup, Agent Wizard options and tips for mobile use." />
+<meta property="og:url" content="https://quicktui.ai/guides/run-codex-cli-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta property="article:modified_time" content="2026-09-27" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Run Codex CLI from your phone (iPhone &amp; Android)" />
+<meta name="twitter:description" content="Run OpenAI Codex CLI on your computer and drive it from iPhone, iPad or Android in a real terminal. Setup, Agent Wizard options and tips for mobile use." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Run Codex CLI from your phone (iPhone & Android)",
+  "description": "Run OpenAI Codex CLI on your computer and drive it from iPhone, iPad or Android in a real terminal. Setup, Agent Wizard options and tips for mobile use.",
+  "url": "https://quicktui.ai/guides/run-codex-cli-from-phone/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "datePublished": "2026-09-27",
+  "dateModified": "2026-09-27"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I use Codex CLI on my phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Codex CLI runs on a computer, not on the phone. With QuickTUI you drive that computer's Codex from your phone in a real terminal, including approvals and follow-up prompts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on Android?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The QuickTUI Android app is in preview and connects to the same QuickTUI server as the iPhone and iPad app."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Codex keep running when I close the app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. It runs in a tmux or Herdr session on your computer and keeps going after you close the app. Reopening the app takes you back to the live session."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run Codex on a Windows computer and control it from my phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Get QuickTUI Server from Microsoft Store , install Herdr, then pair by scanning a QR code. On Windows, sessions run in Herdr."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run Codex and Claude Code side by side?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Start each agent in its own tmux window or Herdr tab and switch between them in the app. See Run Claude Code from your iPhone ."
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/guides/run-codex-cli-from-phone/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Run Codex CLI from phone",
+      "item": "https://quicktui.ai/guides/run-codex-cli-from-phone/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Enhanced Features</a>
+        <a href="/install/">Install</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/guides/run-codex-cli-from-phone/" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/guides/run-codex-cli-from-phone/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span aria-current="page">Run Codex CLI from phone</span></nav>
+<p class="updated"><time datetime="2026-09-27">Updated September 27, 2026</time></p>
+<p class="eyebrow">Guide · Codex CLI</p>
+<h1>Run Codex CLI from your phone</h1>
+<p class="lede">You can run OpenAI&#39;s Codex CLI from your phone by keeping it on your own computer and driving its terminal from the QuickTUI app. Codex keeps working when you step away, and you can check progress, answer approvals and give it the next task from iPhone, iPad or Android.</p>
+
+<figure class="shot phone"><img src="/images/usage/agent-wizard-en.webp" alt="Launching Codex CLI with the Agent Wizard in QuickTUI" loading="lazy" width="660" height="1434"><figcaption>The Agent Wizard: pick Codex, a mode, a model and a folder.</figcaption></figure>
+
+<h2>What is Codex CLI?</h2>
+<p><a href="https://github.com/openai/codex" target="_blank" rel="noopener">Codex CLI</a> is OpenAI&#39;s coding agent for the terminal. It works in your repository, edits files and runs commands, with approval and sandbox settings that control how much it can do on its own. QuickTUI gives you that terminal on your phone, attached to a tmux or Herdr session so Codex keeps running after you disconnect.</p>
+
+<h2>Set up Codex CLI and QuickTUI</h2>
+<ol class="steps">
+<li>Install Codex on the computer where it should run, then run <code>codex</code> once and choose <b>Sign in with ChatGPT</b>.
+<pre><code># macOS / Linux
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://chatgpt.com/codex/install.ps1 | iex"
+
+# Or with npm / Homebrew
+npm install -g @openai/codex
+brew install --cask codex</code></pre></li>
+<li>Install QuickTUI on your phone: from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_setup">App Store</a> for iPhone and iPad, or the <a href="/android/">Android (Preview)</a> build.</li>
+<li>In the app&#39;s setup wizard, choose <b>Connect Over SSH — Enable Enhanced Features (Recommended)</b>, enter the computer&#39;s SSH login and tap <b>Install</b>. The app installs the QuickTUI server and pairs automatically. If the computer has neither tmux nor Herdr, it installs Herdr.</li>
+</ol>
+<p>On a Mac or Linux computer without SSH access, run the install command on the computer, then <a href="/install/#pairing">pair by scanning a QR code</a>:</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>On Windows, get <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">QuickTUI Server from Microsoft Store</a>, open it from the Start menu and scan the QR code it shows. Sessions on Windows run in Herdr, which you install separately; see <a href="/install/#windows">Windows</a> in the install guide.</p>
+<p>On Windows, QuickTUI runs sessions in Herdr, so Codex on a Windows computer works the same way. The connection between your phone and your computer is end-to-end encrypted and direct by default. See the <a href="/install/">install guide</a> for details.</p>
+
+<h2>Start Codex from your phone</h2>
+<p>Open the <b>Agent Wizard</b> in the app, choose Codex, and QuickTUI starts it in a new window of the current tmux session or a new tab of the current Herdr workspace. The wizard isn&#39;t available on the Luvus backend.</p>
+<dl class="ref-list">
+<dt>Mode</dt><dd><b>Default</b> keeps Codex&#39;s approval and sandbox settings. <b>YOLO</b> adds <code>--dangerously-bypass-approvals-and-sandbox</code>, so it runs without approvals or a sandbox; use it only where that&#39;s safe.</dd>
+<dt>Model</dt><dd><code>gpt-6-astra</code>, <code>gpt-5.6-sol</code>, <code>gpt-6-sol</code> or <code>gpt-6-luna</code>, passed with <code>--model</code>. Add your own under Settings &gt; Agent Models.</dd>
+<dt>Reasoning effort</dt><dd>Passed as <code>-c model_reasoning_effort=…</code>.</dd>
+<dt>Resume</dt><dd>Continue an earlier session with <code>codex resume &lt;id&gt;</code>. Resume isn&#39;t available when the workspace runs on Herdr.</dd>
+<dt>Working directory</dt><dd>Pick the project folder, with recently used folders one tap away. Save frequent combinations as presets.</dd>
+</dl>
+<p>You can also start it yourself on the computer, in a named tmux session:</p>
+<pre><code>tmux new-session -s codex
+codex</code></pre>
+
+<h2>Tips for Codex on a phone</h2>
+<dl class="ref-list">
+<dt>Scrollback under tmux</dt><dd>When Codex draws in tmux&#39;s main screen, its output can repeat in tmux scrollback. The app detects this and shows a hint. Set <code>alternate_screen = "always"</code> under <code>[tui]</code> in <span class="path">~/.codex/config.toml</span>; see the <a href="/faq/#q-tmux-tui-fullscreen">FAQ</a>.</dd>
+<dt>Send screenshots</dt><dd>Attach a file, image or camera photo from the Input Bar. It&#39;s uploaded to your computer (up to 10 MiB) and its path is inserted, so Codex can read it.</dd>
+<dt>Common commands in one tap</dt><dd>The command palette includes a Codex group with its frequently used commands, so you don&#39;t have to type them on a phone keyboard.</dd>
+<dt>See which session needs you</dt><dd>With <a href="/herdr-ios-app/">Herdr</a>, the Session Manager marks each Codex session with its icon and shows whether it&#39;s idle, working, waiting for input or done.</dd>
+</dl>
+
+<h2>FAQ</h2>
+<h3>Can I use Codex CLI on my phone?</h3>
+<p>Codex CLI runs on a computer, not on the phone. With QuickTUI you drive that computer&#39;s Codex from your phone in a real terminal, including approvals and follow-up prompts.</p>
+<h3>Does it work on Android?</h3>
+<p>Yes. The <a href="/android/">QuickTUI Android app</a> is in preview and connects to the same QuickTUI server as the iPhone and iPad app.</p>
+<h3>Does Codex keep running when I close the app?</h3>
+<p>Yes. It runs in a tmux or Herdr session on your computer and keeps going after you close the app. Reopening the app takes you back to the live session.</p>
+<h3>Can I run Codex on a Windows computer and control it from my phone?</h3>
+<p>Yes. Get <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">QuickTUI Server from Microsoft Store</a>, install Herdr, then pair by scanning a QR code. On Windows, sessions run in Herdr.</p>
+<h3>Can I run Codex and Claude Code side by side?</h3>
+<p>Yes. Start each agent in its own tmux window or Herdr tab and switch between them in the app. See <a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a>.</p>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/use-cases/control-ai-agents-from-phone/">Control AI agents from your phone</a></li>
+    <li><a href="/guides/run-claude-code-from-iphone/">Run Claude Code from your iPhone</a></li>
+    <li><a href="/guides/run-grok-build-from-phone/">Run Grok Build from your phone</a></li>
+    <li><a href="/guides/run-opencode-from-phone/">Run OpenCode from your phone</a></li>
+    <li><a href="/guides/run-pi-coding-agent-from-phone/">Run the Pi coding agent from your phone</a></li>
+    <li><a href="/guides/run-kimi-code-from-phone/">Run Kimi Code from your phone</a></li>
+    <li><a href="/guides/run-zcode-from-phone/">Run ZCode from your phone</a></li>
+    <li><a href="/guides/attach-tmux-from-phone/">Attach a tmux session from your phone</a></li>
+    <li><a href="/guides/remote-development-from-ipad/">Remote development from iPad</a></li>
+    <li><a href="/install/">Install guide</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

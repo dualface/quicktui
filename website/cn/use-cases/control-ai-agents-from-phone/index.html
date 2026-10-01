@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>在手机上掌控 AI Agent：Claude Code、Codex 等</title>
+<meta name="description" content="在电脑上运行 Claude Code、Codex、Grok Build、OpenCode、Pi 或 Kimi Code，用 iPhone、iPad 或 Android 启动、批准与引导，离开时 Agent 继续工作。" />
+<link rel="canonical" href="https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/use-cases/control-ai-agents-from-phone/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/use-cases/control-ai-agents-from-phone/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="在手机上掌控 AI Agent：Claude Code、Codex 等" />
+<meta property="og:description" content="在电脑上运行 Claude Code、Codex、Grok Build、OpenCode、Pi 或 Kimi Code，用 iPhone、iPad 或 Android 启动、批准与引导，离开时 Agent 继续工作。" />
+<meta property="og:url" content="https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="article:modified_time" content="2026-09-27" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="在手机上掌控 AI Agent：Claude Code、Codex 等" />
+<meta name="twitter:description" content="在电脑上运行 Claude Code、Codex、Grok Build、OpenCode、Pi 或 Kimi Code，用 iPhone、iPad 或 Android 启动、批准与引导，离开时 Agent 继续工作。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "在手机上掌控 AI Agent：Claude Code、Codex 等",
+  "description": "在电脑上运行 Claude Code、Codex、Grok Build、OpenCode、Pi 或 Kimi Code，用 iPhone、iPad 或 Android 启动、批准与引导，离开时 Agent 继续工作。",
+  "url": "https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "datePublished": "2026-09-27",
+  "dateModified": "2026-09-27"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "可以用手机控制 Claude Code 或 Codex 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。让 Agent 运行在电脑上的 tmux 或 Herdr 中，再用手机上的 QuickTUI 打开这个会话。你看到的是实时终端，可以下达指令、批准工具调用、查看改动。详见 Claude Code 与 Codex 指南。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "QuickTUI 支持哪些 AI Agent？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "任何在终端中运行的 CLI Agent 都可以使用。Agent 向导内置 19 种 Agent 的启动设置，包括 Claude Code、Codex、Grok Build、OpenCode、Pi、Kimi Code、Gemini、GitHub Copilot 和 Cursor。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "关闭 App 后 Agent 还会继续运行吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "会。Agent 运行在电脑上的 tmux 或 Herdr 会话中，而不是在手机上。重新打开 App，就回到同一个实时会话。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "可以同时运行多个 Agent 吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。每个 Agent 放在独立的窗口或标签页中，在 App 里随时切换。配合 Herdr，会话管理器会显示每个 Agent 的状态。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "我的代码会经过 QuickTUI 的服务器吗？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不会。App 默认直连你的电脑，连接端到端加密。只有无法直连时才会用到可选的 Relay，它转发的是无法解读的加密数据。"
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "在手机上掌控 AI Agent",
+      "item": "https://quicktui.ai/cn/use-cases/control-ai-agents-from-phone/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/use-cases/control-ai-agents-from-phone/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/use-cases/control-ai-agents-from-phone/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><span aria-current="page">在手机上掌控 AI Agent</span></nav>
+<p class="updated"><time datetime="2026-09-27">更新于 2026 年 9 月 27 日</time></p>
+<p class="eyebrow">使用场景 · AI Agent</p>
+<h1>在手机上掌控 AI Agent</h1>
+<p class="lede">想用手机控制编程 Agent，做法是让 Agent 运行在你电脑的终端里，再从手机接入这个终端。QuickTUI 支持 Claude Code、Codex、Grok Build、OpenCode、Pi、Kimi Code 以及其他任何 CLI Agent：在 iPhone、iPad 或 Android（Preview）上启动、查看、批准和引导每一次运行，放下手机后 Agent 仍在电脑上继续工作。</p>
+
+<figure class="shot phone"><img src="/images/usage/switcher-zh.webp" alt="会话管理器展示每个 Agent 的状态" loading="lazy" width="660" height="1434"><figcaption>会话管理器：配合 Herdr，每个 Agent 的状态一目了然。</figcaption></figure>
+
+<h2>在手机上掌控 Agent 意味着什么</h2>
+<dl class="ref-list">
+<dt>启动任务</dt><dd>用 <b>Agent 向导</b>启动 Agent，或在终端中输入它的命令，然后交给它一个任务。</dd>
+<dt>查看真实终端</dt><dd>你看到的是 Agent 的实时终端输出和回滚历史，而不是摘要。</dd>
+<dt>批准与引导</dt><dd>回答 Agent 的提问，批准或拒绝工具调用，在它跑偏时及时纠正，和坐在电脑前一样。</dd>
+<dt>持续运行</dt><dd>Agent 运行在电脑上的 tmux 或 Herdr 中，关闭 App 后仍会继续工作。网络切换或短暂断线后，App 会重新接入同一个会话。</dd>
+</dl>
+
+<h2>支持的 Agent</h2>
+<p>任何在终端里运行的 Agent 都可以通过 QuickTUI 使用。下面这些 Agent 在 App 中有专门支持：</p>
+<div class="table-scroll"><table class="fact-table compare-table matrix"><thead><tr><th>Agent</th><th>Agent 向导</th><th>实时状态（Herdr）</th><th>命令面板</th><th>指南</th></tr></thead><tbody>
+<tr><th>Claude Code</th><td class="yes">tmux、Herdr</td><td class="yes">支持</td><td class="yes">支持</td><td><a href="/cn/guides/run-claude-code-from-iphone/">Claude Code 指南</a></td></tr>
+<tr><th>Codex</th><td class="yes">tmux、Herdr</td><td class="yes">支持</td><td class="yes">支持</td><td><a href="/cn/guides/run-codex-cli-from-phone/">Codex 指南</a></td></tr>
+<tr><th>Grok Build</th><td class="yes">tmux、Herdr</td><td class="yes">支持</td><td class="yes">支持</td><td><a href="/cn/guides/run-grok-build-from-phone/">Grok Build 指南</a></td></tr>
+<tr><th>OpenCode</th><td class="yes">tmux、Herdr</td><td class="yes">支持</td><td class="yes">支持</td><td><a href="/cn/guides/run-opencode-from-phone/">OpenCode 指南</a></td></tr>
+<tr><th>Pi</th><td class="yes">tmux、Herdr</td><td class="yes">支持</td><td class="yes">支持</td><td><a href="/cn/guides/run-pi-coding-agent-from-phone/">Pi 指南</a></td></tr>
+<tr><th>Kimi Code</th><td class="yes">tmux、Herdr</td><td class="yes">支持</td><td class="yes">支持</td><td><a href="/cn/guides/run-kimi-code-from-phone/">Kimi Code 指南</a></td></tr>
+<tr><th>ZCode</th><td>仅 tmux</td><td class="no">不支持</td><td class="no">不支持</td><td><a href="/cn/guides/run-zcode-from-phone/">ZCode 指南</a></td></tr>
+</tbody></table></div>
+<p>Agent 向导还可以启动 Cursor、Qoder、Gemini、GitHub Copilot、Qwen Code、Kiro、Factory Droid、Mistral Vibe、Crush、Amp、Goose 和 Auggie，其中 Mistral Vibe、Crush、Goose 和 Auggie 只能在 tmux 中启动。其他 CLI Agent 同样可用，在终端中输入它的命令即可。</p>
+
+<h2>用 Agent 向导启动 Agent</h2>
+<p>Agent 向导让你不输入命令也能启动 Agent。它会在当前 tmux 会话中新建一个窗口，或在当前 Herdr 工作区中新建一个标签页来运行 Agent。Luvus 后端不支持 Agent 向导。</p>
+<dl class="ref-list">
+<dt>模式</dt><dd>各 Agent 自带的权限模式，例如默认模式、计划模式或 YOLO 模式（执行工具前不再询问）。</dd>
+<dt>模型与推理强度</dt><dd>选择模型；支持推理强度的 Agent 还可以设置推理强度。</dd>
+<dt>工作目录</dt><dd>选择 Agent 启动时所在的目录，最近使用的目录可以直接选。</dd>
+<dt>恢复会话</dt><dd>继续之前的 Agent 会话。tmux 支持恢复，Herdr 不支持。</dd>
+<dt>预设与自定义模型</dt><dd>把常用设置保存为预设，也可以在 <b>设置 → Agent 模型</b>中添加自己的模型。</dd>
+</dl>
+<p>如果电脑上没有安装对应的 Agent，App 会提示找不到它的命令。先安装 Agent，再重新启动即可。</p>
+
+<h2>同时照看多个 Agent</h2>
+<p>给每个 Agent 一个独立的窗口或标签页：一个开发新功能，一个跑测试，一个审查 Pull Request。配合 <a href="/cn/herdr-ios-app/">Herdr</a>，会话管理器会显示每个 Agent 处于空闲、工作中、等待输入还是已完成，需要你处理的一眼就能看到。Claude Code、Codex、OpenCode 和 Grok 在列表中还有各自的图标。</p>
+<p>iPhone 与 iPad 上，免费版可连接一台电脑，QuickTUI Pro 一次性买断，不限电脑数量。<a href="/cn/android/">Android 应用（Preview）</a>在预览期间免费提供全部功能。</p>
+
+<h2>如何开始</h2>
+<ol class="steps">
+<li>从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_setup">App Store</a> 安装 QuickTUI，或安装 <a href="/cn/android/">Android 应用（Preview）</a>，然后打开设置向导。</li>
+<li>选择 <b>通过 SSH 连接并启用增强功能（推荐）</b>，填写运行 Agent 的 Mac 或 Linux 电脑的 SSH 登录信息。</li>
+<li>点 <b>安装</b>。App 会通过 SSH 安装 QuickTUI 服务端并自动完成配对；电脑上没有 tmux 和 Herdr 时，会自动安装 Herdr。</li>
+</ol>
+<p>不支持 SSH 登录的 Mac 或 Linux 电脑，先在电脑上运行安装命令，再<a href="/cn/install/#pairing">扫码配对</a>：</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>Windows 电脑请从 <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">Microsoft Store 获取 QuickTUI Server</a>，从开始菜单打开后扫描它显示的二维码。Windows 上的会话运行在 Herdr 中，Herdr 需另行安装，见安装指南的 <a href="/cn/install/#windows">Windows</a> 一节。</p>
+<p>手机与电脑之间的连接端到端加密，默认直连你的电脑。详见<a href="/cn/install/">安装指南</a>。</p>
+
+<h2>常见问题</h2>
+<h3>可以用手机控制 Claude Code 或 Codex 吗？</h3>
+<p>可以。让 Agent 运行在电脑上的 tmux 或 Herdr 中，再用手机上的 QuickTUI 打开这个会话。你看到的是实时终端，可以下达指令、批准工具调用、查看改动。详见 <a href="/cn/guides/run-claude-code-from-iphone/">Claude Code</a> 与 <a href="/cn/guides/run-codex-cli-from-phone/">Codex</a> 指南。</p>
+<h3>QuickTUI 支持哪些 AI Agent？</h3>
+<p>任何在终端中运行的 CLI Agent 都可以使用。Agent 向导内置 19 种 Agent 的启动设置，包括 Claude Code、Codex、Grok Build、OpenCode、Pi、Kimi Code、Gemini、GitHub Copilot 和 Cursor。</p>
+<h3>关闭 App 后 Agent 还会继续运行吗？</h3>
+<p>会。Agent 运行在电脑上的 tmux 或 Herdr 会话中，而不是在手机上。重新打开 App，就回到同一个实时会话。</p>
+<h3>可以同时运行多个 Agent 吗？</h3>
+<p>可以。每个 Agent 放在独立的窗口或标签页中，在 App 里随时切换。配合 Herdr，会话管理器会显示每个 Agent 的状态。</p>
+<h3>我的代码会经过 QuickTUI 的服务器吗？</h3>
+<p>不会。App 默认直连你的电脑，连接端到端加密。只有无法直连时才会用到可选的 Relay，它转发的是无法解读的加密数据。</p>
+
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/guides/run-claude-code-from-iphone/">在 iPhone 上运行 Claude Code</a></li>
+    <li><a href="/cn/guides/run-codex-cli-from-phone/">在手机上运行 Codex CLI</a></li>
+    <li><a href="/cn/guides/run-grok-build-from-phone/">在手机上运行 Grok Build</a></li>
+    <li><a href="/cn/guides/run-opencode-from-phone/">在手机上运行 OpenCode</a></li>
+    <li><a href="/cn/guides/run-pi-coding-agent-from-phone/">在手机上运行 Pi</a></li>
+    <li><a href="/cn/guides/run-kimi-code-from-phone/">在手机上运行 Kimi Code</a></li>
+    <li><a href="/cn/guides/run-zcode-from-phone/">在手机上运行 ZCode</a></li>
+    <li><a href="/cn/guides/attach-tmux-from-phone/">从手机接入 tmux 会话</a></li>
+    <li><a href="/cn/guides/remote-development-from-ipad/">用 iPad 远程开发</a></li>
+    <li><a href="/cn/herdr-ios-app/">iPhone 和 iPad 上的 Herdr</a></li>
+    <li><a href="/cn/tmux-ios-app/">iPhone 和 iPad 上的 tmux</a></li>
+    <li><a href="/cn/install/">安装指南</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

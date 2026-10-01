@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QuickTUI FAQ — install, service, tmux &amp; Herdr</title>
+<meta name="description" content="Full QuickTUI FAQ: installer troubleshooting, service setup, tmux and Herdr sessions, and mobile apps." />
+<link rel="canonical" href="https://quicktui.ai/faq/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/faq/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/faq/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/faq/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI FAQ — install, service, tmux &amp; Herdr" />
+<meta property="og:description" content="Full QuickTUI FAQ: installer troubleshooting, service setup, tmux and Herdr sessions, and mobile apps." />
+<meta property="og:url" content="https://quicktui.ai/faq/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI FAQ — install, service, tmux &amp; Herdr" />
+<meta name="twitter:description" content="Full QuickTUI FAQ: installer troubleshooting, service setup, tmux and Herdr sessions, and mobile apps." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "The install fails with a sha256 mismatch.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Installation runs two checks. The install script verifies the installer itself and reports installer sha256 mismatch ; the installer then verifies the server download and its signature and reports quicktui-server-… sha256 mismatch or a signature failure. Usually the download was interrupted or corrupted, so run the same install command again. If it keeps failing, try the other install source (Global or China mirror) and check for a proxy that caches or rewrites downloads. If signature verification fails, don't try to bypass it. Please send us the full output."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need Herdr or tmux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The QuickTUI server needs at least one of Herdr or tmux (3.2 or later). We recommend Herdr (see Q.03 ). If one of them is already installed, the installer uses it. If neither is, the installer tries to install Herdr automatically from Herdr's official source into ~/.local/bin/herdr ( /root/.local/bin/herdr for a root install). Windows supports Herdr only. QuickTUI Server from Microsoft Store doesn't install it, so install Herdr yourself first (see Q.04 ). If the automatic install fails (for example, when Herdr's official source can't be reached), the installer warns and still installs the server, but sessions won't work until Herdr or tmux is installed. Install one of them manually (see Q.04 and Q.05 ), then run the install command again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why use Herdr or tmux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Herdr and tmux both support multiple workspaces and keep sessions running in the background: as long as your computer doesn't restart, your agent sessions stay alive. For most people we recommend Herdr : it integrates better with agents and performs better. If you already use tmux, QuickTUI fully supports it too."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I install Herdr?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "# macOS / Linux curl -fsSL https://herdr.dev/install.sh | sh # Windows (PowerShell) powershell -ExecutionPolicy Bypass -c \"irm https://herdr.dev/install.ps1 | iex\" Full docs: herdr.dev/docs/install"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I install tmux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most Linux distributions include tmux in their package manager, and on macOS you can use Homebrew: # Debian / Ubuntu sudo apt install tmux # Fedora sudo dnf install tmux # macOS (Homebrew) brew install tmux QuickTUI needs tmux 3.2 or later. For other systems, see the tmux install guide . tmux doesn't support Windows; use Herdr there."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens when I re-run the installer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The install command upgrades the existing server in place: it replaces the QuickTUI server with the new version and restarts the service, and restores the previous version if the replacement fails. Paired devices, the server identity and your settings (port, session backend and so on) are all kept, so there's no need to pair again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I check or prepare dependencies before installing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, on macOS and Linux. check only checks runtime dependencies. It doesn't install the server, write configuration or register a service: curl -fsSL https://quicktui.ai/q.sh | sh -s -- check If the server is already installed, check checks that version. Otherwise, it temporarily downloads and verifies the current stable server, checks against it, and removes it when done. To check a specific local binary, pass its absolute path with --server , for example check --server \"$HOME/Downloads/quicktui-server\" . A damaged installed server causes an error rather than a download. prepare installs missing dependencies only (such as Herdr), again without installing the server: curl -fsSL https://quicktui.ai/q.sh | sh -s -- prepare"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I change server settings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Settings live in ~/.config/quicktui-server-v2/config.toml ( %USERPROFILE%\\.config\\quicktui-server-v2\\config.toml on Windows). The listen address, TERM, LANG and tmux socket can be changed with config set , which writes the file and restarts the service for you: ~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000 For other settings, edit the file directly and restart the service: # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux (installed as root) sudo /usr/local/bin/quicktui-server service restart # Windows (PowerShell) quicktui-server service restart See Configuration in the install guide for every setting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I upgrade or restart the server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The easiest way is to upgrade from the app; the service restarts automatically afterwards. On macOS and Linux you can also upgrade from the command line. Nothing changes if you're already up to date: ~/.local/bin/quicktui-server upgrade check ~/.local/bin/quicktui-server upgrade install For a root install, use /usr/local/bin/quicktui-server with sudo . On Windows, Microsoft Store keeps the server up to date, so neither the app nor the command line upgrades it. To restart the service only: # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux (installed as root) sudo /usr/local/bin/quicktui-server service restart # Windows (PowerShell) quicktui-server service restart"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I change the listen address or port?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use config set --addr ; the service restarts automatically: # macOS / Linux ~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000 # Linux (installed as root) sudo /usr/local/bin/quicktui-server config set --addr 0.0.0.0:9000 # Windows (PowerShell) quicktui-server config set --addr 0.0.0.0:9000 The format is host:port ; IPv6 needs brackets, e.g. [::1]:9000 . Your phone then needs the new address; run pairing qrcode to show a QR code that includes it. You can also set it at install time: install --port 9000 or --addr 127.0.0.1:9000 ."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I view server logs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS and Linux: # macOS tail -f ~/Library/Logs/QuickTUI/stderr.log ~/Library/Logs/QuickTUI/stdout.log # Linux (regular user) journalctl --user -u quicktui -f # Linux (installed as root) journalctl -u quicktui -f On Windows the server doesn't write log files. To see its output, stop the service and run the server in the foreground: quicktui-server service uninstall quicktui-server serve --debug service uninstall also removes agent hooks; they come back when the server starts. When you're done, press Ctrl+C and run quicktui-server service install to run the server in the background again. For more detailed logs, set debug = true in the config file and restart the service."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I uninstall QuickTUI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On macOS and Linux, add uninstall to the install command: curl -fsSL https://quicktui.ai/q.sh | sh -s -- uninstall This removes the background service and agent hooks but keeps the server binary and configuration, including your pairings. On Windows, run quicktui-server service uninstall in PowerShell, then uninstall QuickTUI Server in Settings > Apps > Installed apps; your configuration and pairings are kept. To remove everything, see Uninstall in the install guide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I install QuickTUI as root on Linux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. On Linux with systemd, running the install command as root installs a system service that starts at boot and doesn't depend on anyone signing in: Regular-user install Binary : ~/.local/bin/quicktui-server Service : systemd user service, managed with systemctl --user Config : ~/.config/quicktui-server-v2/ Root install Binary : /usr/local/bin/quicktui-server Service : /etc/systemd/system/quicktui.service , managed with systemctl Config : /root/.config/quicktui-server-v2/ A root install runs as root. Without systemd, only the binary is installed and no service is registered. A root install and a regular-user install on the same machine are separate instances; don't mix them (see Q.14 )."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Root and a regular user got mixed, and the service won't start.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "QuickTUI never takes over another account's files. When it detects a mix-up it fails with quicktui: unsupported mixed identity: <ID> , followed by the expected euid, the actual owner and the path. There are three IDs: mixed-config For a root install, a directory on the config path isn't owned by root, is writable by other users, or is a symlink. mixed-binary For a root install, the server binary path fails the same checks. Shown in the output of the installer or service registration. mixed-socket The tmux socket directory belongs to another user, or TMUX_TMPDIR points at another user's directory. Can affect both regular users and root. Check your identity and ownership, and read the full error: id -u stat ~/.config/quicktui-server-v2 # Regular user journalctl --user -u quicktui -e # Root journalctl -u quicktui -e To fix it, make each instance use only its own account's config, binary and socket: uninstall the stray instance from the account that installed it, then reinstall as the right user."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "On Linux, the server stops after I sign out.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A regular-user install on Linux runs as a systemd user service, which follows your login session by default. When you close your SSH connection or sign out, the server may stop and your phone can no longer connect. Enable linger once to keep it running, with the command that fits your situation: 1. Enable it directly (when signed in locally, or when your user has permission): loginctl enable-linger 2. Permission error (such as Access denied or Interactive authentication required , common over SSH). If you have sudo: sudo loginctl enable-linger \"$USER\" Without sudo, ask an administrator to run: sudo loginctl enable-linger <your-username> 3. Failed to connect to bus . If you switched to the user with su or sudo -u , the session has no user bus: sign in as that user over SSH directly and run it again, or set the runtime directory and then enable it: export XDG_RUNTIME_DIR=/run/user/$(id -u) loginctl enable-linger systemctl --user restart quicktui If the system itself didn't boot with systemd (some containers, or WSL without systemd enabled), user services and linger aren't available. Install as root instead, or enable systemd first. Check that it's on : the output should be Linger=yes . loginctl show-user \"$USER\" --property=Linger The server then starts at boot and keeps running whether or not you're signed in. Root installs use a system service and aren't affected."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I pair another device?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run the pairing guide on your computer: # macOS / Linux ~/.local/bin/quicktui-server pairing welcome # Linux (installed as root) sudo /usr/local/bin/quicktui-server pairing welcome # Windows (PowerShell) quicktui-server pairing welcome Choose how to show the QR code when the guide asks. A desktop browser is recommended; the terminal works too, but some terminal fonts make the code unreadable. Once the QR code is up, in the app: On the server list, tap + . Choose Other ways to connect . Choose Scan a QR Code to Connect a Computer with Enhanced Features , then tap Next . Point the camera at the QR code to finish pairing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can't connect — connection refused.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "First make sure the server is running: # macOS launchctl print gui/$(id -u)/ai.quicktui # Linux systemctl --user status quicktui # Linux (installed as root) systemctl status quicktui # Windows (PowerShell) Get-Process quicktui-server If it isn't, restart it: # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux (installed as root) sudo systemctl restart quicktui # Windows (PowerShell) quicktui-server service restart Still refused while it's running? Make sure your firewall, VPN or tunnel lets through the server port (8022 by default)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I connect over the internet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Pick any way for your phone to reach your computer: QuickTUI Relay An optional subscription. Turn it on in the app, no network setup needed. VPN A private network such as Tailscale lets your phone reach your computer directly. Tunnel or reverse proxy For example, Cloudflare Tunnel or a reverse proxy with TLS. Point it at http://127.0.0.1:8022 , then use the public HTTPS hostname in the app (without :8022 ). Pairing codes, device sign-in and everything you do travel inside an end-to-end encrypted tunnel, so even if you open port 8022 directly, no one can read your traffic or pretend to be your computer. An open port does reveal that a QuickTUI server is running, its version and a few other details, and a flood of junk connections could keep your own devices from getting through. That's why we recommend one of the options above. To pair through a tunnel or reverse proxy, update QuickTUI Server to the latest version, then generate a QR code with your public address: # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows (PowerShell) quicktui-server pairing qrcode --public-url https://your.domain The tunnel or proxy must keep the original Host header and send X-Forwarded-Proto . Cloudflare Tunnel does both by default. If your proxy doesn't send that header, also update the QuickTUI app to the latest version. Pairing QR codes expire quickly. Keep them private."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does QuickTUI authenticate devices?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "QuickTUI signs in devices through pairing, and everything is end-to-end encrypted: When you pair The pairing QR code holds a one-time pairing code and your computer's identity fingerprint. The code works once, expires in 15 minutes and only ever travels inside the encrypted channel. The app remembers your computer's identity and will only connect to that exact computer, so no one can impersonate it. Device keys Each phone creates its own key when it pairs. The private key stays in the system's secure storage (Secure Enclave or Keychain on iPhone, Android Keystore on Android) and never leaves the phone. Every connection The app first checks your computer's identity, then proves it's a paired device with its private key, and both sides agree on fresh encryption keys for that connection. Terminal, files, port forwarding and everything else are encrypted and protected against replay. Through Relay QuickTUI Relay only passes encrypted data along. It can't read it or impersonate either side. The one exception is push notifications: if you turn them on, Relay briefly sees the notification text as it delivers it. Revoking a device If a phone is lost or retired, revoke it on your computer: # List paired devices ~/.local/bin/quicktui-server pairing devices list # Revoke a device ~/.local/bin/quicktui-server pairing devices revoke <device-id> A revoked device is disconnected within 5 minutes and can't connect again. On Windows, run the same commands in PowerShell, starting with quicktui-server ."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "My workspace list is empty.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The list shows workspaces from every enabled backend on your computer: Herdr, tmux or both. If it's empty, tap [+] in the top-right corner to create a workspace; if more than one backend is available, you'll pick one first. The server starts Herdr or tmux automatically when needed. If the app says \"The server is connected, but no session backend is available\", your computer has neither Herdr nor tmux yet. Install one of them (see Q.04 and Q.05 ), then restart the service. We recommend Herdr. It integrates better with agents, performs better, and is the backend the installer sets up when neither is present. When both are available, the server uses Herdr by default (see Q.23 ). Workspaces that already exist on your computer show up automatically: workspaces you create in Herdr locally appear after you refresh the list, and so do tmux sessions, for example: tmux new-session -s mysession"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "The app says no session backend is available, or shows a backend error.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The server can't find a working tmux or Herdr, or can't start one. Work through these steps: Make sure Herdr or tmux is installed on your computer; see Q.04 and Q.05 . Run doctor on your computer to see how tmux, Herdr and agents are found: ~/.local/bin/quicktui-server doctor If you set tmux_bin or herdr_bin in the config file, make sure they're absolute paths to real executables; tmux must be 3.2 or later. Restart the service after changing them. If it still fails, check the server logs (see Q.11 )."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "The app says \"Workspace has been closed\".",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The workspace you're opening no longer exists. Usually it was closed on your computer, or tmux / Herdr restarted and the old workspace IDs expired. Go back to the list and pick another workspace, or tap [+] to create one. It can also show up briefly while the server upgrades or restarts; wait a moment and reconnect."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does QuickTUI work with Herdr?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. tmux and Herdr are both session backends and can be enabled together. Each time the server starts, it detects tmux and Herdr on your computer and enables them, and Herdr is the default whenever it's available. After installing Herdr, restart the service and it appears in the app: # macOS / Linux ~/.local/bin/quicktui-server service restart # Linux (installed as root) sudo /usr/local/bin/quicktui-server service restart # Windows (PowerShell) quicktui-server service restart Besides tmux and Herdr, QuickTUI also supports the Luvus backend. It isn't detected automatically: add luvus to session_backends in the config file and set luvus_bin . To change the default backend, edit session_backend in the config file; see Configuration in the install guide. Windows always uses Herdr; native Windows and Herdr on ARM64 computers haven't been fully validated yet."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "tmux scrollback shows duplicated or misaligned text after running an agent.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Agents such as Claude Code and Codex draw a full-screen interface. When one draws in the terminal's main screen instead of the alternate screen, every redraw is written into tmux scrollback and shows up as duplicated or misaligned text. The fix is to have the agent use the alternate screen: Claude Code : run /tui fullscreen (v2.1.89 or later). To make it the default for every session, add CLAUDE_CODE_NO_FLICKER to the env section of ~/.claude/settings.json , merging it with any settings already there: { \"env\": { \"CLAUDE_CODE_NO_FLICKER\": \"1\" } } Codex : the tui.alternate_screen setting controls this (default auto ). If it's set to never , change it to always in ~/.codex/config.toml : [tui] alternate_screen = \"always\" Grok Build : set alt_screen = \"always\" in ~/.grok/pager.toml . Pi : switch from regular mode to fullscreen mode in /settings . aider : uses the alternate screen by default; check whether a startup option such as --no-fancy-input turns it off. To clear what's already in scrollback: tmux clear-history When you switch to a tmux pane where Claude Code, Codex or aider is still drawing in the main screen, the app shows a hint banner (at most once per pane every 60 seconds); tap it to open this answer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Text like 11;rgb:2828/2c2c/3434 keeps appearing in a terminal app's input.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "These are replies to a terminal color query being read as input. Some terminal apps ask the terminal for its background color at startup; if the reply isn't handled, it shows up in the input box. When the app detects this, it shows a \"Terminal Color Reply Leak Detected\" banner. The fix is to set a fixed theme in that app so it stops querying colors, for example by running /theme in Claude Code and picking a specific theme. If other terminals are attached to the same tmux session, they can also produce these replies; detach them and check again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Text in the terminal is garbled.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The server sets session TERM to xterm-256color by default and falls back automatically if your computer lacks that terminfo entry. If you changed the term setting (for example to xterm-ghostty ) and your tmux doesn't support it, rendering can break. Set it back to the default; the service restarts automatically: ~/.local/bin/quicktui-server config set --term xterm-256color The Herdr backend always uses xterm-256color and isn't affected by this setting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "The app's file manager can't open Desktop, Documents or Downloads on my Mac.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When you browse a Mac in the app's file manager, opening ~/Desktop , ~/Documents , ~/Downloads and similar folders fails, and the app says macOS privacy settings blocked access. iCloud Drive, external drives and network volumes can behave the same way. These folders are protected by macOS privacy controls and need your permission before an app can read them. The QuickTUI server runs in the background, so macOS never shows it a permission prompt; you need to grant it Full Disk Access yourself. To fix it: In the app's server list, tap the Files icon on the server card to open the file manager. If it says \"File browsing is off\", tap Enable File Browsing first. On your Mac, open System Settings → Privacy & Security → Full Disk Access (on macOS 12 or earlier: System Preferences → Security & Privacy → Privacy → Full Disk Access ). Click + below the list and enter your Mac password or use Touch ID when asked. In the file picker, press ⌘⇧G , type ~/.local/bin/quicktui-server , press Return, select quicktui-server and click Open . .local is a hidden folder, so you won't see it by browsing in Finder; type the path instead. Make sure quicktui-server appears in the list with its switch turned on. Back in the app, tap Recheck in the message to check access again. If it's still blocked, restart the service on your Mac and try again: ~/.local/bin/quicktui-server service restart Upgrading or reinstalling the server replaces the program file. If access is blocked again afterwards, remove quicktui-server from Full Disk Access and add it again with the steps above."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "On Linux, file browsing shows permission denied or 403.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check these causes: File browsing is off Turn on file browsing in the app first. Changing files outside your home folder For safety, editing, uploading, creating, renaming and deleting are only allowed inside the home folder of the user the server runs as; outside it, files are read-only. For a root install, the home folder is /root . Missing system permissions The server runs as the user that installed it (root for a root install) and can only access what that user can. Check permissions and ACLs on every directory along the path: namei -l /path/to/file getfacl /path/to/file After adding the server's user to a new group, restart the service for it to take effect: ~/.local/bin/quicktui-server service restart With SELinux enabled, check getenforce and sudo ausearch -m AVC -ts recent for denials."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What data do Agent notifications send, and how do I turn them off?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Agent notifications require the server to be connected to QuickTUI Relay and agent hooks to be installed. The server sends each notification through Relay to Apple's or Google's push service for delivery. By default, a notification only says what happened, such as an agent needing approval, a task completing, an agent error or a session ending. It doesn't include project names, session names or task content. Optional extras are the agent type, project name, session identifier and a task or error summary. Notifications never include full terminal output, source code or credentials. To stop notifications, turn off notifications for QuickTUI in your iPhone or Android system settings."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there an Android app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, in preview. Download the APK from GitHub; it runs on Android 8.0 or later and works with the same server as the iPhone and iPad app. During the preview, every feature is free. See QuickTUI for Android (Preview) for downloads, installation and updates."
+      }
+    }
+  ],
+  "url": "https://quicktui.ai/faq/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "FAQ",
+      "item": "https://quicktui.ai/faq/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Enhanced Features</a>
+        <a href="/install/">Install</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/faq/" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/faq/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span aria-current="page">FAQ</span></nav>
+
+<p class="eyebrow">FAQ</p>
+<h1>Frequently asked questions</h1>
+<p class="lede">The full FAQ, grouped by topic: installation, server, connecting and pairing, sessions, file browsing, notifications and apps.</p>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#server">Server</a></li>
+<li><a href="#connecting-pairing">Connecting &amp; pairing</a></li>
+<li><a href="#sessions">Sessions</a></li>
+<li><a href="#file-browsing">File browsing</a></li>
+<li><a href="#notifications">Notifications</a></li>
+<li><a href="#apps">Apps</a></li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+<h3 id="q-checksum">Q.01 — The install fails with a sha256 mismatch.</h3>
+<p>Installation runs two checks. The install script verifies the installer itself and reports <span class="mono">installer sha256 mismatch</span>; the installer then verifies the server download and its signature and reports <span class="mono">quicktui-server-… sha256 mismatch</span> or a signature failure.</p><p>Usually the download was interrupted or corrupted, so run the same install command again. If it keeps failing, try the other install source (Global or China mirror) and check for a proxy that caches or rewrites downloads.</p><p class="note">If signature verification fails, don&#39;t try to bypass it. Please send us the full output.</p>
+<h3 id="q-need-backend">Q.02 — Do I need Herdr or tmux?</h3>
+<p>Yes. The QuickTUI server needs at least one of Herdr or tmux (3.2 or later). We recommend Herdr (see <a href="#q-why-herdr-tmux">Q.03</a>).</p><p>If one of them is already installed, the installer uses it. If neither is, the installer tries to install Herdr automatically from Herdr&#39;s official source into <span class="path">~/.local/bin/herdr</span> (<span class="path">/root/.local/bin/herdr</span> for a root install). Windows supports Herdr only. QuickTUI Server from Microsoft Store doesn&#39;t install it, so install Herdr yourself first (see <a href="#q-install-herdr">Q.04</a>).</p><p>If the automatic install fails (for example, when Herdr&#39;s official source can&#39;t be reached), the installer warns and still installs the server, but sessions won&#39;t work until Herdr or tmux is installed. Install one of them manually (see <a href="#q-install-herdr">Q.04</a> and <a href="#q-install-tmux">Q.05</a>), then run the install command again.</p>
+<h3 id="q-why-herdr-tmux">Q.03 — Why use Herdr or tmux?</h3>
+<p>Herdr and tmux both support multiple workspaces and keep sessions running in the background: as long as your computer doesn&#39;t restart, your agent sessions stay alive.</p><p>For most people we recommend <b>Herdr</b>: it integrates better with agents and performs better. If you already use tmux, QuickTUI fully supports it too.</p>
+<h3 id="q-install-herdr">Q.04 — How do I install Herdr?</h3>
+<pre class="cmd"><span class="com"># macOS / Linux</span>
+curl -fsSL https://herdr.dev/install.sh | sh
+
+<span class="com"># Windows (PowerShell)</span>
+powershell -ExecutionPolicy Bypass -c "irm https://herdr.dev/install.ps1 | iex"</pre><p>Full docs: <a href="https://herdr.dev/docs/install/" target="_blank" rel="noopener">herdr.dev/docs/install</a></p>
+<h3 id="q-install-tmux">Q.05 — How do I install tmux?</h3>
+<p>Most Linux distributions include tmux in their package manager, and on macOS you can use Homebrew:</p><pre class="cmd"><span class="com"># Debian / Ubuntu</span>
+sudo apt install tmux
+
+<span class="com"># Fedora</span>
+sudo dnf install tmux
+
+<span class="com"># macOS (Homebrew)</span>
+brew install tmux</pre><p>QuickTUI needs tmux 3.2 or later. For other systems, see the <a href="https://github.com/tmux/tmux/wiki/Installing" target="_blank" rel="noopener">tmux install guide</a>.</p><p class="note">tmux doesn&#39;t support Windows; use Herdr there.</p>
+<h3 id="q-reinstall">Q.06 — What happens when I re-run the installer?</h3>
+<p>The install command upgrades the existing server in place: it replaces the QuickTUI server with the new version and restarts the service, and restores the previous version if the replacement fails.</p><p>Paired devices, the server identity and your settings (port, session backend and so on) are all kept, so there&#39;s no need to pair again.</p>
+<h3 id="q-check-deps">Q.07 — Can I check or prepare dependencies before installing?</h3>
+<p>Yes, on macOS and Linux. <code>check</code> only checks runtime dependencies. It doesn&#39;t install the server, write configuration or register a service:</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- check</pre><p>If the server is already installed, <code>check</code> checks that version. Otherwise, it temporarily downloads and verifies the current stable server, checks against it, and removes it when done. To check a specific local binary, pass its absolute path with <code>--server</code>, for example <code>check --server "$HOME/Downloads/quicktui-server"</code>. A damaged installed server causes an error rather than a download.</p><p><code>prepare</code> installs missing dependencies only (such as Herdr), again without installing the server:</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- prepare</pre>
+
+<h2 id="server">Server</h2>
+<h3 id="q-settings">Q.08 — How do I change server settings?</h3>
+<p>Settings live in <span class="path">~/.config/quicktui-server-v2/config.toml</span> (<span class="path">%USERPROFILE%\.config\quicktui-server-v2\config.toml</span> on Windows). The listen address, TERM, LANG and tmux socket can be changed with <code>config set</code>, which writes the file and restarts the service for you:</p><pre class="cmd">~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000</pre><p>For other settings, edit the file directly and restart the service:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux (installed as root)</span>
+sudo /usr/local/bin/quicktui-server service restart
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server service restart</pre><p>See <a href="/install/#config">Configuration</a> in the install guide for every setting.</p>
+<h3 id="q-upgrade">Q.09 — How do I upgrade or restart the server?</h3>
+<p>The easiest way is to upgrade from the app; the service restarts automatically afterwards.</p><p>On macOS and Linux you can also upgrade from the command line. Nothing changes if you&#39;re already up to date:</p><pre class="cmd">~/.local/bin/quicktui-server upgrade check
+~/.local/bin/quicktui-server upgrade install</pre><p>For a root install, use <span class="path">/usr/local/bin/quicktui-server</span> with <code>sudo</code>. On Windows, Microsoft Store keeps the server up to date, so neither the app nor the command line upgrades it.</p><p>To restart the service only:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux (installed as root)</span>
+sudo /usr/local/bin/quicktui-server service restart
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server service restart</pre>
+<h3 id="q-listen-address">Q.10 — How do I change the listen address or port?</h3>
+<p>Use <code>config set --addr</code>; the service restarts automatically:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000
+
+<span class="com"># Linux (installed as root)</span>
+sudo /usr/local/bin/quicktui-server config set --addr 0.0.0.0:9000
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server config set --addr 0.0.0.0:9000</pre><p>The format is <code>host:port</code>; IPv6 needs brackets, e.g. <code>[::1]:9000</code>. Your phone then needs the new address; run <code>pairing qrcode</code> to show a QR code that includes it.</p><p>You can also set it at install time: <code>install --port 9000</code> or <code>--addr 127.0.0.1:9000</code>.</p>
+<h3 id="q-logs">Q.11 — How do I view server logs?</h3>
+<p>macOS and Linux:</p><pre class="cmd"><span class="com"># macOS</span>
+tail -f ~/Library/Logs/QuickTUI/stderr.log ~/Library/Logs/QuickTUI/stdout.log
+
+<span class="com"># Linux (regular user)</span>
+journalctl --user -u quicktui -f
+
+<span class="com"># Linux (installed as root)</span>
+journalctl -u quicktui -f</pre><p>On Windows the server doesn&#39;t write log files. To see its output, stop the service and run the server in the foreground:</p><pre class="cmd">quicktui-server service uninstall
+quicktui-server serve --debug</pre><p class="note"><code>service uninstall</code> also removes agent hooks; they come back when the server starts. When you&#39;re done, press Ctrl+C and run <code>quicktui-server service install</code> to run the server in the background again.</p><p>For more detailed logs, set <code>debug = true</code> in the config file and restart the service.</p>
+<h3 id="q-uninstall">Q.12 — How do I uninstall QuickTUI?</h3>
+<p>On macOS and Linux, add <code>uninstall</code> to the install command:</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- uninstall</pre><p>This removes the background service and agent hooks but keeps the server binary and configuration, including your pairings. On Windows, run <code>quicktui-server service uninstall</code> in PowerShell, then uninstall <b>QuickTUI Server</b> in Settings &gt; Apps &gt; Installed apps; your configuration and pairings are kept. To remove everything, see <a href="/install/#uninstall">Uninstall</a> in the install guide.</p>
+<h3 id="q-linux-root-install">Q.13 — Can I install QuickTUI as root on Linux?</h3>
+<p>Yes. On Linux with systemd, running the install command as root installs a system service that starts at boot and doesn&#39;t depend on anyone signing in:</p><dl class="ref-list"><dt>Regular-user install</dt><dd><span class="kv"><span class="k">Binary</span>: <span class="path">~/.local/bin/quicktui-server</span></span><span class="kv"><span class="k">Service</span>: systemd user service, managed with <code>systemctl --user</code></span><span class="kv"><span class="k">Config</span>: <span class="path">~/.config/quicktui-server-v2/</span></span></dd><dt>Root install</dt><dd><span class="kv"><span class="k">Binary</span>: <span class="path">/usr/local/bin/quicktui-server</span></span><span class="kv"><span class="k">Service</span>: <span class="path">/etc/systemd/system/quicktui.service</span>, managed with <code>systemctl</code></span><span class="kv"><span class="k">Config</span>: <span class="path">/root/.config/quicktui-server-v2/</span></span></dd></dl><p>A root install runs as root. Without systemd, only the binary is installed and no service is registered. A root install and a regular-user install on the same machine are separate instances; don&#39;t mix them (see <a href="#q-linux-mixed-identity">Q.14</a>).</p>
+<h3 id="q-linux-mixed-identity">Q.14 — Root and a regular user got mixed, and the service won&#39;t start.</h3>
+<p>QuickTUI never takes over another account&#39;s files. When it detects a mix-up it fails with <span class="mono">quicktui: unsupported mixed identity: &lt;ID&gt;</span>, followed by the expected euid, the actual owner and the path. There are three IDs:</p><dl class="ref-list"><dt><code>mixed-config</code></dt><dd>For a root install, a directory on the config path isn&#39;t owned by root, is writable by other users, or is a symlink.</dd><dt><code>mixed-binary</code></dt><dd>For a root install, the server binary path fails the same checks. Shown in the output of the installer or service registration.</dd><dt><code>mixed-socket</code></dt><dd>The tmux socket directory belongs to another user, or <code>TMUX_TMPDIR</code> points at another user&#39;s directory. Can affect both regular users and root.</dd></dl><p>Check your identity and ownership, and read the full error:</p><pre class="cmd">id -u
+stat ~/.config/quicktui-server-v2
+
+<span class="com"># Regular user</span>
+journalctl --user -u quicktui -e
+
+<span class="com"># Root</span>
+journalctl -u quicktui -e</pre><p>To fix it, make each instance use only its own account&#39;s config, binary and socket: uninstall the stray instance from the account that installed it, then reinstall as the right user.</p>
+<h3 id="q-linux-linger">Q.15 — On Linux, the server stops after I sign out.</h3>
+<p>A regular-user install on Linux runs as a systemd user service, which follows your login session by default. When you close your SSH connection or sign out, the server may stop and your phone can no longer connect. Enable linger once to keep it running, with the command that fits your situation:</p><p><b>1. Enable it directly</b> (when signed in locally, or when your user has permission):</p>
+<pre class="cmd">loginctl enable-linger</pre>
+<p><b>2. Permission error</b> (such as <code>Access denied</code> or <code>Interactive authentication required</code>, common over SSH). If you have sudo:</p>
+<pre class="cmd">sudo loginctl enable-linger "$USER"</pre>
+<p>Without sudo, ask an administrator to run:</p>
+<pre class="cmd">sudo loginctl enable-linger &lt;your-username&gt;</pre>
+<p><b>3. <code>Failed to connect to bus</code></b>. If you switched to the user with <code>su</code> or <code>sudo -u</code>, the session has no user bus: sign in as that user over SSH directly and run it again, or set the runtime directory and then enable it:</p>
+<pre class="cmd">export XDG_RUNTIME_DIR=/run/user/$(id -u)
+loginctl enable-linger
+systemctl --user restart quicktui</pre>
+<p>If the system itself didn't boot with systemd (some containers, or WSL without systemd enabled), user services and linger aren't available. Install as root instead, or enable systemd first.</p>
+<p><b>Check that it's on</b>: the output should be <code>Linger=yes</code>.</p>
+<pre class="cmd">loginctl show-user "$USER" --property=Linger</pre><p>The server then starts at boot and keeps running whether or not you're signed in. Root installs use a system service and aren't affected.</p>
+
+<h2 id="connecting-pairing">Connecting &amp; pairing</h2>
+<h3 id="q-pair-device">Q.16 — How do I pair another device?</h3>
+<p>Run the pairing guide on your computer:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing welcome
+
+<span class="com"># Linux (installed as root)</span>
+sudo /usr/local/bin/quicktui-server pairing welcome
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server pairing welcome</pre><p>Choose how to show the QR code when the guide asks. A desktop browser is recommended; the terminal works too, but some terminal fonts make the code unreadable.</p><p>Once the QR code is up, in the app:</p><ol class="steps"><li>On the server list, tap <b>+</b>.</li><li>Choose <b>Other ways to connect</b>.</li><li>Choose <b>Scan a QR Code to Connect a Computer with Enhanced Features</b>, then tap <b>Next</b>.</li><li>Point the camera at the QR code to finish pairing.</li></ol>
+<h3 id="q-connection-refused">Q.17 — Can't connect — connection refused.</h3>
+<p>First make sure the server is running:</p><pre class="cmd"><span class="com"># macOS</span>
+launchctl print gui/$(id -u)/ai.quicktui
+
+<span class="com"># Linux</span>
+systemctl --user status quicktui
+
+<span class="com"># Linux (installed as root)</span>
+systemctl status quicktui
+
+<span class="com"># Windows (PowerShell)</span>
+Get-Process quicktui-server</pre><p>If it isn't, restart it:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux (installed as root)</span>
+sudo systemctl restart quicktui
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server service restart</pre><p>Still refused while it's running? Make sure your firewall, VPN or tunnel lets through the server port (8022 by default).</p>
+<h3 id="q-internet">Q.18 — Can I connect over the internet?</h3>
+<p>Yes. Pick any way for your phone to reach your computer:</p><dl class="ref-list"><dt>QuickTUI Relay</dt><dd>An optional subscription. Turn it on in the app, no network setup needed.</dd><dt>VPN</dt><dd>A private network such as <b>Tailscale</b> lets your phone reach your computer directly.</dd><dt>Tunnel or reverse proxy</dt><dd>For example, <b>Cloudflare Tunnel</b> or a reverse proxy with TLS. Point it at <span class="mono">http://127.0.0.1:8022</span>, then use the public HTTPS hostname in the app (without <span class="mono">:8022</span>).</dd></dl><p>Pairing codes, device sign-in and everything you do travel inside an end-to-end encrypted tunnel, so even if you open port 8022 directly, no one can read your traffic or pretend to be your computer. An open port does reveal that a QuickTUI server is running, its version and a few other details, and a flood of junk connections could keep your own devices from getting through. That's why we recommend one of the options above.</p><p>To pair through a tunnel or reverse proxy, update QuickTUI Server to the latest version, then generate a QR code with your public address:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server pairing qrcode --public-url https://your.domain</pre><p>The tunnel or proxy must keep the original <span class="mono">Host</span> header and send <span class="mono">X-Forwarded-Proto</span>. Cloudflare Tunnel does both by default. If your proxy doesn't send that header, also update the QuickTUI app to the latest version.</p><p class="note">Pairing QR codes expire quickly. Keep them private.</p>
+<h3 id="q-device-auth">Q.19 — How does QuickTUI authenticate devices?</h3>
+<p>QuickTUI signs in devices through pairing, and everything is end-to-end encrypted:</p><dl class="ref-list"><dt>When you pair</dt><dd>The pairing QR code holds a one-time pairing code and your computer's identity fingerprint. The code works once, expires in 15 minutes and only ever travels inside the encrypted channel. The app remembers your computer's identity and will only connect to that exact computer, so no one can impersonate it.</dd><dt>Device keys</dt><dd>Each phone creates its own key when it pairs. The private key stays in the system's secure storage (Secure Enclave or Keychain on iPhone, Android Keystore on Android) and never leaves the phone.</dd><dt>Every connection</dt><dd>The app first checks your computer's identity, then proves it's a paired device with its private key, and both sides agree on fresh encryption keys for that connection. Terminal, files, port forwarding and everything else are encrypted and protected against replay.</dd><dt>Through Relay</dt><dd>QuickTUI Relay only passes encrypted data along. It can't read it or impersonate either side. The one exception is push notifications: if you turn them on, Relay briefly sees the notification text as it delivers it.</dd><dt>Revoking a device</dt><dd>If a phone is lost or retired, revoke it on your computer:<pre class="cmd"><span class="com"># List paired devices</span>
+~/.local/bin/quicktui-server pairing devices list
+
+<span class="com"># Revoke a device</span>
+~/.local/bin/quicktui-server pairing devices revoke &lt;device-id&gt;</pre><p class="note">A revoked device is disconnected within 5 minutes and can't connect again. On Windows, run the same commands in PowerShell, starting with <span class="mono">quicktui-server</span>.</p></dd></dl>
+
+<h2 id="sessions">Sessions</h2>
+<h3 id="q-empty-workspaces">Q.20 — My workspace list is empty.</h3>
+<p>The list shows workspaces from every enabled backend on your computer: Herdr, tmux or both. If it&#39;s empty, tap <b>[+]</b> in the top-right corner to create a workspace; if more than one backend is available, you&#39;ll pick one first.</p><p>The server starts Herdr or tmux automatically when needed. If the app says &quot;The server is connected, but no session backend is available&quot;, your computer has neither Herdr nor tmux yet. Install one of them (see <a href="#q-install-herdr">Q.04</a> and <a href="#q-install-tmux">Q.05</a>), then restart the service.</p><p><b>We recommend Herdr.</b> It integrates better with agents, performs better, and is the backend the installer sets up when neither is present. When both are available, the server uses Herdr by default (see <a href="#q-herdr-backend">Q.23</a>).</p><p>Workspaces that already exist on your computer show up automatically: workspaces you create in Herdr locally appear after you refresh the list, and so do tmux sessions, for example:</p><pre class="cmd">tmux new-session -s mysession</pre>
+<h3 id="q-no-backend">Q.21 — The app says no session backend is available, or shows a backend error.</h3>
+<p>The server can&#39;t find a working tmux or Herdr, or can&#39;t start one. Work through these steps:</p><ol class="steps"><li>Make sure Herdr or tmux is installed on your computer; see <a href="#q-install-herdr">Q.04</a> and <a href="#q-install-tmux">Q.05</a>.</li><li>Run <code>doctor</code> on your computer to see how tmux, Herdr and agents are found:<pre class="cmd">~/.local/bin/quicktui-server doctor</pre></li><li>If you set <code>tmux_bin</code> or <code>herdr_bin</code> in the config file, make sure they&#39;re absolute paths to real executables; tmux must be 3.2 or later. Restart the service after changing them.</li><li>If it still fails, check the server logs (see <a href="#q-logs">Q.11</a>).</li></ol>
+<h3 id="q-workspace-closed">Q.22 — The app says &quot;Workspace has been closed&quot;.</h3>
+<p>The workspace you&#39;re opening no longer exists. Usually it was closed on your computer, or tmux / Herdr restarted and the old workspace IDs expired. Go back to the list and pick another workspace, or tap <b>[+]</b> to create one.</p><p>It can also show up briefly while the server upgrades or restarts; wait a moment and reconnect.</p>
+<h3 id="q-herdr-backend">Q.23 — Does QuickTUI work with Herdr?</h3>
+<p>Yes. tmux and Herdr are both session backends and can be enabled together. Each time the server starts, it detects tmux and Herdr on your computer and enables them, and Herdr is the default whenever it&#39;s available. After installing Herdr, restart the service and it appears in the app:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server service restart
+
+<span class="com"># Linux (installed as root)</span>
+sudo /usr/local/bin/quicktui-server service restart
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server service restart</pre><p>Besides tmux and Herdr, QuickTUI also supports the Luvus backend. It isn&#39;t detected automatically: add <code>luvus</code> to <code>session_backends</code> in the config file and set <code>luvus_bin</code>. To change the default backend, edit <code>session_backend</code> in the config file; see <a href="/install/#config">Configuration</a> in the install guide. Windows always uses Herdr; native Windows and Herdr on ARM64 computers haven&#39;t been fully validated yet.</p>
+<h3 id="q-tmux-tui-fullscreen">Q.24 — tmux scrollback shows duplicated or misaligned text after running an agent.</h3>
+<p>Agents such as Claude Code and Codex draw a full-screen interface. When one draws in the terminal&#39;s main screen instead of the alternate screen, every redraw is written into tmux scrollback and shows up as duplicated or misaligned text. The fix is to have the agent use the alternate screen:</p><ul><li><b>Claude Code</b>: run <code>/tui fullscreen</code> (v2.1.89 or later). To make it the default for every session, add <code>CLAUDE_CODE_NO_FLICKER</code> to the <code>env</code> section of <span class="path">~/.claude/settings.json</span>, merging it with any settings already there:<pre class="cmd">{
+  "env": {
+    "CLAUDE_CODE_NO_FLICKER": "1"
+  }
+}</pre></li><li><b>Codex</b>: the <code>tui.alternate_screen</code> setting controls this (default <code>auto</code>). If it&#39;s set to <code>never</code>, change it to <code>always</code> in <span class="path">~/.codex/config.toml</span>:<pre class="cmd">[tui]
+alternate_screen = "always"</pre></li><li><b>Grok Build</b>: set <code>alt_screen = "always"</code> in <span class="path">~/.grok/pager.toml</span>.</li><li><b>Pi</b>: switch from regular mode to fullscreen mode in <code>/settings</code>.</li><li><b>aider</b>: uses the alternate screen by default; check whether a startup option such as <code>--no-fancy-input</code> turns it off.</li></ul><p>To clear what&#39;s already in scrollback:</p><pre class="cmd">tmux clear-history</pre><p>When you switch to a tmux pane where Claude Code, Codex or aider is still drawing in the main screen, the app shows a hint banner (at most once per pane every 60 seconds); tap it to open this answer.</p>
+<h3 id="q-osc-color-leak">Q.25 — Text like 11;rgb:2828/2c2c/3434 keeps appearing in a terminal app&#39;s input.</h3>
+<p>These are replies to a terminal color query being read as input. Some terminal apps ask the terminal for its background color at startup; if the reply isn&#39;t handled, it shows up in the input box. When the app detects this, it shows a &quot;Terminal Color Reply Leak Detected&quot; banner.</p><p>The fix is to set a fixed theme in that app so it stops querying colors, for example by running <code>/theme</code> in Claude Code and picking a specific theme.</p><p>If other terminals are attached to the same tmux session, they can also produce these replies; detach them and check again.</p>
+<h3 id="q-garbled-text">Q.26 — Text in the terminal is garbled.</h3>
+<p>The server sets session <code>TERM</code> to <code>xterm-256color</code> by default and falls back automatically if your computer lacks that terminfo entry. If you changed the <code>term</code> setting (for example to <code>xterm-ghostty</code>) and your tmux doesn&#39;t support it, rendering can break. Set it back to the default; the service restarts automatically:</p><pre class="cmd">~/.local/bin/quicktui-server config set --term xterm-256color</pre><p>The Herdr backend always uses <code>xterm-256color</code> and isn&#39;t affected by this setting.</p>
+
+<h2 id="file-browsing">File browsing</h2>
+<h3 id="q-tcc-macos">Q.27 — The app's file manager can't open Desktop, Documents or Downloads on my Mac.</h3>
+<p>When you browse a Mac in the app&#39;s file manager, opening <span class="path">~/Desktop</span>, <span class="path">~/Documents</span>, <span class="path">~/Downloads</span> and similar folders fails, and the app says macOS privacy settings blocked access. iCloud Drive, external drives and network volumes can behave the same way.</p><p>These folders are protected by macOS privacy controls and need your permission before an app can read them. The QuickTUI server runs in the background, so macOS never shows it a permission prompt; you need to grant it Full Disk Access yourself.</p><p><b>To fix it:</b></p><ol class="steps"><li>In the app&#39;s server list, tap the <b>Files</b> icon on the server card to open the file manager. If it says &quot;File browsing is off&quot;, tap <b>Enable File Browsing</b> first.</li><li>On your Mac, open <b>System Settings → Privacy &amp; Security → Full Disk Access</b> (on macOS 12 or earlier: <b>System Preferences → Security &amp; Privacy → Privacy → Full Disk Access</b>).</li><li>Click <b>+</b> below the list and enter your Mac password or use Touch ID when asked.</li><li>In the file picker, press <b>⌘⇧G</b>, type <span class="path">~/.local/bin/quicktui-server</span>, press Return, select <b>quicktui-server</b> and click <b>Open</b>. <span class="path">.local</span> is a hidden folder, so you won&#39;t see it by browsing in Finder; type the path instead.</li><li>Make sure <b>quicktui-server</b> appears in the list with its switch turned on.</li><li>Back in the app, tap <b>Recheck</b> in the message to check access again.</li><li>If it&#39;s still blocked, restart the service on your Mac and try again:<pre class="cmd">~/.local/bin/quicktui-server service restart</pre></li></ol><p class="note">Upgrading or reinstalling the server replaces the program file. If access is blocked again afterwards, remove quicktui-server from Full Disk Access and add it again with the steps above.</p>
+<h3 id="q-permission-linux">Q.28 — On Linux, file browsing shows permission denied or 403.</h3>
+<p>Check these causes:</p><dl class="ref-list"><dt>File browsing is off</dt><dd>Turn on file browsing in the app first.</dd><dt>Changing files outside your home folder</dt><dd>For safety, editing, uploading, creating, renaming and deleting are only allowed inside the home folder of the user the server runs as; outside it, files are read-only. For a root install, the home folder is <span class="path">/root</span>.</dd><dt>Missing system permissions</dt><dd>The server runs as the user that installed it (root for a root install) and can only access what that user can.</dd></dl><p>Check permissions and ACLs on every directory along the path:</p><pre class="cmd">namei -l /path/to/file
+getfacl /path/to/file</pre><p>After adding the server&#39;s user to a new group, restart the service for it to take effect:</p><pre class="cmd">~/.local/bin/quicktui-server service restart</pre><p>With SELinux enabled, check <code>getenforce</code> and <code>sudo ausearch -m AVC -ts recent</code> for denials.</p>
+
+<h2 id="notifications">Notifications</h2>
+<h3 id="q-agent-notifications">Q.29 — What data do Agent notifications send, and how do I turn them off?</h3>
+<p>Agent notifications require the server to be connected to QuickTUI Relay and agent hooks to be installed. The server sends each notification through Relay to Apple&#39;s or Google&#39;s push service for delivery.</p><p>By default, a notification only says what happened, such as an agent needing approval, a task completing, an agent error or a session ending. It doesn&#39;t include project names, session names or task content. Optional extras are the agent type, project name, session identifier and a task or error summary. Notifications never include full terminal output, source code or credentials.</p><p>To stop notifications, turn off notifications for QuickTUI in your iPhone or Android system settings.</p>
+
+<h2 id="apps">Apps</h2>
+<h3 id="q-android">Q.30 — Is there an Android app?</h3>
+<p>Yes, in preview. Download the APK from GitHub; it runs on Android 8.0 or later and works with the same server as the iPhone and iPad app. During the preview, every feature is free. See <a href="/android/">QuickTUI for Android (Preview)</a> for downloads, installation and updates.</p>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/install/">Install guide</a></li>
+    <li><a href="/">Back to the homepage</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

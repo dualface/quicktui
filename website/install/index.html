@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Install the QuickTUI server — install, pair, configure &amp; uninstall</title>
+<meta name="description" content="QuickTUI server reference: wizard or manual install, upgrades, device pairing, every config setting, installed hooks and services, commands and uninstall." />
+<link rel="canonical" href="https://quicktui.ai/install/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/install/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/install/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/install/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="Install the QuickTUI server — install, pair, configure &amp; uninstall" />
+<meta property="og:description" content="QuickTUI server reference: wizard or manual install, upgrades, device pairing, every config setting, installed hooks and services, commands and uninstall." />
+<meta property="og:url" content="https://quicktui.ai/install/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Install the QuickTUI server — install, pair, configure &amp; uninstall" />
+<meta name="twitter:description" content="QuickTUI server reference: wizard or manual install, upgrades, device pairing, every config setting, installed hooks and services, commands and uninstall." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Install the QuickTUI server — install, pair, configure & uninstall",
+  "description": "QuickTUI server reference: wizard or manual install, upgrades, device pairing, every config setting, installed hooks and services, commands and uninstall.",
+  "url": "https://quicktui.ai/install/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Install",
+      "item": "https://quicktui.ai/install/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Enhanced Features</a>
+        <a href="/install/">Install</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/install/" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/install/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span aria-current="page">Install</span></nav>
+
+<p class="eyebrow">Install</p>
+<h1>Install the QuickTUI server</h1>
+<p class="lede">The QuickTUI server runs on your own computer and connects the app to your tmux or Herdr sessions, with end-to-end encryption between the two. This page covers installing and upgrading the server, pairing devices, configuration, the command line, and uninstalling.</p>
+<ul>
+<li><a href="#install">Install and upgrade</a></li>
+<li><a href="#windows">Windows (Microsoft Store)</a></li>
+<li><a href="#pairing">Pair a device</a></li>
+<li><a href="#config">Configuration</a></li>
+<li><a href="#hooks">Hooks and services added by the installer</a></li>
+<li><a href="#cli">Command reference</a></li>
+<li><a href="#uninstall">Uninstall</a></li>
+</ul>
+
+<h2 id="install">Install and upgrade</h2>
+
+<h3>Option 1: the app's setup wizard (recommended)</h3>
+<p>Use this for a Mac or Linux computer you can sign in to over SSH. Everything happens on your phone.</p>
+<ol>
+<li>Install QuickTUI from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="install_step2">App Store</a> on iPhone or iPad, or install the <a href="/android/">Android app (Preview)</a>. The setup wizard opens on first launch; to add another computer later, tap <b>+</b> on the server list.</li>
+<li>Choose <b>Connect Over SSH — Enable Enhanced Features (Recommended)</b>, then tap <b>Next</b>.</li>
+<li>Enter your computer's address, port and user name, and sign in with a password or SSH key. Tap <b>Test Connection</b>, and once it succeeds, tap <b>Next</b>.</li>
+<li>Choose an install source (Global or China; it defaults to your phone's region) and tap <b>Install</b>. The app signs in over SSH, installs the server and pairs automatically.</li>
+</ol>
+<p>Your SSH password or key is used only for this installation. The app doesn't save it.</p>
+
+<h3 id="manual-install">Option 2: manual install</h3>
+<p>Use this on a Mac or Linux computer without SSH access, or if you'd rather install it yourself. On Windows, use <a href="#windows">Microsoft Store</a> instead. Run the matching command on your computer:</p>
+<p class="lbl">Global · macOS / Linux</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p class="lbl">China mirror · macOS / Linux</p>
+<pre><code>curl -fsSL https://dl.quicktui.cn/q.sh | sh</code></pre>
+<p>The command downloads the installer for your OS and CPU architecture, verifies its sha256 and runs it. The installer puts the server in place, writes its configuration, adds agent hooks, registers and starts the background service, and finally walks you through pairing (see <a href="#pairing">Pair a device</a>).</p>
+<p>If tmux or Herdr is already on your computer, the installer uses it. If neither is, it installs Herdr from Herdr's official source; it never installs tmux. If the Herdr download fails, the installer warns you and still finishes setting up the server. Install Herdr yourself, then run the install command again.</p>
+
+<h3 id="mirror">Install sources: Global and China mirror</h3>
+<p>Both sources serve the same installer and server; the China mirror is faster from mainland China. The mirror only hosts QuickTUI's own files, so Herdr always downloads from its official source.</p>
+<p>The server keeps using the source you installed from for automatic updates. To switch, reinstall once with the other source's command. When you upgrade the server from the app, you can also pick the download source for that upgrade.</p>
+
+<h3 id="upgrade">Reinstall and upgrade</h3>
+<p>Run the install command again, or run the setup wizard again for the same computer, to reinstall over the existing server:</p>
+<ul>
+<li>The server is replaced with the latest version of the selected channel and the service restarts. If the replacement fails, the previous version is restored.</li>
+<li>Paired devices, the server identity, the Relay binding and your existing settings are all kept, so there's no need to pair again. Only options you pass explicitly (such as <code>--port</code>) overwrite the matching settings.</li>
+<li>Agent hooks are updated to point at the new version.</li>
+</ul>
+<p>The server can also upgrade itself:</p>
+<pre><code>~/.local/bin/quicktui-server upgrade check
+~/.local/bin/quicktui-server upgrade install</code></pre>
+
+<h3 id="locations">Install locations</h3>
+<dl class="ref-list">
+<dt>macOS</dt><dd><span class="desc">Binary: <code>~/.local/bin/quicktui-server</code><br>Config directory: <code>~/.config/quicktui-server-v2/</code><br>Service: LaunchAgent <code>ai.quicktui</code></span></dd>
+<dt>Linux (user)</dt><dd><span class="desc">Binary: <code>~/.local/bin/quicktui-server</code><br>Config directory: <code>~/.config/quicktui-server-v2/</code><br>Service: systemd user service <code>quicktui</code></span></dd>
+<dt>Linux (root)</dt><dd><span class="desc">Binary: <code>/usr/local/bin/quicktui-server</code><br>Config directory: <code>/root/.config/quicktui-server-v2/</code><br>Service: systemd system service <code>quicktui</code></span></dd>
+<dt>Windows</dt><dd><span class="desc">App: <b>QuickTUI Server</b> from Microsoft Store, run as <code>quicktui-server</code><br>Config directory: <code>%USERPROFILE%\.config\quicktui-server-v2\</code><br>Service: startup app <b>QuickTUI Server</b></span></dd>
+</dl>
+<p>On macOS and Linux, the installer doesn't change your <code>PATH</code> or shell configuration. If <code>~/.local/bin</code> isn't on your <code>PATH</code>, run <code>quicktui-server</code> by its full path; the commands on this page use full paths for that reason.</p>
+<p>On Linux, running the install command as root installs a system service: it starts at boot, doesn't depend on anyone signing in, and runs as root. A root install and a regular-user install on the same machine are separate instances; don't mix their configuration, service or binary. If they're already mixed, see <a href="/faq/#q-linux-mixed-identity">FAQ Q.14</a> to fix it.</p>
+
+<div class="callout warn" id="linux-linger"><p><strong>Linux regular-user installs: enable linger, or the server stops when you sign out.</strong></p><p>systemd user services follow your login session by default. When you close your SSH connection or sign out of the desktop, the server may stop and your phone can't connect. Enable linger with the command that fits your situation:</p><p><b>1. Enable it directly</b> (when signed in locally, or when your user has permission):</p>
+<pre><code>loginctl enable-linger</code></pre>
+<p><b>2. Permission error</b> (such as <code>Access denied</code> or <code>Interactive authentication required</code>, common over SSH). If you have sudo:</p>
+<pre><code>sudo loginctl enable-linger "$USER"</code></pre>
+<p>Without sudo, ask an administrator to run:</p>
+<pre><code>sudo loginctl enable-linger &lt;your-username&gt;</code></pre>
+<p><b>3. <code>Failed to connect to bus</code></b>. If you switched to the user with <code>su</code> or <code>sudo -u</code>, the session has no user bus: sign in as that user over SSH directly and run it again, or set the runtime directory and then enable it:</p>
+<pre><code>export XDG_RUNTIME_DIR=/run/user/$(id -u)
+loginctl enable-linger
+systemctl --user restart quicktui</code></pre>
+<p>If the system itself didn't boot with systemd (some containers, or WSL without systemd enabled), user services and linger aren't available. Install as root instead, or enable systemd first.</p>
+<p><b>Check that it's on</b>: the output should be <code>Linger=yes</code>.</p>
+<pre><code>loginctl show-user "$USER" --property=Linger</code></pre><p>The server then starts at boot and keeps running whether or not you're signed in. Root installs use a system service and aren't affected.</p></div>
+
+<h3 id="windows">Windows: Microsoft Store</h3>
+<p>On Windows, install QuickTUI Server from Microsoft Store:</p>
+<ol>
+<li>Install Herdr. Sessions on Windows run in Herdr, and the Store app doesn&#39;t install it:
+<pre><code>powershell -ExecutionPolicy Bypass -c "irm https://herdr.dev/install.ps1 | iex"</code></pre></li>
+<li>Get <a href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">QuickTUI Server from Microsoft Store</a> and install it.</li>
+<li>Open <b>QuickTUI Server</b> from the Start menu. The first launch starts the server in the background, turns on start at sign-in and opens the pairing guide (see <a href="#pairing">Pair a device</a>).</li>
+</ol>
+<p>Open it from the Start menu the first time: running <code>quicktui-server</code> from a terminal doesn&#39;t turn on start at sign-in. To stop it starting at sign-in, turn off <b>QuickTUI Server</b> in Task Manager &gt; Startup apps.</p>
+<p>Microsoft Store keeps the server up to date, so <code>upgrade install</code> isn&#39;t available on Windows. Run commands in PowerShell as <code>quicktui-server &lt;command&gt;</code>, for example <code>quicktui-server pairing welcome</code>. The first time the server listens, Windows may ask whether to allow it through the firewall.</p>
+<p>Installed earlier with the PowerShell install script? The first launch of the Store app removes the old scheduled task or startup entry and stops the old server. Paired devices and settings are kept, so there&#39;s no need to pair again. If an administrator created the old scheduled task, the app asks you to remove it in an administrator PowerShell with <code>schtasks /Delete /TN QuickTUI /F</code>. Afterwards you can delete the old <code>%LOCALAPPDATA%\QuickTUI\quicktui-server.exe</code>.</p>
+
+<h3 id="windows-herdr">Windows and Herdr</h3>
+<p>The server looks for Herdr in this order: <code>herdr_bin</code> in the config file, the <code>QUICKTUI_HERDR_BIN</code> environment variable, <code>PATH</code>, then Herdr&#39;s official install location. To use your own Herdr, set <code>herdr_bin</code> to its full path, then run <code>quicktui-server service restart</code>.</p>
+<p>Native Windows and Herdr on ARM64 computers haven&#39;t been fully validated yet. If you run into problems, please let us know.</p>
+
+<h3 id="installer-options">Install command usage</h3>
+<p>On macOS and Linux, the install script takes a command followed by options:</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- &lt;command&gt; [options]</code></pre>
+<p>Without a command, it runs <code>install</code>. The current stable server is installed by default; no channel option is needed.</p>
+<h4>Commands</h4>
+<dl class="ref-list">
+<dt><code>install</code></dt><dd><span class="desc">Install the server, or reinstall over an existing one</span></dd>
+<dt><code>check</code></dt><dd><span class="desc">Check runtime dependencies without installing anything</span></dd>
+<dt><code>prepare</code></dt><dd><span class="desc">Install missing dependencies only, without the server</span></dd>
+<dt><code>uninstall</code></dt><dd><span class="desc">Remove the background service and agent hooks (see <a href="#uninstall">Uninstall</a>); takes no options</span></dd>
+<dt><code>help</code></dt><dd><span class="desc">Show help</span></dd>
+</dl>
+<h4>Options for <code>install</code></h4>
+<dl class="ref-list">
+<dt><code>--channel preview</code></dt><dd><span class="desc">Install the preview server</span></dd>
+<dt><code>--tag &lt;tag&gt;</code></dt><dd><span class="desc">Install a specific release</span></dd>
+<dt><code>--server &lt;absolute path&gt;</code></dt><dd><span class="desc">Install a server binary from a local file</span></dd>
+<dt><code>-y, --yes</code></dt><dd><span class="desc">Install non-interactively, without the pairing guide</span></dd>
+<dt><code>--addr &lt;address&gt;</code></dt><dd><span class="desc">Listen address: a host, <code>host:port</code> or <code>http(s)://host:port</code>. A bare host listens on port 8022. Default <code>0.0.0.0:8022</code>. IPv6 needs brackets and a port, e.g. <code>[::1]:9000</code></span></dd>
+<dt><code>--port &lt;port&gt;</code></dt><dd><span class="desc">Change only the listen port (default 8022). Can't be combined with an <code>--addr</code> that includes a port</span></dd>
+<dt><code>--term &lt;value&gt;</code></dt><dd><span class="desc">Session <code>TERM</code> (default <code>xterm-256color</code>); tmux backend only</span></dd>
+<dt><code>--lang &lt;value&gt;</code></dt><dd><span class="desc">Session <code>LANG</code> (default <code>en_US.UTF-8</code>); tmux backend only</span></dd>
+<dt><code>--no-service</code></dt><dd><span class="desc">Don't register the background service or open the pairing guide. The server, configuration and hooks are still installed</span></dd>
+</dl>
+<p>Use only one of <code>--channel</code>, <code>--tag</code> and <code>--server</code>. For example, to install non-interactively and listen on port 9000:</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- install -y --port 9000</code></pre>
+<h4>Options for <code>check</code> and <code>prepare</code></h4>
+<dl class="ref-list">
+<dt><code>--server &lt;absolute path&gt;</code></dt><dd><span class="desc">Check or prepare a specific local server binary. Without it, the installed server is used; if none is installed, the current stable server is downloaded and verified temporarily, then removed</span></dd>
+</dl>
+
+<h2 id="pairing">Pair a device</h2>
+<p>Each phone or tablet is paired separately. The setup wizard pairs automatically; after a manual install, or to add another device, follow the steps below.</p>
+<p>After a manual install, the installer usually opens the pairing guide right away. It doesn't when you used <code>-y</code> or <code>--no-service</code>, didn't run it in an interactive terminal, or the computer already has paired devices. On Windows, opening <b>QuickTUI Server</b> from the Start menu opens the pairing guide every time. Otherwise, follow these steps yourself.</p>
+<p><b>Step 1: show a pairing QR code on your computer</b></p>
+<pre><code># macOS / Linux
+~/.local/bin/quicktui-server pairing welcome
+
+# Windows (PowerShell)
+quicktui-server pairing welcome</code></pre>
+<p>Choose where to show the code when the guide asks. A browser is recommended; the terminal works too, but some terminal fonts make the code unreadable.</p>
+<p><b>Step 2: scan it in the app</b></p>
+<ol>
+<li>On the server list, tap <b>+</b>.</li>
+<li>Choose <b>Other ways to connect</b>.</li>
+<li>Choose <b>Scan a QR Code to Connect a Computer with Enhanced Features</b>, then tap <b>Next</b>.</li>
+<li>Scan the QR code and confirm to finish pairing.</li>
+</ol>
+<p>The QR code contains a one-time pairing code that is valid for 15 minutes and expires as soon as it's used. Until then, anyone who scans it can pair, so don't share or post it.</p>
+<p>You can also skip the guide and generate a code directly with <code>pairing qrcode</code>. Options:</p>
+<ul>
+<li><code>--browser</code>: show the code in your computer's default browser.</li>
+<li><code>--select-address</code>: when your computer has several network addresses, pick the one to put in the code.</li>
+<li><code>--public-url &lt;host:port|URL&gt;</code>: put a specific address in the code, such as the public HTTPS address of a tunnel or reverse proxy. Can't be combined with <code>--select-address</code>.</li>
+<li><code>--print-code</code>: also print the pairing code. Can't be combined with <code>--browser</code> or <code>--select-address</code>.</li>
+</ul>
+<p>Run <code>pairing addresses</code> to see the available network addresses.</p>
+<p>You can list and revoke paired devices at any time:</p>
+<pre><code># List paired devices
+~/.local/bin/quicktui-server pairing devices list
+
+# Revoke a device
+~/.local/bin/quicktui-server pairing devices revoke &lt;device-id&gt;</code></pre>
+<p>A revoked device can't open new connections right away, and any open connection closes within 5 minutes; it must pair again to reconnect. To remove every device at once, use <code>pairing identity rotate</code>. It replaces the server identity and clears all pairings; stop the service before running it.</p>
+
+<h2 id="config">Configuration</h2>
+<p>Settings live in <code>config.toml</code>, a TOML file in the config directory listed under <a href="#locations">Install locations</a>. On macOS it's also under <code>~/.config</code>, not <code>~/Library</code>. Most commands accept <code>--config &lt;path&gt;</code> to use a different file; the server then keeps its other data in that file's directory.</p>
+<p>The server reads its configuration only at startup. After editing the file by hand, restart the service to apply it:</p>
+<pre><code>~/.local/bin/quicktui-server service restart</code></pre>
+<p>Common settings can also be changed with <code>config set</code>, which restarts the service for you:</p>
+<pre><code>~/.local/bin/quicktui-server config show
+~/.local/bin/quicktui-server config set --addr 0.0.0.0:9000</code></pre>
+<p>The running server reads only the config file, not <code>QUICKTUI_*</code> environment variables. Those variables apply only during installation, when the installer writes them into the config file.</p>
+<h3>Settings</h3>
+<dl class="ref-list">
+<dt><code>addr</code></dt><dd><span class="desc">Listen address as <code>host:port</code>. An <code>http(s)://</code> prefix is stripped; the server always listens on plain HTTP, and all traffic after pairing stays inside the end-to-end encrypted tunnel</span><span class="kv"><span class="k">Default</span>: <code>0.0.0.0:8022</code></span></dd>
+<dt><code>session_backend</code></dt><dd><span class="desc">Default session backend: <code>tmux</code>, <code>herdr</code>, <code>luvus</code> or <code>shell</code>. Must be listed in <code>session_backends</code></span><span class="kv"><span class="k">Default</span>: <code>herdr</code> if Herdr is enabled, otherwise the first enabled backend</span></dd>
+<dt><code>session_backends</code></dt><dd><span class="desc">Enabled backends, comma-separated. Detection only adds, never removes. Once you edit it by hand, detection stops; clear <code>session_backend</code>, <code>session_backends</code> and <code>session_backends_auto</code> to turn it back on</span><span class="kv"><span class="k">Default</span>: Filled in at each start from detected tmux / Herdr</span></dd>
+<dt><code>term</code></dt><dd><span class="desc">Session <code>TERM</code>; falls back to <code>xterm-256color</code> if the terminfo entry is missing</span><span class="kv"><span class="k">Default</span>: <code>xterm-256color</code></span></dd>
+<dt><code>lang</code></dt><dd><span class="desc">Session <code>LANG</code>; falls back to <code>C.UTF-8</code> if the locale is missing</span><span class="kv"><span class="k">Default</span>: <code>en_US.UTF-8</code></span></dd>
+<dt><code>tmux_socket</code></dt><dd><span class="desc">Absolute path of the tmux server socket. The default shares your own tmux server</span><span class="kv"><span class="k">Default</span>: <code>tmux-&lt;uid&gt;/default</code> under <code>$TMUX_TMPDIR</code> or <code>/tmp</code></span></dd>
+<dt><code>tmux_bin</code></dt><dd><span class="desc">Absolute path of the tmux executable. If invalid, the server warns and detects it again</span><span class="kv"><span class="k">Default</span>: Auto-detected</span></dd>
+<dt><code>herdr_bin</code></dt><dd><span class="desc">Path of the Herdr executable</span><span class="kv"><span class="k">Default</span>: Auto-detected</span></dd>
+<dt><code>herdr_client_retention</code></dt><dd><span class="desc">How long a Herdr client is kept after a terminal is released (Go duration); <code>0</code> disables it</span><span class="kv"><span class="k">Default</span>: <code>5m</code></span></dd>
+<dt><code>luvus_bin</code></dt><dd><span class="desc">Executable path for the Luvus backend</span><span class="kv"><span class="k">Default</span>: None</span></dd>
+<dt><code>tmux_env_&lt;name&gt;</code></dt><dd><span class="desc">Sets environment variable <code>&lt;name&gt;</code> (uppercased) in sessions, e.g. <code>tmux_env_editor = "vim"</code></span><span class="kv"><span class="k">Default</span>: None</span></dd>
+<dt><code>tmux_env_unset</code></dt><dd><span class="desc">Environment variables to remove in sessions, comma-separated</span><span class="kv"><span class="k">Default</span>: None</span></dd>
+<dt><code>[agent_bins]</code></dt><dd><span class="desc">Table of per-agent executable paths, e.g. <code>claude = "/abs/path/claude"</code></span><span class="kv"><span class="k">Default</span>: None</span></dd>
+<dt><code>trusted_proxies</code></dt><dd><span class="desc">Trusted reverse-proxy IPs / CIDRs, comma-separated; forwarded headers are trusted only from these</span><span class="kv"><span class="k">Default</span>: Empty</span></dd>
+<dt><code>files_enabled</code></dt><dd><span class="desc">Enables file browsing; usually toggled in the app</span><span class="kv"><span class="k">Default</span>: <code>false</code></span></dd>
+<dt><code>update_channel</code></dt><dd><span class="desc">Automatic update channel: <code>server2</code> or <code>preview</code> (<code>stable</code> is the legacy server)</span><span class="kv"><span class="k">Default</span>: Set at install</span></dd>
+<dt><code>update_region</code></dt><dd><span class="desc">Update download region: <code>global</code> or <code>cn</code></span><span class="kv"><span class="k">Default</span>: Derived from the manifest URL</span></dd>
+<dt><code>update_manifest_url</code></dt><dd><span class="desc">Update manifest URL, set by the install source</span><span class="kv"><span class="k">Default</span>: Built in</span></dd>
+<dt><code>releases</code></dt><dd><span class="desc">Release download URL, set by the install source</span><span class="kv"><span class="k">Default</span>: Built in</span></dd>
+<dt><code>debug</code></dt><dd><span class="desc">Debug logging</span><span class="kv"><span class="k">Default</span>: <code>false</code></span></dd>
+<dt><code>verbose</code></dt><dd><span class="desc">More detailed logging; requires <code>debug</code></span><span class="kv"><span class="k">Default</span>: <code>false</code></span></dd>
+</dl>
+<p>Keys must be lowercase. The <code>session_backends_auto</code>, <code>tmux_bin_auto</code> and <code>herdr_bin_auto</code> entries in the file are maintained by the server; don't edit them. The legacy <code>token</code> key is retired and removed automatically.</p>
+<h3>Other files in the config directory</h3>
+<dl class="ref-list">
+<dt><code>pairing_auth.json</code></dt><dd>Paired devices and pairing credentials</dd>
+<dt><code>e2e_identity.json</code></dt><dd>The server's end-to-end encryption identity; replaced by <code>pairing identity rotate</code></dd>
+<dt><code>relay.json</code><br><code>relay_registration_identity.json</code></dt><dd>QuickTUI Relay binding and registration identity</dd>
+<dt><code>account_auth.json</code></dt><dd>Account sign-in state from <code>auth login</code></dd>
+<dt><code>herdr-sids.json</code><br><code>session-sids.json</code><br><code>session-default-cwd.json</code></dt><dd>Session IDs and the default working directory for new sessions</dd>
+<dt><code>agent-wizard*.json</code></dt><dd>Agent launch configuration downloaded from quicktui.ai, with its signed cache</dd>
+<dt><code>agentbridge2/</code></dt><dd>Agent status data and each agent's hook on/off setting</dd>
+<dt><code>*.lock</code></dt><dd>Lock files used while writing configuration, pairings and identity</dd>
+</dl>
+<p>Logs: on macOS they're in <code>~/Library/Logs/QuickTUI/</code>. On Linux, view them with:</p>
+<pre><code># Regular-user install
+journalctl --user -u quicktui
+
+# Root install
+journalctl -u quicktui</code></pre>
+
+<h2 id="hooks">Hooks and services added by the installer</h2>
+<h3>Agent hooks</h3>
+<p>Hooks in each agent's configuration report events, such as an agent waiting for approval, a finished task or an error, to the server, which uses them for agent notifications (see <a href="/faq/#q-agent-notifications">FAQ Q.29</a>). The installer adds hooks for these agents:</p>
+<dl class="ref-list">
+<dt>Claude Code</dt><dd><span class="desc">Adds hooks for session start / end, prompt submit, notifications, stop, before / after tool use, permission requests and more</span><span class="kv"><span class="k">File changed</span>: <code>~/.claude/settings.json</code> (in <code>CLAUDE_CONFIG_DIR</code> if set)</span></dd>
+<dt>Codex</dt><dd><span class="desc">Adds hooks and removes QuickTUI's old entries from the neighboring <code>config.toml</code>. They take effect only after you trust them with <code>/hooks</code> in the Codex CLI</span><span class="kv"><span class="k">File changed</span>: <code>~/.codex/hooks.json</code> (or under <code>CODEX_HOME</code>)</span></dd>
+<dt>Grok</dt><dd><span class="desc">A hook file owned entirely by QuickTUI</span><span class="kv"><span class="k">File changed</span>: <code>~/.grok/hooks/ab2.json</code> (or under <code>GROK_HOME</code>)</span></dd>
+<dt>OpenCode</dt><dd><span class="desc">A plugin file; <code>opencode.json</code> isn't changed. OpenCode may need a restart to load it</span><span class="kv"><span class="k">File changed</span>: <code>~/.config/opencode/plugins/agentbridge2.js</code> (or under <code>OPENCODE_CONFIG_DIR</code>)</span></dd>
+</dl>
+<p>Every hook runs <code>quicktui-server ab2hook --agent &lt;name&gt;</code>, which records the agent's event and hands it to the server. If a hook fails, it exits silently without affecting the agent. QuickTUI changes only the entries it added and leaves your existing hooks alone.</p>
+<p>Each time the installer runs or the server starts, hooks are updated to point at the current server and old-version hooks are cleaned up. To turn them off or back on:</p>
+<pre><code># Turn off and remove hooks for all agents; they won't be added back automatically
+~/.local/bin/quicktui-server hooks uninstall
+
+# Turn hooks back on and install them for all agents
+~/.local/bin/quicktui-server hooks install</code></pre>
+<p><code>service uninstall</code> also removes hooks but leaves them turned on, so they return on the next install or server start.</p>
+<h3>Background service</h3>
+<dl class="ref-list">
+<dt>macOS</dt><dd><span class="desc"><code>~/Library/LaunchAgents/ai.quicktui.plist</code> and the launch script <code>ai.quicktui.sh</code>; starts at sign-in and keeps running</span></dd>
+<dt>Linux (user)</dt><dd><span class="desc">systemd user service <code>~/.config/systemd/user/quicktui.service</code>, enabled</span></dd>
+<dt>Linux (root)</dt><dd><span class="desc">systemd system service <code>/etc/systemd/system/quicktui.service</code>, starts at boot</span></dd>
+<dt>Windows</dt><dd><span class="desc">Startup app <b>QuickTUI Server</b> from the Microsoft Store app, turned on the first time you open it from the Start menu; manage it in Task Manager &gt; Startup apps</span></dd>
+</dl>
+<p>Restarting the service doesn't end your tmux sessions. Beyond the above, the installer changes nothing else on your system, including <code>.bashrc</code>, <code>.zshrc</code> and <code>PATH</code>. A Linux user service needs linger enabled to keep running after you sign out; see <a href="#linux-linger">above</a>.</p>
+
+<h2 id="cli">Command reference</h2>
+<p><code>quicktui-server</code> has no global options; each subcommand takes its own. Add <code>-h</code> or <code>--help</code> to any command for help. Commands marked <code>[--config]</code> accept a config file path.</p>
+<dl class="ref-list">
+<dt><code>serve</code></dt><dd>Run the server in the foreground (this is what the background service runs). Options: <code>--config</code>, <code>--debug-addr &lt;address&gt;</code> (temporary listen address), <code>--term</code>, <code>--lang</code>, <code>--tmux-socket</code>, <code>--debug</code>, <code>--verbose</code> (requires <code>--debug</code>)</dd>
+<dt><code>pairing welcome [--config]</code></dt><dd>Pairing guide</dd>
+<dt><code>pairing qrcode [--config]</code></dt><dd>Show a pairing QR code; options under <a href="#pairing">Pair a device</a></dd>
+<dt><code>pairing addresses [--config]</code></dt><dd>List network addresses usable in the QR code</dd>
+<dt><code>pairing devices list [--config]</code></dt><dd>List paired devices</dd>
+<dt><code>pairing devices revoke &lt;device-id&gt; [--config]</code></dt><dd>Revoke a device</dd>
+<dt><code>pairing identity rotate [--config]</code></dt><dd>Replace the server identity and clear all pairings; stop the service first</dd>
+<dt><code>upgrade check [--config]</code></dt><dd>Check for a new version</dd>
+<dt><code>upgrade install [--config] [--channel server2|preview]</code></dt><dd>Upgrade the server and restart the service; <code>--channel</code> switches channels. Not supported on Windows, where Microsoft Store keeps the server up to date</dd>
+<dt><code>service install</code></dt><dd>Register the background service; takes the same options as <code>serve</code> and writes them into the config file</dd>
+<dt><code>service uninstall [--config]</code></dt><dd>Remove the background service and agent hooks</dd>
+<dt><code>service restart</code></dt><dd>Refresh the service definition and restart the service</dd>
+<dt><code>hooks install [--config]</code></dt><dd>Turn on and install hooks for all agents</dd>
+<dt><code>hooks uninstall [--config]</code></dt><dd>Turn off and remove hooks for all agents</dd>
+<dt><code>config show [--config]</code></dt><dd>Show the config file</dd>
+<dt><code>config set [--config] [--addr] [--term] [--lang] [--tmux-socket]</code></dt><dd>Change settings and restart the service</dd>
+<dt><code>config relay set &lt;QTRID&gt; &lt;WS URL&gt; [--config]</code></dt><dd>Save a Relay binding manually (the app usually does this)</dd>
+<dt><code>config relay delete [--config]</code></dt><dd>Remove the Relay binding</dd>
+<dt><code>auth login &lt;CODE&gt;</code><br><code>auth logout</code></dt><dd>Sign in to or out of a QuickTUI Cloud account</dd>
+<dt><code>auth bind [QTRID]</code><br><code>auth unbind [QTRID]</code><br><code>auth usage</code></dt><dd>Bind or unbind Relay, and view usage</dd>
+<dt><code>doctor [--config]</code></dt><dd>Show how tmux, Herdr and agent executables are found</dd>
+<dt><code>version</code></dt><dd>Show the version</dd>
+</dl>
+<p><code>installer</code>, <code>ab2hook</code>, <code>ab2ctl</code> and <code>service win-autostart</code> are called internally by the installer, hooks and the Windows startup app; you don't need to run them.</p>
+
+<h2 id="uninstall">Uninstall</h2>
+<p>On macOS and Linux, add <code>uninstall</code> to the install command, or have the server remove its service directly:</p>
+<pre><code>curl -fsSL https://quicktui.ai/q.sh | sh -s -- uninstall
+
+# Or run directly
+~/.local/bin/quicktui-server service uninstall</code></pre>
+<p>Uninstalling stops and removes the background service and removes agent hooks. <b>The server binary and config directory are kept</b>, including your pairings, so a later reinstall doesn't require pairing again. Uninstalling affects only the current user's installation; root and regular-user installs are uninstalled separately. tmux, Herdr and their sessions aren't affected.</p>
+<p>On Windows, first stop the server and remove agent hooks in PowerShell, then uninstall <b>QuickTUI Server</b> in Settings &gt; Apps &gt; Installed apps. The config directory is kept, including your pairings:</p>
+<pre><code>quicktui-server service uninstall</code></pre>
+<h3>Remove completely</h3>
+<ol>
+<li>Turn off agent hooks:<pre><code># macOS / Linux
+~/.local/bin/quicktui-server hooks uninstall
+
+# Windows (PowerShell)
+quicktui-server hooks uninstall</code></pre></li>
+<li>Uninstall as described above.</li>
+<li>Delete the binary and config directory:
+<ul>
+<li>macOS: <code>~/.local/bin/quicktui-server</code>, <code>~/.config/quicktui-server-v2/</code>, <code>~/Library/Logs/QuickTUI/</code></li>
+<li>Linux (user): <code>~/.local/bin/quicktui-server</code>, <code>~/.config/quicktui-server-v2/</code></li>
+<li>Linux (root): <code>/usr/local/bin/quicktui-server</code>, <code>/root/.config/quicktui-server-v2/</code></li>
+<li>Windows: <code>%USERPROFILE%\.config\quicktui-server-v2\</code>; also <code>%LOCALAPPDATA%\QuickTUI\</code> if you installed earlier with the PowerShell install script</li>
+</ul>
+</li>
+<li>tmux and Herdr are installed separately; uninstall them yourself if you no longer need them.</li>
+</ol>
+<p>Deleting the config directory also clears your pairings, so every device must pair again after a reinstall.</p>
+
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/faq/">Full FAQ</a></li>
+    <li><a href="/">Back to the homepage</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

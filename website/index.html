@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
 <title>QuickTUI — tmux &amp; Herdr remote terminal for iPhone &amp; iPad</title>
 <meta name="description" content="Self-hosted remote terminal for iPhone, iPad and Android. Attach tmux or Herdr and run Claude Code, Codex or any CLI agent from anywhere." />
 <link rel="canonical" href="https://quicktui.ai/" />
@@ -14,13 +15,13 @@
 <meta property="og:title" content="QuickTUI — Control coding agents from your phone" />
 <meta property="og:description" content="Attach to tmux or Herdr from iPhone, iPad or Android and run any CLI agent. Self-hosted, direct and end-to-end encrypted." />
 <meta property="og:url" content="https://quicktui.ai/" />
-<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="zh_CN" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="QuickTUI — Control coding agents from your phone" />
 <meta name="twitter:description" content="Attach to tmux or Herdr from iPhone, iPad or Android and run any CLI agent. Self-hosted, direct and end-to-end encrypted." />
-<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -87,7 +88,7 @@
       "name": "Can I connect over the internet?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Pick any way for your phone to reach your computer: QuickTUI Relay An optional subscription. Turn it on in the app, no network setup needed. VPN A private network such as Tailscale lets your phone reach your computer directly. Tunnel or reverse proxy For example, Cloudflare Tunnel or a reverse proxy with TLS. Point it at http://127.0.0.1:8022 , then use the public HTTPS hostname in the app (without :8022 ). Pairing codes, device sign-in and everything you do travel inside an end-to-end encrypted tunnel, so even if you open port 8022 directly, no one can read your traffic or pretend to be your computer. An open port does reveal that a QuickTUI server is running, its version and a few other details, and a flood of junk connections could keep your own devices from getting through. That's why we recommend one of the options above. To pair through a tunnel or reverse proxy, update QuickTUI Server to the latest version, then generate a QR code with your public address: # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows (PowerShell) quicktui-server pairing qrcode --public-url https://your.domain The tunnel or proxy must keep the original Host header and send X-Forwarded-Proto . Cloudflare Tunnel does both by default. If your proxy doesn't send that header, also update the QuickTUI app to the latest version. Pairing QR codes expire quickly. Keep them private."
+        "text": "Yes. Pick any way for your phone to reach your computer: QuickTUI Cloud relay No network setup needed. Every account gets free relay traffic each month; subscribe to QuickTUI Cloud for regular use. VPN A private network such as Tailscale lets your phone reach your computer directly. Tunnel or reverse proxy For example, Cloudflare Tunnel or a reverse proxy with TLS. Point it at http://127.0.0.1:8022 , then use the public HTTPS hostname in the app (without :8022 ). Pairing codes, device sign-in and everything you do travel inside an end-to-end encrypted tunnel, so even if you open port 8022 directly, no one can read your traffic or pretend to be your computer. An open port does reveal that a QuickTUI server is running, its version and a few other details, and a flood of junk connections could keep your own devices from getting through. That's why we recommend one of the options above. To pair through a tunnel or reverse proxy, update QuickTUI Server to the latest version, then generate a QR code with your public address: # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows (PowerShell) quicktui-server pairing qrcode --public-url https://your.domain The tunnel or proxy must keep the original Host header and send X-Forwarded-Proto . Cloudflare Tunnel does both by default. If your proxy doesn't send that header, also update the QuickTUI app to the latest version. Pairing QR codes expire quickly. Keep them private."
       }
     },
     {
@@ -95,7 +96,7 @@
       "name": "How does QuickTUI authenticate devices?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "QuickTUI signs in devices through pairing, and everything is end-to-end encrypted: When you pair The pairing QR code holds a one-time pairing code and your computer's identity fingerprint. The code works once, expires in 15 minutes and only ever travels inside the encrypted channel. The app remembers your computer's identity and will only connect to that exact computer, so no one can impersonate it. Device keys Each phone creates its own key when it pairs. The private key stays in the system's secure storage (Secure Enclave or Keychain on iPhone, Android Keystore on Android) and never leaves the phone. Every connection The app first checks your computer's identity, then proves it's a paired device with its private key, and both sides agree on fresh encryption keys for that connection. Terminal, files, port forwarding and everything else are encrypted and protected against replay. Through Relay QuickTUI Relay only passes encrypted data along. It can't read it or impersonate either side. The one exception is push notifications: if you turn them on, Relay briefly sees the notification text as it delivers it. Revoking a device If a phone is lost or retired, revoke it on your computer: # List paired devices ~/.local/bin/quicktui-server pairing devices list # Revoke a device ~/.local/bin/quicktui-server pairing devices revoke <device-id> A revoked device is disconnected within 5 minutes and can't connect again. On Windows, run the same commands in PowerShell, starting with quicktui-server ."
+        "text": "QuickTUI signs in devices through pairing, and everything is end-to-end encrypted: When you pair The pairing QR code holds a one-time pairing code and your computer's identity fingerprint. The code works once, expires in 15 minutes and only ever travels inside the encrypted channel. The app remembers your computer's identity and will only connect to that exact computer, so no one can impersonate it. Device keys Each phone creates its own key when it pairs. The private key stays in the system's secure storage (Secure Enclave or Keychain on iPhone, Android Keystore on Android) and never leaves the phone. Every connection The app first checks your computer's identity, then proves it's a paired device with its private key, and both sides agree on fresh encryption keys for that connection. Terminal, files, port forwarding and everything else are encrypted and protected against replay. Through the QuickTUI Cloud relay The relay only passes encrypted data along. It can't read it or impersonate either side. The one exception is push notifications: if you turn them on, the relay briefly sees the notification text as it delivers it. Revoking a device If a phone is lost or retired, revoke it on your computer: # List paired devices ~/.local/bin/quicktui-server pairing devices list # Revoke a device ~/.local/bin/quicktui-server pairing devices revoke <device-id> A revoked device is disconnected within 5 minutes and can't connect again. On Windows, run the same commands in PowerShell, starting with quicktui-server ."
       }
     },
     {
@@ -146,7 +147,13 @@
 <script>
 // EN / CN are separate static pages. Honor ?lang= (App entry) and, on the EN page, the
 // saved or browser language by jumping to the matching page before first paint.
+// quicktui.cn serves only the Chinese pages: never redirect there, and ignore ?lang= and the
+// saved choice (the EN link to quicktui.ai saves 'en' in this origin's storage).
 (() => {
+  if (/^(www\.)?quicktui\.cn$/.test(location.hostname)) {
+    document.documentElement.setAttribute('data-cn-host', '');
+    return;
+  }
   const zhPage = document.documentElement.lang.startsWith('zh');
   const norm = v => { const l = String(v || '').toLowerCase(); return l === 'zh' || l.startsWith('zh-') ? 'zh' : (l === 'en' || l.startsWith('en-') ? 'en' : null); };
   let want = null;
@@ -181,6 +188,144 @@
 })();
 </script>
 <style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Shared site chrome (header + footer) for every page.
  * Injected inline by scripts/build.mjs; relies on the QT design tokens
  * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
@@ -335,7 +480,9 @@
   gap: 24px;
   flex-wrap: wrap;
 }
-.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
 .qt-foot .left .dot { opacity: .5; }
 .qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .qt-foot .links a { color: var(--ink-3); text-decoration: none; }
@@ -357,9 +504,6 @@
   .qt-lang a { padding: 4px; }
 }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────── tokens */
 :root {
@@ -779,25 +923,31 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
 /* ───────────────────────────────────────────────── hero setup demo (right column)
    Replays the app's automatic setup (credentials → install → done → terminal),
    mirroring the iOS setup wizard demo. The phone screen uses the app's default
-   theme tokens (Dracula dark / Catppuccin Latte light). Scenes are authored at a 390px
+   theme tokens (Bamboo Multiplex dark / Matcha Zen light). Scenes are authored at a 390px
    design width; JS scales the stage into the screen and plays the demo. */
 .hero > .hero-side { flex: 0 0 auto; }
 .hero-side { width: 320px; max-width: 100%; }
 .hero-demo {
-  --sd-bg: #282A36;
-  --sd-surface: #363848;
-  --sd-surface-hi: #44475A;
-  --sd-stroke: rgba(255,255,255,0.08);
-  --sd-text: #F8F8F2;
-  --sd-text2: #BBBBBB;
-  --sd-text3: #6272A4;
-  --sd-accent: #BD93F9;
-  --sd-accent-soft: rgba(189,147,249,0.08);
-  --sd-accent-stroke: rgba(189,147,249,0.55);
-  --sd-log: rgba(0,0,0,0.6);
-  --sd-amber: #FFB86C;
-  --sd-red: #FF5555;
-  --sd-info: #8BE9FD;
+  /* App default dark theme: Bamboo Multiplex (design/design-system/tokens.json) */
+  --sd-bg: #232923;
+  --sd-surface: #282f28;
+  --sd-surface-hi: #2e352e;
+  --sd-stroke: #ffffff14;
+  --sd-text: #ece1c0;
+  --sd-text2: #b0aa91;
+  --sd-text3: #7d7c6a;
+  --sd-accent: #81af58;
+  --sd-accent-soft: #81af5814;
+  --sd-accent-stroke: #81af588c;
+  --sd-log: #00000099;
+  --sd-amber: #ceba49;
+  --sd-red: #dc4f62;
+  --sd-info: #409cdc;
+  --sd-chat-bg: #1d221d;
+  --sd-chat-surface: #2e352e;
+  --sd-chat-stroke: #ffffff24;
+  --sd-chat-text2: #ffffffb3;
+  --sd-chat-user: #81af5829;
   --sd-dw: 290px;
   --sd-dh: 592px;
   --sd-bezel: 10px;
@@ -808,20 +958,26 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
   border-radius: 28px;
 }
 [data-theme="light"] .hero-demo {
-  --sd-bg: #EFF1F5;
-  --sd-surface: #FFFFFF;
-  --sd-surface-hi: #E6E9EF;
-  --sd-stroke: rgba(60,60,67,0.14);
-  --sd-text: #4C4F69;
-  --sd-text2: #6C6F85;
-  --sd-text3: #9CA0B0;
-  --sd-accent: #8839EF;
-  --sd-accent-soft: #E8DDF9;
-  --sd-accent-stroke: #8839EF;
-  --sd-log: rgba(0,0,0,0.08);
-  --sd-amber: #905C13;
-  --sd-red: #CD0F38;
-  --sd-info: #1C5EE1;
+  /* App default light theme: Matcha Zen */
+  --sd-bg: #f5f7ea;
+  --sd-surface: #ffffff;
+  --sd-surface-hi: #0000000d;
+  --sd-stroke: #3c3c4324;
+  --sd-text: #354029;
+  --sd-text2: #656e59;
+  --sd-text3: #8b9280;
+  --sd-accent: #467e29;
+  --sd-accent-soft: #d5e1c7;
+  --sd-accent-stroke: #467e29;
+  --sd-log: #00000014;
+  --sd-amber: #8d6c00;
+  --sd-red: #c2452a;
+  --sd-info: #2e7c78;
+  --sd-chat-bg: #f5f7ea;
+  --sd-chat-surface: #00000006;
+  --sd-chat-stroke: #3c3c4324;
+  --sd-chat-text2: #3c3c43ad;
+  --sd-chat-user: #d5e1c7;
 }
 .sd-camera {
   position: absolute; inset: 0;
@@ -1050,6 +1206,121 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
 @media (prefers-reduced-motion: reduce) {
   .hero-demo *, .hero-demo *::before, .hero-demo *::after { animation: none !important; transition: none !important; }
 }
+/* ───────────────────────────────────────────────── hero agent demo (right column)
+   "Agent control loop": the session list shows which agents need you, an approval
+   notification is approved from the lock screen banner, a question is answered in
+   chat mode, and the agents keep working. Same phone frame and theme tokens as the
+   setup demo; scenes are authored at a 390px design width and scaled by JS. */
+.loop-time { position: absolute; top: 17px; left: 44px; font-family: var(--sans); font-weight: 600; font-size: 15px; color: var(--sd-text); z-index: 3; }
+.loop-scene { position: absolute; top: 56px; left: 0; right: 0; bottom: 0; opacity: 0; transition: opacity 450ms ease; }
+.loop-scene.on { opacity: 1; }
+.loop-nav { display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 16px; }
+.loop-nav b { font-size: 19px; font-weight: 700; color: var(--sd-text); display: flex; align-items: center; gap: 8px; }
+.loop-nav .loop-chev { color: var(--sd-text2); font-size: 14px; }
+.loop-btn { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--sd-stroke); display: grid; place-items: center; color: var(--sd-text2); font-size: 16px; }
+.loop-chips { display: flex; gap: 6px; padding: 8px 14px 4px; white-space: nowrap; overflow: hidden; }
+.loop-chips span { font-size: 11px; padding: 6px 11px; border-radius: 99px; border: 1px solid var(--sd-stroke); color: var(--sd-text2); background: var(--sd-surface); }
+.loop-chips span.on { color: var(--sd-accent); border-color: var(--sd-accent-stroke); background: var(--sd-accent-soft); }
+.loop-sh { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--sd-text2); padding: 16px 16px 4px; }
+.loop-row { display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px 11px 16px; border-bottom: 1px solid var(--sd-stroke); transition: background-color 700ms ease; }
+.loop-row.flash { background: var(--sd-accent-soft); transition: none; }
+.loop-row.hl { background: var(--sd-surface); }
+.loop-ic { flex: 0 0 18px; height: 18px; margin-top: 2px; display: grid; place-items: center; }
+.loop-ic svg { width: 16px; height: 16px; }
+.loop-ic .i { display: none; }
+.loop-row[data-state="approval"] .i-lock,
+.loop-row[data-state="question"] .i-q,
+.loop-row[data-state="running"] .i-run,
+.loop-row[data-state="done"] .i-done,
+.loop-row[data-state="idle"] .i-idle,
+.loop-row[data-state="failed"] .i-fail { display: block; }
+.loop-row[data-state="approval"] .loop-ic { color: var(--sd-amber); }
+.loop-row[data-state="question"] .loop-ic { color: var(--sd-amber); }
+.loop-row[data-state="running"] .loop-ic { color: var(--sd-accent); }
+.loop-row[data-state="done"] .loop-ic { color: var(--sd-text3); }
+.loop-row[data-state="idle"] .loop-ic { color: var(--sd-text3); }
+.loop-row[data-state="failed"] .loop-ic { color: var(--sd-red); }
+.loop-rt { flex: 1; min-width: 0; font-family: var(--sans); }
+.loop-r1 { display: flex; align-items: baseline; gap: 8px; }
+.loop-r1 b { font-size: 15.5px; font-weight: 600; color: var(--sd-text); white-space: nowrap; }
+.loop-r1 .loop-br { font-family: var(--mono); font-size: 11px; color: var(--sd-text3); }
+.loop-r1 .loop-ago { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--sd-text3); }
+.loop-r2 { margin-top: 3px; font-size: 13.5px; color: var(--sd-text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.loop-row[data-state="running"] .loop-r2 { color: var(--sd-accent); }
+.loop-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: loop-spin 900ms linear infinite; display: inline-block; }
+@keyframes loop-spin { to { transform: rotate(360deg); } }
+/* Every scene lives in the top of the screen, so the frame is cut off below it and
+   fades out instead of drawing the empty lower half. */
+#agentDemo {
+  aspect-ratio: 320 / 480;
+  border-radius: 28px 28px 0 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+}
+#agentDemo .sd-screen { background: var(--sd-chat-bg); }
+#agentDemo .loop-row { border-bottom-color: var(--sd-chat-stroke); }
+#agentDemo .loop-row .loop-r2 { color: var(--sd-chat-text2); }
+#agentDemo .loop-row[data-state="running"] .loop-r2 { color: var(--sd-accent); }
+#agentDemo .loop-row.hl { background: var(--sd-chat-surface); }
+#agentDemo .loop-msg { background: var(--sd-chat-user); }
+/* lock-screen style notification, drawn over the list */
+.loop-notif { position: absolute; top: 52px; left: 10px; right: 10px; z-index: 5; transform: translateY(-140%); transition: transform 420ms cubic-bezier(0.2, 0.8, 0.3, 1); font-family: var(--sans); }
+.loop-notif.on { transform: none; }
+.loop-nb { display: flex; gap: 10px; padding: 12px 14px; border-radius: 22px; background: rgba(40,40,46,0.92); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.35); transition: transform 300ms ease; }
+.loop-notif.hold .loop-nb { transform: scale(1.03); }
+.loop-appic { flex: 0 0 38px; height: 38px; border-radius: 9px; background: #2BD27A; color: #0B2A18; font: 700 14px/38px var(--mono); text-align: center; }
+.loop-n1 { display: flex; justify-content: space-between; font-size: 14px; }
+.loop-n1 span { color: rgba(255,255,255,0.55); font-size: 12px; }
+.loop-n2 { margin-top: 2px; font-size: 13.5px; line-height: 1.35; color: rgba(255,255,255,0.9); }
+.loop-menu { margin: 10px 0 0 auto; width: 230px; border-radius: 16px; overflow: hidden; background: rgba(48,48,54,0.96); box-shadow: 0 10px 30px rgba(0,0,0,0.35); opacity: 0; transform: scale(0.92); transform-origin: top right; transition: opacity 220ms ease, transform 220ms ease; }
+.loop-notif.hold .loop-menu { opacity: 1; transform: none; }
+.loop-mi { padding: 13px 16px; font-size: 15px; color: #fff; }
+.loop-mi + .loop-mi { border-top: 1px solid rgba(255,255,255,0.1); }
+.loop-mi.rej { color: #FF6961; }
+.loop-mi.pressed { background: rgba(255,255,255,0.12); }
+.loop-dim { position: absolute; inset: 0; z-index: 4; background: rgba(0,0,0,0.35); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; transition: opacity 220ms ease; pointer-events: none; }
+.loop-dim.on { opacity: 1; }
+/* chat mode */
+.loop-chat .loop-nav b { font-size: 16px; }
+.loop-cst { width: 14px; height: 14px; display: inline-grid; place-items: center; color: var(--sd-amber); }
+.loop-cst.run { color: var(--sd-accent); }
+.loop-msg { margin: 14px 16px 0 64px; padding: 10px 12px; border-radius: 12px; background: var(--sd-surface); font-size: 12.5px; line-height: 1.45; color: var(--sd-text); }
+.loop-q { margin: 16px 12px 0; padding: 14px 14px 12px; border-radius: 14px; border: 1px solid var(--sd-amber); background: var(--sd-surface); transition: opacity 300ms ease; }
+.loop-qh { font-family: var(--sans); font-size: 14px; font-weight: 700; color: var(--sd-amber); }
+.loop-qt { margin-top: 8px; font-family: var(--sans); font-size: 14px; color: var(--sd-text); }
+.loop-qs { margin-top: 4px; font-size: 11px; color: var(--sd-text3); }
+.loop-opt { display: flex; gap: 10px; align-items: flex-start; margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--sd-stroke); background: var(--sd-bg); transition: border-color 200ms ease, background-color 200ms ease; }
+.loop-opt i { flex: 0 0 14px; height: 14px; margin-top: 2px; border-radius: 50%; border: 1.5px solid var(--sd-text3); }
+.loop-opt b { display: block; font-family: var(--sans); font-size: 13.5px; font-weight: 600; color: var(--sd-text); }
+.loop-opt span { display: block; margin-top: 2px; font-size: 11px; color: var(--sd-text2); }
+.loop-opt.sel { border-color: var(--sd-accent-stroke); background: var(--sd-accent-soft); }
+.loop-opt.sel i { border-color: var(--sd-accent); background: radial-gradient(circle, var(--sd-accent) 0 45%, transparent 50%); }
+.loop-submit { margin-top: 12px; padding: 11px 0; text-align: center; border-radius: 10px; font-size: 12px; letter-spacing: 0.12em; border: 1px solid var(--sd-stroke); color: var(--sd-text3); transition: all 200ms ease; }
+.loop-submit.ready { border-color: var(--sd-accent-stroke); color: var(--sd-accent); background: var(--sd-accent-soft); }
+.loop-submit.pressed { filter: brightness(1.35); transform: scale(0.98); }
+.loop-ans { display: none; margin: 16px 16px 0; font-size: 13px; line-height: 1.5; }
+.loop-chat.answered .loop-q { display: none; }
+.loop-chat.answered .loop-ans { display: block; }
+.loop-ansq { color: var(--sd-text2); }
+.loop-ansq b { color: var(--sd-text); }
+.loop-work { margin-top: 12px; display: flex; align-items: center; gap: 8px; color: var(--sd-accent); }
+.loop-meta { margin: 18px 16px 0; font-size: 11px; color: var(--sd-text3); border-top: 1px solid var(--sd-stroke); padding-top: 10px; }
+/* step strip under the phone */
+.loop-steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0 0; padding: 0; }
+.loop-steps li { padding-top: 7px; border-top: 2px solid var(--line); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-4); transition: color 300ms ease, border-color 300ms ease; min-width: 0; }
+.loop-steps li span { display: block; font-size: 9.5px; letter-spacing: 0.14em; }
+.loop-steps li b { display: block; margin-top: 2px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.loop-steps li.on { color: var(--ink); border-top-color: var(--accent); }
+.hero-works { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-3); margin: 0 0 4px; }
+/* get started: steps beside the setup demo */
+.gs-body { display: flex; gap: clamp(32px, 4vw, 56px); align-items: flex-start; }
+.gs-body > :first-child { flex: 1 1 0; min-width: 0; }
+.gs-body .hero-steps { grid-template-columns: 1fr; max-width: 560px; margin-top: 0; }
+.gs-body .hero-side { flex: 0 0 auto; }
+@media (max-width: 900px) {
+  .gs-body { flex-direction: column; gap: 24px; }
+  .gs-body .hero-side { align-self: center; }
+}
 .sr-only {
   position: absolute !important;
   width: 1px; height: 1px;
@@ -1090,87 +1361,175 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
   max-width: 52ch;
   margin: 0;
 }
-/* ───────────── product demo (In Action) */
-.demo {
+/* ───────────── features (two feature stories)
+   Each story: label + badge, title, intro, a grid of feature cards with a cropped
+   screenshot, and (tools story) a scrolling rail of smaller cards. Card shots are
+   720x720 crops; the box keeps a 1:1 ratio so lazy images never shift the page. */
+.feat { display: grid; gap: clamp(56px, 8vw, 96px); }
+.feat-tag { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+.feat-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.feat-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.feat-title {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 30px);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  max-width: 30ch;
+}
+.feat-text { color: var(--ink-2); font-size: 16px; line-height: 1.6; margin: 0 0 28px; max-width: 60ch; }
+.feat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.feat-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--bg-1);
-  overflow: hidden;
+  padding: 20px;
+  min-width: 0;
 }
-.demo-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-}
-.demo-tab {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.02em;
-  color: var(--ink-3);
-  background: transparent;
-  border: 0;
-  border-right: 1px solid var(--line-soft);
-  padding: 12px 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.demo-tab:hover { color: var(--ink); background: var(--bg-1); }
-.demo-tab.on {
-  color: var(--ink);
-  background: var(--bg-2);
-}
-/* Panels share one grid cell so the stage always takes the tallest panel's height:
-   switching tabs never changes the page height. */
-.demo-stage { padding: clamp(20px, 3vw, 36px); display: grid; }
-.demo-panel { grid-area: 1 / 1; display: grid; grid-template-columns: 1fr 1.1fr; gap: 28px; align-items: center; visibility: hidden; }
-.demo-panel.on { visibility: visible; }
-.demo-copy .idx {
-  font-family: var(--mono);
-  font-size: 12px;
+.feat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.feat-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
   color: var(--accent);
-  letter-spacing: 0.12em;
-  margin-bottom: 8px;
+  background: var(--accent-glow);
 }
-.demo-copy h3 {
+.feat-ic svg { width: 17px; height: 17px; }
+.feat-card h4, .feat-mini h4 {
   font-family: var(--mono);
   font-weight: 600;
-  font-size: 22px;
-  letter-spacing: -0.02em;
-  margin: 0 0 10px;
-}
-.demo-copy p {
-  color: var(--ink-2);
   font-size: 15px;
-  line-height: 1.55;
+  letter-spacing: -0.01em;
   margin: 0;
-  max-width: 42ch;
 }
-/* 1.9.0 iPhone screenshots are full portrait screens; cap the height so a
-   panel fits the viewport, and show paired shots side by side. */
-.demo-shot {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-/* All screenshots are 660x1434. Give each a definite width and aspect ratio so the
-   box is reserved before the (lazy) image loads and switching tabs never shifts the page. */
-.demo-shot img {
-  display: block;
-  width: min(100%, 285px);
-  height: auto;
-  aspect-ratio: 660 / 1434;
+.feat-card p { color: var(--ink-2); font-size: 14px; line-height: 1.55; margin: 0 0 18px; }
+.feat-media {
+  margin-top: auto;
+  aspect-ratio: 1 / 1;
   border: 1px solid var(--line);
-  border-radius: 22px;
+  border-radius: 6px;
+  overflow: hidden;
   background: var(--bg-2);
 }
-.demo-shot.pair img { width: min(calc(50% - 8px), 285px); }
-@media (max-width: 860px) {
-  .demo-panel { grid-template-columns: 1fr; align-content: start; }
-  .demo-tab { font-size: 11px; padding: 10px 10px; }
-  .demo-shot img { width: min(100%, 248px); }
-  .demo-shot.pair img { width: min(calc(50% - 8px), 248px); }
+.feat-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* QuickTUI Cloud: phone -> relay -> computer, drawn in markup instead of a screenshot. */
+.feat-relay {
+  display: grid;
+  grid-template-columns: auto minmax(12px, 1fr) auto minmax(12px, 1fr) auto;
+  align-items: start;
+  align-content: center;
+  padding: 16px 12px;
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 45%, var(--accent-glow), transparent 62%),
+    var(--bg-2);
+}
+.relay-node { display: grid; grid-template-rows: 56px; justify-items: center; align-items: center; align-content: start; gap: 8px; }
+.relay-ic {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-1);
+  color: var(--ink);
+}
+.relay-ic svg { width: 22px; height: 22px; }
+.relay-hub .relay-ic { width: 56px; height: 56px; border-color: var(--accent); color: var(--accent); }
+.relay-hub .relay-ic svg { width: 28px; height: 28px; }
+.relay-hub span:last-child { color: var(--ink); }
+.relay-fw .relay-ic { box-shadow: 0 0 0 4px var(--bg-2), 0 0 0 5px var(--line); }
+.relay-node small { font-size: 10px; color: var(--ink-4); margin-top: -4px; }
+/* Every icon sits in a 56px row, so the links line up with the icon centres. */
+.relay-link { align-self: start; height: 0; margin: 28px 6px 0; border-top: 1px dashed var(--accent); }
+.relay-e2e { grid-column: 1 / -1; justify-self: center; display: inline-flex; align-items: center; gap: 6px; margin-top: 22px; color: var(--accent); }
+.relay-lock svg { width: 13px; height: 13px; display: block; }
+/* "And 5 more": horizontal rail, snapped per card; arrows page by the visible width. */
+.feat-more { margin-top: 36px; }
+.feat-more-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.feat-more-h { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.feat-nav { display: flex; gap: 8px; }
+.feat-nav button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-1);
+  color: var(--ink);
+  cursor: pointer;
+}
+.feat-nav button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.feat-nav button:disabled { opacity: 0.35; cursor: default; }
+.feat-nav svg { width: 14px; height: 14px; }
+.feat-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 3 * 16px) / 4);
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.feat-rail::-webkit-scrollbar { display: none; }
+.feat-mini { scroll-snap-align: start; min-width: 0; }
+.feat-mini .feat-media { margin: 0 0 12px; }
+.feat-mini h4 { margin-bottom: 6px; }
+.feat-mini p { color: var(--ink-2); font-size: 13px; line-height: 1.5; margin: 0; }
+.feat-progress { height: 2px; margin-top: 20px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.feat-progress span { display: block; height: 100%; width: 25%; background: var(--accent); transform-origin: left; }
+@media (max-width: 1000px) {
+  .feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feat-rail { grid-auto-columns: calc((100% - 2 * 16px) / 3); }
+}
+@media (max-width: 640px) {
+  /* Phones: each story's cards become a swipeable row (the next card peeks in), so
+     twelve cards do not turn the section into a very long page. */
+  .feat-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 86%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .feat-grid::-webkit-scrollbar { display: none; }
+  .feat-card { scroll-snap-align: start; padding: 16px; }
+  .feat-card .feat-media { aspect-ratio: 4 / 3; }
+  .feat-card .feat-media img { object-position: center top; }
+  .feat-rail { grid-auto-columns: 72%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feat-rail { scroll-behavior: auto; }
 }
 
 /* ───────────── resources compact */
@@ -1363,9 +1722,11 @@ html[lang="zh-Hans"] h3 .serif {
         <span class="qt-brand-name">quicktui<sup>v1</sup></span>
       </a>
       <nav class="qt-nav-links">
-        <a href="#action"><span class="n">01</span>Enhanced&nbsp;Features</a>
-        <a href="#faq"><span class="n">02</span>FAQ</a>
-        <a href="#resources"><span class="n">03</span>Further&nbsp;Reading</a>
+        <a href="#action"><span class="n">01</span>Features</a>
+        <a href="#quick-start"><span class="n">02</span>Get&nbsp;Started</a>
+        <a href="#faq"><span class="n">03</span>FAQ</a>
+        <a href="#resources"><span class="n">04</span>Further&nbsp;Reading</a>
+        <a href="/guide/"><span class="n">05</span>User&nbsp;Guide</a>
       </nav>
       <div class="qt-nav-right">
         <nav class="qt-lang" aria-label="Language">
@@ -1373,7 +1734,7 @@ html[lang="zh-Hans"] h3 .serif {
         </nav>
         <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
-        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
         <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
       </div>
     </div>
@@ -1392,12 +1753,256 @@ html[lang="zh-Hans"] h3 .serif {
     </div>
 
     <!-- ───────── HERO ───────── -->
-    <section class="hero" id="quick-start">
+    <section class="hero" id="top">
       <div class="hero v3">
         <div>
           <div class="tag">────  REMOTE CONTROL FOR AI AGENTS  ────</div>
           <h1 data-i-html="hero3.h1">Agents on your computer,<br><em>live on your phone.</em></h1>
-          <p class="sub" data-i="hero3.sub">Claude Code, Codex, OpenCode, Grok — attach from anywhere, approve in seconds.</p>
+          <p class="sub" data-i="hero3.sub">Keep every agent moving. See which one needs you, approve from the notification and answer its questions, right from your phone.</p>
+          <p class="hero-works" data-i="hero3.works">Claude Code · Codex · OpenCode · Grok · any CLI agent, in tmux or Herdr</p>
+          <div class="ctas">
+            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-home-hero&amp;mt=8" data-track-placement="hero" data-i-html="in.cta">iOS App <span class="arr">→</span></a>
+            <a class="btn btn-primary btn-xl" href="/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android App <span class="arr">→</span></a>
+            <a class="btn btn-xl" href="#action" data-i-html="cta.getQt">Explore features <span class="arr">→</span></a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-demo" id="agentDemo" aria-hidden="true">
+            <div class="sd-camera">
+              <div class="sd-device">
+                <div class="sd-screen">
+                  <div class="sd-stage">
+                    <div class="sd-island"></div>
+                    <div class="loop-time">9:41</div>
+                    <div class="loop-scene loop-list on">
+                      <div class="loop-nav"><span class="loop-btn">‹</span><b>devbox <span class="loop-chev">⌄</span></b><span class="loop-btn">+</span></div>
+                      <div class="loop-chips"><span class="on" data-i="ad.chip.all">All</span><span data-i="ad.chip.attn">Needs Attention</span><span data-i="ad.chip.running">Running</span><span data-i="ad.chip.idle">Idle</span></div>
+                      <div class="loop-sec" data-sec="attn">
+                        <div class="loop-sh" data-i="ad.sec.attn">Needs your attention</div>
+                        <div class="loop-rows"></div>
+                      </div>
+                      <div class="loop-sec" data-sec="other">
+                        <div class="loop-sh" data-i="ad.sec.other">Other</div>
+                        <div class="loop-rows"></div>
+                      </div>
+                      <div hidden>
+                        <div class="loop-row" data-id="web" data-state="approval" data-sec0="attn">
+                          <span class="loop-ic"><svg class="i i-lock" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 7V5.2a3.5 3.5 0 0 1 7 0V7h.5a1 1 0 0 1 1 1v5.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1zm1.6 0h3.8V5.2a1.9 1.9 0 0 0-3.8 0z"/></svg><svg class="i i-q" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.4"/><path d="M8 7.3v3.6M8 5.1v.1" stroke-linecap="round"/></svg><span class="i i-run loop-spin"></span><svg class="i i-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg><svg class="i i-idle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M6.4 5.8v4.4M9.6 5.8v4.4"/></svg><svg class="i i-fail" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M5.9 5.9l4.2 4.2M10.1 5.9l-4.2 4.2"/></svg></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>web-dashboard</b><span class="loop-br">main</span><span class="loop-ago">1m</span></div><div class="loop-r2" data-t-approval="Allow Claude to use Bash?" data-t-running="Running go test ./users/…">Allow Claude to use Bash?</div></div>
+                        </div>
+                        <div class="loop-row" data-id="api" data-state="question" data-sec0="attn">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>acme-api</b><span class="loop-br">main</span><span class="loop-ago">2m</span></div><div class="loop-r2" data-t-question="Which JSON shape should GET /api/health return?" data-t-running="Writing the handler and its test…">Which JSON shape should GET /api/health return?</div></div>
+                        </div>
+                        <div class="loop-row" data-id="mobile" data-state="running" data-sec0="other">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>mobile-app</b><span class="loop-br">main</span><span class="loop-ago">now</span></div><div class="loop-r2" data-t-running="Codex · iOS simulator setup…" data-t-done="Simulator setup documented in README.md">Codex · iOS simulator setup…</div></div>
+                        </div>
+                        <div class="loop-row" data-id="tests" data-state="failed" data-sec0="attn">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>acme-api</b><span class="loop-br">tests</span><span class="loop-ago">4m</span></div><div class="loop-r2" data-i="ad.row.failed">Codex · 3 tests failed in auth/</div></div>
+                        </div>
+                        <div class="loop-row" data-id="docs" data-state="idle" data-sec0="other">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>docs-site</b><span class="loop-br">main</span><span class="loop-ago">6m</span></div><div class="loop-r2" data-i="ad.row.idle">Claude · Waiting for your next prompt</div></div>
+                        </div>
+                        <div class="loop-row" data-id="landing" data-state="done" data-sec0="other">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>landing-page</b><span class="loop-br">main</span><span class="loop-ago">12m</span></div><div class="loop-r2" data-t-done="OpenCode · Updated hero copy and links">OpenCode · Updated hero copy and links</div></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="loop-scene loop-chat">
+                      <div class="loop-nav"><span class="loop-btn">‹</span><b><span class="loop-cst"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.4"/><path d="M8 7.3v3.6M8 5.1v.1" stroke-linecap="round"/></svg></span>acme-api</b><span class="loop-btn">⋯</span></div>
+                      <div class="loop-msg">Add a GET /api/health endpoint with a unit test. Before writing any code, ask me which JSON shape it should return.</div>
+                      <div class="loop-q">
+                        <div class="loop-qh">ⓘ JSON shape</div>
+                        <div class="loop-qt">Which JSON shape should GET /api/health return?</div>
+                        <div class="loop-qs" data-i="ad.chooseOne">Choose one</div>
+                        <div class="loop-opt" data-opt="pick"><i></i><div><b>Minimal status</b><span>{"status":"ok"}</span></div></div>
+                        <div class="loop-opt"><i></i><div><b>Status + DB check</b><span>Also pings the database</span></div></div>
+                        <div class="loop-opt"><i></i><div><b>Status + metadata</b><span>Includes uptime and timestamp</span></div></div>
+                        <div class="loop-submit" data-i="ad.submit">SUBMIT</div>
+                      </div>
+                      <div class="loop-ans">
+                        <div class="loop-ansq">✓ JSON shape: <b>Minimal status</b></div>
+                        <div class="loop-work"><span class="loop-spin"></span><span>Writing the handler and its test…</span></div>
+                      </div>
+                      <div class="loop-meta">claude · claude-sonnet-5-5</div>
+                    </div>
+                    <div class="loop-dim"></div>
+                    <div class="loop-notif">
+                      <div class="loop-nb"><span class="loop-appic">&gt;_</span><div><div class="loop-n1"><b>QuickTUI</b><span data-i="ad.now">now</span></div><div class="loop-n2">Claude: Approval requested · web-dashboard · Run go test ./users/...</div></div></div>
+                      <div class="loop-menu"><div class="loop-mi rej" data-i="ad.reject">Reject</div><div class="loop-mi app" data-i="ad.approve">Approve</div></div>
+                    </div>
+                    <div class="sd-tap"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ol class="loop-steps" aria-hidden="true">
+            <li data-step="0"><span>01</span><b data-i="ad.step.0">Monitor</b></li>
+            <li data-step="1"><span>02</span><b data-i="ad.step.1">Approve</b></li>
+            <li data-step="2"><span>03</span><b data-i="ad.step.2">Answer</b></li>
+            <li data-step="3"><span>04</span><b data-i="ad.step.3">Keep moving</b></li>
+          </ol>
+          <p class="sd-caption" data-i="hero.loop.caption">Agent notifications and chat mode · simulated</p>
+          <p class="sr-only" data-i="hero.loop.sr">Animation: the QuickTUI session list shows two agents that need you. An approval notification arrives and is approved from the banner, a question is answered in chat mode, and both agents go back to work.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── FEATURES (feature stories) ───────── -->
+    <section id="action" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="ia.eyebrow">§ 01 / Features</div>
+          <h2 data-i-html="ia.h2">Fluid. Powerful.</h2>
+        </div>
+        <div>
+          <p data-i="ia.desc">Every feature, built and refined for mobile.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-story">
+          <div class="feat-tag"><span class="feat-label" data-i="feat.agents.label">Agents</span><span class="feat-badge" data-i="feat.agents.badge">Approve from anywhere</span></div>
+          <h3 class="feat-title" data-i="feat.agents.h">Supervise every agent from your phone.</h3>
+          <p class="feat-text" data-i="feat.agents.p">QuickTUI follows Claude Code, Codex and other CLI agents running in tmux or Herdr on your computer. See which ones need you, answer them, and start new ones without going back to your desk.</p>
+          <div class="feat-grid">
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span><h4 data-i="feat.agents.1.t">Chat Mode</h4></div>
+              <p data-i="feat.agents.1.b">Follow any agent as a clean chat with Markdown. Answer its questions and approve its requests right there.</p>
+              <div class="feat-media"><img src="/images/usage/card-chat-en.webp" data-lang-src-en="/images/usage/card-chat-en.webp" data-lang-src-zh="/images/usage/card-chat-zh.webp" alt="Chat mode showing a question from Claude Code" data-i-alt="feat.alt.chat" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span><h4 data-i="feat.agents.2.t">Agent Notifications</h4></div>
+              <p data-i="feat.agents.2.b">Get notified the moment an agent needs you. Touch and hold to approve or reject without opening the app.</p>
+              <div class="feat-media"><img src="/images/usage/card-notifications-en.webp" data-lang-src-en="/images/usage/card-notifications-en.webp" data-lang-src-zh="/images/usage/card-notifications-zh.webp" alt="Agent approval notification with Reject and Approve actions" data-i-alt="feat.alt.notifications" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 15 9"/><path d="m13 7 4 4"/><path d="M18 3v3M16.5 4.5h3M20 10v2M19 11h2M9 3v2M8 4h2"/></svg></span><h4 data-i="feat.agents.3.t">Agent Wizard</h4></div>
+              <p data-i="feat.agents.3.b">Launch any agent with the model, reasoning effort and folder you want. No flags to type.</p>
+              <div class="feat-media"><img src="/images/usage/card-agent-wizard-en.webp" data-lang-src-en="/images/usage/card-agent-wizard-en.webp" data-lang-src-zh="/images/usage/card-agent-wizard-zh.webp" alt="Agent Wizard choosing an agent to launch" data-i-alt="feat.alt.agent-wizard" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><h4 data-i="feat.agents.4.t">Agent Status</h4></div>
+              <p data-i="feat.agents.4.b">See every agent at a glance: which ones need you, which are still working, and which are done.</p>
+              <div class="feat-media"><img src="/images/usage/card-agent-status-en.webp" data-lang-src-en="/images/usage/card-agent-status-en.webp" data-lang-src-zh="/images/usage/card-agent-status-zh.webp" alt="Agents list showing the status of every agent" data-i-alt="feat.alt.agent-status" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="5" rx="1"/><path d="M6.5 9v9H13M6.5 13H13"/><rect x="13" y="11" width="8" height="4" rx="1"/><rect x="13" y="16" width="8" height="4" rx="1"/></svg></span><h4 data-i="feat.agents.5.t">Session Manager</h4></div>
+              <p data-i="feat.agents.5.b">Every tmux and Herdr workspace on your computer in one tree. Jump, create, rename or close sessions from your phone.</p>
+              <div class="feat-media"><img src="/images/usage/card-switcher-en.webp" data-lang-src-en="/images/usage/card-switcher-en.webp" data-lang-src-zh="/images/usage/card-switcher-zh.webp" alt="Session Manager showing workspaces and sessions" data-i-alt="feat.alt.switcher" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3z"/></svg></span><h4 data-i="feat.agents.6.t">Command Palette</h4></div>
+              <p data-i="feat.agents.6.b">500+ commands for agents and the terminal. Search, then send in one tap, or add your own in Settings.</p>
+              <div class="feat-media"><img src="/images/usage/card-command-palette-en.webp" data-lang-src-en="/images/usage/card-command-palette-en.webp" data-lang-src-zh="/images/usage/card-command-palette-zh.webp" alt="Command palette searching agent commands" data-i-alt="feat.alt.command-palette" width="720" height="720" loading="lazy"></div>
+            </article>
+          </div>
+        </div>
+        <div class="feat-story">
+          <div class="feat-tag"><span class="feat-label" data-i="feat.tools.label">Terminal &amp; tools</span><span class="feat-badge" data-i="feat.tools.badge">Built for touch</span></div>
+          <h3 class="feat-title" data-i="feat.tools.h">A real terminal that fits in your pocket.</h3>
+          <p class="feat-text" data-i="feat.tools.p">Attach to the same sessions you use at your desk. Reach your computer from any network, and check files and pages in floating windows without leaving the terminal.</p>
+          <div class="feat-grid">
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg></span><h4 data-i="feat.tools.1.t">Terminal</h4></div>
+              <p data-i="feat.tools.1.b">Auto-reconnect, session restore and fast input, tuned for low-latency touch.</p>
+              <div class="feat-media"><img src="/images/usage/card-terminal-en.webp" data-lang-src-en="/images/usage/card-terminal-en.webp" data-lang-src-zh="/images/usage/card-terminal-zh.webp" alt="Agent output in a QuickTUI terminal on iPhone" data-i-alt="feat.alt.terminal" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></svg></span><h4 data-i="feat.tools.2.t">QuickTUI Cloud</h4></div>
+              <p data-i="feat.tools.2.b">Connect even when your computer is behind a firewall or on an internal network, with no network setup. Every account gets free relay traffic each month.</p>
+              <div class="feat-media feat-relay" role="img" data-i-label="feat.cloud.sr" aria-label="Diagram: your phone connects through the QuickTUI Cloud relay to your computer behind a firewall, end-to-end encrypted." title="Diagram: your phone connects through the QuickTUI Cloud relay to your computer behind a firewall, end-to-end encrypted.">
+                <div class="relay-node"><span class="relay-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span><span data-i="feat.cloud.phone">Your phone</span></div>
+                <div class="relay-link"></div>
+                <div class="relay-node relay-hub"><span class="relay-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></svg></span><span data-i="feat.cloud.relay">QuickTUI Cloud</span></div>
+                <div class="relay-link"></div>
+                <div class="relay-node relay-fw"><span class="relay-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg></span><span data-i="feat.cloud.pc">Your computer</span><small data-i="feat.cloud.fw">Behind a firewall</small></div>
+                <div class="relay-e2e"><span class="relay-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span data-i="feat.cloud.e2e">End-to-end encrypted</span></div>
+              </div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="12" height="10" rx="1.5"/><rect x="9" y="11" width="12" height="10" rx="1.5"/></svg></span><h4 data-i="feat.tools.3.t">Floating Windows</h4></div>
+              <p data-i="feat.tools.3.b">File previews, Markdown and the built-in browser open in floating windows. Expand or collapse them any time.</p>
+              <div class="feat-media"><img src="/images/usage/card-floating-windows-en.webp" data-lang-src-en="/images/usage/card-floating-windows-en.webp" data-lang-src-zh="/images/usage/card-floating-windows-zh.webp" alt="Built-in browser and a file preview in floating windows over the terminal" data-i-alt="feat.alt.floating-windows" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 15V9l2.5 3L11 9v6M16 9v6m-2-2 2 2 2-2"/></svg></span><h4 data-i="feat.tools.4.t">Markdown Preview</h4></div>
+              <p data-i="feat.tools.4.b">Read Markdown files fully rendered, with code highlighting, math formulas, Mermaid diagrams and tappable links.</p>
+              <div class="feat-media"><img src="/images/usage/card-markdown-preview-en.webp" data-lang-src-en="/images/usage/card-markdown-preview-en.webp" data-lang-src-zh="/images/usage/card-markdown-preview-zh.webp" alt="Rendered Markdown file in a preview window" data-i-alt="feat.alt.markdown-preview" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><h4 data-i="feat.tools.5.t">File Manager</h4></div>
+              <p data-i="feat.tools.5.b">Browse your computer, upload and download files, zip and unzip, and bookmark the folders you use most.</p>
+              <div class="feat-media"><img src="/images/usage/card-files-en.webp" data-lang-src-en="/images/usage/card-files-en.webp" data-lang-src-zh="/images/usage/card-files-zh.webp" alt="File Manager listing folders on your computer" data-i-alt="feat.alt.files" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span><h4 data-i="feat.tools.6.t">Port Forwarding</h4></div>
+              <p data-i="feat.tools.6.b">Finds web servers on your computer and opens them in the built-in browser, so you see your agent's changes as they land.</p>
+              <div class="feat-media"><img src="/images/usage/card-port-forward-en.webp" data-lang-src-en="/images/usage/card-port-forward-en.webp" data-lang-src-zh="/images/usage/card-port-forward-zh.webp" alt="Port forwarding rule with the built-in browser open" data-i-alt="feat.alt.port-forward" width="720" height="720" loading="lazy"></div>
+            </article>
+          </div>
+          <div class="feat-more" id="featMore">
+            <div class="feat-more-head">
+              <span class="feat-more-h" data-i="feat.more.h">And 5 more</span>
+              <div class="feat-nav">
+                <button type="button" class="feat-prev" data-i-label="feat.more.prev" aria-label="Previous" title="Previous"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg></button>
+                <button type="button" class="feat-next" data-i-label="feat.more.next" aria-label="Next" title="Next"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button>
+              </div>
+            </div>
+            <div class="feat-rail">
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-input-bar-en.webp" data-lang-src-en="/images/usage/card-input-bar-en.webp" data-lang-src-zh="/images/usage/card-input-bar-zh.webp" alt="Input Bar with image attachments above the keyboard" data-i-alt="feat.alt.input-bar" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.1.t">Input Bar</h4>
+                <p data-i="feat.more.1.b">Dictate, attach files and review your message before it goes to the terminal.</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-shortcuts-editor-en.webp" data-lang-src-en="/images/usage/card-shortcuts-editor-en.webp" data-lang-src-zh="/images/usage/card-shortcuts-editor-zh.webp" alt="Shortcuts Bar editor" data-i-alt="feat.alt.shortcuts-editor" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.2.t">Shortcuts Bar</h4>
+                <p data-i="feat.more.2.b">Stack up to three custom Shortcuts Bars for commands, key combos and app tools.</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-dpad-en.webp" data-lang-src-en="/images/usage/card-dpad-en.webp" data-lang-src-zh="/images/usage/card-dpad-zh.webp" alt="D-pad panel floating over the terminal" data-i-alt="feat.alt.dpad" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.3.t">D-pad</h4>
+                <p data-i="feat.more.3.b">Enter arrow keys and new lines, or jump to the bottom. Drag it anywhere and lock it in place.</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-smart-copy-en.webp" data-lang-src-en="/images/usage/card-smart-copy-en.webp" data-lang-src-zh="/images/usage/card-smart-copy-zh.webp" alt="Selected terminal text with Copy and Smart Copy buttons" data-i-alt="feat.alt.smart-copy" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.4.t">Smart Copy</h4>
+                <p data-i="feat.more.4.b">Select terminal text and copy it as is, or join it into a single line first.</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-clipboard-history-en.webp" data-lang-src-en="/images/usage/card-clipboard-history-en.webp" data-lang-src-zh="/images/usage/card-clipboard-history-zh.webp" alt="Clipboard history with recent entries" data-i-alt="feat.alt.clipboard-history" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.5.t">Clipboard History</h4>
+                <p data-i="feat.more.5.b">Search what you copied before and drop it into the Input Bar.</p>
+              </article>
+            </div>
+            <div class="feat-progress" aria-hidden="true"><span></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <!-- ───────── GET STARTED (setup) ───────── -->
+    <section id="quick-start" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="gs.eyebrow">§ 02 / Get started</div>
+          <h2 data-i-html="gs.h2">Up and running in <em>minutes.</em></h2>
+        </div>
+        <div>
+          <p data-i="gs.desc">Enter your computer's SSH login once. The app installs QuickTUI Server and pairs for you.</p>
+        </div>
+      </div>
+      <div class="gs-body">
+        <div>
           <ol class="hero-steps">
             <li>
               <div class="hs-device" data-i="hero.steps.device.phone">On your phone</div>
@@ -1411,15 +2016,10 @@ html[lang="zh-Hans"] h3 .serif {
             </li>
             <li>
               <div class="hs-device" data-i="hero.steps.device.anywhere">Anywhere</div>
-              <strong class="hs-title" data-i="hero.steps.3.title">Drive your agents</strong>
-              <p class="hs-body" data-i="hero.steps.3.body">Your agents keep running in tmux or Herdr on your computer. Drive them live from your phone.</p>
+              <strong class="hs-title" data-i="hero.steps.3.title">Supervise your agents</strong>
+              <p class="hs-body" data-i="hero.steps.3.body">Your agents keep running in tmux or Herdr on your computer. Steer and monitor them live from your phone.</p>
             </li>
           </ol>
-          <div class="ctas">
-            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="hero" data-i-html="in.cta">iOS App <span class="arr">→</span></a>
-            <a class="btn btn-primary btn-xl" href="/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android App <span class="arr">→</span></a>
-            <a class="btn btn-xl" href="#action" data-i-html="cta.getQt">See enhanced features <span class="arr">→</span></a>
-          </div>
           <p class="hero-note"><span data-i-html="hero.note">On a Mac or Linux computer, the app installs the server automatically over SSH. Without SSH access, you'll need to <a href="#manual-install">install manually</a>.</span></p>
           <p class="hero-note hero-win"><span data-i-html="hero.win">On Windows, install the server from Microsoft Store: <a class="btn btn-primary" href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">Windows Server <span class="arr">→</span></a></span></p>
         </div>
@@ -1509,107 +2109,12 @@ html[lang="zh-Hans"] h3 .serif {
       </div>
     </section>
 
-    <!-- ───────── IN ACTION (product demo) ───────── -->
-    <section id="action" class="section">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow" data-i="ia.eyebrow">§ 01 / Enhanced Features</div>
-          <h2 data-i-html="ia.h2">Comfortable. Efficient.</h2>
-        </div>
-        <div>
-          <p data-i="ia.desc">Every feature, carefully crafted for mobile.</p>
-        </div>
-      </div>
-
-      <div class="demo" id="productDemo">
-        <div class="demo-tabs" role="tablist">
-          <button type="button" class="demo-tab on" data-demo="terminal" role="tab" aria-selected="true" data-i="usage.terminal.t">Terminal</button>
-          <button type="button" class="demo-tab" data-demo="wizard" role="tab" aria-selected="false" data-i="usage.wizard.t">Agent Wizard</button>
-          <button type="button" class="demo-tab" data-demo="switcher" role="tab" aria-selected="false" data-i="usage.switcher.t">Session Manager</button>
-          <button type="button" class="demo-tab" data-demo="files" role="tab" aria-selected="false" data-i="usage.files.t">File Manager</button>
-          <button type="button" class="demo-tab" data-demo="ports" role="tab" aria-selected="false" data-i="usage.ports.t">Port Forwarding</button>
-          <button type="button" class="demo-tab" data-demo="palette" role="tab" aria-selected="false" data-i="usage.palette.t">Command Palette</button>
-          <button type="button" class="demo-tab" data-demo="inputbar" role="tab" aria-selected="false" data-i="usage.inputbar.t">Input Bar</button>
-          <button type="button" class="demo-tab" data-demo="shortcuts" role="tab" aria-selected="false" data-i="usage.shortcuts.t">Shortcuts Bar</button>
-        </div>
-        <div class="demo-stage">
-          <div class="demo-panel on" data-demo="terminal">
-            <div class="demo-copy">
-              <div class="idx">D.01</div>
-              <h3 data-i="usage.terminal.t">Terminal</h3>
-              <p data-i="usage.terminal.b">Auto-reconnect, session restore, adaptive layout, fast input, easy copy and paste. Every detail is tuned for your phone, so it just feels right.</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/terminal-en.webp" data-lang-src-en="/images/usage/terminal-en.webp" data-lang-src-zh="/images/usage/terminal-zh.webp" alt="Claude Code running in a QuickTUI terminal on iPhone" data-i-alt="usage.alt.terminal" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="wizard">
-            <div class="demo-copy">
-              <div class="idx">D.02</div>
-              <h3 data-i="usage.wizard.t">Agent Wizard</h3>
-              <p data-i="usage.wizard.b">Launch any agent in seconds. No more typing flags to pick a model or reasoning level. Save your favorite setups in Settings and reuse them anytime.</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/agent-wizard-en.webp" data-lang-src-en="/images/usage/agent-wizard-en.webp" data-lang-src-zh="/images/usage/agent-wizard-zh.webp" alt="Agent Wizard choosing an agent to launch" data-i-alt="usage.alt.agent-wizard" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="switcher">
-            <div class="demo-copy">
-              <div class="idx">D.03</div>
-              <h3 data-i="usage.switcher.t">Session Manager</h3>
-              <p data-i="usage.switcher.b">Every tmux and Herdr workspace and session on your computer, in one place. Jump between them instantly, and create, rename or close sessions right from your phone.</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/switcher-en.webp" data-lang-src-en="/images/usage/switcher-en.webp" data-lang-src-zh="/images/usage/switcher-zh.webp" alt="Session Manager showing workspaces and sessions" data-i-alt="usage.alt.switcher" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="files">
-            <div class="demo-copy">
-              <div class="idx">D.04</div>
-              <h3 data-i="usage.files.t">File Manager</h3>
-              <p data-i="usage.files.b">Browse files on your computer and preview images, Markdown and code. Download files to your phone or upload them to your computer, all from the File Manager. Zip and unzip files, and bookmark favorite folders to jump between them fast.</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/files-en.webp" data-lang-src-en="/images/usage/files-en.webp" data-lang-src-zh="/images/usage/files-zh.webp" alt="File Manager listing folders on your computer" data-i-alt="usage.alt.files" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="ports">
-            <div class="demo-copy">
-              <div class="idx">D.05</div>
-              <h3 data-i="usage.ports.t">Port Forwarding</h3>
-              <p data-i="usage.ports.b">Automatically finds web servers and other open ports on your computer, and previews pages in the built-in browser. See your agent's changes the moment they land. No more laggy remote desktop apps.</p>
-            </div>
-            <div class="demo-shot pair"><img src="/images/usage/port-forward-en.webp" data-lang-src-en="/images/usage/port-forward-en.webp" data-lang-src-zh="/images/usage/port-forward-zh.webp" alt="Port forwarding list with detected server ports" data-i-alt="usage.alt.port-forward" width="660" height="1434" loading="lazy"><img src="/images/usage/mini-browser-en.webp" data-lang-src-en="/images/usage/mini-browser-en.webp" data-lang-src-zh="/images/usage/mini-browser-zh.webp" alt="Built-in browser showing a forwarded dev server" data-i-alt="usage.alt.mini-browser" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="palette">
-            <div class="demo-copy">
-              <div class="idx">D.06</div>
-              <h3 data-i="usage.palette.t">Command Palette</h3>
-              <p data-i="usage.palette.b">One place for commands across most agents and everyday terminal tasks. Skip the docs and send commands straight to your agent or terminal. 500+ commands and counting, updated automatically, and you can add your own in Settings.</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/command-palette-en.webp" data-lang-src-en="/images/usage/command-palette-en.webp" data-lang-src-zh="/images/usage/command-palette-zh.webp" alt="Command palette searching agent commands" data-i-alt="usage.alt.command-palette" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="inputbar">
-            <div class="demo-copy">
-              <div class="idx">D.07</div>
-              <h3 data-i="usage.inputbar.t">Input Bar</h3>
-              <p data-i="usage.inputbar.b">Dictate by voice, attach files, and get your message just right before sending it to the terminal in one go. Fast and easy.</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/input-bar-en.webp" data-lang-src-en="/images/usage/input-bar-en.webp" data-lang-src-zh="/images/usage/input-bar-zh.webp" alt="Input Bar with image attachments above the keyboard" data-i-alt="usage.alt.input-bar" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="shortcuts">
-            <div class="demo-copy">
-              <div class="idx">D.08</div>
-              <h3 data-i="usage.shortcuts.t">Shortcuts Bar</h3>
-              <p data-i="usage.shortcuts.b">Stack up to three fully customizable Shortcuts Bars for the things you do most: running commands, sending key combos and opening app features.</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/shortcuts-editor-en.webp" data-lang-src-en="/images/usage/shortcuts-editor-en.webp" data-lang-src-zh="/images/usage/shortcuts-editor-zh.webp" alt="Shortcuts Bar editor" data-i-alt="usage.alt.shortcuts-editor" width="660" height="1434" loading="lazy"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-
-
     <!-- ───────── FAQ ───────── -->
     <section id="faq" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="faq.eyebrow">§ 02 / FAQ</div>
-          <h2 data-i-html="faq.h2">Quick <span class="serif">answers</span>.</h2>
+          <div class="eyebrow" data-i="faq.eyebrow">§ 03 / FAQ</div>
+          <h2 data-i-html="faq.h2">Common <span class="serif">questions</span>.</h2>
         </div>
         <div>
           <p data-i-html="faq.desc">The questions we hear most. Full docs live on the FAQ page.</p>
@@ -1679,7 +2184,7 @@ quicktui-server pairing welcome</pre><p>Choose how to show the QR code when the 
           <div class="n">Q.06</div>
           <div>
             <div class="q" data-i="q16.q">Can I connect over the internet?</div>
-            <div class="a" data-i-html="q16.a"><p>Yes. Pick any way for your phone to reach your computer:</p><dl class="ref-list"><dt>QuickTUI Relay</dt><dd>An optional subscription. Turn it on in the app, no network setup needed.</dd><dt>VPN</dt><dd>A private network such as <b>Tailscale</b> lets your phone reach your computer directly.</dd><dt>Tunnel or reverse proxy</dt><dd>For example, <b>Cloudflare Tunnel</b> or a reverse proxy with TLS. Point it at <span class="mono">http://127.0.0.1:8022</span>, then use the public HTTPS hostname in the app (without <span class="mono">:8022</span>).</dd></dl><p>Pairing codes, device sign-in and everything you do travel inside an end-to-end encrypted tunnel, so even if you open port 8022 directly, no one can read your traffic or pretend to be your computer. An open port does reveal that a QuickTUI server is running, its version and a few other details, and a flood of junk connections could keep your own devices from getting through. That's why we recommend one of the options above.</p><p>To pair through a tunnel or reverse proxy, update QuickTUI Server to the latest version, then generate a QR code with your public address:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+            <div class="a" data-i-html="q16.a"><p>Yes. Pick any way for your phone to reach your computer:</p><dl class="ref-list"><dt>QuickTUI Cloud relay</dt><dd>No network setup needed. Every account gets free relay traffic each month; subscribe to QuickTUI Cloud for regular use.</dd><dt>VPN</dt><dd>A private network such as <b>Tailscale</b> lets your phone reach your computer directly.</dd><dt>Tunnel or reverse proxy</dt><dd>For example, <b>Cloudflare Tunnel</b> or a reverse proxy with TLS. Point it at <span class="mono">http://127.0.0.1:8022</span>, then use the public HTTPS hostname in the app (without <span class="mono">:8022</span>).</dd></dl><p>Pairing codes, device sign-in and everything you do travel inside an end-to-end encrypted tunnel, so even if you open port 8022 directly, no one can read your traffic or pretend to be your computer. An open port does reveal that a QuickTUI server is running, its version and a few other details, and a flood of junk connections could keep your own devices from getting through. That's why we recommend one of the options above.</p><p>To pair through a tunnel or reverse proxy, update QuickTUI Server to the latest version, then generate a QR code with your public address:</p><pre class="cmd"><span class="com"># macOS / Linux</span>
 ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain
 
 <span class="com"># Windows (PowerShell)</span>
@@ -1691,7 +2196,7 @@ quicktui-server pairing qrcode --public-url https://your.domain</pre><p>The tunn
           <div class="n">Q.07</div>
           <div>
             <div class="q" data-i="q15.q">How does QuickTUI authenticate devices?</div>
-            <div class="a" data-i-html="q15.a"><p>QuickTUI signs in devices through pairing, and everything is end-to-end encrypted:</p><dl class="ref-list"><dt>When you pair</dt><dd>The pairing QR code holds a one-time pairing code and your computer's identity fingerprint. The code works once, expires in 15 minutes and only ever travels inside the encrypted channel. The app remembers your computer's identity and will only connect to that exact computer, so no one can impersonate it.</dd><dt>Device keys</dt><dd>Each phone creates its own key when it pairs. The private key stays in the system's secure storage (Secure Enclave or Keychain on iPhone, Android Keystore on Android) and never leaves the phone.</dd><dt>Every connection</dt><dd>The app first checks your computer's identity, then proves it's a paired device with its private key, and both sides agree on fresh encryption keys for that connection. Terminal, files, port forwarding and everything else are encrypted and protected against replay.</dd><dt>Through Relay</dt><dd>QuickTUI Relay only passes encrypted data along. It can't read it or impersonate either side. The one exception is push notifications: if you turn them on, Relay briefly sees the notification text as it delivers it.</dd><dt>Revoking a device</dt><dd>If a phone is lost or retired, revoke it on your computer:<pre class="cmd"><span class="com"># List paired devices</span>
+            <div class="a" data-i-html="q15.a"><p>QuickTUI signs in devices through pairing, and everything is end-to-end encrypted:</p><dl class="ref-list"><dt>When you pair</dt><dd>The pairing QR code holds a one-time pairing code and your computer's identity fingerprint. The code works once, expires in 15 minutes and only ever travels inside the encrypted channel. The app remembers your computer's identity and will only connect to that exact computer, so no one can impersonate it.</dd><dt>Device keys</dt><dd>Each phone creates its own key when it pairs. The private key stays in the system's secure storage (Secure Enclave or Keychain on iPhone, Android Keystore on Android) and never leaves the phone.</dd><dt>Every connection</dt><dd>The app first checks your computer's identity, then proves it's a paired device with its private key, and both sides agree on fresh encryption keys for that connection. Terminal, files, port forwarding and everything else are encrypted and protected against replay.</dd><dt>Through the QuickTUI Cloud relay</dt><dd>The relay only passes encrypted data along. It can't read it or impersonate either side. The one exception is push notifications: if you turn them on, the relay briefly sees the notification text as it delivers it.</dd><dt>Revoking a device</dt><dd>If a phone is lost or retired, revoke it on your computer:<pre class="cmd"><span class="com"># List paired devices</span>
 ~/.local/bin/quicktui-server pairing devices list
 
 <span class="com"># Revoke a device</span>
@@ -1752,7 +2257,7 @@ systemctl --user restart quicktui</pre>
     <section id="resources" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="res.eyebrow">§ 03 / Resources</div>
+          <div class="eyebrow" data-i="res.eyebrow">§ 04 / Resources</div>
           <h2 data-i="res.h2">Further reading</h2>
         </div>
         <div>
@@ -1784,16 +2289,16 @@ systemctl --user restart quicktui</pre>
     <section class="cta-close" id="get-started">
       <div class="box">
         <div>
-          <h2 data-i-html="ctaClose.h2">Install manually.<br><em>One command does it.</em></h2>
+          <h2 data-i-html="ctaClose.h2">Install manually.<br><em>One command is all it takes.</em></h2>
           <p class="lead" data-i="ctaClose.p">On a Mac or Linux machine without SSH access, run one command on your computer to install QuickTUI Server. On Windows, get QuickTUI Server from Microsoft Store. Then scan a QR code in the app to pair. If your computer accepts SSH logins, the app's setup wizard does all of this for you.</p>
           <div class="app-cta">
-            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="cta_close" data-i-html="in.cta">iOS App <span class="arr">→</span></a>
+            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-home-install&amp;mt=8" data-track-placement="cta_close" data-i-html="in.cta">iOS App <span class="arr">→</span></a>
             <a class="btn btn-primary btn-xl" href="/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android App <span class="arr">→</span></a>
           </div>
         </div>
         <div class="install-box" id="manual-install">
           <div class="hi-head">
-            <div class="hi-label" data-i="manual.label">Manual install · on your machine</div>
+            <div class="hi-label" data-i="manual.label">Manual install · on your computer</div>
             <div class="hi-src">
               <span class="hi-src-label" id="hiSrcLabel" data-i="manual.source">Source:</span>
               <div class="hi-tabs" role="tablist" aria-labelledby="hiSrcLabel">
@@ -1823,7 +2328,7 @@ systemctl --user restart quicktui</pre>
 ~/.local/bin/quicktui-server pairing welcome
 
 <span class="com"># Windows (PowerShell)</span>
-quicktui-server pairing welcome</pre><p><b>Scan</b>: in the app:</p><ol class="steps"><li>On the server list, tap <b>+</b>.</li><li>Choose <b>Other ways to connect</b>.</li><li>Choose <b>Scan a QR Code to Connect a Computer with Enhanced Features</b>, then tap <b>Next</b>.</li><li>Point the camera at the QR code to finish pairing.</li></ol></div>
+quicktui-server pairing welcome</pre><p><b>Scan</b>: in the app:</p><ol class="steps"><li>On the server list, tap <b>+</b>.</li><li>Choose <b>Other ways to connect</b>.</li><li>Choose <b>Scan a QR Code to Connect a Computer with Enhanced Features</b>, then tap <b>Next</b>.</li><li>Point the camera at the QR code to finish pairing.</li></ol><p>Can&#39;t scan? Choose <b>Paste Pairing Text</b> in step 3 instead, and paste the line printed by <span class="mono">quicktui-server pairing qrcode --text</span>.</p></div>
         </div>
       </div>
     </section>
@@ -1840,6 +2345,7 @@ quicktui-server pairing welcome</pre><p><b>Scan</b>: in the app:</p><ol class="s
         </div>
         <div class="links">
           <a href="/install/">Install</a>
+          <a href="/guide/">User Guide</a>
           <a href="/faq/">FAQ</a>
           <a href="/tmux-ios-app/">tmux on iOS</a>
           <a href="/herdr-ios-app/">Herdr on iOS</a>
@@ -1847,7 +2353,7 @@ quicktui-server pairing welcome</pre><p><b>Scan</b>: in the app:</p><ol class="s
           <a href="/android/">Android (Preview)</a>
           <a href="/privacy">Privacy</a>
           <a href="/support">Support</a>
-          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
           <a href="https://x.com/dualface">X</a>
           <a href="https://github.com/dualface/quicktui">GitHub</a>
         </div>
@@ -1881,6 +2387,8 @@ document.querySelectorAll('.install-box').forEach(box => {
     box.querySelectorAll('.note-variant').forEach(v => v.classList.toggle('on', v.getAttribute('data-region') === region));
   };
   tabs.forEach(t => t.addEventListener('click', () => setRegion(t.getAttribute('data-region'))));
+  // data-cn-host is set by the language script in <head>.
+  if (document.documentElement.hasAttribute('data-cn-host')) setRegion('cn');
 
   box.querySelectorAll('.hi-row').forEach(row => {
     const copyBtn = row.querySelector('.copy');
@@ -1934,19 +2442,27 @@ document.querySelectorAll('.faq-item').forEach(it => {
   });
 });
 
-// Product demo tabs (In Action)
-document.querySelectorAll('#productDemo').forEach(box => {
-  const tabs = box.querySelectorAll('.demo-tab');
-  const panels = box.querySelectorAll('.demo-panel');
-  const setDemo = id => {
-    tabs.forEach(t => {
-      const on = t.getAttribute('data-demo') === id;
-      t.classList.toggle('on', on);
-      t.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-    panels.forEach(p => p.classList.toggle('on', p.getAttribute('data-demo') === id));
+// Features "And 5 more" rail: arrows page by the visible width; the bar shows the
+// visible share and its position. Touch and trackpad scrolling work natively.
+document.querySelectorAll('#featMore').forEach(box => {
+  const rail = box.querySelector('.feat-rail');
+  const prev = box.querySelector('.feat-prev');
+  const next = box.querySelector('.feat-next');
+  const bar = box.querySelector('.feat-progress span');
+  const update = () => {
+    const max = rail.scrollWidth - rail.clientWidth;
+    const share = rail.scrollWidth ? rail.clientWidth / rail.scrollWidth : 1;
+    bar.style.width = (share * 100) + '%';
+    bar.style.transform = 'translateX(' + (max > 0 ? (rail.scrollLeft / max) * (1 / share - 1) * 100 : 0) + '%)';
+    prev.disabled = rail.scrollLeft <= 1;
+    next.disabled = rail.scrollLeft >= max - 1;
   };
-  tabs.forEach(t => t.addEventListener('click', () => setDemo(t.getAttribute('data-demo'))));
+  // No explicit behavior: the rail's CSS scroll-behavior already honours reduced motion.
+  prev.addEventListener('click', () => rail.scrollBy({ left: -rail.clientWidth }));
+  next.addEventListener('click', () => rail.scrollBy({ left: rail.clientWidth }));
+  rail.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
 });
 
 // Hero setup demo — replays the app's automatic setup on a loop, following the
@@ -1959,7 +2475,7 @@ document.querySelectorAll('#productDemo').forEach(box => {
   const TYPE_MS = 70;
   const PAUSE_MS = 700;
   const CROSSFADE_MS = 500;
-  const CONFETTI = ['#BD93F9', '#FF79C6', '#8BE9FD', '#50FA7B', '#F1FA8C', '#FFB86C'];
+  const CONFETTI = ['#81af58', '#a6cf7e', '#409cdc', '#ceba49', '#ece1c0', '#dc4f62'];
   const device = root.querySelector('.sd-device');
   const stage = root.querySelector('.sd-stage');
   const scenes = {
@@ -2152,6 +2668,210 @@ document.querySelectorAll('#productDemo').forEach(box => {
   }
 })();
 
+// Hero agent demo — the agent control loop: see which agents need you, approve one
+// from the notification banner, answer another's question in chat mode, and both go
+// back to work. Decorative (aria-hidden); still frame under reduced motion; paused
+// off-screen. Shares the phone frame geometry with the setup demo.
+(function agentDemo() {
+  const root = document.getElementById('agentDemo');
+  if (!root) return;
+  const DESIGN_W = 390;
+  const stage = root.querySelector('.sd-stage');
+  const list = root.querySelector('.loop-list');
+  const chat = root.querySelector('.loop-chat');
+  const secs = { attn: root.querySelector('[data-sec="attn"]'), other: root.querySelector('[data-sec="other"]') };
+  const rows = {};
+  root.querySelectorAll('.loop-row').forEach(r => { rows[r.getAttribute('data-id')] = r; });
+  const icons = rows.web.querySelector('.loop-ic').innerHTML;
+  Object.keys(rows).forEach(k => { rows[k].querySelector('.loop-ic').innerHTML = icons; });
+  const order = Object.keys(rows);
+  const notif = root.querySelector('.loop-notif');
+  const dim = root.querySelector('.loop-dim');
+  const approveItem = root.querySelector('.loop-mi.app');
+  const pick = root.querySelector('.loop-opt[data-opt="pick"]');
+  const submit = root.querySelector('.loop-submit');
+  const chatStatus = root.querySelector('.loop-cst');
+  const tap = root.querySelector('.sd-tap');
+  const steps = root.parentElement.querySelectorAll('.loop-steps li');
+  const reduced = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  const geo = { x: 0, y: 0, k: 1 };
+  let generation = 0;
+  let timers = [];
+  let visible = false;
+
+  function layout() {
+    // Size the phone for the uncropped 320:620 box; the root itself is shorter.
+    const h = root.clientWidth * 620 / 320;
+    if (!h) return;
+    const dh = h - 28;
+    const dw = Math.round(dh * 0.49);
+    const bezel = Math.round(dw * 0.035);
+    root.style.setProperty('--sd-dh', dh + 'px');
+    root.style.setProperty('--sd-dw', dw + 'px');
+    root.style.setProperty('--sd-bezel', bezel + 'px');
+    const k = (dw - 2 * bezel) / DESIGN_W;
+    stage.style.height = ((dh - 2 * bezel) / k) + 'px';
+    stage.style.transform = 'scale(' + k + ')';
+    geo.k = k;
+  }
+
+  // Position of `el` inside the (unscaled) stage.
+  function pos(el) {
+    const s = stage.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return { x: (r.left - s.left + r.width / 2) / geo.k, y: (r.top - s.top + r.height / 2) / geo.k };
+  }
+
+  function at(ms, fn) {
+    const token = generation;
+    timers.push(setTimeout(() => { if (token === generation) fn(); }, ms));
+  }
+
+  function press(el, hold) {
+    const p = pos(el);
+    tap.style.left = p.x + 'px';
+    tap.style.top = p.y + 'px';
+    tap.classList.remove('go');
+    void tap.offsetWidth;
+    tap.classList.add('go');
+    if (!hold) {
+      at(180, () => el.classList.add('pressed'));
+      at(480, () => el.classList.remove('pressed'));
+    }
+  }
+
+  function step(n) {
+    steps.forEach(li => li.classList.toggle('on', Number(li.getAttribute('data-step')) === n));
+  }
+
+  function setState(id, state) {
+    const r = rows[id];
+    r.setAttribute('data-state', state);
+    const t = r.querySelector('.loop-r2');
+    const text = t.getAttribute('data-t-' + state);
+    if (text) t.textContent = text;
+  }
+
+  function place(id, sec, first) {
+    const box = secs[sec].querySelector('.loop-rows');
+    if (first) box.insertBefore(rows[id], box.firstChild); else box.appendChild(rows[id]);
+  }
+
+  function flash(id) {
+    const r = rows[id];
+    r.classList.add('flash');
+    void r.offsetWidth;
+    at(60, () => r.classList.remove('flash'));
+  }
+
+  function scene(name) {
+    list.classList.toggle('on', name === 'list');
+    chat.classList.toggle('on', name === 'chat');
+  }
+
+  function reset() {
+    order.forEach(id => {
+      const r = rows[id];
+      r.classList.remove('flash', 'hl');
+      setState(id, ({ web: 'approval', api: 'question', tests: 'failed', mobile: 'running', docs: 'idle' })[id] || 'done');
+      place(id, r.getAttribute('data-sec0'));
+    });
+    notif.classList.remove('on', 'hold');
+    dim.classList.remove('on');
+    chat.classList.remove('answered');
+    pick.classList.remove('sel');
+    submit.classList.remove('ready', 'pressed');
+    chatStatus.classList.remove('run');
+    tap.classList.remove('go');
+    scene('list');
+    step(0);
+  }
+
+  function stop() {
+    generation++;
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function run() {
+    stop();
+    reset();
+    if (reduced && reduced.matches) {
+      // Still frame: who needs you, and the approval actions on the banner.
+      notif.classList.add('on', 'hold');
+      dim.classList.add('on');
+      step(1);
+      return;
+    }
+    let t = 400;
+    at(t, () => { rows.web.classList.add('hl'); rows.api.classList.add('hl'); });
+    t += 1400;
+    at(t, () => { rows.web.classList.remove('hl'); rows.api.classList.remove('hl'); });
+    // Approve from the notification.
+    at(t, () => { step(1); notif.classList.add('on'); });
+    t += 900;
+    at(t, () => press(notif.querySelector('.loop-nb'), true));
+    at(t + 250, () => { notif.classList.add('hold'); dim.classList.add('on'); });
+    t += 1100;
+    at(t, () => press(approveItem));
+    t += 450;
+    at(t, () => { notif.classList.remove('hold', 'on'); dim.classList.remove('on'); });
+    t += 350;
+    at(t, () => { setState('web', 'running'); place('web', 'other', true); flash('web'); });
+    // Answer a question in chat mode.
+    t += 1000;
+    at(t, () => { step(2); press(rows.api); });
+    t += 450;
+    at(t, () => scene('chat'));
+    t += 900;
+    at(t, () => press(pick));
+    at(t + 200, () => { pick.classList.add('sel'); submit.classList.add('ready'); });
+    t += 700;
+    at(t, () => press(submit));
+    t += 450;
+    at(t, () => { chat.classList.add('answered'); chatStatus.classList.add('run'); });
+    // Back to the list: everyone is working again.
+    t += 1300;
+    at(t, () => {
+      step(3);
+      setState('api', 'running');
+      place('api', 'other', true);
+      scene('list');
+    });
+    at(t + 500, () => flash('api'));
+    t += 1400;
+    at(t, () => { setState('mobile', 'done'); flash('mobile'); });
+    t += 1500;
+    at(t, () => list.classList.remove('on'));
+    at(t + 450, run);
+  }
+
+  function sync() {
+    const active = visible && !document.hidden;
+    if (active && !timers.length) run();
+    if (!active && timers.length) { stop(); reset(); }
+  }
+
+  layout();
+  reset();
+  if (window.ResizeObserver) new ResizeObserver(layout).observe(root);
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(entries => {
+      visible = entries[entries.length - 1].isIntersecting;
+      sync();
+    }, { threshold: 0.25 }).observe(root);
+  } else {
+    visible = true;
+    sync();
+  }
+  document.addEventListener('visibilitychange', sync);
+  if (reduced) {
+    const onMotionChange = () => { stop(); if (visible && !document.hidden) run(); };
+    if (reduced.addEventListener) reduced.addEventListener('change', onMotionChange);
+    else if (reduced.addListener) reduced.addListener(onMotionChange);
+  }
+})();
+
 // FAQ deeplinks — clients link to #q-tcc-macos etc. Full FAQ moved to /faq/;
 // if the anchor is not on this page, send users there with the same hash.
 function openFaqByHash() {
@@ -2159,7 +2879,8 @@ function openFaqByHash() {
   if (!hash) return;
   const target = document.getElementById(hash);
   if (!target) {
-    if (/^q-/.test(hash)) {
+    // Unknown q-* anchors fall back to the FAQ page; quicktui.cn pages never redirect.
+    if (/^q-/.test(hash) && !document.documentElement.hasAttribute('data-cn-host')) {
       const base = location.pathname.indexOf('/cn/') === 0 ? '/cn/faq/' : '/faq/';
       location.replace(base + '#' + hash);
     }

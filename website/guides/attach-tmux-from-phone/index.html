@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
 <title>Attach a tmux session from your phone (iPhone &amp; Android)</title>
 <meta name="description" content="Attach to the real tmux sessions on your computer from iPhone, iPad or Android. Named sessions, scrollback and auto-reconnect, end-to-end encrypted." />
 <link rel="canonical" href="https://quicktui.ai/guides/attach-tmux-from-phone/" />
@@ -16,14 +17,14 @@
 <meta property="og:title" content="Attach a tmux session from your phone (iPhone &amp; Android)" />
 <meta property="og:description" content="Attach to the real tmux sessions on your computer from iPhone, iPad or Android. Named sessions, scrollback and auto-reconnect, end-to-end encrypted." />
 <meta property="og:url" content="https://quicktui.ai/guides/attach-tmux-from-phone/" />
-<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="zh_CN" />
 <meta property="article:modified_time" content="2026-09-27" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Attach a tmux session from your phone (iPhone &amp; Android)" />
 <meta name="twitter:description" content="Attach to the real tmux sessions on your computer from iPhone, iPad or Android. Named sessions, scrollback and auto-reconnect, end-to-end encrypted." />
-<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <script>
 (() => {
   let theme = null;
@@ -38,6 +39,144 @@
 })();
 </script>
 <style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Shared site chrome (header + footer) for every page.
  * Injected inline by scripts/build.mjs; relies on the QT design tokens
  * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
@@ -192,7 +331,9 @@
   gap: 24px;
   flex-wrap: wrap;
 }
-.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
 .qt-foot .left .dot { opacity: .5; }
 .qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .qt-foot .links a { color: var(--ink-3); text-decoration: none; }
@@ -222,9 +363,6 @@ document.addEventListener('click', e => {
   if (placement) window.zaraz?.track('app_store_click', { placement });
 });
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/site.css" />
 <script type="application/ld+json">
 {
@@ -234,7 +372,7 @@ document.addEventListener('click', e => {
   "description": "Attach to the real tmux sessions on your computer from iPhone, iPad or Android. Named sessions, scrollback and auto-reconnect, end-to-end encrypted.",
   "url": "https://quicktui.ai/guides/attach-tmux-from-phone/",
   "inLanguage": "en",
-  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "image": "https://quicktui.ai/images/og-image.png?v=20261005a",
   "author": {
     "@type": "Organization",
     "name": "QuickTUI",
@@ -326,8 +464,9 @@ document.addEventListener('click', e => {
       </a>
       <nav class="qt-nav-links">
         <a href="/#quick-start">Quick Start</a>
-        <a href="/#action">Enhanced Features</a>
+        <a href="/#action">Features</a>
         <a href="/install/">Install</a>
+        <a href="/guide/">User Guide</a>
         <a href="/compare/">Compare</a>
         <a href="/faq/">FAQ</a>
       </nav>
@@ -337,7 +476,7 @@ document.addEventListener('click', e => {
         </nav>
         <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
-        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
         <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
       </div>
     </div>
@@ -348,7 +487,7 @@ document.addEventListener('click', e => {
 <p class="updated"><time datetime="2026-09-27">Updated September 27, 2026</time></p>
 <p class="eyebrow">Guide · tmux</p>
 <h1>How to attach a tmux session from your phone</h1>
-<p class="lede">To attach a tmux session from your phone, install the QuickTUI server on the computer running tmux and open the QuickTUI app on iPhone, iPad or Android (Preview). The app lists your tmux sessions; tap one and you&#39;re in the same live session you left at your desk, with its windows, panes and scrollback.</p>
+<p class="lede">Attach to your tmux sessions directly from iPhone, iPad, or Android (Preview) by connecting through QuickTUI Server. The app lists your active sessions, letting you resume long-running builds, agents, or shells with full window, pane, and scrollback fidelity.</p>
 
 <figure class="shot phone"><img src="/images/usage/terminal-en.webp" alt="A tmux session open in the QuickTUI terminal on iPhone" loading="lazy" width="660" height="1434"><figcaption>A live tmux session in the QuickTUI terminal.</figcaption></figure>
 
@@ -356,7 +495,7 @@ document.addEventListener('click', e => {
 
 <h2>Get set up</h2>
 <ol class="steps">
-<li>Install QuickTUI from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_setup">App Store</a>, or install the <a href="/android/">Android app (Preview)</a>, and open the setup wizard.</li>
+<li>Install QuickTUI from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-attach-tmux-from-phone&amp;mt=8" data-track-placement="content_setup">App Store</a>, or install the <a href="/android/">Android app (Preview)</a>, and open the setup wizard.</li>
 <li>Choose <b>Connect Over SSH — Enable Enhanced Features (Recommended)</b> and enter the SSH login of the Mac or Linux computer running tmux.</li>
 <li>Tap <b>Install</b>. The app installs the QuickTUI server over SSH and pairs automatically.</li>
 </ol>
@@ -367,7 +506,7 @@ document.addEventListener('click', e => {
 <h2>Attach, reconnect and create sessions</h2>
 <dl class="ref-list">
 <dt>Attach to a running session</dt><dd>Your tmux sessions appear as workspaces in the Session Manager. Tap one to open its live view, including windows, panes and scrollback.</dd>
-<dt>Pick up after a drop</dt><dd>Sessions keep running on your computer. After switching between Wi-Fi and cellular, backgrounding the app or a brief drop, the app reconnects and puts you back where you were.</dd>
+<dt>Seamless reconnection</dt><dd>Sessions persist on your host machine. Switching networks, backgrounding the app, or intermittent packet loss triggers automatic reconnection directly to your active session.</dd>
 <dt>Create a session</dt><dd>Tap <b>[+]</b> in the Session Manager to create a workspace, or run <code>tmux new -s work</code> on your computer. The new session shows up in the list.</dd>
 <dt>Run tmux commands quickly</dt><dd>The command palette includes a ready-made tmux group, so common commands are a tap away instead of a key sequence.</dd>
 </dl>
@@ -424,6 +563,7 @@ claude</code></pre>
         </div>
         <div class="links">
           <a href="/install/">Install</a>
+          <a href="/guide/">User Guide</a>
           <a href="/faq/">FAQ</a>
           <a href="/tmux-ios-app/">tmux on iOS</a>
           <a href="/herdr-ios-app/">Herdr on iOS</a>
@@ -431,7 +571,7 @@ claude</code></pre>
           <a href="/android/">Android (Preview)</a>
           <a href="/privacy">Privacy</a>
           <a href="/support">Support</a>
-          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
           <a href="https://x.com/dualface">X</a>
           <a href="https://github.com/dualface/quicktui">GitHub</a>
         </div>

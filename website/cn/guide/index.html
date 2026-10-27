@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
+<title>QuickTUI 用户指南（iPhone 与 iPad）</title>
+<meta name="description" content="QuickTUI iPhone 与 iPad App 分步指南：安装服务端、配对手机、在外也能连接、启动 AI Agent，并用切换器管理多个任务。" />
+<link rel="canonical" href="https://quicktui.ai/cn/guide/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guide/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guide/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guide/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI 用户指南（iPhone 与 iPad）" />
+<meta property="og:description" content="QuickTUI iPhone 与 iPad App 分步指南：安装服务端、配对手机、在外也能连接、启动 AI Agent，并用切换器管理多个任务。" />
+<meta property="og:url" content="https://quicktui.ai/cn/guide/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta property="article:modified_time" content="2026-10-02" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI 用户指南（iPhone 与 iPad）" />
+<meta name="twitter:description" content="QuickTUI iPhone 与 iPad App 分步指南：安装服务端、配对手机、在外也能连接、启动 AI Agent，并用切换器管理多个任务。" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "QuickTUI 用户指南（iPhone 与 iPad）",
+  "description": "QuickTUI iPhone 与 iPad App 分步指南：安装服务端、配对手机、在外也能连接、启动 AI Agent，并用切换器管理多个任务。",
+  "url": "https://quicktui.ai/cn/guide/",
+  "inLanguage": "zh-Hans",
+  "image": "https://quicktui.ai/images/og-image.png?v=20261005a",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "datePublished": "2026-10-02",
+  "dateModified": "2026-10-02"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://quicktui.ai/cn/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "用户指南",
+      "item": "https://quicktui.ai/cn/guide/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/cn/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/cn/#quick-start">快速开始</a>
+        <a href="/cn/#action">增强能力展示</a>
+        <a href="/cn/install/">安装</a>
+        <a href="/cn/guide/">用户指南</a>
+        <a href="/cn/compare/">对比</a>
+        <a href="/cn/faq/">常见问题</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="语言">
+          <a href="/guide/" data-lang="en" hreflang="en">EN</a><span class="slash">/</span><a href="/cn/guide/" data-lang="zh" hreflang="zh-Hans" class="on" aria-current="true">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/cn/">首页</a><span class="sep">/</span><span aria-current="page">用户指南</span></nav>
+<p class="updated"><time datetime="2026-10-02">更新于 2026 年 10 月 2 日</time></p>
+<p class="eyebrow">用户指南</p>
+<h1 id="quicktui-用户指南">QuickTUI 用户指南</h1>
+<p class="lede">适用于 iPhone 和 iPad 的 QuickTUI App.</p>
+<nav class="guide-toc" aria-label="目录">
+<p class="guide-toc-title">目录</p>
+<ol>
+<li><a href="#关于本指南">关于本指南</a><ol>
+<li><a href="#本指南写给谁">本指南写给谁</a></li>
+<li><a href="#本指南的约定">本指南的约定</a></li>
+<li><a href="#如何打开电脑上的-终端">如何打开电脑上的「终端」</a></li>
+</ol></li>
+<li><a href="#第-1-章-认识-quicktui">第 1 章 认识 QuickTUI</a><ol>
+<li><a href="#1-1-quicktui-能做什么">1.1 QuickTUI 能做什么</a></li>
+<li><a href="#1-2-quicktui-由哪几部分组成">1.2 QuickTUI 由哪几部分组成</a></li>
+<li><a href="#1-3-你的数据是否安全">1.3 你的数据是否安全</a></li>
+<li><a href="#1-4-常用名词">1.4 常用名词</a></li>
+</ol></li>
+<li><a href="#第-2-章-开始之前">第 2 章 开始之前</a><ol>
+<li><a href="#2-1-电脑">2.1 电脑</a></li>
+<li><a href="#2-2-手机">2.2 手机</a></li>
+</ol></li>
+<li><a href="#第-3-章-安装与配对">第 3 章 安装与配对</a><ol>
+<li><a href="#3-1-选择安装方式">3.1 选择安装方式</a></li>
+<li><a href="#3-2-选择电脑的地址">3.2 选择电脑的地址</a></li>
+<li><a href="#3-3-方法-a-在手机上自动安装">3.3 方法 A: 在手机上自动安装</a></li>
+<li><a href="#3-4-方法-b-在电脑上安装-然后扫码配对">3.4 方法 B: 在电脑上安装, 然后扫码配对</a></li>
+<li><a href="#3-5-方法-c-经-quicktui-cloud-配对">3.5 方法 C: 经 QuickTUI Cloud 配对</a></li>
+<li><a href="#3-6-给另一台-iphone-或-ipad-配对">3.6 给另一台 iPhone 或 iPad 配对</a></li>
+<li><a href="#3-7-linux-必做-让服务在退出登录后继续运行">3.7 Linux 必做: 让服务在退出登录后继续运行</a></li>
+<li><a href="#3-8-检查安装是否成功">3.8 检查安装是否成功</a></li>
+</ol></li>
+<li><a href="#第-4-章-离开电脑时也能连接">第 4 章 离开电脑时也能连接</a><ol>
+<li><a href="#4-1-先了解两件事">4.1 先了解两件事</a></li>
+<li><a href="#4-2-选择适合你的方式">4.2 选择适合你的方式</a></li>
+<li><a href="#4-3-quicktui-cloud-中转-推荐">4.3 QuickTUI Cloud 中转 (推荐)</a></li>
+<li><a href="#4-4-tailscale">4.4 Tailscale</a></li>
+<li><a href="#4-5-你已经在用的-vpn">4.5 你已经在用的 VPN</a></li>
+<li><a href="#4-6-cloudflare-tunnel-自建反向代理与路由器端口转发-进阶">4.6 Cloudflare Tunnel、自建反向代理与路由器端口转发 (进阶)</a></li>
+</ol></li>
+<li><a href="#第-5-章-启动-agent">第 5 章 启动 Agent</a><ol>
+<li><a href="#5-1-创建工作区">5.1 创建工作区</a></li>
+<li><a href="#5-2-用-agent-向导启动-agent">5.2 用 Agent 向导启动 Agent</a></li>
+<li><a href="#5-3-在终端里直接启动">5.3 在终端里直接启动</a></li>
+<li><a href="#5-4-agent-向导找不到-agent-时">5.4 Agent 向导找不到 Agent 时</a></li>
+<li><a href="#5-5-agent-状态检测-hooks">5.5 Agent 状态检测 (hooks)</a></li>
+</ol></li>
+<li><a href="#第-6-章-与-agent-交流">第 6 章 与 Agent 交流</a><ol>
+<li><a href="#6-1-认识终端界面">6.1 认识终端界面</a></li>
+<li><a href="#6-2-给-agent-发送指令">6.2 给 Agent 发送指令</a></li>
+<li><a href="#6-3-回应-agent">6.3 回应 Agent</a></li>
+<li><a href="#6-4-查看和复制输出">6.4 查看和复制输出</a></li>
+<li><a href="#6-5-离开与回来">6.5 离开与回来</a></li>
+</ol></li>
+<li><a href="#第-7-章-用切换器管理多个任务">第 7 章 用切换器管理多个任务</a><ol>
+<li><a href="#7-1-打开和关闭切换器">7.1 打开和关闭切换器</a></li>
+<li><a href="#7-2-看懂切换器">7.2 看懂切换器</a></li>
+<li><a href="#7-3-agent-状态">7.3 Agent 状态</a></li>
+<li><a href="#7-4-接收-agent-通知">7.4 接收 Agent 通知</a></li>
+<li><a href="#7-5-推荐的任务工作流">7.5 推荐的任务工作流</a></li>
+<li><a href="#7-6-快速切换">7.6 快速切换</a></li>
+<li><a href="#7-7-新建-重命名和关闭">7.7 新建、重命名和关闭</a></li>
+</ol></li>
+<li><a href="#第-8-章-维护">第 8 章 维护</a><ol>
+<li><a href="#8-1-升级-quicktui-服务端">8.1 升级 QuickTUI 服务端</a></li>
+<li><a href="#8-2-管理已配对的设备">8.2 管理已配对的设备</a></li>
+<li><a href="#8-3-卸载">8.3 卸载</a></li>
+</ol></li>
+<li><a href="#第-9-章-故障排除">第 9 章 故障排除</a></li>
+<li><a href="#附录-a-常用命令">附录 A: 常用命令</a></li>
+<li><a href="#附录-b-文件位置与配置">附录 B: 文件位置与配置</a></li>
+</ol>
+</nav>
+<div class="guide">
+<h2 id="关于本指南">关于本指南</h2>
+<h3 id="本指南写给谁">本指南写给谁</h3>
+<p>本指南写给想用 iPhone 或 iPad 操作电脑端 AI 编程助手 (例如 Claude Code、Codex) 的用户. 你只需要:</p>
+<ul>
+<li>会在电脑上打开「终端」并粘贴、运行命令.</li>
+<li>知道自己电脑的用户名和登录密码.</li>
+</ul>
+<h3 id="本指南的约定">本指南的约定</h3>
+<ul>
+<li><strong>粗体文字</strong> 表示 App 或电脑上的按钮、菜单、选项, 例如 <strong>下一步</strong>.</li>
+<li>代码块中多为可在电脑终端执行的命令: 复制整行粘贴至终端并回车运行. 配置文件内容或示意图会在正文中说明.</li>
+<li><code>#</code> 后面的文字是说明, 不用输入.</li>
+<li>「→」表示依次点按, 例如 <strong>设置 → 快捷栏</strong>.</li>
+<li>本指南用三种提示框:</li>
+</ul>
+<div class="callout">
+<p><strong>提示</strong>: 能让操作更顺利的小技巧.</p>
+</div>
+<div class="callout">
+<p><strong>注意</strong>: 不注意可能导致操作失败.</p>
+</div>
+<div class="callout warn">
+<p><strong>警告</strong>: 不注意可能导致数据丢失或安全问题.</p>
+</div>
+<h3 id="如何打开电脑上的-终端">如何打开电脑上的「终端」</h3>
+<ul>
+<li><strong>macOS</strong>: 打开 <strong>访达 → 应用程序 → 实用工具 → 终端</strong>. 也可以按 Command + 空格, 输入「终端」后按回车.</li>
+<li><strong>Linux</strong>: 大多数桌面系统可以按 Ctrl + Alt + T 打开.</li>
+<li><strong>Windows</strong>: 在开始菜单中搜索「PowerShell」并打开.</li>
+</ul>
+<hr>
+<h2 id="第-1-章-认识-quicktui">第 1 章 认识 QuickTUI</h2>
+<h3 id="1-1-quicktui-能做什么">1.1 QuickTUI 能做什么</h3>
+<p>AI 编程助手 (本指南统称 <strong>Agent</strong>) 通常运行在电脑的终端里. 它们经常需要很长时间才能完成任务, 中途还会停下来问你问题或请你批准操作. 有了 QuickTUI, 你可以:</p>
+<ul>
+<li>离开电脑后, 用手机继续查看 Agent 的进度.</li>
+<li>在手机上回答 Agent 的提问、批准其操作.</li>
+<li>在手机上启动新的 Agent, 同时管理多个任务.</li>
+<li>接收 Agent 待审批与运行状态通知.</li>
+</ul>
+<p>手机锁屏或断网时, Agent 会在电脑上继续工作, 不会中断.</p>
+<h3 id="1-2-quicktui-由哪几部分组成">1.2 QuickTUI 由哪几部分组成</h3>
+<p>QuickTUI 由以下几部分配合工作:</p>
+<ul>
+<li><p><strong>QuickTUI App</strong><br>
+装在你的 iPhone 或 iPad 上. 你在这里查看和操作.</p></li>
+<li><p><strong>QuickTUI 服务端 (QuickTUI Server)</strong><br>
+装在你的电脑上, 是一个在后台运行的服务程序. 它负责在电脑终端与移动设备间安全传输终端会话画面与输入数据.</p></li>
+<li><p><strong>终端会话工具: tmux 或 Herdr</strong><br>
+装在你的电脑上, 是保存终端窗口的工具. 有了它, 手机断开后, 电脑上的终端和 Agent 仍会继续运行. QuickTUI 把这类工具称为「后端」.</p>
+<ul>
+<li><strong>Herdr</strong>: 推荐. 安装 QuickTUI 服务端时, 如果电脑上既没有 Herdr 也没有 tmux, 会自动安装 Herdr. Windows 上只支持 Herdr.</li>
+<li><strong>tmux</strong>: 老牌终端工具. 电脑上已经装了 tmux 时, QuickTUI 会自动使用它.</li>
+</ul>
+<p>一台电脑可以同时使用多个后端.</p></li>
+<li><p><strong>QuickTUI Cloud 中转 (可选)</strong><br>
+QuickTUI 提供的云端服务. 手机无法直连电脑时由其转发加密数据, 并负责中转 Agent 推送通知.</p></li>
+</ul>
+<pre><code class="language-text">iPhone ─────────────────────&gt; 你的电脑 (QuickTUI 服务端) ──&gt; tmux / Herdr ──&gt; Agent
+   │                                  ▲
+   └──&gt; (可选) QuickTUI Cloud 中转 ───┘</code></pre>
+<h3 id="1-3-你的数据是否安全">1.3 你的数据是否安全</h3>
+<ul>
+<li>手机和电脑之间的所有内容都经过端到端加密. 除通信两端设备外, 包括 QuickTUI Cloud 中转在内的任何第三方均无法查看内容.</li>
+<li>只有经过「配对」的手机才能连接你的电脑. 配对后, 手机会校验电脑身份防范仿冒; 电脑亦只允许受信任的已配对设备接入.</li>
+<li>端到端加密的唯一例外: 如果你开启了 Agent 通知, 通知摘要文本会经由 QuickTUI Cloud 中转推送至手机.</li>
+</ul>
+<h3 id="1-4-常用名词">1.4 常用名词</h3>
+<ul>
+<li><p><strong>服务器</strong>: App 里的一条连接记录, 代表一台电脑. App 界面上的 <strong>服务器列表</strong>、<strong>编辑服务器</strong> 都指它. 本指南只在指 App 界面时使用这个词, 并一律加粗.</p></li>
+<li><p><strong>QuickTUI 服务端</strong>: 装在电脑上、在后台运行的程序, 英文名 QuickTUI Server, 命令是 <code>quicktui-server</code>. 一台电脑装一个服务端, 在 App 中对应一个 <strong>服务器</strong>.</p></li>
+<li><p><strong>配对</strong>: 让手机成为某台电脑信任的设备. 每台想要连接这台电脑的设备都要配对一次.</p></li>
+<li><p><strong>后端</strong>: 电脑上保存终端会话的工具, 即 tmux 或 Herdr.</p></li>
+<li><p><strong>工作区</strong>: 一组终端窗口. 通常一个项目对应一个工作区.</p></li>
+<li><p><strong>窗口</strong>: 工作区里的一个终端. 通常一个 Agent 占用一个窗口. 在 App 的切换器中也叫「会话」.</p></li>
+<li><p><strong>Pane (窗格)</strong>: 一个窗口被分成几块时, 每一块叫一个 Pane.</p></li>
+<li><p><strong>不同后端的叫法</strong>: 两种后端对「工作区」和「窗口」的叫法不同, 本指南统一使用「工作区」和「窗口」:</p>
+<ul>
+<li><strong>tmux</strong>: 工作区叫 session, 窗口叫 window. 切换器中显示为「N 个窗口」.</li>
+<li><strong>Herdr</strong>: 工作区叫 workspace (也称 space), 窗口叫 tab (标签页). 切换器中显示为「N 个标签页」.</li>
+</ul>
+<p>两种后端里, 窗口都可以再分成多个 Pane.</p></li>
+<li><p><strong>切换器</strong>: App 中查看和切换所有工作区、窗口的面板.</p></li>
+<li><p><strong>快捷栏</strong>: 终端界面底部放按钮和常用按键的横条. 可以叠放多条, 最下面一条叫「第一快捷栏」.</p></li>
+<li><p><strong>输入栏</strong>: 先写好一段文字, 再一次性发给终端的输入条. 尤其适合语音输入和发送图片等附件给 Agent 的情况.</p></li>
+<li><p><strong>IP 地址</strong>: 设备在网络中的数字标识, 例如 <code>192.168.1.10</code>. 局域网动态分配的 IP 可能会变动.</p></li>
+<li><p><strong>主机名</strong>: 电脑的名字, 例如 <code>my-mac.local</code>. 在同一个 Wi-Fi 下, 手机可以用主机名找到电脑, 不受 IP 地址变化影响.</p></li>
+<li><p><strong>Tailscale</strong>: 一个免费的组网工具. 在手机和电脑上都装好后, 手机在任何地方都能用固定的地址 (以 <code>100.</code> 开头) 或 Tailscale 电脑名找到电脑.</p></li>
+<li><p><strong>端口</strong>: 区分同台电脑上不同网络服务的通道编号. QuickTUI 服务端默认使用 <strong>8022</strong> 端口.</p></li>
+<li><p><strong>SSH</strong>: 一种从别的设备登录电脑的方式. QuickTUI 可以用它在手机上帮你自动安装.</p></li>
+</ul>
+<hr>
+<h2 id="第-2-章-开始之前">第 2 章 开始之前</h2>
+<p>请先完成下面的检查.</p>
+<h3 id="2-1-电脑">2.1 电脑</h3>
+<ul class="tasks">
+<li><input type="checkbox" disabled> 系统是 macOS、Linux 或 Windows.</li>
+<li><input type="checkbox" disabled> 你要用的 Agent 已经装好, 并且能在终端里正常运行. 例如在终端输入 <code>claude</code> 能启动 Claude Code. QuickTUI 不负责安装 Agent.</li>
+<li><input type="checkbox" disabled> 电脑保持开机, 并且不会自动睡眠. 电脑睡眠后手机无法连接.</li>
+</ul>
+<div class="callout">
+<p><strong>提示</strong>: macOS 可以在 <strong>系统设置 → 电池</strong> (或 <strong>节能</strong>) 中, 设置接通电源时防止自动睡眠.</p>
+</div>
+<h3 id="2-2-手机">2.2 手机</h3>
+<ul class="tasks">
+<li><input type="checkbox" disabled> 从 App Store 安装 <strong>QuickTUI</strong>.</li>
+<li><input type="checkbox" disabled> 手机和电脑连在同一个 Wi-Fi 上. 第一次安装配对时这样最简单; 以后在外面使用的方法见第 4 章.</li>
+</ul>
+<hr>
+<h2 id="第-3-章-安装与配对">第 3 章 安装与配对</h2>
+<h3 id="3-1-选择安装方式">3.1 选择安装方式</h3>
+<p>按顺序选择第一个适合你的方式:</p>
+<ol>
+<li><strong>方法 A: 在手机上自动安装</strong> (推荐)<br>
+适用于 macOS 和 Linux 电脑. 只需在手机上填写电脑的地址、用户名和密码, App 会自动完成安装和配对.</li>
+<li><strong>方法 B: 在电脑上安装, 然后扫码配对</strong><br>
+适用于 Windows 电脑, 或者不想开启 SSH 的电脑. 手机扫不了二维码时, 也可以从电脑复制配对文本, 粘贴到 App 中完成配对.</li>
+<li><strong>方法 C: 经 QuickTUI Cloud 配对</strong><br>
+适用于手机无法直连的电脑, 例如处于公司内网或无公网 IP 环境的电脑. 需要用 Apple 账号登录 QuickTUI.</li>
+</ol>
+<h3 id="3-2-选择电脑的地址">3.2 选择电脑的地址</h3>
+<p>安装和连接时, 你需要告诉手机去哪里找电脑. 可以使用三种地址: 主机名、Tailscale 地址或 IP 地址.</p>
+<p><strong>使用 QuickTUI Cloud 中转时 (推荐, 见 4.3), 优先选择主机名.</strong> 这样在同一个 Wi-Fi 下, 手机会直接连接电脑, 速度最快; 离开该网络后, 手机检测到无法直连主机名时会自动切换至云端中转.</p>
+<div class="callout">
+<p><strong>提示</strong>: 用 3.5 方法 C 经 QuickTUI Cloud 配对时, 不需要填写地址, 可以跳过本节.</p>
+</div>
+<p>不使用 QuickTUI Cloud 中转时, 推荐顺序如下:</p>
+<ol>
+<li><strong>Tailscale 地址 (电脑名或 IP)</strong>: 在家和在外面都能用. 需要先在手机和电脑上装好 Tailscale (见 4.4). 在中国大陆, Tailscale 可能很慢, 建议改用 QuickTUI Cloud 中转.</li>
+<li><strong>主机名</strong>: 只在同一个 Wi-Fi 下能用, 但电脑的 IP 地址变了也不受影响.</li>
+<li><strong>IP 地址</strong>: 只在同一个 Wi-Fi 下能用, 路由器为电脑重新分配地址后需要修改.</li>
+</ol>
+<p>选哪一种都可以, 以后随时能在 App 中改成另一种, 不需要重新配对 (见 4.1).</p>
+<h4 id="查看主机名">查看主机名</h4>
+<ul>
+<li><p><strong>macOS</strong>: 打开 <strong>系统设置 → 通用 → 共享</strong>, 页面底部的 <strong>本地主机名</strong> 即是 (例如 <code>my-mac.local</code>).</p></li>
+<li><p><strong>Linux</strong>: 在终端运行:</p>
+<pre><code class="language-bash">hostname</code></pre>
+<p>在输出的主机名后追加 <code>.local</code> (例如 <code>my-linux.local</code>).</p></li>
+<li><p><strong>Windows</strong>: 手机通常无法用主机名找到 Windows 电脑, 请使用 Tailscale 地址或 IP 地址.</p></li>
+</ul>
+<div class="callout">
+<p><strong>注意</strong>: Linux 电脑需要运行 Avahi (mDNS) 服务, 手机才能用 <code>.local</code> 主机名找到它. Ubuntu 桌面版默认已开启; Ubuntu Server 版可以运行 <code>sudo apt install -y avahi-daemon</code> 安装. 用主机名连不上时, 改用 IP 地址.</p>
+</div>
+<h4 id="查看-tailscale-地址">查看 Tailscale 地址</h4>
+<p>如果你已经在手机和电脑上装好并登录了 Tailscale, 打开 iPhone 上的 Tailscale App, 在设备列表中找到你的电脑, 可以看到:</p>
+<ul>
+<li>Tailscale 电脑名, 例如 <code>my-mac</code>. 这是 Tailscale 提供的名字 (MagicDNS), 只要手机上的 Tailscale 处于连接状态就能使用.</li>
+<li>以 <code>100.</code> 开头的地址, 例如 <code>100.101.102.103</code>.</li>
+</ul>
+<p>两者任选其一. 还没有装 Tailscale 时, 可以先用主机名或 IP 地址完成安装, 以后再按 4.4 改过来.</p>
+<h4 id="查看-ip-地址">查看 IP 地址</h4>
+<ul>
+<li><strong>macOS</strong>: 打开 <strong>系统设置 → Wi-Fi</strong>, 点已连接网络旁的 <strong>详细信息</strong>, 查看「IP 地址」. 或在终端运行:
+<pre><code class="language-bash">ipconfig getifaddr en0</code></pre></li>
+<li><strong>Linux</strong>: 在终端运行:
+<pre><code class="language-bash">hostname -I</code></pre>
+<p>输出的第一个地址通常即为本机局域网 IP.</p></li>
+<li><strong>Windows</strong>: 在 PowerShell 中运行 <code>ipconfig</code>, 查看当前网络下的「IPv4 地址」.</li>
+</ul>
+<p>家庭网络中的地址一般形如 <code>192.168.x.x</code> 或 <code>10.x.x.x</code>.</p>
+<div class="callout">
+<p><strong>提示</strong>: 想避免 IP 地址变化, 可以在路由器的 DHCP 设置中为电脑保留一个固定地址.</p>
+</div>
+<h3 id="3-3-方法-a-在手机上自动安装">3.3 方法 A: 在手机上自动安装</h3>
+<h4 id="第-1-步-在电脑上开启-ssh">第 1 步: 在电脑上开启 SSH</h4>
+<ul>
+<li><strong>macOS</strong>:
+<ol>
+<li>打开 <strong>系统设置 → 通用 → 共享</strong>.</li>
+<li>打开 <strong>远程登录</strong>.</li>
+</ol></li>
+<li><strong>Linux (Ubuntu / Debian)</strong>: 在终端运行:
+<pre><code class="language-bash">sudo apt install -y openssh-server
+sudo systemctl enable --now ssh</code></pre></li>
+</ul>
+<h4 id="第-2-步-在手机上安装">第 2 步: 在手机上安装</h4>
+<ol>
+<li><p>打开 QuickTUI App. 第一次打开会自动进入设置向导.</p>
+<div class="callout">
+<p><strong>提示</strong>: 以后要添加电脑时, 在 <strong>服务器列表</strong> 中点右上角的 <strong>+</strong>.</p>
+</div></li>
+<li><p>选择 <strong>通过 SSH 连接并启用增强功能 (推荐)</strong>, 点 <strong>下一步</strong>.</p></li>
+<li><p>填写电脑信息:</p>
+<ul>
+<li><strong>主机</strong>: 电脑的地址 (见 3.2). 可以填 Tailscale 电脑名或地址 (例如 <code>my-mac</code> 或 <code>100.101.102.103</code>)、主机名 (例如 <code>my-mac.local</code>) 或 IP 地址 (例如 <code>192.168.1.10</code>).</li>
+<li><strong>端口</strong>: 保持 <code>22</code> 不变.</li>
+<li><strong>用户</strong>: 电脑的登录用户名.</li>
+<li><strong>认证</strong>: 选 <strong>密码</strong>, 输入电脑的登录密码.</li>
+</ul></li>
+<li><p>点 <strong>测试连接</strong>.</p></li>
+<li><p>第一次连接时会弹出 <strong>信任 SSH 主机密钥?</strong>, 点确认.</p></li>
+<li><p>看到连接成功后, 点 <strong>下一步</strong>.</p></li>
+<li><p>选择 <strong>安装源</strong>:</p>
+<ul>
+<li>在中国大陆, 选 <strong>中国</strong>.</li>
+<li>在其他地区, 选 <strong>海外</strong>.</li>
+</ul></li>
+<li><p>点 <strong>安装</strong>, 等待安装完成. 页面会实时显示安装过程, 通常需要一两分钟.</p></li>
+<li><p>安装完成后, App 会自动完成配对, 并在 <strong>服务器列表</strong> 中添加这台电脑.</p></li>
+</ol>
+<div class="callout">
+<p><strong>注意</strong>: 你在 <strong>主机</strong> 中填写的地址, 也是之后手机连接这台电脑时优先使用的地址.</p>
+<p><strong>提示</strong>: 如果用你填写的地址连不上 QuickTUI 服务端, App 会依次尝试电脑的主机名、Tailscale 地址和局域网 IP 地址, 以首个连通成功的地址保存该服务器配置. 你可以在 <strong>编辑服务器</strong> 页面查看最终使用的地址.</p>
+<p><strong>提示</strong>: 电脑密码只用于这次安装, App 不会保存.</p>
+<p><strong>注意</strong>: Linux 用户安装完成后, 请务必完成 3.7 节设置, 避免用户登出后服务终止.</p>
+</div>
+<h4 id="如果自动配对失败">如果自动配对失败</h4>
+<p>安装已经成功, 只是配对没完成. 常见原因有:</p>
+<ul>
+<li>手机能连上电脑的 SSH, 却连不上 8022 端口 (例如被电脑防火墙拦截).</li>
+<li>用的是主机名或 Tailscale 电脑名, 但手机暂时解析不了这个名字 (例如手机上的 Tailscale 没有连接).</li>
+</ul>
+<p>请检查以上两点, 然后按 3.4 的「第 2 步」和「第 3 步」扫码配对.</p>
+<div class="callout">
+<p><strong>提示</strong>: 也可以换一个地址, 重新运行一次自动安装, 不会有副作用.</p>
+</div>
+<h3 id="3-4-方法-b-在电脑上安装-然后扫码配对">3.4 方法 B: 在电脑上安装, 然后扫码配对</h3>
+<h4 id="第-1-步-在电脑上安装">第 1 步: 在电脑上安装</h4>
+<p><strong>macOS 或 Linux</strong>: 在终端运行下面一行 (二选一):</p>
+<pre><code class="language-bash"><span class="com"># 在中国大陆</span>
+curl -fsSL https://dl.quicktui.cn/q.sh | sh
+
+<span class="com"># 在其他地区</span>
+curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>安装程序会自动完成所有设置. 结束时终端会显示 <strong>QuickTUI is installed — pair a device</strong>, 并列出显示二维码的方式:</p>
+<ul>
+<li>电脑有桌面时, 输入 <code>1</code> (<strong>Browser QR</strong>) 按回车, 二维码会在浏览器中打开.</li>
+<li>通过 SSH 等没有桌面的方式安装时, 输入 <code>1</code> (<strong>Terminal QR</strong>) 按回车, 二维码直接显示在终端中.</li>
+<li>手机扫不了二维码时, 输入 <strong>Pairing text</strong> (中文界面为 <strong>配对文本</strong>) 前面的数字按回车, 终端会显示一行配对文本, 然后按第 3 步的「改用粘贴配对文本」操作.</li>
+</ul>
+<p>如果接着让你选择地址, 参考下方第 2 步第 3 项完成选择, 随后直接进行第 3 步扫码.</p>
+<p><strong>Windows</strong>:</p>
+<ol>
+<li>打开 Microsoft Store, 搜索并安装 <strong>QuickTUI Server</strong>. 这就是 Windows 版的 QuickTUI 服务端.</li>
+<li>从开始菜单打开 <strong>QuickTUI Server</strong>.</li>
+<li>如果 Windows 询问是否允许通过防火墙, 选择 <strong>允许</strong>.</li>
+<li>QuickTUI 服务端会自动打开配对向导. 按第 2 步的第 2、3 点操作, 然后进行第 3 步.</li>
+</ol>
+<div class="callout">
+<p><strong>注意</strong>: Windows 上第一次请务必从开始菜单打开 <strong>QuickTUI Server</strong>, 这样它才会在开机登录后自动启动.</p>
+</div>
+<h4 id="第-2-步-在电脑上显示配对二维码">第 2 步: 在电脑上显示配对二维码</h4>
+<ol>
+<li><p>在终端运行:</p>
+<pre><code class="language-bash">quicktui-server pairing welcome</code></pre>
+<div class="callout">
+<p><strong>注意</strong>: 这是本指南第一次在终端运行 <code>quicktui-server</code>. 不同电脑的运行方法如下, 本指南之后的命令都简写为 <code>quicktui-server</code>:</p>
+<ul>
+<li><strong>macOS 和 Linux</strong>: 程序安装在 <code>~/.local/bin/</code> 文件夹中, 安装程序不会把这个文件夹加入命令搜索路径. 如果终端提示 <code>command not found</code>, 可以二选一:
+<ul>
+<li>每次都写完整路径, 例如 <code>~/.local/bin/quicktui-server pairing welcome</code>.</li>
+<li>运行下面对应的一行命令, 然后关闭并重新打开终端. 之后就可以直接输入 <code>quicktui-server</code>.
+<pre><code class="language-bash"><span class="com"># macOS</span>
+echo 'export PATH="$HOME/.local/bin:$PATH"' &gt;&gt; ~/.zshrc
+<span class="com"># Linux</span>
+echo 'export PATH="$HOME/.local/bin:$PATH"' &gt;&gt; ~/.bashrc</code></pre></li>
+</ul></li>
+<li><strong>Linux (以 root 安装)</strong>: 程序安装在 <code>/usr/local/bin/</code>, 以 root 身份直接运行 <code>quicktui-server</code>, 或在命令前加 <code>sudo</code>, 例如 <code>sudo quicktui-server pairing welcome</code>.</li>
+<li><strong>Windows</strong>: 在 PowerShell 中直接运行 <code>quicktui-server</code>.</li>
+</ul>
+</div></li>
+<li><p>向导询问配对方式时, 如果可以, 优先选择浏览器二维码. 终端可能因为字体等问题, 导致显示的二维码无法扫描. 手机完全扫不了码时, 选择 <strong>Pairing text</strong> (中文界面为 <strong>配对文本</strong>), 然后按第 3 步的「改用粘贴配对文本」操作.</p></li>
+<li><p>如果向导让你选择地址, 按 3.2 选择. 列表中每个地址后面标有类型:</p>
+<ul>
+<li><code>hostname</code>: 电脑的主机名.</li>
+<li><code>tailscale</code>: Tailscale 地址 (以 <code>100.</code> 开头).</li>
+<li><code>lan</code>: 局域网 IP 地址.</li>
+<li>其他类型 (<code>wireguard</code>、<code>tunnel</code>、<code>wan</code>): 其他网络的地址, 一般不选.</li>
+</ul></li>
+</ol>
+<div class="callout">
+<p><strong>提示</strong>: 列表中的主机名在 Linux 上通常不带 <code>.local</code>, 手机可能找不到. 想用主机名或 Tailscale 电脑名配对时, 可以直接指定地址生成二维码, 例如:</p>
+<pre><code class="language-bash">quicktui-server pairing qrcode --browser --public-url http://my-linux.local:8022
+quicktui-server pairing qrcode --browser --public-url http://my-mac:8022</code></pre>
+</div>
+<h4 id="第-3-步-在手机上扫码">第 3 步: 在手机上扫码</h4>
+<ol>
+<li>在 App 的 <strong>服务器列表</strong> 中点 <strong>+</strong>.</li>
+<li>点 <strong>其他连接方式</strong>.</li>
+<li>选择 <strong>扫描二维码连接已启用增强功能的电脑</strong>, 点 <strong>下一步</strong>.</li>
+<li>对准电脑屏幕上的二维码扫描.</li>
+<li>在 <strong>配对服务器</strong> 页面点 <strong>配对服务器</strong>.</li>
+</ol>
+<div class="callout">
+<p><strong>提示</strong>: 每个二维码只能配对一台设备. 要配对多台设备, 为每台设备重新生成二维码.</p>
+</div>
+<div class="callout warn">
+<p><strong>警告</strong>: 二维码 15 分钟内有效. 失效前任何人扫到它都能连接你的电脑. 不要截图分享或发到网上.</p>
+</div>
+<h4 id="改用粘贴配对文本">改用粘贴配对文本</h4>
+<p>配对文本和二维码携带同一个一次性配对码, 只是变成了一行可以复制粘贴的文本. 摄像头扫不了二维码, 或者你在手机上通过 SSH 操作电脑时, 可以改用它.</p>
+<ol>
+<li><p>在电脑上运行 <code>quicktui-server pairing welcome</code> 并选择 <strong>Pairing text</strong> (中文界面为 <strong>配对文本</strong>), 或者运行:</p>
+<pre><code class="language-bash">quicktui-server pairing qrcode --text</code></pre>
+<p>终端会显示一行以 <code>qtpair:</code> 开头的文本.</p></li>
+<li><p>复制这一整行并传到手机上, 例如在手机的 SSH 会话里直接复制, 或使用设备间的共享剪贴板.</p></li>
+<li><p>在 App 的 <strong>服务器列表</strong> 中点 <strong>+</strong>, 点 <strong>其他连接方式</strong>, 选择 <strong>粘贴配对文本</strong>, 点 <strong>下一步</strong>.</p></li>
+<li><p>粘贴文本后点 <strong>下一步</strong>. 终端复制带来的换行和多余空格会被自动移除.</p></li>
+<li><p>在 <strong>配对服务器</strong> 页面点 <strong>配对服务器</strong>.</p></li>
+</ol>
+<div class="callout warn">
+<p><strong>警告</strong>: 配对文本只能使用一次, 15 分钟内有效. 失效前任何拿到它的人都能连接你的电脑. 不要通过公开渠道发送或发到网上.</p>
+</div>
+<h3 id="3-5-方法-c-经-quicktui-cloud-配对">3.5 方法 C: 经 QuickTUI Cloud 配对</h3>
+<p>适用于手机无法直接连到的电脑. 电脑和手机都连接到 QuickTUI Cloud, 由它转发加密数据.</p>
+<div class="callout">
+<p><strong>注意</strong>: 每个账号每月有少量免费中转流量, 每月初重置. 免费账号可以这样连接的电脑数量有限. 流量用完或电脑数量超出后, 需要订阅 QuickTUI Cloud. 免费流量适合偶尔查看; 经常使用建议订阅, 或改用第 4 章的其他方式.</p>
+</div>
+<h4 id="第-1-步-在电脑上安装并获取配对码">第 1 步: 在电脑上安装并获取配对码</h4>
+<ol>
+<li>按 3.4 的第 1 步在电脑上安装.</li>
+<li>安装结束时, 终端会显示 <strong>QuickTUI is installed — pair a device</strong>, 并列出几个选项. 输入 <strong>Pair through QuickTUI Cloud</strong> 前面的数字, 按回车.</li>
+<li>选择区域: 在中国大陆选 <strong>China mainland</strong>, 其他地区选 <strong>Global</strong>. 要与手机上选择的区域一致.</li>
+<li>终端会显示一个形如 <code>ABCD-1234</code> 的配对码. 配对码 15 分钟内有效, 最多可以输错 5 次. 保持终端窗口打开, 进行第 2 步.</li>
+</ol>
+<div class="callout">
+<p><strong>提示</strong>: 如果安装时跳过了配对, 或者配对码已经过期, 在终端运行下面的命令重新打开配对向导, 然后选择 <strong>Pair through QuickTUI Cloud</strong>:</p>
+<pre><code class="language-bash">quicktui-server pairing welcome</code></pre>
+</div>
+<h4 id="第-2-步-在手机上输入配对码">第 2 步: 在手机上输入配对码</h4>
+<ol>
+<li>在 App 的 <strong>服务器列表</strong> 中点 <strong>+</strong> → <strong>其他连接方式</strong> → <strong>经 QuickTUI Cloud 配对</strong>.</li>
+<li>选择与电脑相同的区域 (手机上的 <strong>中国</strong> 对应电脑上的 <strong>China mainland</strong>, <strong>海外</strong> 对应 <strong>Global</strong>), 用 Apple 账号登录.</li>
+<li>输入电脑上显示的配对码, 点 <strong>配对服务器</strong>.</li>
+</ol>
+<p>配对成功后, 电脑的终端会显示 <strong>Paired:</strong> 和你的设备名.</p>
+<h3 id="3-6-给另一台-iphone-或-ipad-配对">3.6 给另一台 iPhone 或 iPad 配对</h3>
+<p>每台设备都要单独配对, 不需要重新安装:</p>
+<ul>
+<li>直接连接的电脑: 在电脑上按 3.4 的第 2 步显示二维码, 在新设备上按第 3 步扫码.</li>
+<li>经 QuickTUI Cloud 配对的电脑: 在电脑上运行 <code>quicktui-server pairing welcome</code> 获取新的配对码, 在新设备上按 3.5 的第 2 步输入.</li>
+</ul>
+<h3 id="3-7-linux-必做-让服务在退出登录后继续运行">3.7 Linux 必做: 让服务在退出登录后继续运行</h3>
+<p>在 Linux 上以普通用户安装后, 默认情况下用户会话注销 (含断开 SSH) 会导致服务被系统终止. 运行下面的命令启用会话驻留 (linger) 解决:</p>
+<pre><code class="language-bash">loginctl enable-linger</code></pre>
+<p>如果提示 <code>Access denied</code> 或需要认证, 改为运行:</p>
+<pre><code class="language-bash">sudo loginctl enable-linger "$USER"</code></pre>
+<p>检查是否成功:</p>
+<pre><code class="language-bash">loginctl show-user "$USER" --property=Linger</code></pre>
+<p>看到 <code>Linger=yes</code> 就表示设置成功.</p>
+<h3 id="3-8-检查安装是否成功">3.8 检查安装是否成功</h3>
+<p>在 App 的 <strong>服务器列表</strong> 中, 点你的电脑. 能看到终端画面, 就说明安装和配对都成功了. 下一步请看第 5 章启动 Agent.</p>
+<p>连不上时, 请看第 9 章故障排除.</p>
+<hr>
+<h2 id="第-4-章-离开电脑时也能连接">第 4 章 离开电脑时也能连接</h2>
+<p>如果安装时用的是主机名或局域网 IP 地址, 手机只在和电脑连同一个 Wi-Fi 时能连上. 本章介绍离开家或办公室后如何连接. 用 3.5 方法 C 经 QuickTUI Cloud 配对, 或安装时已经使用 Tailscale 地址的, 不需要再做任何设置.</p>
+<h3 id="4-1-先了解两件事">4.1 先了解两件事</h3>
+<p><strong>1. 换地址不需要重新配对</strong></p>
+<p>手机连接电脑用的是一个「地址」, 例如 <code>http://192.168.1.10:8022</code>. 你可以随时在 App 中修改这个地址, 不需要重新配对:</p>
+<ol>
+<li>在 <strong>服务器列表</strong> 中, 打开这台电脑的 <strong>编辑服务器</strong> 页面.</li>
+<li>修改 <strong>协议</strong>、<strong>主机</strong> 和 <strong>端口</strong>.</li>
+<li>点 <strong>测试连接</strong>, 成功后保存.</li>
+</ol>
+<p>最佳实践: 先在同一 Wi-Fi 下完成配对, 再按本章指引配置远程访问地址.</p>
+<p><strong>2. 为什么不需要证书也安全</strong></p>
+<p>QuickTUI 的加密不依赖 HTTPS 证书. 即使地址是 <code>http://</code> 开头, 内容也经过端到端加密, 第三方无法窃听通信内容, 亦无法伪造服务端身份.</p>
+<h3 id="4-2-选择适合你的方式">4.2 选择适合你的方式</h3>
+<p>各连接方式按配置复杂度由低到高排列如下:</p>
+<ol>
+<li><strong>QuickTUI Cloud 中转</strong> (推荐, 见 4.3)<br>
+不需要任何网络设置, 在中国大陆也能稳定使用. 每月有少量免费流量, 经常使用需要订阅.</li>
+<li><strong>Tailscale</strong> (见 4.4)<br>
+在手机和电脑上各装一个免费 App. 不用改路由器, 不用买域名. 在中国大陆可能很慢.</li>
+<li><strong>你已经在用的 VPN</strong> (见 4.5)<br>
+例如 WireGuard、ZeroTier 或公司 VPN.</li>
+<li><strong>Cloudflare Tunnel</strong> (进阶, 见 4.6)<br>
+适合有自己的域名、并托管在 Cloudflare 的用户.</li>
+<li><strong>自建 HTTPS 反向代理</strong> (进阶, 见 4.6)<br>
+适合已经在用 nginx 或 Caddy 的用户.</li>
+<li><strong>路由器端口转发</strong> (进阶, 见 4.6)<br>
+适合家里宽带有公网 IP 的用户. 安全性略差, 不推荐新手使用.</li>
+</ol>
+<h3 id="4-3-quicktui-cloud-中转-推荐">4.3 QuickTUI Cloud 中转 (推荐)</h3>
+<p>QuickTUI Cloud 中转不需要任何网络设置: 电脑和手机都主动连接 QuickTUI Cloud, 由它转发加密数据. 无论手机在哪里, 都能连上电脑.</p>
+<ul>
+<li><strong>还没有配对</strong>: 按 3.5 方法 C 经 QuickTUI Cloud 配对. 配对后这台电脑固定走中转.</li>
+<li><strong>已经直接配对过</strong>: 按下面的步骤为这台电脑绑定中转. 绑定后, 手机能直接连上电脑时直接连接, 连不上时自动改走中转.</li>
+</ul>
+<p>接收 Agent 通知也需要绑定中转 (见 7.4).</p>
+<div class="callout">
+<p><strong>注意</strong>: 每个账号每月有少量免费中转流量, 适合偶尔查看. 经常使用请订阅 QuickTUI Cloud.</p>
+</div>
+<h4 id="为已配对的电脑绑定中转">为已配对的电脑绑定中转</h4>
+<ol>
+<li>在 <strong>服务器列表</strong> 中, 点顶部的 Cloud 按钮.</li>
+<li>选择正确的区域 (中国或海外) 并以 Apple 账号登录.</li>
+<li>在 <strong>管理中转配额 qtrid</strong> (中转实例编号) 页面, 选择一个 qtrid, 点 <strong>绑定</strong>, 然后选择你的电脑.</li>
+<li>打开这台电脑的 <strong>编辑服务器</strong> 页面, 把 <strong>模式</strong> 设为 <strong>自动</strong>.</li>
+</ol>
+<p><strong>模式</strong> 有三个选项:</p>
+<ul>
+<li><strong>自动</strong>: 优先直接连接, 连不上时自动改走中转. 推荐.</li>
+<li><strong>直连</strong>: 只直接连接.</li>
+<li><strong>中转</strong>: 只走中转.</li>
+</ul>
+<p>中转流量的用量显示在 <strong>服务器列表</strong> 顶部的 Cloud 横幅中. 流量用完时 App 会提示.</p>
+<h3 id="4-4-tailscale">4.4 Tailscale</h3>
+<p>Tailscale 会把你的手机和电脑连成一个私人网络. 不管手机用的是 Wi-Fi 还是蜂窝数据, 都能用同一个地址找到你的电脑.</p>
+<div class="callout">
+<p><strong>注意</strong>: 在中国大陆, Tailscale 的连接可能非常缓慢. 要获得稳定的速度, 需要自己额外部署私有的 DERP 中转服务器, 难度较大. 在中国大陆使用时, 建议优先选择 QuickTUI Cloud 中转 (见 4.3).</p>
+</div>
+<h4 id="第-1-步-在电脑上安装-tailscale">第 1 步: 在电脑上安装 Tailscale</h4>
+<ol>
+<li>打开 <a href="https://tailscale.com/download" target="_blank" rel="noopener">https://tailscale.com/download</a>, 下载并安装电脑版.</li>
+<li>启动 Tailscale, 登录账号 (可以用 Google、Apple、Microsoft 等账号).</li>
+</ol>
+<h4 id="第-2-步-在-iphone-上安装-tailscale">第 2 步: 在 iPhone 上安装 Tailscale</h4>
+<ol>
+<li>在 App Store 安装 <strong>Tailscale</strong>.</li>
+<li>用和电脑上 <strong>同一个账号</strong> 登录.</li>
+<li>打开 Tailscale App 中的连接开关. 系统会提示添加 VPN 配置, 选择允许.</li>
+</ol>
+<h4 id="第-3-步-查看电脑的-tailscale-地址">第 3 步: 查看电脑的 Tailscale 地址</h4>
+<p>打开 iPhone 上的 Tailscale App, 在设备列表中找到你的电脑. 下面两种写法任选一种:</p>
+<ul>
+<li><strong>Tailscale 电脑名</strong>, 例如 <code>my-mac</code>. 这是 Tailscale 的 MagicDNS 功能提供的名字, 好记, 而且不会变. 也可以使用完整写法, 例如 <code>my-mac.tail1234.ts.net</code>.</li>
+<li><strong>以 <code>100.</code> 开头的地址</strong>, 例如 <code>100.101.102.103</code>.</li>
+</ul>
+<p>也可以在电脑终端运行下面的命令查看:</p>
+<pre><code class="language-bash">tailscale ip -4      <span class="com"># 显示 100. 开头的地址</span>
+tailscale status     <span class="com"># 显示所有设备的名字和地址</span></code></pre>
+<div class="callout">
+<p><strong>注意</strong>: Tailscale 电脑名只有在 Tailscale 管理后台开启了 MagicDNS 时才能使用. 新建的 Tailscale 账号默认已开启. 用电脑名连不上时, 改用 <code>100.</code> 开头的地址.</p>
+</div>
+<h4 id="第-4-步-让-quicktui-使用这个地址">第 4 步: 让 QuickTUI 使用这个地址</h4>
+<ul>
+<li><p><strong>还没安装 QuickTUI 服务端</strong>: 按 3.3 方法 A 安装, 在 <strong>主机</strong> 一栏直接填 Tailscale 电脑名或 <code>100.</code> 开头的地址.</p></li>
+<li><p><strong>用方法 B 扫码配对</strong>: 在电脑上运行下面的命令生成二维码 (把 <code>my-mac</code> 换成你的 Tailscale 电脑名), 然后按 3.4 第 3 步扫码:</p>
+<pre><code class="language-bash">quicktui-server pairing qrcode --browser --public-url http://my-mac:8022</code></pre>
+<p>也可以运行 <code>quicktui-server pairing welcome</code>, 在地址列表中选择类型为 <code>tailscale</code> 的地址.</p></li>
+<li><p><strong>已经配对过</strong>: 打开这台电脑的 <strong>编辑服务器</strong> 页面, 设置:</p>
+<ul>
+<li><strong>协议</strong>: <code>HTTP</code></li>
+<li><strong>主机</strong>: Tailscale 电脑名或地址, 例如 <code>my-mac</code> 或 <code>100.101.102.103</code></li>
+<li><strong>端口</strong>: <code>8022</code></li>
+</ul>
+<p>点 <strong>测试连接</strong>, 成功后保存.</p></li>
+</ul>
+<p>现在, 只要 iPhone 上的 Tailscale 保持连接, 你在任何地方都能连上电脑. 在家时也可以直接使用这个地址, 不需要来回切换.</p>
+<div class="callout">
+<p><strong>注意</strong>: iPhone 同一时间只能开一个 VPN. 打开其他 VPN 时, Tailscale 会断开, QuickTUI 也会连不上.</p>
+</div>
+<div class="callout">
+<p><strong>注意</strong>: 如果你的 Tailscale 设置了访问控制规则 (ACL), 需要允许手机访问电脑的 8022 端口. 未配置过 ACL 则无需处理.</p>
+</div>
+<h3 id="4-5-你已经在用的-vpn">4.5 你已经在用的 VPN</h3>
+<p>如果你已经在用 WireGuard、ZeroTier 或公司 VPN, 并且手机连上 VPN 后能访问电脑, 就可以直接用电脑在 VPN 中的地址.</p>
+<ol>
+<li>在电脑终端运行, 列出电脑的所有地址:
+<pre><code class="language-bash">quicktui-server pairing addresses</code></pre>
+<p>类型为 <code>wireguard</code> 或 <code>tunnel</code> 的通常就是 VPN 地址.</p></li>
+<li>已经配对过时, 打开这台电脑的 <strong>编辑服务器</strong> 页面, <strong>协议</strong> 选 <code>HTTP</code>, <strong>主机</strong> 填这个地址, <strong>端口</strong> 填 <code>8022</code>, 点 <strong>测试连接</strong>, 成功后保存.</li>
+<li>还没配对时, 用这个地址生成二维码 (把 <code>10.8.0.2</code> 换成实际地址), 然后按 3.4 第 3 步扫码:
+<pre><code class="language-bash">quicktui-server pairing qrcode --browser --public-url http://10.8.0.2:8022</code></pre></li>
+</ol>
+<div class="callout">
+<p><strong>注意</strong>: 公司 VPN 可能不允许访问员工的电脑, 或者拦截 8022 端口. 连不上时请咨询公司网络管理员, 或改用 QuickTUI Cloud 中转 / Tailscale.</p>
+</div>
+<h3 id="4-6-cloudflare-tunnel-自建反向代理与路由器端口转发-进阶">4.6 Cloudflare Tunnel、自建反向代理与路由器端口转发 (进阶)</h3>
+<p>下面三种方式适合已经有自己的域名、反向代理或公网 IP 的用户. 详细的设置和配对步骤见官网的 <a href="/cn/guides/remote-access/">远程访问指南</a>:</p>
+<ul>
+<li><strong>Cloudflare Tunnel</strong>: 电脑主动连接 Cloudflare, 通过你自己域名下的 HTTPS 网址访问. 不需要公网 IP, 也不需要改路由器. 前提是域名托管在 Cloudflare.</li>
+<li><strong>自建 HTTPS 反向代理</strong>: 已经在用 nginx 或 Caddy 时, 把一个单独的域名转发给 QuickTUI 服务端.</li>
+<li><strong>路由器端口转发</strong>: 家里宽带有公网 IP 时, 在路由器上把一个外部端口转发到电脑的 8022 端口. 这种方式把服务端直接暴露在互联网上, 不推荐新手使用.</li>
+</ul>
+<hr>
+<h2 id="第-5-章-启动-agent">第 5 章 启动 Agent</h2>
+<h3 id="5-1-创建工作区">5.1 创建工作区</h3>
+<p>第一次连接电脑时, 如果还没有工作区:</p>
+<ol>
+<li>点快捷栏上的 <strong>切换器</strong> 按钮.</li>
+<li>在 <strong>工作区</strong> 标题旁点 <strong>+</strong>.</li>
+<li>在 <strong>新建工作区</strong> 对话框中填写:
+<ul>
+<li><strong>后端</strong>: 只有电脑上同时启用了 tmux 和 Herdr 时才需要选择. 若无特殊需求, 保持默认即可.</li>
+<li><strong>CWD</strong>: 工作区的默认文件夹, 一般选你的项目文件夹.</li>
+<li><strong>工作区名称</strong>: 可以不填, 会自动命名.</li>
+</ul></li>
+<li>点 <strong>创建</strong>.</li>
+</ol>
+<div class="callout">
+<p><strong>提示</strong>: 建议每个项目独立建立一个工作区, 名称与项目名保持一致.</p>
+</div>
+<div class="callout">
+<p><strong>提示</strong>: 你在电脑上用 tmux 或 Herdr 自己创建的工作区, 也会出现在切换器中, 可以直接打开.</p>
+</div>
+<h4 id="电脑上没有可用的后端时">电脑上没有可用的后端时</h4>
+<p>如果 App 提示 <strong>服务器已连接, 但没有可用的会话后端</strong>, 说明电脑上没有可用的 tmux 或 Herdr (例如安装时自动下载 Herdr 失败了). 可以直接在 App 中安装:</p>
+<ol>
+<li>在提示面板中点 <strong>安装 Herdr</strong> (推荐). macOS 和 Linux 上也可以选择 <strong>安装 tmux</strong>; Windows 上只能安装 Herdr.</li>
+<li>等待安装完成. 安装过程中可以离开这个页面, 安装会在电脑上继续进行.</li>
+<li>安装成功后, App 会自动重新连接.</li>
+</ol>
+<p>安装失败时, 面板会显示原因和可以在电脑上手动运行的命令. 在电脑上手动装好后, 回到 App 点重试即可, 不需要重启 QuickTUI 服务端.</p>
+<h3 id="5-2-用-agent-向导启动-agent">5.2 用 Agent 向导启动 Agent</h3>
+<p>Agent 向导会在当前工作区中新开一个窗口, 并在里面启动 Agent.</p>
+<ol>
+<li>点快捷栏上的 <strong>Agent 向导</strong> 按钮.</li>
+<li>选择 <strong>Agent</strong>: 左右滑动, 点选你要用的 Agent. 名字显示为警告颜色时, 表示电脑上没有找到这个 Agent (见 5.4).</li>
+<li>设置 <strong>配置</strong> (可以保持默认):
+<ul>
+<li><strong>预设</strong>: 保存好的模型和推理档位组合.</li>
+<li><strong>模型 / 推理档位</strong>: 只有部分 Agent 显示.</li>
+<li><strong>模式</strong>: 通常保持 <strong>Default</strong>; 若需长时间无人值守运行, 可考虑 <strong>YOLO</strong> 模式 (注意下方警告).</li>
+</ul></li>
+<li>选择工作目录: 点路径可以从最近用过的文件夹中选; 点旁边的文件夹按钮可以浏览选择.</li>
+<li><strong>会话标题</strong>: 给这个任务起个名字, 方便以后找到. 可以不填.</li>
+<li>点 <strong>启动</strong>.</li>
+</ol>
+<p>App 会自动切换到新窗口, Agent 开始运行. 向导会自动记忆本次配置, 方便下次快速启动.</p>
+<div class="callout warn">
+<p><strong>警告</strong>: 部分 Agent 提供 <strong>YOLO</strong> 模式. 这个模式下 Agent 执行任何操作都不再请求你的批准, 可能修改或删除文件. 只在你完全信任的项目中使用.</p>
+</div>
+<div class="callout">
+<p><strong>提示</strong>: 也可以在切换器中点某个工作区右侧的 <strong>…</strong>, 选择 <strong>Agent 向导</strong>, 直接在那个工作区中启动 Agent.</p>
+</div>
+<div class="callout">
+<p><strong>提示</strong>: 在 <strong>设置 → 管理 Agent 模型</strong> 中可以添加自定义模型和预设.</p>
+</div>
+<h3 id="5-3-在终端里直接启动">5.3 在终端里直接启动</h3>
+<p>除使用向导外, 亦可在终端内直接输入命令启动 Agent, 例如:</p>
+<pre><code class="language-bash">claude</code></pre>
+<h3 id="5-4-agent-向导找不到-agent-时">5.4 Agent 向导找不到 Agent 时</h3>
+<p>QuickTUI 服务端作为后台服务运行, 默认环境变量可能无法自动解析安装在非标准路径下的 Agent 可执行文件.</p>
+<ol>
+<li>在电脑终端运行下面的命令, 查看 QuickTUI 服务端找到了哪些程序:
+<pre><code class="language-bash">quicktui-server doctor</code></pre></li>
+<li>在电脑终端运行 <code>which claude</code> (Windows 上在 PowerShell 中运行 <code>Get-Command claude</code>; 把 <code>claude</code> 换成你的 Agent 命令), 记下输出的完整路径.</li>
+<li>用任意文本编辑器打开配置文件 (macOS 和 Linux 可以运行 <code>nano ~/.config/quicktui-server-v2/config.toml</code>; 其他系统的位置见附录 B), 在末尾加入:
+<pre><code class="language-toml">[agent_bins]
+claude = "/opt/homebrew/bin/claude"</code></pre>
+<p>把路径换成第 2 步得到的路径.</p></li>
+<li>保存后重启: <code>quicktui-server service restart</code>.</li>
+</ol>
+<h3 id="5-5-agent-状态检测-hooks">5.5 Agent 状态检测 (hooks)</h3>
+<p>QuickTUI 能显示 Agent 是「工作中」还是「等待输入」, 并在需要时通知你. 这依赖安装时自动加入各 Agent 配置的 <strong>hooks</strong>. 大多数情况下你不需要做任何事, 只有两个例外:</p>
+<ul>
+<li><strong>Codex</strong>: 需要在 Codex 中输入 <code>/hooks</code>, 信任 QuickTUI 添加的 hooks 后才生效.</li>
+<li><strong>OpenCode</strong>: 安装后需要重启 OpenCode 一次.</li>
+</ul>
+<hr>
+<h2 id="第-6-章-与-agent-交流">第 6 章 与 Agent 交流</h2>
+<p>Agent 运行在电脑的终端里. App 中显示的就是这个终端, 你的输入会直接发给 Agent.</p>
+<h3 id="6-1-认识终端界面">6.1 认识终端界面</h3>
+<ul>
+<li><strong>顶部栏</strong>:
+<ul>
+<li>左侧: 返回 <strong>服务器列表</strong>、切换全屏.</li>
+<li>中间: 当前工作区的名字.</li>
+<li>右侧: <strong>文件</strong> 和 <strong>端口转发</strong> 两个按钮. <strong>文件</strong> 打开文件管理器, 浏览和传输电脑上的文件; <strong>端口转发</strong> 把电脑上的端口 (例如开发中的网页服务) 转发到手机上访问. 这两个功能不在本指南范围内.</li>
+</ul></li>
+<li><strong>终端画面</strong>: 中间的大块区域, 就是电脑上的终端.</li>
+<li><strong>快捷栏</strong>: 底部的按钮条. 默认的按钮从左到右是:
+<ul>
+<li><strong>设置</strong>、<strong>切换器</strong>、<strong>文件</strong>、<strong>Agent 向导</strong></li>
+<li><strong>自定义键盘</strong>、<strong>剪贴板历史</strong></li>
+<li><strong>命令面板</strong>、<strong>输入栏</strong>、<strong>显示 / 收起键盘</strong></li>
+</ul></li>
+</ul>
+<p>快捷栏放不下时可以左右滑动. 你还可以在 <strong>设置 → 快捷栏</strong> 中, 再添加最多 3 条快捷栏, 放 Esc、Tab、方向键、Ctrl 组合键等常用按键. 按住按键会连续发送.</p>
+<h3 id="6-2-给-agent-发送指令">6.2 给 Agent 发送指令</h3>
+<p>推荐用 <strong>输入栏</strong> 发送较长的指令:</p>
+<ol>
+<li>点快捷栏上的 <strong>输入栏</strong> 按钮.</li>
+<li>在输入栏中输入指令或 Prompt 内容. 可以编辑多行.</li>
+<li>点发送. 整段文字会一次性发给 Agent.</li>
+<li>点输入栏内的回形针图标, 可以添加要发送给 Agent 的附件.</li>
+</ol>
+<div class="callout">
+<p><strong>提示</strong>: 在 <strong>设置 → 点击终端时</strong> 中, 可以设置点一下终端就打开输入栏.</p>
+</div>
+<p>其他输入方式:</p>
+<ul>
+<li><strong>系统键盘</strong>: 字符按键即时输入发送, 适合简短命令.</li>
+<li><strong>自定义键盘</strong>: 为终端设计的键盘, 带有 Esc、Ctrl、方向键等按键.</li>
+<li><strong>命令面板</strong>: 预存常用指令片段, 点击即可直接发送. 在 <strong>设置 → 管理命令面板</strong> 中添加.</li>
+<li><strong>剪贴板历史</strong>: 重新粘贴之前复制过的内容.</li>
+</ul>
+<h3 id="6-3-回应-agent">6.3 回应 Agent</h3>
+<ul>
+<li><strong>Agent 给出几个编号选项时</strong>: 输入对应的数字再按回车, 或者用方向键选择后按回车.</li>
+<li><strong>中断或停止 Agent</strong>: 按 Esc (Claude Code) 或 Ctrl + C. 这两个键可以放在快捷栏上.</li>
+<li><strong>斜杠命令</strong>: 和在电脑上一样输入, 例如 <code>/clear</code>.</li>
+<li><strong>在通知中批准</strong>: 开启 Agent 通知后 (见 7.4), Agent 请求权限时手机会收到通知. 长按通知, 可以直接选择 <strong>批准</strong> 或 <strong>拒绝</strong>, 不用打开 App.</li>
+</ul>
+<h3 id="6-4-查看和复制输出">6.4 查看和复制输出</h3>
+<ul>
+<li><strong>查看之前的内容</strong>: 在终端画面上上下滑动.</li>
+<li><strong>复制文字</strong>:
+<ol>
+<li>长按要复制的文字, 出现放大镜后拖动调整范围.</li>
+<li>点浮动的 <strong>复制</strong> 按钮.</li>
+<li>若文本因终端自动折行截断, 点 <strong>智能复制</strong> 可合并为连续单行后复制.</li>
+</ol></li>
+</ul>
+<h3 id="6-5-离开与回来">6.5 离开与回来</h3>
+<p>使用期间可随时锁屏、切出 App 或断开网络, 电脑端 Agent 持续运行不受影响. 回到 QuickTUI 后, App 会自动重新连接并同步最新画面.</p>
+<hr>
+<h2 id="第-7-章-用切换器管理多个任务">第 7 章 用切换器管理多个任务</h2>
+<p>同时运行多个 Agent 任务时, 用 <strong>切换器</strong> 来查看它们的状态、在它们之间切换.</p>
+<h3 id="7-1-打开和关闭切换器">7.1 打开和关闭切换器</h3>
+<ul>
+<li><strong>打开</strong>: 点快捷栏上的 <strong>切换器</strong> 按钮.</li>
+<li><strong>关闭</strong>: 点右上角的关闭按钮, 或在空白处向下滑.</li>
+</ul>
+<h3 id="7-2-看懂切换器">7.2 看懂切换器</h3>
+<p>切换器从上到下分为两部分:</p>
+<pre><code class="language-text">服务器
+ [我的 Mac ✓] [办公室 Linux]          ← 点按切换到另一台电脑
+
+工作区  ⊕                              ← 新建工作区
+  api-refactor   tmux · 3 个窗口   …   ← 点按展开或收起; … 打开菜单
+    ✓ 1 claude    (Claude 图标) (工作中)
+      2 codex     (Codex 图标)  (等待输入)
+      3 shell
+  docs           herdr · 2 个标签页 …</code></pre>
+<ul>
+<li><strong>服务器</strong>: 你添加过的所有电脑. 带勾标记当前电脑, 轻点其他电脑即可切换.</li>
+<li><strong>工作区</strong>: 名字后面标有它的后端 (tmux 或 herdr) 和窗口数量. tmux 显示「N 个窗口」, Herdr 显示「N 个标签页」. 轻点展开显示里面的窗口, 再次轻点收起. 工作区只有一个窗口时, 轻点即可直接进入.</li>
+<li><strong>窗口</strong>: 带勾标记当前活动窗口, 轻点其他窗口即可切换. 运行着 Agent 的窗口会显示 Agent 的图标和状态.</li>
+<li><strong>Pane</strong>: 一个窗口被分成几块时, 窗口下方会列出每一块, 可以直接切换到某一块.</li>
+</ul>
+<h3 id="7-3-agent-状态">7.3 Agent 状态</h3>
+<p>窗口旁的状态图标告诉你每个 Agent 在做什么:</p>
+<ul>
+<li><strong>工作中</strong>: Agent 正在执行任务. 不需要你操作.</li>
+<li><strong>等待输入</strong>: Agent 暂停等待你批准或回答提问. <strong>请尽快进入这个窗口处理.</strong></li>
+<li><strong>已完成</strong>: Agent 完成了这一轮任务. 可以去查看结果, 指派下一步任务.</li>
+<li><strong>空闲</strong>: Agent 没有在工作.</li>
+</ul>
+<div class="callout">
+<p><strong>提示</strong>: 打开切换器, 先找「等待输入」的窗口处理, 是最高效的使用方式.</p>
+</div>
+<h3 id="7-4-接收-agent-通知">7.4 接收 Agent 通知</h3>
+<p>开启通知后, 不打开 App 也能知道哪个 Agent 需要你.</p>
+<p><strong>需要满足的条件</strong>:</p>
+<ul>
+<li>这台电脑已经绑定 QuickTUI Cloud 中转 (见 4.3, 或用 3.5 方法 C 配对).</li>
+<li>Agent hooks 已生效 (见 5.5).</li>
+<li>iPhone 的 <strong>设置 → 通知 → QuickTUI</strong> 中允许通知.</li>
+</ul>
+<p><strong>设置方法</strong>:</p>
+<ol>
+<li>在 <strong>服务器列表</strong> 中, 打开这台电脑的 <strong>Agent 通知</strong> 页面.</li>
+<li>打开 <strong>通知此设备</strong>.</li>
+<li>选择要接收哪些通知: <strong>需要审批</strong>、<strong>任务完成</strong>、<strong>Agent 错误</strong>、<strong>会话结束</strong>.</li>
+<li>(可选) 选择通知中要显示的内容: <strong>包含 Agent</strong>、<strong>包含项目</strong>、<strong>包含摘要</strong>、<strong>包含会话名称</strong>.</li>
+</ol>
+<div class="callout">
+<p><strong>注意</strong>: 默认情况下通知只说明「发生了什么」, 不包含项目名称和任务内容. 打开第 4 步的选项后, 这些内容会经过 QuickTUI Cloud 发送. 通知永远不会包含完整的终端输出、源代码或密码.</p>
+</div>
+<h3 id="7-5-推荐的任务工作流">7.5 推荐的任务工作流</h3>
+<p><strong>一个项目一个工作区, 一个任务一个窗口.</strong></p>
+<ol>
+<li>为每个项目创建一个工作区, CWD 选项目文件夹 (见 5.1).</li>
+<li>每个任务用 <strong>Agent 向导</strong> 启动一个 Agent, 在 <strong>会话标题</strong> 中写上任务名, 例如 <code>修复登录</code>.</li>
+<li>提交任务后即可离开. 收到通知或打开切换器时, 优先处理 <strong>等待输入</strong> 的窗口.</li>
+<li>任务完成并确认结果后, 关闭这个窗口 (见 7.7).</li>
+</ol>
+<div class="callout">
+<p><strong>提示</strong>: 在工作区的 <strong>…</strong> 菜单中选择 <strong>默认工作目录</strong>, 之后在这个工作区里新开的窗口和 Agent 都会自动使用这个文件夹.</p>
+</div>
+<h3 id="7-6-快速切换">7.6 快速切换</h3>
+<p>在终端画面上 <strong>左右滑动</strong>, 可以直接切换到上一个或下一个窗口, 不用打开切换器.</p>
+<p>可以在 <strong>设置 → 水平滑动目标</strong> 中修改左右滑动切换的对象:</p>
+<ul>
+<li><strong>工作区</strong>: 在工作区之间切换.</li>
+<li><strong>会话</strong>: 在窗口之间切换.</li>
+<li><strong>Pane</strong>: 在窗格之间切换.</li>
+<li><strong>会话+Pane</strong>: 在窗口和窗格之间切换 (默认).</li>
+</ul>
+<h3 id="7-7-新建-重命名和关闭">7.7 新建、重命名和关闭</h3>
+<ul>
+<li><strong>新建工作区</strong>: 点 <strong>工作区</strong> 标题旁的 <strong>+</strong>.</li>
+<li><strong>在工作区中新开一个窗口</strong>: 点工作区右侧的 <strong>…</strong> → <strong>新建会话</strong>. 创建后会自动切换过去.</li>
+<li><strong>在工作区中启动 Agent</strong>: 点工作区右侧的 <strong>…</strong> → <strong>Agent 向导</strong>.</li>
+<li><strong>重命名或关闭工作区</strong>: 点工作区右侧的 <strong>…</strong>, 或长按工作区.</li>
+<li><strong>重命名或关闭窗口</strong>: 长按窗口. 只有当前工作区中的窗口可以这样操作.</li>
+</ul>
+<div class="callout warn">
+<p><strong>警告</strong>: 关闭工作区或窗口会结束里面正在运行的所有程序, 包括 Agent, 而且无法撤销. 关闭前请确认任务已经完成.</p>
+</div>
+<div class="callout">
+<p><strong>提示</strong>: 如果当前工作区被关闭了 (例如在电脑上关闭), App 会自动切换到另一个工作区; 一个工作区都没有时, 会自动新建一个.</p>
+</div>
+<hr>
+<h2 id="第-8-章-维护">第 8 章 维护</h2>
+<h3 id="8-1-升级-quicktui-服务端">8.1 升级 QuickTUI 服务端</h3>
+<p><strong>推荐 (macOS 和 Linux): 重新运行安装命令.</strong> 在电脑终端运行和安装时相同的命令即可升级到最新版本 (二选一):</p>
+<pre><code class="language-bash"><span class="com"># 在中国大陆</span>
+curl -fsSL https://dl.quicktui.cn/q.sh | sh
+
+<span class="com"># 在其他地区</span>
+curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>重新安装会保留已配对的设备、服务端身份、QuickTUI Cloud 中转绑定和现有设置, <strong>无需重新配对</strong>.</p>
+<p>其他升级方式:</p>
+<ul>
+<li><strong>在手机上升级</strong>: QuickTUI 服务端有新版本时, <strong>服务器列表</strong> 中这台电脑旁会出现 <strong>升级</strong> 按钮. 点它并按提示操作.</li>
+<li><strong>在电脑上用命令升级 (macOS 和 Linux)</strong>: <code>quicktui-server upgrade install</code>.</li>
+<li><strong>Windows</strong>: 由 Microsoft Store 自动更新.</li>
+</ul>
+<div class="callout">
+<p><strong>注意</strong>: 升级时 QuickTUI 服务端会重启, App 与电脑的连接会短暂中断, 随后自动重新连接. 活跃终端会话与正在运行的 Agent 均不受影响.</p>
+</div>
+<h3 id="8-2-管理已配对的设备">8.2 管理已配对的设备</h3>
+<p>手机丢失或不再使用时, 应该取消它的配对:</p>
+<ol>
+<li>在电脑终端列出所有已配对设备:
+<pre><code class="language-bash">quicktui-server pairing devices list</code></pre></li>
+<li>找到要取消的设备, 记下它的 <code>device_id</code>, 然后运行:
+<pre><code class="language-bash">quicktui-server pairing devices revoke &lt;device_id&gt;</code></pre>
+<p>把 <code>&lt;device_id&gt;</code> 换成实际的 ID.</p></li>
+</ol>
+<p>被取消的设备会在 5 分钟内断开, 重新配对前无法再次连接.</p>
+<div class="callout warn">
+<p><strong>警告</strong>: 若怀疑配对凭据泄露, 可以一次清除所有设备. 之后所有设备均需要重新配对.</p>
+<ol>
+<li>停止服务:
+<pre><code class="language-bash"><span class="com"># macOS</span>
+launchctl bootout gui/$(id -u)/ai.quicktui
+<span class="com"># Linux</span>
+systemctl --user stop quicktui
+<span class="com"># Linux (以 root 安装)</span>
+sudo systemctl stop quicktui
+<span class="com"># Windows (PowerShell; Microsoft Store 版本中这条命令只停止服务进程)</span>
+quicktui-server service uninstall</code></pre></li>
+<li>更换服务端身份并清空全部配对:
+<pre><code class="language-bash">quicktui-server pairing identity rotate</code></pre></li>
+<li>重新启动服务:
+<pre><code class="language-bash">quicktui-server service restart</code></pre></li>
+</ol>
+</div>
+<h3 id="8-3-卸载">8.3 卸载</h3>
+<p>卸载的命令和步骤 (含 Windows 与彻底删除) 见官网安装页的 <a href="/cn/install/#uninstall">卸载</a> 一节.</p>
+<p>卸载会停止 QuickTUI 服务端, 但保留配对信息, 以后重新安装时不需要重新配对. tmux、Herdr 和你的 Agent 不会被卸载.</p>
+<hr>
+<h2 id="第-9-章-故障排除">第 9 章 故障排除</h2>
+<p>常见问题的原因和解决方法都整理在官网的 <a href="/cn/faq/">常见问题</a> 中. 按你遇到的现象打开对应条目:</p>
+<ul>
+<li><a href="/cn/faq/#q-local-network">App 提示「需要本地网络访问权限」</a></li>
+<li><a href="/cn/faq/#q-connection-refused">连接失败, 提示连接被拒绝</a></li>
+<li><a href="/cn/faq/#q-away-from-home">在家能连, 出门就连不上</a></li>
+<li><a href="/cn/faq/#q-tailscale">用了 Tailscale 还是连不上</a></li>
+<li><a href="/cn/faq/#q-hostname">用主机名连不上, 用 IP 地址能连上</a></li>
+<li><a href="/cn/faq/#q-no-backend">App 提示「服务器已连接, 但没有可用的会话后端」</a></li>
+<li><a href="/cn/faq/#q-linux-linger">Linux 电脑退出登录后就连不上</a></li>
+<li><a href="/cn/faq/#q-pairing-invalid">App 提示「此设备与服务器的配对已失效」</a></li>
+<li><a href="/cn/faq/#q-capability-http-status">通过隧道或反向代理连接时, App 显示 HTTP 状态码</a></li>
+<li><a href="/cn/faq/#q-port-in-use">提示端口被另一个 QuickTUI 服务端占用</a></li>
+<li><a href="/cn/faq/#q-agent-not-found">Agent 向导中 Agent 名字显示为警告颜色</a></li>
+<li><a href="/cn/faq/#q-agent-status">切换器中看不到 Agent 状态</a></li>
+<li><a href="/cn/faq/#q-logs">查看 QuickTUI 服务端的日志</a></li>
+</ul>
+<hr>
+<h2 id="附录-a-常用命令">附录 A: 常用命令</h2>
+<p><code>quicktui-server</code> 的全部命令和参数见官网安装页的 <a href="/cn/install/#cli">命令行参数</a>. 找不到 <code>quicktui-server</code> 时, 见 3.4 第 2 步中的说明.</p>
+<h2 id="附录-b-文件位置与配置">附录 B: 文件位置与配置</h2>
+<ul>
+<li>程序、配置目录和后台服务在各系统上的位置, 见官网安装页的 <a href="/cn/install/#locations">安装位置</a>.</li>
+<li>配置文件 <code>config.toml</code> 的全部设置项 (包括 <code>addr</code>、<code>trusted_proxies</code>、<code>session_backends</code>、<code>[agent_bins]</code> 等), 见官网安装页的 <a href="/cn/install/#config">配置文件</a>.</li>
+</ul>
+<p>修改配置文件后, 需要运行 <code>quicktui-server service restart</code> 才会生效.</p>
+</div>
+<div class="related">
+  <h2>相关链接</h2>
+  <ul>
+    <li><a href="/cn/install/">安装 QuickTUI 服务端</a></li>
+    <li><a href="/cn/faq/">常见问题</a></li>
+    <li><a href="/cn/guides/remote-access/">远程访问指南</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · 版权所有。</span>
+          <span class="dot">·</span>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">蜀ICP备2023013634号-3</a>
+        </div>
+        <div class="links">
+          <a href="/cn/install/">安装</a>
+          <a href="/cn/guide/">用户指南</a>
+          <a href="/cn/faq/">常见问题</a>
+          <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
+          <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
+          <a href="/cn/compare/">对比</a>
+          <a href="/cn/android/">Android（Preview）</a>
+          <a href="/privacy">隐私</a>
+          <a href="/cn/support">支持</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

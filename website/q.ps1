@@ -1,5 +1,5 @@
 # QuickTUI Windows bootstrap.
-# This script only selects, verifies when possible, and launches the native
+# This script only selects, downloads, and launches the native
 # quicktui-installer binary. Installation logic lives in the Rust installer and
 # the downloaded quicktui-server setup entry.
 #
@@ -24,7 +24,9 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 }
 
-$script:InvokedFromFile = [bool]$MyInvocation.MyCommand.Path
+# IEX inherits MyInvocation from its caller, which can itself be a .ps1.
+# The active frame's source path distinguishes a file from evaluated text.
+$script:InvokedFromFile = [bool](Get-PSCallStack)[0].ScriptName
 
 # Under `irm | iex` the $env: defaults below would otherwise leak into the
 # caller's session and act as stale user overrides on the next run (e.g. after
@@ -51,7 +53,7 @@ function Restore-QuickTuiEnv {
 # mirror variant, and (c) the assertions in website/tests. Do not reformat.
 $env:QUICKTUI_REPO = if ($env:QUICKTUI_REPO) { $env:QUICKTUI_REPO } else { "dualface/quicktui" }
 $env:QUICKTUI_RELEASES = if ($env:QUICKTUI_RELEASES) { $env:QUICKTUI_RELEASES } else { "https://github.com/$env:QUICKTUI_REPO/releases/latest/download" }
-$env:QUICKTUI_INSTALLER_RELEASE_TAG = if ($env:QUICKTUI_INSTALLER_RELEASE_TAG) { $env:QUICKTUI_INSTALLER_RELEASE_TAG } else { "installer-20260927-01" }
+$env:QUICKTUI_INSTALLER_RELEASE_TAG = if ($env:QUICKTUI_INSTALLER_RELEASE_TAG) { $env:QUICKTUI_INSTALLER_RELEASE_TAG } else { "installer-20261024-03" }
 $env:QUICKTUI_INSTALLER_RELEASES = if ($env:QUICKTUI_INSTALLER_RELEASES) { $env:QUICKTUI_INSTALLER_RELEASES } else { "https://github.com/$env:QUICKTUI_REPO/releases/download/$env:QUICKTUI_INSTALLER_RELEASE_TAG" }
 $env:QUICKTUI_UPDATE_MANIFEST_URL = if ($env:QUICKTUI_UPDATE_MANIFEST_URL) { $env:QUICKTUI_UPDATE_MANIFEST_URL } else { "https://quicktui.ai/server-manifest.json" }
 
@@ -84,17 +86,15 @@ Installer commands:
   uninstall                 Uninstall existing service via installed server
 
 Install source (choose at most one):
-  --channel stable|preview|server2
-                            Install from the stable (legacy server), server2
-                            (new server stable), or preview channel
+  --channel server2|preview
+                            Install from the server2 (official) or preview
+                            channel
   --tag TAG                 Install this exact release tag, bypassing manifest
   (none)                    Install the server manifest default channel
-                            (stable when the manifest sets none)
+                            (server2 when the manifest sets none)
 
 Install options:
   -y, --yes                 Non-interactive mode
-      --token TOKEN         Set a schema v1 server access token
-      --rotate-token        Generate a new schema v1 server access token
       --addr HOST[:PORT]|URL Listen host, host:port, or http(s)://host:port
                             (scheme/quotes stripped; listen stays plain HTTP)
       --port PORT           Listen port used with --addr host
@@ -104,11 +104,10 @@ Install options:
   -h, --help                Show this help
 
 Legacy flat compatibility:
-  --release | --preview | --publish-tag TAG
+  --preview | --publish-tag TAG
   --check [--server PATH] | --uninstall
   --required-version-2      Accepted as a compatibility no-op
   Flat install options without a source use the manifest default channel.
-  Token options fail explicitly when the selected server uses tokenless schema v2.
 
 Check source:
   check uses --server PATH when given, then an installed server if available.
@@ -136,7 +135,27 @@ function Get-RemoteFile([string]$Url, [string]$OutFile) {
     Invoke-WebRequest -Uri $Url -OutFile $OutFile -UseBasicParsing | Out-Null
 }
 
+function Invoke-Installer([string]$Path, [string[]]$Arguments, [ref]$ExitCode) {
+    # Keep these preferences local: a nonzero child exit is a result, while
+    # failure to create the child is an exception (also on PowerShell 7.3+).
+    $ErrorActionPreference = 'Stop'
+    $PSNativeCommandUseErrorActionPreference = $false
+    # A failed CreateProcess does not set LASTEXITCODE. Do not reuse a
+    # previous native command result from the caller.
+    # PowerShell writes native results to global scope even inside a function.
+    $global:LASTEXITCODE = $null
+    try {
+        & $Path @Arguments
+    } catch {
+        throw (("quicktui bootstrap: installer could not be started: {0}`n" +
+            "If Windows reports an Application Control block, check Microsoft-Windows-CodeIntegrity/Operational in Event Viewer. " +
+            "A trusted Authenticode signature or an administrator-approved policy may be required.") -f $_.Exception.Message)
+    }
+    $ExitCode.Value = $global:LASTEXITCODE
+}
+
 $tmpDir = $null
+$bootstrapError = $null
 try {
     $argv = @($args)
     if ($argv.Count -gt 0 -and ($argv[0] -eq '-h' -or $argv[0] -eq '--help' -or $argv[0] -eq 'help')) {
@@ -166,13 +185,11 @@ try {
     $asset = "quicktui-installer-windows-$arch.exe"
     $baseUrl = $env:QUICKTUI_INSTALLER_RELEASES.TrimEnd('/')
     $installerUrl = "$baseUrl/$asset"
-    $shaUrl = "$installerUrl.sha256"
 
     $tmpDir = Join-Path ([System.IO.Path]::GetTempPath()) ('quicktui-installer-' + [System.IO.Path]::GetRandomFileName())
     New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
 
     $installerPath = Join-Path $tmpDir $asset
-    $shaPath = "$installerPath.sha256"
 
     [Console]::Error.WriteLine("Downloading installer asset: $asset")
     try {
@@ -186,41 +203,23 @@ try {
         Fail "installer download exceeds $maxBytes bytes"
     }
 
-    $checksumAvailable = $true
-    try {
-        Get-RemoteFile $shaUrl $shaPath
-    } catch {
-        $checksumAvailable = $false
-        [Console]::Error.WriteLine('quicktui bootstrap: warning: installer checksum not available; continuing without local verification')
-    }
-    if ($checksumAvailable) {
-        $shaText = [System.IO.File]::ReadAllText($shaPath)
-        $expected = @($shaText -split '\s+' | Where-Object { $_ })[0]
-        if (-not $expected -or $expected -notmatch '^[0-9a-fA-F]{64}$') {
-            Fail 'invalid installer checksum file'
-        }
-        $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $installerPath).Hash.ToLowerInvariant()
-        if ($actual -ne $expected.ToLowerInvariant()) {
-            Fail 'installer sha256 mismatch'
-        }
-    }
-
     if ($PSVersionTable.PSVersion.Major -ge 6 -and -not $IsWindows) {
         # Contract tests run this bootstrap under pwsh on Linux with a mock
         # installer; downloaded files need the executable bit there.
         chmod +x $installerPath
     }
 
-    & $installerPath @argv
-    $exitCode = $LASTEXITCODE
+    $exitCode = $null
+    Invoke-Installer $installerPath $argv ([ref]$exitCode)
     if ($null -eq $exitCode) {
-        # CreateProcess hit ERROR_ELEVATION_REQUIRED and PowerShell fell back
-        # to a ShellExecute elevation: the installer runs detached in a new
-        # elevated console window and no exit code reaches this shell. The
-        # installer binary embeds an asInvoker manifest to prevent this; an
-        # older installer release without it can still land here.
-        Fail 'installer was launched elevated in a separate window (UAC); check that window for the install result'
+        # No result alone does not prove that UAC launched a detached child.
+        Fail 'installer returned no exit code; installation success cannot be confirmed. If a separate UAC window opened, check that window for the result'
     }
+} catch {
+    # Delay propagation until preferences have been restored. Otherwise a
+    # native launch error can resume under the caller's Continue preference
+    # after finally and fall through to a misleading empty exit-code error.
+    $bootstrapError = $_
 } finally {
     # The installer child has already inherited the exported defaults; undo
     # them so an `irm | iex` run leaves the caller's session untouched.
@@ -235,6 +234,13 @@ try {
     $ErrorActionPreference = $script:SavedErrorActionPreference
 }
 
+if ($null -ne $bootstrapError) {
+    if ($script:InvokedFromFile) {
+        [Console]::Error.WriteLine($bootstrapError.Exception.Message)
+        exit 1
+    }
+    throw $bootstrapError
+}
 if ($script:InvokedFromFile) {
     exit $exitCode
 }

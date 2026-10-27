@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
 <title>QuickTUI 常见问题 — 安装、服务端、tmux 与 Herdr</title>
 <meta name="description" content="完整 QuickTUI FAQ：安装排错、服务端与服务配置、tmux 与 Herdr 会话、移动 App。" />
 <link rel="canonical" href="https://quicktui.ai/cn/faq/" />
@@ -16,13 +17,13 @@
 <meta property="og:title" content="QuickTUI 常见问题 — 安装、服务端、tmux 与 Herdr" />
 <meta property="og:description" content="完整 QuickTUI FAQ：安装排错、服务端与服务配置、tmux 与 Herdr 会话、移动 App。" />
 <meta property="og:url" content="https://quicktui.ai/cn/faq/" />
-<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <meta property="og:locale" content="zh_CN" />
 <meta property="og:locale:alternate" content="en_US" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="QuickTUI 常见问题 — 安装、服务端、tmux 与 Herdr" />
 <meta name="twitter:description" content="完整 QuickTUI FAQ：安装排错、服务端与服务配置、tmux 与 Herdr 会话、移动 App。" />
-<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <script>
 (() => {
   let theme = null;
@@ -37,6 +38,144 @@
 })();
 </script>
 <style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Shared site chrome (header + footer) for every page.
  * Injected inline by scripts/build.mjs; relies on the QT design tokens
  * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
@@ -191,7 +330,9 @@
   gap: 24px;
   flex-wrap: wrap;
 }
-.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
 .qt-foot .left .dot { opacity: .5; }
 .qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .qt-foot .links a { color: var(--ink-3); text-decoration: none; }
@@ -221,9 +362,6 @@ document.addEventListener('click', e => {
   if (placement) window.zaraz?.track('app_store_click', { placement });
 });
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/site.css" />
 <script type="application/ld+json">
 {
@@ -235,7 +373,7 @@ document.addEventListener('click', e => {
       "name": "安装时提示 sha256 校验失败。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "安装过程有两道校验：安装脚本校验安装器本身，提示 installer sha256 mismatch ；安装器再校验服务端文件与签名，提示 quicktui-server-… sha256 mismatch 或签名校验失败。 通常是下载中断或内容损坏，重新运行同一条安装命令即可。仍然失败时，换用另一个安装源（Global 或中国镜像）重试，并检查网络中是否有缓存或篡改下载内容的代理。 签名校验失败时请不要设法绕过，请把完整输出反馈给我们。"
+        "text": "安装器会校验服务端文件与签名，失败时提示 quicktui-server-… sha256 mismatch 或签名校验失败。 通常是下载中断或内容损坏，重新运行同一条安装命令即可。仍然失败时，换用另一个安装源（Global 或中国镜像）重试，并检查网络中是否有缓存或篡改下载内容的代理。 签名校验失败时请不要设法绕过，请把完整输出反馈给我们。"
       }
     },
     {
@@ -315,7 +453,7 @@ document.addEventListener('click', e => {
       "name": "如何查看服务端日志？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "macOS 与 Linux： # macOS tail -f ~/Library/Logs/QuickTUI/stderr.log ~/Library/Logs/QuickTUI/stdout.log # Linux（普通用户） journalctl --user -u quicktui -f # Linux（以 root 安装） journalctl -u quicktui -f Windows 上服务端不写日志文件。需要查看输出时，先停止服务，再在前台运行服务端： quicktui-server service uninstall quicktui-server serve --debug service uninstall 会同时移除 Agent hook，服务端启动时会自动恢复。排查完成后按 Ctrl+C，再运行 quicktui-server service install 让服务端回到后台运行。 需要更详细的日志时，在配置文件中设置 debug = true 后重启服务。"
+        "text": "macOS 与 Linux： # macOS tail -f ~/Library/Logs/QuickTUI/stderr.log ~/Library/Logs/QuickTUI/stdout.log # Linux（普通用户） journalctl --user -u quicktui -f # Linux（以 root 安装） journalctl -u quicktui -f Windows 上服务端不写日志文件。需要查看输出时，先停止服务，再在前台运行服务端： quicktui-server service uninstall quicktui-server serve --log-level debug service uninstall 会同时移除 Agent hook，服务端启动时会自动恢复。排查完成后按 Ctrl+C，再运行 quicktui-server service install 让服务端回到后台运行。 需要更详细的日志时，在配置文件中设置 log_level = \"debug\" 后重启服务。只看部分日志时，再设置 debug_categories ，例如 debug_categories = [\"WS\"] 。"
       }
     },
     {
@@ -352,10 +490,26 @@ document.addEventListener('click', e => {
     },
     {
       "@type": "Question",
+      "name": "配对时提示另一个 QuickTUI 服务端正在监听该端口。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "旧版 QuickTUI 服务端仍在运行，占用了监听端口（默认 8022），新版无法使用。停止旧服务后重启服务端： ~/.local/bin/quicktui-server service restart 分不清哪个是旧服务时，参见 Q.14 （root 安装与普通用户安装混用）。"
+      }
+    },
+    {
+      "@type": "Question",
       "name": "如何配对另一台设备？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "在电脑上运行配对引导： # macOS / Linux ~/.local/bin/quicktui-server pairing welcome # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server pairing welcome # Windows（PowerShell） quicktui-server pairing welcome 按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。 二维码出现后，在 App 中： 在服务器列表点 + 。 选择 其他连接方式 。 选择 扫描二维码连接已启用增强功能的电脑 ，点 下一步 。 将摄像头对准二维码，完成配对。"
+        "text": "在电脑上运行配对引导： # macOS / Linux ~/.local/bin/quicktui-server pairing welcome # Linux（以 root 安装） sudo /usr/local/bin/quicktui-server pairing welcome # Windows（PowerShell） quicktui-server pairing welcome 按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。手机扫不了码时，改选 Pairing text （中文界面为 配对文本 ，见 Q.18 ）。 二维码出现后，在 App 中： 在服务器列表点 + 。 选择 其他连接方式 。 选择 扫描二维码连接已启用增强功能的电脑 ，点 下一步 。 将摄像头对准二维码，完成配对。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "手机扫不了配对二维码怎么办？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "改用配对文本。它和二维码携带同一个一次性配对码，只是变成了一行可以复制粘贴的文本。在电脑上运行配对向导并选择 Pairing text （中文界面为 配对文本 ），或直接输出： # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --text # Windows (PowerShell) quicktui-server pairing qrcode --text 复制以 qtpair: 开头的整行文本并传到手机上，例如在手机的 SSH 会话里复制，或使用共享剪贴板。然后在 App 中： 在服务器列表中点 + 。 选择 其他连接方式 。 选择 粘贴配对文本 ，点 下一步 。 粘贴文本后点 下一步 ，确认后完成配对。终端复制带来的换行和多余空格会被自动移除。 和二维码一样，配对文本只能使用一次，15 分钟后过期。请勿分享。"
       }
     },
     {
@@ -371,7 +525,55 @@ document.addEventListener('click', e => {
       "name": "可以通过公网连接吗？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "可以。任选一种方式，让手机能访问到你的电脑： QuickTUI Relay 可选订阅，在 App 里开通即可，无需任何网络配置。 VPN 例如 Tailscale ，手机和电脑处在同一个虚拟网络里即可直连。 隧道或反向代理 例如 Cloudflare Tunnel 或带 TLS 的反向代理，指向 http://127.0.0.1:8022 ，然后在 App 里填写公网 HTTPS 域名（不带 :8022 ）。 配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。 通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码： # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows（PowerShell） quicktui-server pairing qrcode --public-url https://your.domain 隧道或反向代理需要保留原始 Host 请求头，并发送 X-Forwarded-Proto ；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。 配对二维码短期有效，请勿泄露。"
+        "text": "可以。任选一种方式，让手机能访问到你的电脑： QuickTUI Cloud 中转 无需任何网络配置。每个账号每月有免费中转流量，经常使用可订阅 QuickTUI Cloud。 VPN 例如 Tailscale ，手机和电脑处在同一个虚拟网络里即可直连。 隧道或反向代理 例如 Cloudflare Tunnel 或带 TLS 的反向代理，指向 http://127.0.0.1:8022 ，然后在 App 里填写公网 HTTPS 域名（不带 :8022 ）。 配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。 通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码： # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows（PowerShell） quicktui-server pairing qrcode --public-url https://your.domain 隧道或反向代理需要保留原始 Host 请求头，并发送 X-Forwarded-Proto ；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。 Cloudflare Tunnel、HTTPS 反向代理（nginx、Caddy）和路由器端口转发的详细设置步骤，见 远程访问指南 。 配对二维码短期有效，请勿泄露。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 提示「需要本地网络访问权限」。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "iPhone 和 iPad 默认不允许 App 访问局域网内的设备。打开 设置 → 隐私与安全性 → 本地网络 ，打开 QuickTUI ，然后回到 App 重试。服务器同时绑定了 QuickTUI Cloud 中转并使用 自动 模式时，App 会先通过中转连接。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "在家能连上，出门就连不上。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "App 使用的是局域网地址（例如 192.168.1.10 这样的 IP 或 .local 主机名），只在和电脑同一个网络时有效。先设置在任何地方都能访问的方式（见 Q.20 ），再在这台电脑的 编辑服务器 页面修改地址，不需要重新配对。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "用了 Tailscale 还是连不上。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "确认 iPhone 上的 Tailscale 已连接，并且没有同时开启其他 VPN；iOS 同一时间只能开一个 VPN。 确认电脑上的 Tailscale 已登录同一个账号。 地址使用 http:// ，端口 8022 。 如果用的是电脑的 Tailscale 名字（例如 my-mac ），改用 100.x.y.z 地址试试。如果能连上，说明 Tailscale 管理后台没有开启 MagicDNS。 如果 tailnet 设置了访问控制，需要允许手机访问电脑的 TCP 8022 端口。 在中国大陆，Tailscale 不自建 DERP 中转服务器时可能非常慢，通常改用 QuickTUI Cloud 中转更合适。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "用主机名连不上，用 IP 地址能连上。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "手机没能解析这个主机名。请检查： 使用以 .local 结尾的名字，例如 my-mac.local 。Mac 上可以在 系统设置 → 通用 → 共享 底部的 本地主机名 中查看。 确认手机和电脑在同一个网络，并且 QuickTUI 有本地网络权限（见 Q.21 ）。 Linux 电脑需要运行 Avahi（mDNS）。Ubuntu 桌面版默认自带；服务器版需安装 avahi-daemon 。 手机通常无法解析 Windows 主机名，请改用 IP 地址或 Tailscale 地址。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 提示此设备与服务器的配对已失效。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "这台设备在电脑上被撤销了配对，或者服务端身份已通过 pairing identity rotate 更换。打开这台电脑的 编辑服务器 页面，点 重新配对 并扫描新的二维码（见 Q.17 ），或粘贴新的配对文本（见 Q.18 ）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "通过隧道或反向代理连接时，App 显示 HTTP 状态码。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "App 无法通过隧道或反向代理读取服务端能力信息。404 通常表示代理没有把根路径下的所有请求转发给服务端；502 或 503 通常表示代理连不上服务端，或服务端没有运行。隧道和代理需要满足的条件见 远程访问指南 。"
       }
     },
     {
@@ -379,7 +581,7 @@ document.addEventListener('click', e => {
       "name": "QuickTUI 如何认证设备？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "QuickTUI 通过设备配对来认证，全程端到端加密： 配对时 配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。 设备密钥 每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。 每次连接 App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。 经 Relay 转发时 QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。 撤销设备 手机丢失或不再使用时，在电脑上撤销它： # 列出已配对设备 ~/.local/bin/quicktui-server pairing devices list # 撤销指定设备 ~/.local/bin/quicktui-server pairing devices revoke <设备 ID> 撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 quicktui-server 开头。"
+        "text": "QuickTUI 通过设备配对来认证，全程端到端加密： 配对时 配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。 设备密钥 每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。 每次连接 App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。 经 QuickTUI Cloud 中转时 中转服务只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，中转服务在投递时会短暂看到通知文字。 撤销设备 手机丢失或不再使用时，在电脑上撤销它： # 列出已配对设备 ~/.local/bin/quicktui-server pairing devices list # 撤销指定设备 ~/.local/bin/quicktui-server pairing devices revoke <设备 ID> 撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 quicktui-server 开头。"
       }
     },
     {
@@ -387,7 +589,7 @@ document.addEventListener('click', e => {
       "name": "工作区列表是空的。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "列表显示电脑上所有已启用后端（Herdr、tmux 或两者）中的工作区。列表为空时，点右上角 [+] 新建一个工作区；有多个后端可用时，会先让你选择后端。 服务端会在需要时自动启动 Herdr 或 tmux。App 提示「服务器已连接，但没有可用的会话后端」时，说明电脑上还没有 Herdr 或 tmux，请先安装其中一个（见 Q.04 与 Q.05 ），再重启服务。 推荐使用 Herdr。 它与 Agent 的集成更好、性能更出色，也是安装器在两者都没有时默认安装的后端。Herdr 与 tmux 同时可用时，服务端默认使用 Herdr（见 Q.23 ）。 在电脑上已有的工作区会自动出现在列表中：在本机 Herdr 中新建的工作区，刷新列表后即可看到；tmux 会话也一样，例如： tmux new-session -s mysession"
+        "text": "列表显示电脑上所有已启用后端（Herdr、tmux 或两者）中的工作区。列表为空时，点右上角 [+] 新建一个工作区；有多个后端可用时，会先让你选择后端。 服务端会在需要时自动启动 Herdr 或 tmux。App 提示「服务器已连接，但没有可用的会话后端」时，说明电脑上还没有 Herdr 或 tmux，请先安装其中一个（见 Q.04 与 Q.05 ），再重启服务。 推荐使用 Herdr。 它与 Agent 的集成更好、性能更出色，也是安装器在两者都没有时默认安装的后端。Herdr 与 tmux 同时可用时，服务端默认使用 Herdr（见 Q.31 ）。 在电脑上已有的工作区会自动出现在列表中：在本机 Herdr 中新建的工作区，刷新列表后即可看到；tmux 会话也一样，例如： tmux new-session -s mysession"
       }
     },
     {
@@ -395,7 +597,7 @@ document.addEventListener('click', e => {
       "name": "App 提示没有可用的会话后端，或显示后端错误。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "说明服务端找不到可用的 tmux 或 Herdr，或者无法启动它们。按以下顺序排查： 确认电脑上已安装 Herdr 或 tmux，安装方法见 Q.04 与 Q.05 。 在电脑上运行 doctor ，查看 tmux、Herdr 与各 Agent 的查找结果： ~/.local/bin/quicktui-server doctor 如果在配置文件中设置了 tmux_bin 或 herdr_bin ，确认它们是指向真实程序的绝对路径；tmux 需要 3.2 及以上版本。修改后重启服务。 仍未解决时，查看服务端日志，见 Q.11 。"
+        "text": "说明服务端找不到可用的 tmux 或 Herdr，或者无法启动它们。按以下顺序排查： 确认电脑上已安装 Herdr 或 tmux，安装方法见 Q.04 与 Q.05 。 App 提示「服务器已连接，但没有可用的会话后端」时，也可以直接点 安装 Herdr 或 安装 tmux （Windows 上只能安装 Herdr），由服务端自动安装，完成后 App 会自动重新连接。 在电脑上运行 doctor ，查看 tmux、Herdr 与各 Agent 的查找结果： ~/.local/bin/quicktui-server doctor 如果在配置文件中设置了 tmux_bin 或 herdr_bin ，确认它们是指向真实程序的绝对路径；tmux 需要 3.2 及以上版本。修改后重启服务。 仍未解决时，查看服务端日志，见 Q.11 。"
       }
     },
     {
@@ -419,7 +621,23 @@ document.addEventListener('click', e => {
       "name": "在 tmux 中运行 Agent 后，回滚历史出现重复或错位的文字。",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Claude Code、Codex 等 Agent 使用全屏界面。如果它在终端的主屏幕而不是备用屏幕（alternate screen）上绘制，每次重绘都会写进 tmux 的回滚历史，表现为重复或错位的文字。解决方法是让 Agent 改用备用屏幕： Claude Code ：运行 /tui fullscreen （v2.1.89 及以上）。要对所有会话默认生效，在 ~/.claude/settings.json 的 env 小节中加入 CLAUDE_CODE_NO_FLICKER ，文件已有其他内容时合并进去即可： { \"env\": { \"CLAUDE_CODE_NO_FLICKER\": \"1\" } } Codex ：由配置项 tui.alternate_screen 控制（默认 auto ）。如果设成了 never ，在 ~/.codex/config.toml 中改为 always ： [tui] alternate_screen = \"always\" Grok Build ：在 ~/.grok/pager.toml 中设置 alt_screen = \"always\" 。 Pi ：在 /settings 中从普通模式切换到全屏模式。 aider ：默认使用备用屏幕，检查启动参数（如 --no-fancy-input ）是否关闭了它。 已经写进回滚历史的内容可以清除： tmux clear-history 在 App 中切换到 tmux 里仍以主屏幕绘制的 Claude Code、Codex 或 aider 窗格时，App 会显示提示横幅（同一窗格 60 秒内最多一次），点击可打开本条说明。"
+        "text": "Claude Code、Codex 等 Agent 使用全屏界面。如果它在终端的主屏幕而不是备用屏幕（alternate screen）上绘制，每次重绘都会写进 tmux 的回滚历史，表现为重复或错位的文字。解决方法是让 Agent 改用备用屏幕： Claude Code ：运行 /tui fullscreen （v2.1.89 及以上）。要对所有会话默认生效，在 ~/.claude/settings.json 的 env 小节中加入 CLAUDE_CODE_NO_FLICKER ，文件已有其他内容时合并进去即可： { \"env\": { \"CLAUDE_CODE_NO_FLICKER\": \"1\" } } Codex ：由配置项 tui.alternate_screen 控制（默认 auto ）。如果设成了 never ，在 ~/.codex/config.toml 中改为 always ： [tui] alternate_screen = \"always\" Grok Build ：在 ~/.grok/pager.toml 中设置 alt_screen = \"always\" 。 Pi ：在 /settings 中从普通模式切换到全屏模式。 aider ：默认使用备用屏幕，检查启动参数（如 --no-fancy-input ）是否关闭了它。 已经写进回滚历史的内容可以清除： tmux clear-history 如果 Claude Code 或 Codex 的配置文件没有开启全屏模式，App 会在打开终端时显示提示横幅，见 Q.33 和 Q.34 。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 提示 Claude Code 未开启全屏模式。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "服务端每小时读取一次电脑上的 ~/.claude/settings.json （确认设置正确后改为每天一次）。如果 Claude Code 没有设置为全屏模式（使用备用屏幕），App 会在打开终端时显示这条横幅，每天最多一次。不开启全屏模式时，Claude Code 的输出在远程终端里可能重复或错位（见 Q.32 ）。服务端只读取该文件，不会修改它。开启全屏模式有两种方法，任选其一： 在 Claude Code 中运行 /tui fullscreen （v2.1.89 及以上）。 在 ~/.claude/settings.json 中加入 \"tui\": \"fullscreen\" ，文件已有其他内容时合并进去即可： { \"tui\": \"fullscreen\" } 在同一文件的 env 小节中把 CLAUDE_CODE_NO_FLICKER 设为 1 也算已开启。如果 env 小节中设置了 CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN ，请删除它，它会关闭全屏模式。服务端只检查 ~/.claude/settings.json ，看不到在 shell 中 export 的变量或其他配置目录；这种情况下即使全屏模式已生效，也可能出现横幅，关闭即可。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 提示 Codex 未开启全屏模式。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "服务端每小时读取一次电脑上的 ~/.codex/config.toml （确认设置正确后改为每天一次）。如果 [tui] 下的 alternate_screen 为 never ，Codex 会在主屏幕上绘制，输出在远程终端里可能重复或错位（见 Q.32 ），App 会在打开终端时显示这条横幅，每天最多一次。服务端只读取该文件，不会修改它。请把该设置改为 always ，或删除这一行以使用默认值 auto ： [tui] alternate_screen = \"always\" 启动参数 --no-alt-screen 也会在本次运行中关闭全屏模式，启动 Codex 时不要传入它。"
       }
     },
     {
@@ -436,6 +654,22 @@ document.addEventListener('click', e => {
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "服务端为会话设置的 TERM 默认为 xterm-256color ，电脑缺少对应 terminfo 时会自动回退。如果你修改过 term 配置（例如改成 xterm-ghostty ），而电脑上的 tmux 不支持它，就可能出现渲染错乱。改回默认值即可，服务会自动重启： ~/.local/bin/quicktui-server config set --term xterm-256color Herdr 后端始终使用 xterm-256color ，不受此配置影响。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Agent 向导中某个 Agent 名字显示为警告颜色。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "服务端找不到这个 Agent 的可执行文件。服务端以后台服务运行，它的 PATH 可能与你的登录 shell 不同。先运行 doctor 查看它检查了哪些位置： ~/.local/bin/quicktui-server doctor 然后在配置文件的 [agent_bins] 中写上 Agent 的完整路径（例如用 which claude 查到的路径），再重启服务： [agent_bins] claude = \"/opt/homebrew/bin/claude\""
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "App 中看不到 Agent 的实时状态。",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Agent 状态来自安装器为各 Agent 添加的 hooks。Codex 需要在 Codex CLI 中运行 /hooks 信任它们；OpenCode 需要重启一次。其他情况可以重新安装 hooks： ~/.local/bin/quicktui-server hooks install"
       }
     },
     {
@@ -459,7 +693,7 @@ document.addEventListener('click', e => {
       "name": "Agent 通知会发送哪些数据？如何关闭？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Agent 通知需要服务端已连接 QuickTUI Relay，并且 Agent hook 已安装。通知由服务端经 Relay 转交 Apple 或 Google 的推送服务投递到手机。 默认情况下，通知只包含事件类别，例如「Agent 需要审批」「任务已完成」「Agent 出错」「会话已结束」，不含项目名、会话名或任务内容。可选开启的附加内容包括 Agent 类型、项目名、会话标识和任务或错误摘要。通知不会包含完整的终端输出、源代码或凭据。 要停止接收通知，在 iPhone 或 Android 的系统设置中关闭 QuickTUI 的通知权限即可。"
+        "text": "Agent 通知需要服务端已绑定 QuickTUI Cloud 中转，并且 Agent hook 已安装。通知由服务端经 QuickTUI Cloud 转交 Apple 或 Google 的推送服务投递到手机。 默认情况下，通知只包含事件类别，例如「Agent 需要审批」「任务已完成」「Agent 出错」「会话已结束」，不含项目名、会话名或任务内容。可选开启的附加内容包括 Agent 类型、项目名、会话标识和任务或错误摘要。通知不会包含完整的终端输出、源代码或凭据。 要停止接收通知，在 iPhone 或 Android 的系统设置中关闭 QuickTUI 的通知权限即可。"
       }
     },
     {
@@ -507,6 +741,7 @@ document.addEventListener('click', e => {
         <a href="/cn/#quick-start">快速开始</a>
         <a href="/cn/#action">增强能力展示</a>
         <a href="/cn/install/">安装</a>
+        <a href="/cn/guide/">用户指南</a>
         <a href="/cn/compare/">对比</a>
         <a href="/cn/faq/">常见问题</a>
       </nav>
@@ -516,7 +751,7 @@ document.addEventListener('click', e => {
         </nav>
         <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
-        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
         <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
       </div>
     </div>
@@ -540,7 +775,7 @@ document.addEventListener('click', e => {
 
 <h2 id="installation">安装</h2>
 <h3 id="q-checksum">Q.01 — 安装时提示 sha256 校验失败。</h3>
-<p>安装过程有两道校验：安装脚本校验安装器本身，提示 <span class="mono">installer sha256 mismatch</span>；安装器再校验服务端文件与签名，提示 <span class="mono">quicktui-server-… sha256 mismatch</span> 或签名校验失败。</p><p>通常是下载中断或内容损坏，重新运行同一条安装命令即可。仍然失败时，换用另一个安装源（Global 或中国镜像）重试，并检查网络中是否有缓存或篡改下载内容的代理。</p><p class="note">签名校验失败时请不要设法绕过，请把完整输出反馈给我们。</p>
+<p>安装器会校验服务端文件与签名，失败时提示 <span class="mono">quicktui-server-… sha256 mismatch</span> 或签名校验失败。</p><p>通常是下载中断或内容损坏，重新运行同一条安装命令即可。仍然失败时，换用另一个安装源（Global 或中国镜像）重试，并检查网络中是否有缓存或篡改下载内容的代理。</p><p class="note">签名校验失败时请不要设法绕过，请把完整输出反馈给我们。</p>
 <h3 id="q-need-backend">Q.02 — 需要先安装 Herdr 或 tmux 吗？</h3>
 <p>需要。QuickTUI 服务端至少需要 Herdr 或 tmux（3.2 及以上）其中一个，推荐使用 Herdr（原因见 <a href="#q-why-herdr-tmux">Q.03</a>）。</p><p>安装时如果电脑上已有其中一个，安装器会直接使用；两者都没有时，安装器会尝试从 Herdr 官方源自动安装 Herdr，装到 <span class="path">~/.local/bin/herdr</span>（以 root 安装时为 <span class="path">/root/.local/bin/herdr</span>）。Windows 上只支持 Herdr，Microsoft Store 中的 QuickTUI Server 不会安装它，请先自行安装 Herdr（见 <a href="#q-install-herdr">Q.04</a>）。</p><p>自动安装失败时（例如网络无法访问 Herdr 官方源），安装器只给出警告，服务端照常安装，但在装好 Herdr 或 tmux 之前无法使用会话。请手动安装其中一个（见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>），再重新运行安装命令。</p>
 <h3 id="q-why-herdr-tmux">Q.03 — 为什么要使用 Herdr 或 tmux？</h3>
@@ -603,7 +838,7 @@ journalctl --user -u quicktui -f
 
 <span class="com"># Linux（以 root 安装）</span>
 journalctl -u quicktui -f</pre><p>Windows 上服务端不写日志文件。需要查看输出时，先停止服务，再在前台运行服务端：</p><pre class="cmd">quicktui-server service uninstall
-quicktui-server serve --debug</pre><p class="note"><code>service uninstall</code> 会同时移除 Agent hook，服务端启动时会自动恢复。排查完成后按 Ctrl+C，再运行 <code>quicktui-server service install</code> 让服务端回到后台运行。</p><p>需要更详细的日志时，在配置文件中设置 <code>debug = true</code> 后重启服务。</p>
+quicktui-server serve --log-level debug</pre><p class="note"><code>service uninstall</code> 会同时移除 Agent hook，服务端启动时会自动恢复。排查完成后按 Ctrl+C，再运行 <code>quicktui-server service install</code> 让服务端回到后台运行。</p><p>需要更详细的日志时，在配置文件中设置 <code>log_level = &quot;debug&quot;</code> 后重启服务。只看部分日志时，再设置 <code>debug_categories</code>，例如 <code>debug_categories = [&quot;WS&quot;]</code>。</p>
 <h3 id="q-uninstall">Q.12 — 如何卸载 QuickTUI？</h3>
 <p>在 macOS 和 Linux 上，在安装命令后加 <code>uninstall</code>：</p><pre class="cmd">curl -fsSL https://quicktui.ai/q.sh | sh -s -- uninstall</pre><p>卸载会移除后台服务与 Agent hook，服务端程序和配置（含配对记录）会保留。在 Windows 上，先在 PowerShell 中运行 <code>quicktui-server service uninstall</code>，再到「设置 &gt; 应用 &gt; 已安装的应用」中卸载 <b>QuickTUI Server</b>，配置与配对记录会保留。需要完全移除时，参见安装指南的<a href="/cn/install/#uninstall">卸载</a>。</p>
 <h3 id="q-linux-root-install">Q.13 — Linux 上可以用 root 安装 QuickTUI 吗？</h3>
@@ -631,9 +866,11 @@ systemctl --user restart quicktui</pre>
 <p>如果系统本身没有以 systemd 启动（部分容器、未启用 systemd 的 WSL），用户服务和 linger 都无法使用，请改用 root 安装，或先为系统启用 systemd。</p>
 <p><b>确认已开启</b>：输出 <code>Linger=yes</code> 即可。</p>
 <pre class="cmd">loginctl show-user "$USER" --property=Linger</pre><p>开启后服务端会开机自启并常驻运行，与是否登录无关。以 root 安装的系统服务不受此影响。</p>
+<h3 id="q-port-in-use">Q.16 — 配对时提示另一个 QuickTUI 服务端正在监听该端口。</h3>
+<p>旧版 QuickTUI 服务端仍在运行，占用了监听端口（默认 8022），新版无法使用。停止旧服务后重启服务端：</p><pre class="cmd">~/.local/bin/quicktui-server service restart</pre><p>分不清哪个是旧服务时，参见 <a href="#q-linux-mixed-identity">Q.14</a>（root 安装与普通用户安装混用）。</p>
 
 <h2 id="connecting-pairing">连接与配对</h2>
-<h3 id="q-pair-device">Q.16 — 如何配对另一台设备？</h3>
+<h3 id="q-pair-device">Q.17 — 如何配对另一台设备？</h3>
 <p>在电脑上运行配对引导：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
 ~/.local/bin/quicktui-server pairing welcome
 
@@ -641,8 +878,14 @@ systemctl --user restart quicktui</pre>
 sudo /usr/local/bin/quicktui-server pairing welcome
 
 <span class="com"># Windows（PowerShell）</span>
-quicktui-server pairing welcome</pre><p>按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。</p><p>二维码出现后，在 App 中：</p><ol class="steps"><li>在服务器列表点 <b>+</b>。</li><li>选择 <b>其他连接方式</b>。</li><li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li><li>将摄像头对准二维码，完成配对。</li></ol>
-<h3 id="q-connection-refused">Q.17 — 无法连接 — connection refused。</h3>
+quicktui-server pairing welcome</pre><p>按引导选择显示二维码的方式：推荐在桌面浏览器中显示；也可以直接在终端中显示，但部分终端字体可能导致二维码无法识别。手机扫不了码时，改选 <b>Pairing text</b>（中文界面为<b>配对文本</b>，见 <a href="#q-cant-scan">Q.18</a>）。</p><p>二维码出现后，在 App 中：</p><ol class="steps"><li>在服务器列表点 <b>+</b>。</li><li>选择 <b>其他连接方式</b>。</li><li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li><li>将摄像头对准二维码，完成配对。</li></ol>
+<h3 id="q-cant-scan">Q.18 — 手机扫不了配对二维码怎么办？</h3>
+<p>改用配对文本。它和二维码携带同一个一次性配对码，只是变成了一行可以复制粘贴的文本。在电脑上运行配对向导并选择 <b>Pairing text</b>（中文界面为<b>配对文本</b>），或直接输出：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+~/.local/bin/quicktui-server pairing qrcode --text
+
+<span class="com"># Windows (PowerShell)</span>
+quicktui-server pairing qrcode --text</pre><p>复制以 <span class="mono">qtpair:</span> 开头的整行文本并传到手机上，例如在手机的 SSH 会话里复制，或使用共享剪贴板。然后在 App 中：</p><ol class="steps"><li>在服务器列表中点 <b>+</b>。</li><li>选择<b>其他连接方式</b>。</li><li>选择<b>粘贴配对文本</b>，点<b>下一步</b>。</li><li>粘贴文本后点<b>下一步</b>，确认后完成配对。终端复制带来的换行和多余空格会被自动移除。</li></ol><p class="note">和二维码一样，配对文本只能使用一次，15 分钟后过期。请勿分享。</p>
+<h3 id="q-connection-refused">Q.19 — 无法连接 — connection refused。</h3>
 <p>先确认服务端正在运行：</p><pre class="cmd"><span class="com"># macOS</span>
 launchctl print gui/$(id -u)/ai.quicktui
 
@@ -661,27 +904,39 @@ sudo systemctl restart quicktui
 
 <span class="com"># Windows（PowerShell）</span>
 quicktui-server service restart</pre><p>服务在运行但仍然被拒绝时，请确认防火墙、VPN 或隧道放行了服务端端口（默认 8022）。</p>
-<h3 id="q-internet">Q.18 — 可以通过公网连接吗？</h3>
-<p>可以。任选一种方式，让手机能访问到你的电脑：</p><dl class="ref-list"><dt>QuickTUI Relay</dt><dd>可选订阅，在 App 里开通即可，无需任何网络配置。</dd><dt>VPN</dt><dd>例如 <b>Tailscale</b>，手机和电脑处在同一个虚拟网络里即可直连。</dd><dt>隧道或反向代理</dt><dd>例如 <b>Cloudflare Tunnel</b> 或带 TLS 的反向代理，指向 <span class="mono">http://127.0.0.1:8022</span>，然后在 App 里填写公网 HTTPS 域名（不带 <span class="mono">:8022</span>）。</dd></dl><p>配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。</p><p>通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+<h3 id="q-internet">Q.20 — 可以通过公网连接吗？</h3>
+<p>可以。任选一种方式，让手机能访问到你的电脑：</p><dl class="ref-list"><dt>QuickTUI Cloud 中转</dt><dd>无需任何网络配置。每个账号每月有免费中转流量，经常使用可订阅 QuickTUI Cloud。</dd><dt>VPN</dt><dd>例如 <b>Tailscale</b>，手机和电脑处在同一个虚拟网络里即可直连。</dd><dt>隧道或反向代理</dt><dd>例如 <b>Cloudflare Tunnel</b> 或带 TLS 的反向代理，指向 <span class="mono">http://127.0.0.1:8022</span>，然后在 App 里填写公网 HTTPS 域名（不带 <span class="mono">:8022</span>）。</dd></dl><p>配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。</p><p>通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
 ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain
 
 <span class="com"># Windows（PowerShell）</span>
-quicktui-server pairing qrcode --public-url https://your.domain</pre><p>隧道或反向代理需要保留原始 <span class="mono">Host</span> 请求头，并发送 <span class="mono">X-Forwarded-Proto</span>；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。</p><p class="note">配对二维码短期有效，请勿泄露。</p>
-<h3 id="q-device-auth">Q.19 — QuickTUI 如何认证设备？</h3>
-<p>QuickTUI 通过设备配对来认证，全程端到端加密：</p><dl class="ref-list"><dt>配对时</dt><dd>配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。</dd><dt>设备密钥</dt><dd>每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。</dd><dt>每次连接</dt><dd>App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。</dd><dt>经 Relay 转发时</dt><dd>QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。</dd><dt>撤销设备</dt><dd>手机丢失或不再使用时，在电脑上撤销它：<pre class="cmd"><span class="com"># 列出已配对设备</span>
+quicktui-server pairing qrcode --public-url https://your.domain</pre><p>隧道或反向代理需要保留原始 <span class="mono">Host</span> 请求头，并发送 <span class="mono">X-Forwarded-Proto</span>；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。</p><p>Cloudflare Tunnel、HTTPS 反向代理（nginx、Caddy）和路由器端口转发的详细设置步骤，见<a href="/cn/guides/remote-access/">远程访问指南</a>。</p><p class="note">配对二维码短期有效，请勿泄露。</p>
+<h3 id="q-local-network">Q.21 — App 提示「需要本地网络访问权限」。</h3>
+<p>iPhone 和 iPad 默认不允许 App 访问局域网内的设备。打开 <b>设置 → 隐私与安全性 → 本地网络</b>，打开 <b>QuickTUI</b>，然后回到 App 重试。服务器同时绑定了 QuickTUI Cloud 中转并使用<b>自动</b>模式时，App 会先通过中转连接。</p>
+<h3 id="q-away-from-home">Q.22 — 在家能连上，出门就连不上。</h3>
+<p>App 使用的是局域网地址（例如 <span class="mono">192.168.1.10</span> 这样的 IP 或 <span class="mono">.local</span> 主机名），只在和电脑同一个网络时有效。先设置在任何地方都能访问的方式（见 <a href="#q-internet">Q.20</a>），再在这台电脑的<b>编辑服务器</b>页面修改地址，不需要重新配对。</p>
+<h3 id="q-tailscale">Q.23 — 用了 Tailscale 还是连不上。</h3>
+<ol class="steps"><li>确认 iPhone 上的 Tailscale 已连接，并且没有同时开启其他 VPN；iOS 同一时间只能开一个 VPN。</li><li>确认电脑上的 Tailscale 已登录同一个账号。</li><li>地址使用 <span class="mono">http://</span>，端口 <span class="mono">8022</span>。</li><li>如果用的是电脑的 Tailscale 名字（例如 <span class="mono">my-mac</span>），改用 <span class="mono">100.x.y.z</span> 地址试试。如果能连上，说明 Tailscale 管理后台没有开启 MagicDNS。</li><li>如果 tailnet 设置了访问控制，需要允许手机访问电脑的 TCP 8022 端口。</li></ol><p>在中国大陆，Tailscale 不自建 DERP 中转服务器时可能非常慢，通常改用 QuickTUI Cloud 中转更合适。</p>
+<h3 id="q-hostname">Q.24 — 用主机名连不上，用 IP 地址能连上。</h3>
+<p>手机没能解析这个主机名。请检查：</p><ol class="steps"><li>使用以 <span class="mono">.local</span> 结尾的名字，例如 <span class="mono">my-mac.local</span>。Mac 上可以在 <b>系统设置 → 通用 → 共享</b> 底部的<b>本地主机名</b>中查看。</li><li>确认手机和电脑在同一个网络，并且 QuickTUI 有本地网络权限（见 <a href="#q-local-network">Q.21</a>）。</li><li>Linux 电脑需要运行 Avahi（mDNS）。Ubuntu 桌面版默认自带；服务器版需安装 <span class="mono">avahi-daemon</span>。</li><li>手机通常无法解析 Windows 主机名，请改用 IP 地址或 Tailscale 地址。</li></ol>
+<h3 id="q-pairing-invalid">Q.25 — App 提示此设备与服务器的配对已失效。</h3>
+<p>这台设备在电脑上被撤销了配对，或者服务端身份已通过 <span class="mono">pairing identity rotate</span> 更换。打开这台电脑的<b>编辑服务器</b>页面，点<b>重新配对</b>并扫描新的二维码（见 <a href="#q-pair-device">Q.17</a>），或粘贴新的配对文本（见 <a href="#q-cant-scan">Q.18</a>）。</p>
+<h3 id="q-capability-http-status">Q.26 — 通过隧道或反向代理连接时，App 显示 HTTP 状态码。</h3>
+<p>App 无法通过隧道或反向代理读取服务端能力信息。404 通常表示代理没有把根路径下的所有请求转发给服务端；502 或 503 通常表示代理连不上服务端，或服务端没有运行。隧道和代理需要满足的条件见<a href="/cn/guides/remote-access/">远程访问指南</a>。</p>
+<h3 id="q-device-auth">Q.27 — QuickTUI 如何认证设备？</h3>
+<p>QuickTUI 通过设备配对来认证，全程端到端加密：</p><dl class="ref-list"><dt>配对时</dt><dd>配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。</dd><dt>设备密钥</dt><dd>每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。</dd><dt>每次连接</dt><dd>App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。</dd><dt>经 QuickTUI Cloud 中转时</dt><dd>中转服务只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，中转服务在投递时会短暂看到通知文字。</dd><dt>撤销设备</dt><dd>手机丢失或不再使用时，在电脑上撤销它：<pre class="cmd"><span class="com"># 列出已配对设备</span>
 ~/.local/bin/quicktui-server pairing devices list
 
 <span class="com"># 撤销指定设备</span>
 ~/.local/bin/quicktui-server pairing devices revoke &lt;设备 ID&gt;</pre><p class="note">撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 <span class="mono">quicktui-server</span> 开头。</p></dd></dl>
 
 <h2 id="sessions">会话</h2>
-<h3 id="q-empty-workspaces">Q.20 — 工作区列表是空的。</h3>
-<p>列表显示电脑上所有已启用后端（Herdr、tmux 或两者）中的工作区。列表为空时，点右上角 <b>[+]</b> 新建一个工作区；有多个后端可用时，会先让你选择后端。</p><p>服务端会在需要时自动启动 Herdr 或 tmux。App 提示「服务器已连接，但没有可用的会话后端」时，说明电脑上还没有 Herdr 或 tmux，请先安装其中一个（见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>），再重启服务。</p><p><b>推荐使用 Herdr。</b>它与 Agent 的集成更好、性能更出色，也是安装器在两者都没有时默认安装的后端。Herdr 与 tmux 同时可用时，服务端默认使用 Herdr（见 <a href="#q-herdr-backend">Q.23</a>）。</p><p>在电脑上已有的工作区会自动出现在列表中：在本机 Herdr 中新建的工作区，刷新列表后即可看到；tmux 会话也一样，例如：</p><pre class="cmd">tmux new-session -s mysession</pre>
-<h3 id="q-no-backend">Q.21 — App 提示没有可用的会话后端，或显示后端错误。</h3>
-<p>说明服务端找不到可用的 tmux 或 Herdr，或者无法启动它们。按以下顺序排查：</p><ol class="steps"><li>确认电脑上已安装 Herdr 或 tmux，安装方法见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>。</li><li>在电脑上运行 <code>doctor</code>，查看 tmux、Herdr 与各 Agent 的查找结果：<pre class="cmd">~/.local/bin/quicktui-server doctor</pre></li><li>如果在配置文件中设置了 <code>tmux_bin</code> 或 <code>herdr_bin</code>，确认它们是指向真实程序的绝对路径；tmux 需要 3.2 及以上版本。修改后重启服务。</li><li>仍未解决时，查看服务端日志，见 <a href="#q-logs">Q.11</a>。</li></ol>
-<h3 id="q-workspace-closed">Q.22 — App 提示「工作区已经关闭」。</h3>
+<h3 id="q-empty-workspaces">Q.28 — 工作区列表是空的。</h3>
+<p>列表显示电脑上所有已启用后端（Herdr、tmux 或两者）中的工作区。列表为空时，点右上角 <b>[+]</b> 新建一个工作区；有多个后端可用时，会先让你选择后端。</p><p>服务端会在需要时自动启动 Herdr 或 tmux。App 提示「服务器已连接，但没有可用的会话后端」时，说明电脑上还没有 Herdr 或 tmux，请先安装其中一个（见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>），再重启服务。</p><p><b>推荐使用 Herdr。</b>它与 Agent 的集成更好、性能更出色，也是安装器在两者都没有时默认安装的后端。Herdr 与 tmux 同时可用时，服务端默认使用 Herdr（见 <a href="#q-herdr-backend">Q.31</a>）。</p><p>在电脑上已有的工作区会自动出现在列表中：在本机 Herdr 中新建的工作区，刷新列表后即可看到；tmux 会话也一样，例如：</p><pre class="cmd">tmux new-session -s mysession</pre>
+<h3 id="q-no-backend">Q.29 — App 提示没有可用的会话后端，或显示后端错误。</h3>
+<p>说明服务端找不到可用的 tmux 或 Herdr，或者无法启动它们。按以下顺序排查：</p><ol class="steps"><li>确认电脑上已安装 Herdr 或 tmux，安装方法见 <a href="#q-install-herdr">Q.04</a> 与 <a href="#q-install-tmux">Q.05</a>。 App 提示「服务器已连接，但没有可用的会话后端」时，也可以直接点<b>安装 Herdr</b>或<b>安装 tmux</b>（Windows 上只能安装 Herdr），由服务端自动安装，完成后 App 会自动重新连接。</li><li>在电脑上运行 <code>doctor</code>，查看 tmux、Herdr 与各 Agent 的查找结果：<pre class="cmd">~/.local/bin/quicktui-server doctor</pre></li><li>如果在配置文件中设置了 <code>tmux_bin</code> 或 <code>herdr_bin</code>，确认它们是指向真实程序的绝对路径；tmux 需要 3.2 及以上版本。修改后重启服务。</li><li>仍未解决时，查看服务端日志，见 <a href="#q-logs">Q.11</a>。</li></ol>
+<h3 id="q-workspace-closed">Q.30 — App 提示「工作区已经关闭」。</h3>
 <p>正在打开的工作区已不存在。常见原因是工作区在电脑上被关闭，或 tmux / Herdr 重启过，原来的工作区标识随之失效。返回列表，重新选择或点 <b>[+]</b> 新建工作区即可。</p><p>服务端正在升级或重启时也可能短暂出现，稍等片刻重新连接即可。</p>
-<h3 id="q-herdr-backend">Q.23 — QuickTUI 支持 Herdr 吗？</h3>
+<h3 id="q-herdr-backend">Q.31 — QuickTUI 支持 Herdr 吗？</h3>
 <p>支持。tmux 与 Herdr 都是会话后端，可以同时启用。服务端每次启动时会自动检测电脑上的 tmux 与 Herdr 并启用它们；Herdr 可用时默认使用 Herdr。安装 Herdr 后重启服务，它就会出现在 App 中：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
 ~/.local/bin/quicktui-server service restart
 
@@ -690,37 +945,50 @@ sudo /usr/local/bin/quicktui-server service restart
 
 <span class="com"># Windows（PowerShell）</span>
 quicktui-server service restart</pre><p>除 tmux 与 Herdr 外，QuickTUI 也支持 Luvus 后端，它不会被自动检测，需要在配置文件的 <code>session_backends</code> 中手动加入 <code>luvus</code> 并设置 <code>luvus_bin</code>。需要更改默认后端时，编辑配置文件中的 <code>session_backend</code>，详见安装指南的<a href="/cn/install/#config">配置文件</a>。Windows 始终使用 Herdr；原生 Windows 与 ARM64 电脑上的 Herdr 尚未完成全面验证。</p>
-<h3 id="q-tmux-tui-fullscreen">Q.24 — 在 tmux 中运行 Agent 后，回滚历史出现重复或错位的文字。</h3>
+<h3 id="q-tmux-tui-fullscreen">Q.32 — 在 tmux 中运行 Agent 后，回滚历史出现重复或错位的文字。</h3>
 <p>Claude Code、Codex 等 Agent 使用全屏界面。如果它在终端的主屏幕而不是备用屏幕（alternate screen）上绘制，每次重绘都会写进 tmux 的回滚历史，表现为重复或错位的文字。解决方法是让 Agent 改用备用屏幕：</p><ul><li><b>Claude Code</b>：运行 <code>/tui fullscreen</code>（v2.1.89 及以上）。要对所有会话默认生效，在 <span class="path">~/.claude/settings.json</span> 的 <code>env</code> 小节中加入 <code>CLAUDE_CODE_NO_FLICKER</code>，文件已有其他内容时合并进去即可：<pre class="cmd">{
   "env": {
     "CLAUDE_CODE_NO_FLICKER": "1"
   }
 }</pre></li><li><b>Codex</b>：由配置项 <code>tui.alternate_screen</code> 控制（默认 <code>auto</code>）。如果设成了 <code>never</code>，在 <span class="path">~/.codex/config.toml</span> 中改为 <code>always</code>：<pre class="cmd">[tui]
-alternate_screen = "always"</pre></li><li><b>Grok Build</b>：在 <span class="path">~/.grok/pager.toml</span> 中设置 <code>alt_screen = "always"</code>。</li><li><b>Pi</b>：在 <code>/settings</code> 中从普通模式切换到全屏模式。</li><li><b>aider</b>：默认使用备用屏幕，检查启动参数（如 <code>--no-fancy-input</code>）是否关闭了它。</li></ul><p>已经写进回滚历史的内容可以清除：</p><pre class="cmd">tmux clear-history</pre><p>在 App 中切换到 tmux 里仍以主屏幕绘制的 Claude Code、Codex 或 aider 窗格时，App 会显示提示横幅（同一窗格 60 秒内最多一次），点击可打开本条说明。</p>
-<h3 id="q-osc-color-leak">Q.25 — 终端应用的输入框里反复出现 11;rgb:2828/2c2c/3434 这类乱码。</h3>
+alternate_screen = "always"</pre></li><li><b>Grok Build</b>：在 <span class="path">~/.grok/pager.toml</span> 中设置 <code>alt_screen = "always"</code>。</li><li><b>Pi</b>：在 <code>/settings</code> 中从普通模式切换到全屏模式。</li><li><b>aider</b>：默认使用备用屏幕，检查启动参数（如 <code>--no-fancy-input</code>）是否关闭了它。</li></ul><p>已经写进回滚历史的内容可以清除：</p><pre class="cmd">tmux clear-history</pre><p>如果 Claude Code 或 Codex 的配置文件没有开启全屏模式，App 会在打开终端时显示提示横幅，见 <a href="#q-agent-fullscreen-claude">Q.33</a> 和 <a href="#q-agent-fullscreen-codex">Q.34</a>。</p>
+<h3 id="q-agent-fullscreen-claude">Q.33 — App 提示 Claude Code 未开启全屏模式。</h3>
+<p>服务端每小时读取一次电脑上的 <span class="path">~/.claude/settings.json</span>（确认设置正确后改为每天一次）。如果 Claude Code 没有设置为全屏模式（使用备用屏幕），App 会在打开终端时显示这条横幅，每天最多一次。不开启全屏模式时，Claude Code 的输出在远程终端里可能重复或错位（见 <a href="#q-tmux-tui-fullscreen">Q.32</a>）。服务端只读取该文件，不会修改它。开启全屏模式有两种方法，任选其一：</p><ul><li>在 Claude Code 中运行 <code>/tui fullscreen</code>（v2.1.89 及以上）。</li><li>在 <span class="path">~/.claude/settings.json</span> 中加入 <code>"tui": "fullscreen"</code>，文件已有其他内容时合并进去即可：<pre class="cmd">{
+  "tui": "fullscreen"
+}</pre></li></ul><p>在同一文件的 <code>env</code> 小节中把 <code>CLAUDE_CODE_NO_FLICKER</code> 设为 <code>1</code> 也算已开启。如果 <code>env</code> 小节中设置了 <code>CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN</code>，请删除它，它会关闭全屏模式。服务端只检查 <span class="path">~/.claude/settings.json</span>，看不到在 shell 中 export 的变量或其他配置目录；这种情况下即使全屏模式已生效，也可能出现横幅，关闭即可。</p>
+<h3 id="q-agent-fullscreen-codex">Q.34 — App 提示 Codex 未开启全屏模式。</h3>
+<p>服务端每小时读取一次电脑上的 <span class="path">~/.codex/config.toml</span>（确认设置正确后改为每天一次）。如果 <code>[tui]</code> 下的 <code>alternate_screen</code> 为 <code>never</code>，Codex 会在主屏幕上绘制，输出在远程终端里可能重复或错位（见 <a href="#q-tmux-tui-fullscreen">Q.32</a>），App 会在打开终端时显示这条横幅，每天最多一次。服务端只读取该文件，不会修改它。请把该设置改为 <code>always</code>，或删除这一行以使用默认值 <code>auto</code>：</p><pre class="cmd">[tui]
+alternate_screen = "always"</pre><p>启动参数 <code>--no-alt-screen</code> 也会在本次运行中关闭全屏模式，启动 Codex 时不要传入它。</p>
+<h3 id="q-osc-color-leak">Q.35 — 终端应用的输入框里反复出现 11;rgb:2828/2c2c/3434 这类乱码。</h3>
 <p>这是终端颜色查询的回包被当成了输入。某些终端应用启动时会查询终端背景色，如果回包没有被正确处理，就会显示在输入框里。App 检测到这种情况时，会显示「检测到终端颜色回包泄漏」提示。</p><p>解决方法是在该应用中设置固定主题，不再查询终端颜色，例如在 Claude Code 中运行 <code>/theme</code> 选择一个具体主题。</p><p>如果同一个 tmux 会话还被其他终端同时连接，这些终端也可能产生回包，可以先断开它们再观察。</p>
-<h3 id="q-garbled-text">Q.26 — 终端里的文字显示错乱。</h3>
+<h3 id="q-garbled-text">Q.36 — 终端里的文字显示错乱。</h3>
 <p>服务端为会话设置的 <code>TERM</code> 默认为 <code>xterm-256color</code>，电脑缺少对应 terminfo 时会自动回退。如果你修改过 <code>term</code> 配置（例如改成 <code>xterm-ghostty</code>），而电脑上的 tmux 不支持它，就可能出现渲染错乱。改回默认值即可，服务会自动重启：</p><pre class="cmd">~/.local/bin/quicktui-server config set --term xterm-256color</pre><p>Herdr 后端始终使用 <code>xterm-256color</code>，不受此配置影响。</p>
+<h3 id="q-agent-not-found">Q.37 — Agent 向导中某个 Agent 名字显示为警告颜色。</h3>
+<p>服务端找不到这个 Agent 的可执行文件。服务端以后台服务运行，它的 <span class="mono">PATH</span> 可能与你的登录 shell 不同。先运行 <code>doctor</code> 查看它检查了哪些位置：</p><pre class="cmd">~/.local/bin/quicktui-server doctor</pre><p>然后在配置文件的 <span class="mono">[agent_bins]</span> 中写上 Agent 的完整路径（例如用 <span class="mono">which claude</span> 查到的路径），再重启服务：</p><pre class="cmd">[agent_bins]
+claude = &quot;/opt/homebrew/bin/claude&quot;</pre>
+<h3 id="q-agent-status">Q.38 — App 中看不到 Agent 的实时状态。</h3>
+<p>Agent 状态来自安装器为各 Agent 添加的 hooks。Codex 需要在 Codex CLI 中运行 <span class="mono">/hooks</span> 信任它们；OpenCode 需要重启一次。其他情况可以重新安装 hooks：</p><pre class="cmd">~/.local/bin/quicktui-server hooks install</pre>
 
 <h2 id="file-browsing">文件浏览</h2>
-<h3 id="q-tcc-macos">Q.27 — App 的文件管理器无法打开 Mac 上的桌面、文稿、下载等目录。</h3>
+<h3 id="q-tcc-macos">Q.39 — App 的文件管理器无法打开 Mac 上的桌面、文稿、下载等目录。</h3>
 <p>在 App 的文件管理器中浏览 Mac 时，打开 <span class="path">~/Desktop</span>（桌面）、<span class="path">~/Documents</span>（文稿）、<span class="path">~/Downloads</span>（下载）等目录会失败，App 提示「macOS 隐私设置阻止访问」。iCloud 云盘、外接磁盘和网络宗卷也可能出现同样的情况。</p><p>原因是这些目录受 macOS 隐私保护，访问前需要用户授权。QuickTUI 服务端在后台运行，macOS 不会为它弹出授权对话框，因此需要你手动为服务端开启「完全磁盘访问权限」。</p><p><b>解决步骤：</b></p><ol class="steps"><li>在 App 的服务器列表中，点该服务器卡片上的 <b>文件</b> 图标打开文件管理器。如果显示「文件浏览已关闭」，先点 <b>启用文件浏览</b>。</li><li>在 Mac 上打开 <b>系统设置 → 隐私与安全性 → 完全磁盘访问权限</b>（macOS 12 及更早版本为 <b>系统偏好设置 → 安全性与隐私 → 隐私 → 完全磁盘访问权限</b>）。</li><li>点列表下方的 <b>+</b>，按提示输入 Mac 登录密码或使用触控 ID。</li><li>在文件选择窗口中按 <b>⌘⇧G</b>，输入 <span class="path">~/.local/bin/quicktui-server</span> 并回车，选中 <b>quicktui-server</b> 后点 <b>打开</b>。<span class="path">.local</span> 是隐藏目录，直接在访达中浏览看不到，请用路径输入的方式。</li><li>确认列表中出现 <b>quicktui-server</b>，并且右侧开关已打开。</li><li>回到 App，点提示中的 <b>已授权, 重测</b>，重新检查访问权限。</li><li>仍然无法访问时，在 Mac 上重启服务后再试：<pre class="cmd">~/.local/bin/quicktui-server service restart</pre></li></ol><p class="note">升级或重新安装服务端后，程序文件会被替换。如果再次出现无法访问的情况，在「完全磁盘访问权限」中先移除 quicktui-server，再按上面的步骤重新添加。</p>
-<h3 id="q-permission-linux">Q.28 — Linux 上文件浏览提示 permission denied 或 403。</h3>
+<h3 id="q-permission-linux">Q.40 — Linux 上文件浏览提示 permission denied 或 403。</h3>
 <p>按以下几种原因排查：</p><dl class="ref-list"><dt>文件浏览未开启</dt><dd>先在 App 中开启文件浏览。</dd><dt>在主目录以外修改文件</dt><dd>出于安全考虑，编辑、上传、新建、重命名和删除只允许在服务端运行用户的主目录内进行；主目录以外只能读取。root 安装的主目录为 <span class="path">/root</span>。</dd><dt>系统权限不足</dt><dd>服务端以安装时的用户身份运行（root 安装为 root），只能访问该用户有权限的文件。</dd></dl><p>检查路径上每一级目录的权限与 ACL：</p><pre class="cmd">namei -l /path/to/file
 getfacl /path/to/file</pre><p>把服务端运行用户加入新的用户组后，需要重启服务才能生效：</p><pre class="cmd">~/.local/bin/quicktui-server service restart</pre><p>启用了 SELinux 时，可用 <code>getenforce</code> 和 <code>sudo ausearch -m AVC -ts recent</code> 查看是否有拦截记录。</p>
 
 <h2 id="notifications">通知</h2>
-<h3 id="q-agent-notifications">Q.29 — Agent 通知会发送哪些数据？如何关闭？</h3>
-<p>Agent 通知需要服务端已连接 QuickTUI Relay，并且 Agent hook 已安装。通知由服务端经 Relay 转交 Apple 或 Google 的推送服务投递到手机。</p><p>默认情况下，通知只包含事件类别，例如「Agent 需要审批」「任务已完成」「Agent 出错」「会话已结束」，不含项目名、会话名或任务内容。可选开启的附加内容包括 Agent 类型、项目名、会话标识和任务或错误摘要。通知不会包含完整的终端输出、源代码或凭据。</p><p>要停止接收通知，在 iPhone 或 Android 的系统设置中关闭 QuickTUI 的通知权限即可。</p>
+<h3 id="q-agent-notifications">Q.41 — Agent 通知会发送哪些数据？如何关闭？</h3>
+<p>Agent 通知需要服务端已绑定 QuickTUI Cloud 中转，并且 Agent hook 已安装。通知由服务端经 QuickTUI Cloud 转交 Apple 或 Google 的推送服务投递到手机。</p><p>默认情况下，通知只包含事件类别，例如「Agent 需要审批」「任务已完成」「Agent 出错」「会话已结束」，不含项目名、会话名或任务内容。可选开启的附加内容包括 Agent 类型、项目名、会话标识和任务或错误摘要。通知不会包含完整的终端输出、源代码或凭据。</p><p>要停止接收通知，在 iPhone 或 Android 的系统设置中关闭 QuickTUI 的通知权限即可。</p>
 
 <h2 id="apps">App</h2>
-<h3 id="q-android">Q.30 — 有 Android 版吗？</h3>
+<h3 id="q-android">Q.42 — 有 Android 版吗？</h3>
 <p>有，目前处于预览阶段。从 GitHub 下载 APK 安装，支持 Android 8.0 及以上，和 iPhone、iPad 版使用同一个服务端。预览期间全部功能免费。下载、安装与更新见 <a href="/cn/android/">QuickTUI Android 应用（Preview）</a>。</p>
 
 <div class="related">
   <h2>相关链接</h2>
   <ul>
     <li><a href="/cn/install/">安装指南</a></li>
+    <li><a href="/cn/guide/">用户指南（iPhone 与 iPad）</a></li>
     <li><a href="/cn/">返回首页</a></li>
   </ul>
 </div>
@@ -734,9 +1002,12 @@ getfacl /path/to/file</pre><p>把服务端运行用户加入新的用户组后�
           <span>quicktui.ai</span>
           <span class="dot">·</span>
           <span>© 2026 · 版权所有。</span>
+          <span class="dot">·</span>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">蜀ICP备2023013634号-3</a>
         </div>
         <div class="links">
           <a href="/cn/install/">安装</a>
+          <a href="/cn/guide/">用户指南</a>
           <a href="/cn/faq/">常见问题</a>
           <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
           <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
@@ -744,7 +1015,7 @@ getfacl /path/to/file</pre><p>把服务端运行用户加入新的用户组后�
           <a href="/cn/android/">Android（Preview）</a>
           <a href="/privacy">隐私</a>
           <a href="/cn/support">支持</a>
-          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
           <a href="https://x.com/dualface">X</a>
           <a href="https://github.com/dualface/quicktui">GitHub</a>
         </div>

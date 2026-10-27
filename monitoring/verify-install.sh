@@ -6,7 +6,6 @@ RESULT_FILE="${QT_VERIFY_RESULT_FILE:-/run/qt-verify-result.json}"
 LOG_FILE="${QT_VERIFY_LOG_FILE:-/run/qt-verify-install.log}"
 INSTALL_BIN="$HOME/.local/bin/quicktui-server"
 NEW_CONFIG_FILE="$HOME/.config/quicktui-server-v2/config.toml"
-LEGACY_CONFIG_FILE="$HOME/.config/quicktui/config"
 CONFIG_FILE="$NEW_CONFIG_FILE"
 setup_schema=""
 SERVICE_UNIT="$HOME/.config/systemd/user/quicktui.service"
@@ -274,9 +273,6 @@ select_config_file() {
     if [ -f "$NEW_CONFIG_FILE" ]; then
         CONFIG_FILE="$NEW_CONFIG_FILE"
         setup_schema=2
-    elif [ -f "$LEGACY_CONFIG_FILE" ]; then
-        CONFIG_FILE="$LEGACY_CONFIG_FILE"
-        setup_schema=1
     else
         CONFIG_FILE="$NEW_CONFIG_FILE"
         setup_schema=""
@@ -287,14 +283,6 @@ config_value() {
     key=$1
     [ -f "$CONFIG_FILE" ] || return 0
     case "$setup_schema" in
-        1)
-            case "$key" in
-                QUICKTUI_ADDR|QUICKTUI_UPDATE_CHANNEL)
-                    awk -F= -v key="$key" '$1 == key { print substr($0, length(key) + 2); exit }' "$CONFIG_FILE"
-                    ;;
-                *) fail_assertion "CONFIG" "unsupported config key: $key" ;;
-            esac
-            ;;
         2)
             case "$key" in
                 QUICKTUI_ADDR) toml_key=addr ;;
@@ -312,16 +300,7 @@ config_value() {
     esac
 }
 
-config_token() {
-    [ "$setup_schema" = 1 ] || return 0
-    awk -F= '$1 == "QUICKTUI_TOKEN" { print substr($0, length("QUICKTUI_TOKEN") + 2); exit }' "$CONFIG_FILE"
-}
-
 read_installed_version() {
-    if out="$("$INSTALL_BIN" --version 2>>"$LOG_FILE")" && [ -n "$out" ]; then
-        printf '%s\n' "$out"
-        return 0
-    fi
     "$INSTALL_BIN" version 2>>"$LOG_FILE" || true
 }
 
@@ -392,25 +371,6 @@ probe_record_failure() {
     probe_elapsed_seconds=$(($(date +%s) - probe_started))
     printf 'schema_v2 probe attempt %s stage=%s curl_status=%s elapsed=%ss\n' \
         "$probe_attempts" "$probe_last_stage" "$probe_last_curl_status" "$probe_elapsed_seconds" >>"$LOG_FILE"
-}
-
-probe_schema_v1() {
-    token=$1
-    PROBE_TIME_LEFT=""
-    i=0
-    while [ "$i" -lt "$VERSION_ATTEMPTS" ]; do
-        for version_endpoint in /v3/version /v2/version /api/version; do
-            version_json="$(probe_curl -H "Authorization: Bearer ${token}" "http://${http_addr}${version_endpoint}" 2>>"$LOG_FILE" || true)"
-            version_response_version="$(printf '%s\n' "$version_json" | jq -r '.version // empty' 2>>"$LOG_FILE" || true)"
-            if [ -n "$version_response_version" ]; then
-                version_response_endpoint="$version_endpoint"
-                return 0
-            fi
-        done
-        probe_sleep
-        i=$((i + 1))
-    done
-    return 1
 }
 
 probe_schema_v2() {
@@ -774,19 +734,6 @@ case "$addr" in
 esac
 
 case "$setup_schema" in
-    1)
-        token="$(config_token)"
-        [ -n "$token" ] || {
-            S7="FAIL"
-            failure_stage="service_validation"
-            fail_assertion "S7" "QUICKTUI_TOKEN missing from schema v1 config"
-        }
-        if ! probe_schema_v1 "$token"; then
-            S7="FAIL"
-            failure_stage="service_validation"
-            fail_assertion "S7" "schema v1 version API did not return a version after $VERSION_ATTEMPTS attempts"
-        fi
-        ;;
     2)
         if ! probe_schema_v2; then
             S7="FAIL"
@@ -817,7 +764,7 @@ case "$setup_schema" in
     *)
         S7="FAIL"
         failure_stage="service_validation"
-        fail_assertion "S7" "installed server did not create a recognized schema v1 or v2 config"
+        fail_assertion "S7" "installed server did not create a recognized schema v2 config"
         ;;
 esac
 

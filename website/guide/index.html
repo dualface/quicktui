@@ -1,0 +1,1367 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
+<title>QuickTUI User Guide for iPhone &amp; iPad</title>
+<meta name="description" content="Step-by-step guide to the QuickTUI app on iPhone and iPad: install the server, pair your phone, connect from anywhere, start AI agents and manage them with the Switcher." />
+<link rel="canonical" href="https://quicktui.ai/guide/" />
+<link rel="alternate" hreflang="en" href="https://quicktui.ai/guide/" />
+<link rel="alternate" hreflang="zh-Hans" href="https://quicktui.ai/cn/guide/" />
+<link rel="alternate" hreflang="x-default" href="https://quicktui.ai/guide/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260930c" />
+<meta name="theme-color" content="#090C09" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="QuickTUI" />
+<meta property="og:title" content="QuickTUI User Guide for iPhone &amp; iPad" />
+<meta property="og:description" content="Step-by-step guide to the QuickTUI app on iPhone and iPad: install the server, pair your phone, connect from anywhere, start AI agents and manage them with the Switcher." />
+<meta property="og:url" content="https://quicktui.ai/guide/" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="zh_CN" />
+<meta property="article:modified_time" content="2026-10-02" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="QuickTUI User Guide for iPhone &amp; iPad" />
+<meta name="twitter:description" content="Step-by-step guide to the QuickTUI app on iPhone and iPad: install the server, pair your phone, connect from anywhere, start AI agents and manage them with the Switcher." />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
+<script>
+(() => {
+  let theme = null;
+  try {
+    const stored = localStorage.getItem('quicktui.theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
+  } catch (_) {}
+  if (!theme) theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+})();
+</script>
+<style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Shared site chrome (header + footer) for every page.
+ * Injected inline by scripts/build.mjs; relies on the QT design tokens
+ * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
+ * homepage inline <style> and styles/site.css declare. Classes are qt- prefixed
+ * so they never collide with page styles. */
+
+.qt-wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ───────── header */
+.qt-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line-soft);
+}
+.qt-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 56px;
+}
+.qt-brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.qt-brand-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 5px;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent) inset;
+}
+.qt-brand-name sup {
+  color: var(--ink-3);
+  font-size: 9px;
+  vertical-align: super;
+  margin-left: 4px;
+}
+/* Single-row link strip: links that do not fit wrap onto a clipped second
+   row instead of pushing the CTA off-screen (e.g. when an embedding browser
+   forces a larger base font size). */
+.qt-nav-links {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 26px;
+  row-gap: 0;
+  height: 1.45em;
+  line-height: 1.45;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.qt-nav-links a { color: var(--ink-2); text-decoration: none; white-space: nowrap; }
+.qt-nav-links a .n { color: var(--ink-4); margin-right: 6px; }
+.qt-nav-links a:hover { color: var(--ink); }
+.qt-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
+
+.qt-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.qt-lang a { color: var(--ink-4); padding: 4px 6px; text-decoration: none; }
+.qt-lang a.on { color: var(--accent); }
+.qt-lang a:not(.on):hover { color: var(--ink); }
+.qt-lang .slash { color: var(--ink-4); opacity: .6; }
+
+.qt-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+.qt-icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+.qt-icon-btn svg { width: 13px; height: 13px; }
+
+.qt-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 140ms ease;
+}
+.qt-cta:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
+/* Secondary header CTA: only one solid accent button per header. */
+.qt-cta-alt { background: transparent; border-color: var(--line); color: var(--ink); }
+.qt-cta-alt:hover { border-color: var(--ink-3); box-shadow: none; }
+.qt-cta .arr { transition: transform 160ms ease; }
+.qt-cta:hover .arr { transform: translateX(2px); }
+.qt-cta .lbl-short { display: none; }
+
+/* ───────── footer */
+.qt-foot { position: relative; z-index: 2; }
+.qt-foot-inner {
+  padding: 32px 0 clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
+.qt-foot .left .dot { opacity: .5; }
+.qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
+.qt-foot .links a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .links a:hover { color: var(--ink); }
+
+/* ───────── responsive */
+@media (max-width: 900px) {
+  .qt-nav-links { display: none; }
+  .qt-foot-inner { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 520px) {
+  .qt-nav-right { gap: 6px; }
+  .qt-nav-right .qt-icon-btn { display: none; }
+  .qt-cta { padding-left: 10px; padding-right: 10px; }
+  .qt-cta .lbl-long { display: none; }
+  .qt-cta .lbl-short { display: inline; }
+  .qt-brand-name sup { display: none; }
+  .qt-lang { margin-right: 0; }
+  .qt-lang a { padding: 4px; }
+}
+</style>
+<script>
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-track-placement]');
+  if (!el) return;
+  const placement = el.getAttribute('data-track-placement');
+  if (placement) window.zaraz?.track('app_store_click', { placement });
+});
+</script>
+<link rel="stylesheet" href="/styles/site.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "QuickTUI User Guide for iPhone & iPad",
+  "description": "Step-by-step guide to the QuickTUI app on iPhone and iPad: install the server, pair your phone, connect from anywhere, start AI agents and manage them with the Switcher.",
+  "url": "https://quicktui.ai/guide/",
+  "inLanguage": "en",
+  "image": "https://quicktui.ai/images/og-image.png?v=20261005a",
+  "author": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "QuickTUI",
+    "url": "https://quicktui.ai/"
+  },
+  "datePublished": "2026-10-02",
+  "dateModified": "2026-10-02"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://quicktui.ai/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "User Guide",
+      "item": "https://quicktui.ai/guide/"
+    }
+  ]
+}
+</script>
+<script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<header class="qt-nav">
+    <div class="qt-wrap qt-nav-inner">
+      <a class="qt-brand" href="/">
+        <span class="qt-brand-mark">q</span>
+        <span class="qt-brand-name">quicktui<sup>v1</sup></span>
+      </a>
+      <nav class="qt-nav-links">
+        <a href="/#quick-start">Quick Start</a>
+        <a href="/#action">Features</a>
+        <a href="/install/">Install</a>
+        <a href="/guide/">User Guide</a>
+        <a href="/compare/">Compare</a>
+        <a href="/faq/">FAQ</a>
+      </nav>
+      <div class="qt-nav-right">
+        <nav class="qt-lang" aria-label="Language">
+          <a href="/guide/" data-lang="en" hreflang="en" class="on" aria-current="true">EN</a><span class="slash">/</span><a href="/cn/guide/" data-lang="zh" hreflang="zh-Hans">CN</a>
+        </nav>
+        <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
+      </div>
+    </div>
+  </header>
+<main>
+<article class="article">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><span aria-current="page">User Guide</span></nav>
+<p class="updated"><time datetime="2026-10-02">Updated October 2, 2026</time></p>
+<p class="eyebrow">User Guide</p>
+<h1 id="quicktui-user-guide">QuickTUI User Guide</h1>
+<p class="lede">For the QuickTUI app on iPhone and iPad.</p>
+<nav class="guide-toc" aria-label="Contents">
+<p class="guide-toc-title">Contents</p>
+<ol>
+<li><a href="#about-this-guide">About This Guide</a><ol>
+<li><a href="#who-this-guide-is-for">Who this guide is for</a></li>
+<li><a href="#conventions">Conventions</a></li>
+<li><a href="#how-to-open-a-terminal-on-your-computer">How to open a terminal on your computer</a></li>
+</ol></li>
+<li><a href="#chapter-1-meet-quicktui">Chapter 1 Meet QuickTUI</a><ol>
+<li><a href="#1-1-what-quicktui-does">1.1 What QuickTUI does</a></li>
+<li><a href="#1-2-how-quicktui-fits-together">1.2 How QuickTUI fits together</a></li>
+<li><a href="#1-3-is-your-data-safe">1.3 Is your data safe?</a></li>
+<li><a href="#1-4-key-terms">1.4 Key terms</a></li>
+</ol></li>
+<li><a href="#chapter-2-before-you-start">Chapter 2 Before You Start</a><ol>
+<li><a href="#2-1-your-computer">2.1 Your computer</a></li>
+<li><a href="#2-2-your-phone">2.2 Your phone</a></li>
+</ol></li>
+<li><a href="#chapter-3-install-and-pair">Chapter 3 Install and Pair</a><ol>
+<li><a href="#3-1-choose-an-installation-method">3.1 Choose an installation method</a></li>
+<li><a href="#3-2-choose-the-computer-s-address">3.2 Choose the computer's address</a></li>
+<li><a href="#3-3-method-a-install-automatically-from-your-phone">3.3 Method A: Install automatically from your phone</a></li>
+<li><a href="#3-4-method-b-install-on-the-computer-then-scan-a-qr-code">3.4 Method B: Install on the computer, then scan a QR code</a></li>
+<li><a href="#3-5-method-c-pair-through-quicktui-cloud">3.5 Method C: Pair through QuickTUI Cloud</a></li>
+<li><a href="#3-6-pair-another-iphone-or-ipad">3.6 Pair another iPhone or iPad</a></li>
+<li><a href="#3-7-linux-keep-the-server-running-after-you-sign-out">3.7 Linux: keep the server running after you sign out</a></li>
+<li><a href="#3-8-check-that-everything-works">3.8 Check that everything works</a></li>
+</ol></li>
+<li><a href="#chapter-4-connect-when-you-re-away">Chapter 4 Connect When You're Away</a><ol>
+<li><a href="#4-1-two-things-to-know-first">4.1 Two things to know first</a></li>
+<li><a href="#4-2-choose-what-fits-you">4.2 Choose what fits you</a></li>
+<li><a href="#4-3-quicktui-cloud-relay-recommended">4.3 QuickTUI Cloud relay (recommended)</a></li>
+<li><a href="#4-4-tailscale">4.4 Tailscale</a></li>
+<li><a href="#4-5-a-vpn-you-already-use">4.5 A VPN you already use</a></li>
+<li><a href="#4-6-cloudflare-tunnel-your-own-reverse-proxy-and-router-port-forwarding-advanced">4.6 Cloudflare Tunnel, your own reverse proxy and router port forwarding (advanced)</a></li>
+</ol></li>
+<li><a href="#chapter-5-start-an-agent">Chapter 5 Start an Agent</a><ol>
+<li><a href="#5-1-create-a-workspace">5.1 Create a workspace</a></li>
+<li><a href="#5-2-start-an-agent-with-the-agent-wizard">5.2 Start an agent with the Agent Wizard</a></li>
+<li><a href="#5-3-start-an-agent-from-the-terminal">5.3 Start an agent from the terminal</a></li>
+<li><a href="#5-4-when-the-agent-wizard-can-t-find-an-agent">5.4 When the Agent Wizard can't find an agent</a></li>
+<li><a href="#5-5-agent-status-detection-hooks">5.5 Agent status detection (hooks)</a></li>
+</ol></li>
+<li><a href="#chapter-6-work-with-your-agents">Chapter 6 Work with Your Agents</a><ol>
+<li><a href="#6-1-the-terminal-screen">6.1 The terminal screen</a></li>
+<li><a href="#6-2-send-instructions">6.2 Send instructions</a></li>
+<li><a href="#6-3-respond-to-an-agent">6.3 Respond to an agent</a></li>
+<li><a href="#6-4-read-and-copy-output">6.4 Read and copy output</a></li>
+<li><a href="#6-5-leave-and-come-back">6.5 Leave and come back</a></li>
+</ol></li>
+<li><a href="#chapter-7-manage-tasks-with-the-switcher">Chapter 7 Manage Tasks with the Switcher</a><ol>
+<li><a href="#7-1-open-and-close-the-switcher">7.1 Open and close the Switcher</a></li>
+<li><a href="#7-2-read-the-switcher">7.2 Read the Switcher</a></li>
+<li><a href="#7-3-agent-status">7.3 Agent status</a></li>
+<li><a href="#7-4-get-agent-notifications">7.4 Get agent notifications</a></li>
+<li><a href="#7-5-recommended-task-workflow">7.5 Recommended task workflow</a></li>
+<li><a href="#7-6-switch-quickly">7.6 Switch quickly</a></li>
+<li><a href="#7-7-create-rename-and-close">7.7 Create, rename and close</a></li>
+</ol></li>
+<li><a href="#chapter-8-maintenance">Chapter 8 Maintenance</a><ol>
+<li><a href="#8-1-update-quicktui-server">8.1 Update QuickTUI Server</a></li>
+<li><a href="#8-2-manage-paired-devices">8.2 Manage paired devices</a></li>
+<li><a href="#8-3-uninstall">8.3 Uninstall</a></li>
+</ol></li>
+<li><a href="#chapter-9-troubleshooting">Chapter 9 Troubleshooting</a></li>
+<li><a href="#appendix-a-commands">Appendix A: Commands</a></li>
+<li><a href="#appendix-b-file-locations-and-configuration">Appendix B: File Locations and Configuration</a></li>
+</ol>
+</nav>
+<div class="guide">
+<h2 id="about-this-guide">About This Guide</h2>
+<h3 id="who-this-guide-is-for">Who this guide is for</h3>
+<p>This guide is for anyone who wants to use an iPhone or iPad to work with AI coding assistants on their computer, such as Claude Code or Codex. You only need to:</p>
+<ul>
+<li>Know how to open a terminal on your computer, and paste and run commands in it.</li>
+<li>Know your computer's user name and login password.</li>
+</ul>
+<h3 id="conventions">Conventions</h3>
+<ul>
+<li><strong>Bold text</strong> marks buttons, menus and options in the app or on your computer, for example <strong>Next</strong>.</li>
+<li>Most code blocks contain commands to run in your computer's terminal: copy the whole line, paste it into the terminal and press Return. When a block shows a config file or a diagram instead, the text says so.</li>
+<li>Text after <code>#</code> is a comment; you don't need to type it.</li>
+<li>"→" means tap one item after another, for example <strong>Settings → Shortcuts Bar</strong>.</li>
+<li>This guide uses three kinds of callouts:</li>
+</ul>
+<div class="callout">
+<p><strong>Tip</strong>: A hint that makes things go more smoothly.</p>
+</div>
+<div class="callout">
+<p><strong>Note</strong>: Ignoring it may make a step fail.</p>
+</div>
+<div class="callout warn">
+<p><strong>Warning</strong>: Ignoring it may cause data loss or a security problem.</p>
+</div>
+<h3 id="how-to-open-a-terminal-on-your-computer">How to open a terminal on your computer</h3>
+<ul>
+<li><strong>macOS</strong>: Open <strong>Finder → Applications → Utilities → Terminal</strong>, or press Command + Space, type "Terminal" and press Return.</li>
+<li><strong>Linux</strong>: On most desktops, press Ctrl + Alt + T.</li>
+<li><strong>Windows</strong>: Search the Start menu for "PowerShell" and open it.</li>
+</ul>
+<hr>
+<h2 id="chapter-1-meet-quicktui">Chapter 1 Meet QuickTUI</h2>
+<h3 id="1-1-what-quicktui-does">1.1 What QuickTUI does</h3>
+<p>AI coding assistants (called <strong>agents</strong> in this guide) usually run in a terminal on your computer. Their tasks can take a long time, and they frequently pause to ask questions or request approval. With QuickTUI you can:</p>
+<ul>
+<li>Keep an eye on your agents from your phone after you leave the computer.</li>
+<li>Answer their questions and approve their actions from your phone.</li>
+<li>Start new agents from your phone and manage several tasks at once.</li>
+<li>Get notified when an agent needs approval or changes state.</li>
+</ul>
+<p>Locking your phone or losing the connection won't interrupt your workflow: your agents continue running in the background on the computer.</p>
+<h3 id="1-2-how-quicktui-fits-together">1.2 How QuickTUI fits together</h3>
+<p>QuickTUI is made of these parts:</p>
+<ul>
+<li><p><strong>The QuickTUI app</strong><br>
+Runs on your iPhone or iPad. This is where you watch and work.</p></li>
+<li><p><strong>QuickTUI Server</strong><br>
+Runs on your computer as a background service. It securely streams terminal screens and input between your computer and mobile device.</p></li>
+<li><p><strong>A terminal session tool: tmux or Herdr</strong><br>
+Runs on your computer and keeps your terminal windows alive. This allows your terminals and agents to keep running after your phone disconnects. QuickTUI calls these tools <strong>backends</strong>.</p>
+<ul>
+<li><strong>Herdr</strong>: Recommended. If your computer has neither Herdr nor tmux, the QuickTUI Server installer installs Herdr for you. Windows supports Herdr only.</li>
+<li><strong>tmux</strong>: A long-established terminal tool. If tmux is already installed, QuickTUI uses it automatically.</li>
+</ul>
+<p>A single computer can run both backends concurrently.</p></li>
+<li><p><strong>QuickTUI Cloud relay (optional)</strong><br>
+A cloud service run by QuickTUI. When your phone can't reach your computer directly, it forwards the encrypted data. It also delivers agent push notifications.</p></li>
+</ul>
+<pre><code class="language-text">iPhone ──────────────────────────────&gt; Your computer (QuickTUI Server) ──&gt; tmux / Herdr ──&gt; Agent
+   │                                        ▲
+   └──&gt; (optional) QuickTUI Cloud relay ────┘</code></pre>
+<h3 id="1-3-is-your-data-safe">1.3 Is your data safe?</h3>
+<ul>
+<li>Everything between your phone and your computer is end-to-end encrypted. No third party—including the QuickTUI Cloud relay—can read your data.</li>
+<li>Only paired phones can connect to your computer. After pairing, your phone verifies host identity to prevent spoofing, and the computer accepts only authorized, paired devices.</li>
+<li>The one exception to end-to-end encryption: if you turn on agent notifications, notification summaries pass through QuickTUI Cloud to reach your phone.</li>
+</ul>
+<h3 id="1-4-key-terms">1.4 Key terms</h3>
+<ul>
+<li><p><strong>Server</strong>: An entry in the app that represents one computer. <strong>Server List</strong> and <strong>Edit Server</strong> in the app refer to these entries. This guide uses the word only for these app screens and always in bold; it calls the machine itself "your computer".</p></li>
+<li><p><strong>QuickTUI Server</strong>: The background program installed on your computer. Its command is <code>quicktui-server</code>. Each computer runs one QuickTUI Server, which appears as one <strong>server</strong> in the app.</p></li>
+<li><p><strong>Pairing</strong>: Making a phone a trusted device of a computer. Every device that connects to a computer pairs with it once.</p></li>
+<li><p><strong>Backend</strong>: The tool on your computer that keeps terminal sessions: tmux or Herdr.</p></li>
+<li><p><strong>Workspace</strong>: A group of terminal windows. Typically, each workspace maps to an individual project.</p></li>
+<li><p><strong>Window</strong>: One terminal inside a workspace. Usually, each agent instance occupies a dedicated window. In the app's Switcher, windows are also called <strong>sessions</strong>.</p></li>
+<li><p><strong>Pane</strong>: When a window is split into several parts, each part is a pane.</p></li>
+<li><p><strong>Backend names</strong>: The two backends use different terms for workspaces and windows. This guide standardizes on "workspace" and "window":</p>
+<ul>
+<li><strong>tmux</strong>: a workspace is a session and a window is a window. The Switcher shows "N windows".</li>
+<li><strong>Herdr</strong>: a workspace is a workspace (also called a space) and a window is a tab. The Switcher shows "N tabs".</li>
+</ul>
+<p>In both backends, a window can be split into panes.</p></li>
+<li><p><strong>Switcher</strong>: The panel in the app for viewing and switching between all workspaces and windows.</p></li>
+<li><p><strong>Shortcuts Bar</strong>: The strip of buttons and keys at the bottom of the terminal screen. You can stack several of them; the bottom one is the first Shortcuts Bar.</p></li>
+<li><p><strong>Input Bar</strong>: A text field where you write a whole message and send it to the terminal in one go. It works well for dictation and for sending images and other attachments to an agent.</p></li>
+<li><p><strong>IP address</strong>: A device's network identifier, such as <code>192.168.1.10</code>. Dynamically assigned local IPs may change over time.</p></li>
+<li><p><strong>Hostname</strong>: Your computer's name, such as <code>my-mac.local</code>. On the same Wi-Fi, your phone can find the computer by hostname even when its IP address changes.</p></li>
+<li><p><strong>Tailscale</strong>: A free networking tool. With it installed on both your phone and your computer, your phone can reach the computer from anywhere through a fixed address (starting with <code>100.</code>) or its Tailscale machine name.</p></li>
+<li><p><strong>Port</strong>: A numerical identifier that routes traffic to specific network services on a computer. QuickTUI Server defaults to port <strong>8022</strong>.</p></li>
+<li><p><strong>SSH</strong>: A way to sign in to a computer from another device. QuickTUI can use it to install everything for you from your phone.</p></li>
+</ul>
+<hr>
+<h2 id="chapter-2-before-you-start">Chapter 2 Before You Start</h2>
+<p>Go through this checklist first.</p>
+<h3 id="2-1-your-computer">2.1 Your computer</h3>
+<ul class="tasks">
+<li><input type="checkbox" disabled> It runs macOS, Linux or Windows.</li>
+<li><input type="checkbox" disabled> The agents you want to use are installed and run in a terminal. For example, typing <code>claude</code> in a terminal starts Claude Code. QuickTUI doesn't install agents for you.</li>
+<li><input type="checkbox" disabled> It stays on and doesn't go to sleep. Your phone can't connect to a sleeping computer.</li>
+</ul>
+<div class="callout">
+<p><strong>Tip</strong>: On macOS, go to <strong>System Settings → Battery</strong> (or <strong>Energy Saver</strong>) to keep the computer awake while it's plugged in.</p>
+</div>
+<h3 id="2-2-your-phone">2.2 Your phone</h3>
+<ul class="tasks">
+<li><input type="checkbox" disabled> Install <strong>QuickTUI</strong> from the App Store.</li>
+<li><input type="checkbox" disabled> Connect your phone to the same Wi-Fi as your computer. This is the easiest way to install and pair the first time; Chapter 4 explains how to connect from elsewhere.</li>
+</ul>
+<hr>
+<h2 id="chapter-3-install-and-pair">Chapter 3 Install and Pair</h2>
+<h3 id="3-1-choose-an-installation-method">3.1 Choose an installation method</h3>
+<p>Choose the method that best matches your setup:</p>
+<ol>
+<li><strong>Method A: Install automatically from your phone</strong> (recommended)<br>
+For macOS and Linux computers. Enter the computer's address, user name and password on your phone, and the app handles installation and pairing automatically.</li>
+<li><strong>Method B: Install on the computer, then scan a QR code</strong><br>
+For Windows computers, or computers where you don't want to turn on SSH. If your phone can't scan the QR code, you can copy pairing text from the computer and paste it in the app instead.</li>
+<li><strong>Method C: Pair through QuickTUI Cloud</strong><br>
+For computers your phone cannot reach directly, such as those inside a corporate network or behind a NAT without a public IP. Requires signing in to QuickTUI with your Apple Account.</li>
+</ol>
+<h3 id="3-2-choose-the-computer-s-address">3.2 Choose the computer's address</h3>
+<p>To install and connect, your phone needs to know where to find your computer. You can use three kinds of address: a hostname, a Tailscale address or an IP address.</p>
+<p><strong>When you use the QuickTUI Cloud relay (recommended, see 4.3), prefer the hostname.</strong> On the same Wi-Fi, your phone then connects to the computer directly, which is fastest. When you leave that network and the direct connection drops, the app switches to the cloud relay automatically.</p>
+<div class="callout">
+<p><strong>Tip</strong>: If you pair through QuickTUI Cloud with Method C (3.5), you don't enter an address and can skip this section.</p>
+</div>
+<p>Without the QuickTUI Cloud relay, use this order of preference:</p>
+<ol>
+<li><strong>Tailscale address (machine name or IP)</strong>: Works at home and away. Install Tailscale on your phone and computer first (see 4.4). In mainland China Tailscale can be slow; use the QuickTUI Cloud relay instead.</li>
+<li><strong>Hostname</strong>: Works only on the same Wi-Fi, but keeps working when the computer's IP address changes.</li>
+<li><strong>IP address</strong>: Works only on the same Wi-Fi, and you need to update it when your router gives the computer a new address.</li>
+</ol>
+<p>You can use any of these options and switch between address types in the app at any time without re-pairing (see 4.1).</p>
+<h4 id="find-the-hostname">Find the hostname</h4>
+<ul>
+<li><p><strong>macOS</strong>: Open <strong>System Settings → General → Sharing</strong>. Note the <strong>Local hostname</strong> displayed at the bottom (e.g. <code>my-mac.local</code>).</p></li>
+<li><p><strong>Linux</strong>: Run this in a terminal:</p>
+<pre><code class="language-bash">hostname</code></pre>
+<p>Append <code>.local</code> to the output name (e.g. <code>my-linux.local</code>).</p></li>
+<li><p><strong>Windows</strong>: Phones usually can't find Windows computers by hostname. Use a Tailscale address or the IP address.</p></li>
+</ul>
+<div class="callout">
+<p><strong>Note</strong>: A Linux computer must run the Avahi (mDNS) service for phones to find it by its <code>.local</code> hostname. Ubuntu Desktop has it on by default; on Ubuntu Server, install it with <code>sudo apt install -y avahi-daemon</code>. If the hostname doesn't work, use the IP address.</p>
+</div>
+<h4 id="find-the-tailscale-address">Find the Tailscale address</h4>
+<p>If Tailscale is already installed and signed in on your phone and computer, open the Tailscale app on your iPhone and find your computer in the device list. You'll see:</p>
+<ul>
+<li>The Tailscale machine name, such as <code>my-mac</code>. Tailscale provides this name (MagicDNS), and it works whenever Tailscale is connected on your phone.</li>
+<li>An address starting with <code>100.</code>, such as <code>100.101.102.103</code>.</li>
+</ul>
+<p>Either one works. If you haven't installed Tailscale yet, install QuickTUI with the hostname or IP address first and switch later as described in 4.4.</p>
+<h4 id="find-the-ip-address">Find the IP address</h4>
+<ul>
+<li><strong>macOS</strong>: Open <strong>System Settings → Wi-Fi</strong>, click <strong>Details</strong> next to the connected network and look for "IP address". Or run:
+<pre><code class="language-bash">ipconfig getifaddr en0</code></pre></li>
+<li><strong>Linux</strong>: Run:
+<pre><code class="language-bash">hostname -I</code></pre>
+<p>The first address listed is typically your local IP.</p></li>
+<li><strong>Windows</strong>: Run <code>ipconfig</code> in PowerShell and look for the "IPv4 Address" of your current network.</li>
+</ul>
+<p>Home network addresses usually look like <code>192.168.x.x</code> or <code>10.x.x.x</code>.</p>
+<div class="callout">
+<p><strong>Tip</strong>: To keep the IP address from changing, reserve a fixed address for the computer in your router's DHCP settings.</p>
+</div>
+<h3 id="3-3-method-a-install-automatically-from-your-phone">3.3 Method A: Install automatically from your phone</h3>
+<h4 id="step-1-turn-on-ssh-on-your-computer">Step 1: Turn on SSH on your computer</h4>
+<ul>
+<li><strong>macOS</strong>:
+<ol>
+<li>Open <strong>System Settings → General → Sharing</strong>.</li>
+<li>Turn on <strong>Remote Login</strong>.</li>
+</ol></li>
+<li><strong>Linux (Ubuntu / Debian)</strong>: Run:
+<pre><code class="language-bash">sudo apt install -y openssh-server
+sudo systemctl enable --now ssh</code></pre></li>
+</ul>
+<h4 id="step-2-install-from-your-phone">Step 2: Install from your phone</h4>
+<ol>
+<li><p>Open the QuickTUI app. The setup wizard opens on first launch.</p>
+<div class="callout">
+<p><strong>Tip</strong>: To add another computer later, tap <strong>+</strong> in the top-right corner of the <strong>Server List</strong>.</p>
+</div></li>
+<li><p>Choose <strong>Connect Over SSH — Enable Enhanced Features (Recommended)</strong> and tap <strong>Next</strong>.</p></li>
+<li><p>Enter the computer's details:</p>
+<ul>
+<li><strong>host</strong>: The computer's address (see 3.2): a Tailscale machine name or address (such as <code>my-mac</code> or <code>100.101.102.103</code>), a hostname (such as <code>my-mac.local</code>) or an IP address (such as <code>192.168.1.10</code>).</li>
+<li><strong>port</strong>: Leave it at <code>22</code>.</li>
+<li><strong>user</strong>: Your user name on the computer.</li>
+<li><strong>auth</strong>: Choose <strong>pass</strong> and enter the computer's login password.</li>
+</ul></li>
+<li><p>Tap <strong>Test Connection</strong>.</p></li>
+<li><p>The first time you connect, <strong>Trust SSH Host Key?</strong> appears. Confirm it.</p></li>
+<li><p>When the connection succeeds, tap <strong>Next</strong>.</p></li>
+<li><p>Choose the <strong>install source</strong>:</p>
+<ul>
+<li>In mainland China, choose <strong>CN</strong>.</li>
+<li>Elsewhere, choose <strong>WORLD</strong>.</li>
+</ul></li>
+<li><p>Tap <strong>Install</strong> and wait. The page shows the progress live; it usually takes a minute or two.</p></li>
+<li><p>When the installation finishes, the app pairs automatically and adds the computer to the <strong>Server List</strong>.</p></li>
+</ol>
+<div class="callout">
+<p><strong>Note</strong>: The address you enter as <strong>host</strong> is also the address your phone tries first when it connects to this computer later.</p>
+<p><strong>Tip</strong>: If QuickTUI Server can't be reached at that address, the app tries the computer's hostname, Tailscale address and local IP address in turn, and saves the server with the first one that works. You can see the address it ended up with on the <strong>Edit Server</strong> page.</p>
+<p><strong>Tip</strong>: Your password is used only for this installation. The app doesn't save it.</p>
+<p><strong>Note</strong>: On Linux, complete the setting in 3.7 after installing, or the server stops when you sign out.</p>
+</div>
+<h4 id="if-automatic-pairing-fails">If automatic pairing fails</h4>
+<p>If the installation succeeded but automatic pairing failed, check for these common causes:</p>
+<ul>
+<li>Your phone can reach the computer over SSH but not on port 8022, for example because the computer's firewall blocks it.</li>
+<li>You used a hostname or Tailscale machine name that your phone can't resolve right now, for example because Tailscale isn't connected on the phone.</li>
+</ul>
+<p>Check both, then pair by scanning a QR code as described in steps 2 and 3 of 3.4.</p>
+<div class="callout">
+<p><strong>Tip</strong>: You can also run the automatic installation again with a different address. Re-running the setup is completely safe.</p>
+</div>
+<h3 id="3-4-method-b-install-on-the-computer-then-scan-a-qr-code">3.4 Method B: Install on the computer, then scan a QR code</h3>
+<h4 id="step-1-install-on-the-computer">Step 1: Install on the computer</h4>
+<p><strong>macOS or Linux</strong>: Run one of these lines in a terminal:</p>
+<pre><code class="language-bash"><span class="com"># In mainland China</span>
+curl -fsSL https://dl.quicktui.cn/q.sh | sh
+
+<span class="com"># Everywhere else</span>
+curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>The installer sets everything up. At the end the terminal shows <strong>QuickTUI is installed — pair a device</strong> and lists ways to show the QR code:</p>
+<ul>
+<li>On a computer with a desktop, type <code>1</code> (<strong>Browser QR</strong>) and press Return. The QR code opens in your browser.</li>
+<li>When you installed over SSH or without a desktop, type <code>1</code> (<strong>Terminal QR</strong>) and press Return. The QR code appears in the terminal.</li>
+<li>If your phone can't scan a QR code, type the number in front of <strong>Pairing text</strong> and press Return. The terminal shows one line of pairing text; see "Paste pairing text instead" in Step 3.</li>
+</ul>
+<p>If it then asks you to choose an address, choose according to item 3 of Step 2 below, then proceed to Step 3 to scan.</p>
+<p><strong>Windows</strong>:</p>
+<ol>
+<li>Open Microsoft Store, search for <strong>QuickTUI Server</strong> and install it. This is QuickTUI Server for Windows.</li>
+<li>Open <strong>QuickTUI Server</strong> from the Start menu.</li>
+<li>If Windows asks whether to allow it through the firewall, choose <strong>Allow</strong>.</li>
+<li>QuickTUI Server opens the pairing guide. Follow items 2 and 3 of step 2, then continue with step 3.</li>
+</ol>
+<div class="callout">
+<p><strong>Note</strong>: On Windows, launch <strong>QuickTUI Server</strong> from the Start menu the first time. This registers the server to launch automatically at login.</p>
+</div>
+<h4 id="step-2-show-a-pairing-qr-code-on-the-computer">Step 2: Show a pairing QR code on the computer</h4>
+<ol>
+<li><p>Run:</p>
+<pre><code class="language-bash">quicktui-server pairing welcome</code></pre>
+<div class="callout">
+<p><strong>Note</strong>: This is the first time this guide runs <code>quicktui-server</code> in a terminal. Here is how to run it on each system; the rest of the guide writes just <code>quicktui-server</code>:</p>
+<ul>
+<li><strong>macOS and Linux</strong>: The program is installed in <code>~/.local/bin/</code>, and the installer doesn't add that folder to your command path. If the terminal says <code>command not found</code>, either:
+<ul>
+<li>Type the full path each time, for example <code>~/.local/bin/quicktui-server pairing welcome</code>, or</li>
+<li>Run the matching line below, then close and reopen the terminal. After that you can type <code>quicktui-server</code> directly.
+<pre><code class="language-bash"><span class="com"># macOS</span>
+echo 'export PATH="$HOME/.local/bin:$PATH"' &gt;&gt; ~/.zshrc
+<span class="com"># Linux</span>
+echo 'export PATH="$HOME/.local/bin:$PATH"' &gt;&gt; ~/.bashrc</code></pre></li>
+</ul></li>
+<li><strong>Linux (installed as root)</strong>: The program is in <code>/usr/local/bin/</code>. Run <code>quicktui-server</code> as root, or put <code>sudo</code> in front, for example <code>sudo quicktui-server pairing welcome</code>.</li>
+<li><strong>Windows</strong>: Run <code>quicktui-server</code> directly in PowerShell.</li>
+</ul>
+</div></li>
+<li><p>When prompted how to pair, prefer the browser QR if possible. Some terminal fonts or line spacing can distort the QR code and prevent scanning. If your phone can't scan at all, choose <strong>Pairing text</strong> and follow "Paste pairing text instead" in Step 3.</p></li>
+<li><p>If the guide asks you to choose an address, choose as described in 3.2. Each address is labeled with a type:</p>
+<ul>
+<li><code>hostname</code>: the computer's hostname.</li>
+<li><code>tailscale</code>: a Tailscale address (starting with <code>100.</code>).</li>
+<li><code>lan</code>: a local IP address.</li>
+<li>Other types (<code>wireguard</code>, <code>tunnel</code>, <code>wan</code>): addresses on secondary networks; typically not needed for initial setup.</li>
+</ul></li>
+</ol>
+<div class="callout">
+<p><strong>Tip</strong>: On Linux, the hostname in the list usually lacks <code>.local</code>, so your phone may not find it. To pair with a hostname or a Tailscale machine name, put the address in the QR code yourself, for example:</p>
+<pre><code class="language-bash">quicktui-server pairing qrcode --browser --public-url http://my-linux.local:8022
+quicktui-server pairing qrcode --browser --public-url http://my-mac:8022</code></pre>
+</div>
+<h4 id="step-3-scan-it-on-your-phone">Step 3: Scan it on your phone</h4>
+<ol>
+<li>In the app's <strong>Server List</strong>, tap <strong>+</strong>.</li>
+<li>Tap <strong>Other ways to connect</strong>.</li>
+<li>Choose <strong>Scan a QR Code to Connect a Computer with Enhanced Features</strong> and tap <strong>Next</strong>.</li>
+<li>Point the camera at the QR code on the computer's screen.</li>
+<li>On the <strong>Pair Server</strong> page, tap <strong>Pair Server</strong>.</li>
+</ol>
+<div class="callout">
+<p><strong>Tip</strong>: Each QR code pairs one device. To pair several devices, generate a new QR code for each.</p>
+</div>
+<div class="callout warn">
+<p><strong>Warning</strong>: A QR code is valid for 15 minutes. Until it expires, anyone who scans it can connect to your computer. Don't share it or post a screenshot.</p>
+</div>
+<h4 id="paste-pairing-text-instead">Paste pairing text instead</h4>
+<p>Pairing text carries the same one-time pairing code as the QR code, as a single line you can copy and paste. Use it when the camera can't read the QR code, or when you reach the computer from the phone over SSH.</p>
+<ol>
+<li><p>On the computer, run <code>quicktui-server pairing welcome</code> and choose <strong>Pairing text</strong>, or run:</p>
+<pre><code class="language-bash">quicktui-server pairing qrcode --text</code></pre>
+<p>The terminal shows one line that starts with <code>qtpair:</code>.</p></li>
+<li><p>Copy the whole line and get it onto your phone, for example by copying it in an SSH session on the phone or with your devices' shared clipboard.</p></li>
+<li><p>In the app's <strong>Server List</strong>, tap <strong>+</strong>, tap <strong>Other ways to connect</strong>, choose <strong>Paste Pairing Text</strong> and tap <strong>Next</strong>.</p></li>
+<li><p>Paste the text and tap <strong>Next</strong>. Line breaks and extra spaces from the terminal are removed automatically.</p></li>
+<li><p>On the <strong>Pair Server</strong> page, tap <strong>Pair Server</strong>.</p></li>
+</ol>
+<div class="callout warn">
+<p><strong>Warning</strong>: Pairing text works once and expires in 15 minutes. Until then, anyone who has it can connect to your computer. Don't send it through public channels or post it.</p>
+</div>
+<h3 id="3-5-method-c-pair-through-quicktui-cloud">3.5 Method C: Pair through QuickTUI Cloud</h3>
+<p>For computers your phone can't reach directly. Both the computer and the phone connect to QuickTUI Cloud, which forwards the encrypted data.</p>
+<div class="callout">
+<p><strong>Note</strong>: Every account receives a monthly allocation of free relay traffic that resets at the start of the month. Free accounts can connect a limited number of computers. Once traffic is exhausted or quota is exceeded, a QuickTUI Cloud subscription is required. Free relay traffic is ideal for periodic checks; for daily use, subscribe or configure one of the self-hosted options in Chapter 4.</p>
+</div>
+<h4 id="step-1-install-on-the-computer-and-get-a-pairing-code">Step 1: Install on the computer and get a pairing code</h4>
+<ol>
+<li>Install as described in step 1 of 3.4.</li>
+<li>At the end, the terminal shows <strong>QuickTUI is installed — pair a device</strong> with a list of options. Type the number in front of <strong>Pair through QuickTUI Cloud</strong> and press Return.</li>
+<li>Choose the region: <strong>China mainland</strong> in mainland China, <strong>Global</strong> elsewhere. It must match the region you choose on your phone.</li>
+<li>The terminal shows a pairing code such as <code>ABCD-1234</code>. The code is valid for 15 minutes and allows up to 5 invalid attempts. Keep the terminal open and go to step 2.</li>
+</ol>
+<div class="callout">
+<p><strong>Tip</strong>: If you skipped pairing during installation or the code expired, run the command below to open the pairing guide again, then choose <strong>Pair through QuickTUI Cloud</strong>:</p>
+<pre><code class="language-bash">quicktui-server pairing welcome</code></pre>
+</div>
+<h4 id="step-2-enter-the-pairing-code-on-your-phone">Step 2: Enter the pairing code on your phone</h4>
+<ol>
+<li>In the app's <strong>Server List</strong>, tap <strong>+</strong> → <strong>Other ways to connect</strong> → <strong>Pair Through QuickTUI Cloud</strong>.</li>
+<li>Choose the same region as on the computer (<strong>China</strong> on the phone matches <strong>China mainland</strong> on the computer, <strong>Global</strong> matches <strong>Global</strong>) and sign in with your Apple Account.</li>
+<li>Enter the pairing code shown on the computer and tap <strong>Pair Server</strong>.</li>
+</ol>
+<p>When pairing succeeds, the computer's terminal shows <strong>Paired:</strong> followed by your device name.</p>
+<h3 id="3-6-pair-another-iphone-or-ipad">3.6 Pair another iPhone or iPad</h3>
+<p>Each device pairs separately. You don't need to reinstall anything:</p>
+<ul>
+<li>For a computer you connect to directly: show a QR code on the computer as in step 2 of 3.4, and scan it on the new device as in step 3.</li>
+<li>For a computer paired through QuickTUI Cloud: run <code>quicktui-server pairing welcome</code> on the computer to get a new pairing code, and enter it on the new device as in step 2 of 3.5.</li>
+</ul>
+<h3 id="3-7-linux-keep-the-server-running-after-you-sign-out">3.7 Linux: keep the server running after you sign out</h3>
+<p>On Linux, non-root user services terminate by default when the user session closes (including SSH disconnects). Enable systemd lingering to keep the server running:</p>
+<pre><code class="language-bash">loginctl enable-linger</code></pre>
+<p>If you see <code>Access denied</code> or a request to authenticate, run this instead:</p>
+<pre><code class="language-bash">sudo loginctl enable-linger "$USER"</code></pre>
+<p>Check that it worked:</p>
+<pre><code class="language-bash">loginctl show-user "$USER" --property=Linger</code></pre>
+<p><code>Linger=yes</code> confirms lingering is enabled.</p>
+<h3 id="3-8-check-that-everything-works">3.8 Check that everything works</h3>
+<p>In the app's <strong>Server List</strong>, tap your computer. If you see the terminal, installation and pairing both worked. Next, see Chapter 5 to start an agent.</p>
+<p>If you can't connect, see Chapter 9.</p>
+<hr>
+<h2 id="chapter-4-connect-when-you-re-away">Chapter 4 Connect When You're Away</h2>
+<p>If you installed with a hostname or a local IP address, your phone connects only when it's on the same Wi-Fi as your computer. This chapter explains how to connect from elsewhere. If you paired through QuickTUI Cloud with Method C (3.5), or installed with a Tailscale address, you don't need to do anything else.</p>
+<h3 id="4-1-two-things-to-know-first">4.1 Two things to know first</h3>
+<p><strong>1. Changing the address doesn't require pairing again</strong></p>
+<p>Your phone reaches your computer through an address such as <code>http://192.168.1.10:8022</code>. You can change it in the app at any time without pairing again:</p>
+<ol>
+<li>In the <strong>Server List</strong>, open the computer's <strong>Edit Server</strong> page.</li>
+<li>Change <strong>scheme</strong>, <strong>host</strong> and <strong>port</strong>.</li>
+<li>Tap <strong>Test Connection</strong>, and save once it succeeds.</li>
+</ol>
+<p>Best practice: complete initial pairing on local Wi-Fi, then configure an address for remote access as described in this chapter.</p>
+<p><strong>2. Why it's safe without a certificate</strong></p>
+<p>QuickTUI encryption operates independently of HTTPS certificates. Even over plaintext <code>http://</code>, end-to-end encryption prevents eavesdropping and host impersonation.</p>
+<h3 id="4-2-choose-what-fits-you">4.2 Choose what fits you</h3>
+<p>Connection methods ordered by setup complexity:</p>
+<ol>
+<li><strong>QuickTUI Cloud relay</strong> (recommended, see 4.3)<br>
+No network setup, and it works reliably in mainland China. A small amount of traffic is free each month; regular use needs a subscription.</li>
+<li><strong>Tailscale</strong> (see 4.4)<br>
+Install a free app on your phone and computer. No router changes, no domain name. May experience high latency in mainland China.</li>
+<li><strong>A VPN you already use</strong> (see 4.5)<br>
+Such as WireGuard, ZeroTier or a company VPN.</li>
+<li><strong>Cloudflare Tunnel</strong> (advanced, see 4.6)<br>
+If you own a domain managed by Cloudflare.</li>
+<li><strong>Your own HTTPS reverse proxy</strong> (advanced, see 4.6)<br>
+If you already run nginx or Caddy.</li>
+<li><strong>Router port forwarding</strong> (advanced, see 4.6)<br>
+If your home connection has a public IP. Exposes the port directly to the internet; not recommended for beginners.</li>
+</ol>
+<h3 id="4-3-quicktui-cloud-relay-recommended">4.3 QuickTUI Cloud relay (recommended)</h3>
+<p>The QuickTUI Cloud relay needs no network setup: both your computer and your phone connect out to QuickTUI Cloud, which forwards the encrypted data. Your phone can reach your computer from any network environment.</p>
+<ul>
+<li><strong>Not paired yet</strong>: Pair through QuickTUI Cloud with Method C (3.5). The computer then always connects through the relay.</li>
+<li><strong>Already paired directly</strong>: Bind the computer to the relay with the steps below. After that, the app connects directly when it can and switches to the relay when it can't.</li>
+</ul>
+<p>Agent notifications also require a relay binding (see 7.4).</p>
+<div class="callout">
+<p><strong>Note</strong>: Every account gets a small amount of free relay traffic each month, enough for occasional checks. For regular use, subscribe to QuickTUI Cloud.</p>
+</div>
+<h4 id="bind-a-paired-computer-to-the-relay">Bind a paired computer to the relay</h4>
+<ol>
+<li>In the <strong>Server List</strong>, tap the Cloud button at the top.</li>
+<li>Choose the right region (<strong>China</strong> or <strong>Global</strong>) and sign in with your Apple Account.</li>
+<li>On the <strong>Manage Relay qtrid Slots</strong> page (a qtrid identifies a relay slot), choose a qtrid, tap <strong>Bind</strong> and choose your computer.</li>
+<li>Open the computer's <strong>Edit Server</strong> page and set <strong>mode</strong> to <strong>auto</strong>.</li>
+</ol>
+<p><strong>mode</strong> has three options:</p>
+<ul>
+<li><strong>auto</strong>: Connect directly when possible, and switch to the relay when not. Recommended.</li>
+<li><strong>direct</strong>: Connect directly only.</li>
+<li><strong>relay</strong>: Always use the relay.</li>
+</ul>
+<p>The Cloud banner at the top of the <strong>Server List</strong> shows how much relay traffic you've used. The app tells you when it runs out.</p>
+<h3 id="4-4-tailscale">4.4 Tailscale</h3>
+<p>Tailscale joins your phone and computer into a private network. Whether your phone is on Wi-Fi or cellular, it reaches your computer at the same address.</p>
+<div class="callout">
+<p><strong>Note</strong>: In mainland China, Tailscale connections can be slow. Achieving stable speeds typically requires deploying a custom DERP relay server, which involves significant setup effort. For users in mainland China, the QuickTUI Cloud relay is recommended (see 4.3).</p>
+</div>
+<h4 id="step-1-install-tailscale-on-your-computer">Step 1: Install Tailscale on your computer</h4>
+<ol>
+<li>Go to <a href="https://tailscale.com/download" target="_blank" rel="noopener">https://tailscale.com/download</a>, then download and install the desktop app.</li>
+<li>Open Tailscale and sign in (Google, Apple, Microsoft and other accounts work).</li>
+</ol>
+<h4 id="step-2-install-tailscale-on-your-iphone">Step 2: Install Tailscale on your iPhone</h4>
+<ol>
+<li>Install <strong>Tailscale</strong> from the App Store.</li>
+<li>Sign in with <strong>the same account</strong> as on the computer.</li>
+<li>Turn on the connection switch in the Tailscale app. When iOS asks to add a VPN configuration, allow it.</li>
+</ol>
+<h4 id="step-3-find-the-computer-s-tailscale-address">Step 3: Find the computer's Tailscale address</h4>
+<p>Open the Tailscale app on your iPhone and find your computer in the device list. Use either of these:</p>
+<ul>
+<li><strong>Tailscale machine name</strong>, such as <code>my-mac</code>. Provided by MagicDNS, this persistent hostname remains stable across network changes. The fully qualified domain name (e.g. <code>my-mac.tail1234.ts.net</code>) also works.</li>
+<li><strong>Address starting with <code>100.</code></strong>, such as <code>100.101.102.103</code>.</li>
+</ul>
+<p>You can also look them up in a terminal on the computer:</p>
+<pre><code class="language-bash">tailscale ip -4      <span class="com"># shows the 100. address</span>
+tailscale status     <span class="com"># shows the names and addresses of all devices</span></code></pre>
+<div class="callout">
+<p><strong>Note</strong>: Tailscale machine names work only when MagicDNS is turned on in the Tailscale admin console. New Tailscale accounts have it on by default. If the name doesn't work, use the <code>100.</code> address.</p>
+</div>
+<h4 id="step-4-point-quicktui-at-this-address">Step 4: Point QuickTUI at this address</h4>
+<ul>
+<li><p><strong>QuickTUI Server not installed yet</strong>: Install with Method A (3.3) and enter the Tailscale machine name or <code>100.</code> address as <strong>host</strong>.</p></li>
+<li><p><strong>Pairing with Method B</strong>: Generate a QR code with this command on the computer (replace <code>my-mac</code> with your Tailscale machine name), then scan it as in step 3 of 3.4:</p>
+<pre><code class="language-bash">quicktui-server pairing qrcode --browser --public-url http://my-mac:8022</code></pre>
+<p>You can also run <code>quicktui-server pairing welcome</code> and choose an address of type <code>tailscale</code> from the list.</p></li>
+<li><p><strong>Already paired</strong>: Open the computer's <strong>Edit Server</strong> page and set:</p>
+<ul>
+<li><strong>scheme</strong>: <code>HTTP</code></li>
+<li><strong>host</strong>: the Tailscale machine name or address, such as <code>my-mac</code> or <code>100.101.102.103</code></li>
+<li><strong>port</strong>: <code>8022</code></li>
+</ul>
+<p>Tap <strong>Test Connection</strong>, and save once it succeeds.</p></li>
+</ul>
+<p>As long as Tailscale remains connected on your iPhone, you can reach your computer from anywhere. You can also use this address at home, eliminating the need to toggle network configurations.</p>
+<div class="callout">
+<p><strong>Note</strong>: iOS allows only one VPN at a time. Turning on another VPN disconnects Tailscale, and QuickTUI can't connect either.</p>
+</div>
+<div class="callout">
+<p><strong>Note</strong>: If your tailnet uses access control rules (ACLs), ensure traffic to port 8022 on the target computer is permitted. If you haven't configured custom ACLs, you can skip this step.</p>
+</div>
+<h3 id="4-5-a-vpn-you-already-use">4.5 A VPN you already use</h3>
+<p>If you already use WireGuard, ZeroTier or a company VPN, and your phone can reach the computer once connected to it, use the computer's address on that VPN.</p>
+<ol>
+<li>List all of the computer's addresses:
+<pre><code class="language-bash">quicktui-server pairing addresses</code></pre>
+<p>Addresses of type <code>wireguard</code> or <code>tunnel</code> are usually the VPN addresses.</p></li>
+<li>If the computer is already paired, open its <strong>Edit Server</strong> page, set <strong>scheme</strong> to <code>HTTP</code>, <strong>host</strong> to this address and <strong>port</strong> to <code>8022</code>, tap <strong>Test Connection</strong> and save once it succeeds.</li>
+<li>If it isn't paired yet, generate a QR code with this address (replace <code>10.8.0.2</code> with the real one) and scan it as in step 3 of 3.4:
+<pre><code class="language-bash">quicktui-server pairing qrcode --browser --public-url http://10.8.0.2:8022</code></pre></li>
+</ol>
+<div class="callout">
+<p><strong>Note</strong>: A company VPN may not allow connections to employees' computers, or may block port 8022. If you can't connect, ask your network administrator, or use the QuickTUI Cloud relay or Tailscale instead.</p>
+</div>
+<h3 id="4-6-cloudflare-tunnel-your-own-reverse-proxy-and-router-port-forwarding-advanced">4.6 Cloudflare Tunnel, your own reverse proxy and router port forwarding (advanced)</h3>
+<p>These advanced options are suited for users who already manage their own domain, reverse proxy, or static public IP. For detailed configuration and pairing instructions, see the <a href="/guides/remote-access/">Remote access guide</a> on the website:</p>
+<ul>
+<li><strong>Cloudflare Tunnel</strong>: Your computer connects out to Cloudflare, and you reach it through an HTTPS address on your own domain. No public IP or router changes needed. Your domain must be managed by Cloudflare.</li>
+<li><strong>Your own HTTPS reverse proxy</strong>: If you already run nginx or Caddy, forward a dedicated hostname to QuickTUI Server.</li>
+<li><strong>Router port forwarding</strong>: If your home connection has a public IP, forward an external port on your router to port 8022 on your computer. This exposes the server directly to the internet and isn't recommended for beginners.</li>
+</ul>
+<hr>
+<h2 id="chapter-5-start-an-agent">Chapter 5 Start an Agent</h2>
+<h3 id="5-1-create-a-workspace">5.1 Create a workspace</h3>
+<p>When you first connect and there's no workspace yet:</p>
+<ol>
+<li>Tap the <strong>Switcher</strong> button on the Shortcuts Bar.</li>
+<li>Tap <strong>+</strong> next to the <strong>Workspaces</strong> heading.</li>
+<li>In the <strong>New Workspace</strong> dialog, fill in:
+<ul>
+<li><strong>Backend</strong>: Only needed when both tmux and Herdr are enabled on the computer. If unsure, keep the default setting.</li>
+<li><strong>CWD</strong>: The workspace's default folder, usually your project folder.</li>
+<li><strong>Workspace name</strong>: Optional; a name is generated if you leave it empty.</li>
+</ul></li>
+<li>Tap <strong>Create</strong>.</li>
+</ol>
+<div class="callout">
+<p><strong>Tip</strong>: Recommended: use one workspace per project, named after the project.</p>
+</div>
+<div class="callout">
+<p><strong>Tip</strong>: Workspaces you create yourself in tmux or Herdr on the computer also appear in the Switcher, and you can open them directly.</p>
+</div>
+<h4 id="when-the-computer-has-no-backend">When the computer has no backend</h4>
+<p>If the app says <strong>The server is connected, but no session backend is available</strong>, the computer has no working tmux or Herdr, for example because downloading Herdr failed during installation. You can install one from the app:</p>
+<ol>
+<li>Tap <strong>Install Herdr</strong> (recommended) in the panel. On macOS and Linux you can choose <strong>Install tmux</strong> instead; on Windows only Herdr is available.</li>
+<li>Wait for the installation. You can leave the page meanwhile; the installation continues on the computer.</li>
+<li>When it succeeds, the app reconnects automatically.</li>
+</ol>
+<p>If the installation fails, the panel shows the reason and a command you can run on the computer yourself. After installing it manually, return to the app and tap retry. There's no need to restart QuickTUI Server.</p>
+<h3 id="5-2-start-an-agent-with-the-agent-wizard">5.2 Start an agent with the Agent Wizard</h3>
+<p>The Agent Wizard opens a new window in the current workspace and starts the agent in it.</p>
+<ol>
+<li>Tap the <strong>Agent Wizard</strong> button on the Shortcuts Bar.</li>
+<li>Choose the <strong>Agent</strong>: swipe sideways and tap the one you want. An agent name shown in a warning color means it wasn't found on the computer (see 5.4).</li>
+<li>Set the <strong>Configuration</strong> (the defaults are fine):
+<ul>
+<li><strong>Preset</strong>: A saved combination of model and effort.</li>
+<li><strong>Model / Effort</strong>: Shown only for some agents.</li>
+<li><strong>Mode</strong>: Usually <strong>Default</strong>. For long unattended tasks, consider <strong>YOLO</strong> mode (see warning below).</li>
+</ul></li>
+<li>Choose the working directory: tap the path to pick a recently used folder, or tap the folder button next to it to browse.</li>
+<li><strong>Session title (optional)</strong>: Name the task so you can find it later.</li>
+<li>Tap <strong>Launch</strong>.</li>
+</ol>
+<p>The app switches to the new window and the agent starts. The wizard remembers your selections for subsequent launches.</p>
+<div class="callout warn">
+<p><strong>Warning</strong>: Some agents offer a <strong>YOLO</strong> mode. In this mode the agent no longer asks for your approval before doing anything, and may change or delete files. Use it only in projects you fully trust.</p>
+</div>
+<div class="callout">
+<p><strong>Tip</strong>: You can also tap <strong>…</strong> on the right of a workspace in the Switcher and choose <strong>Agent Wizard</strong> to start an agent in that workspace.</p>
+</div>
+<div class="callout">
+<p><strong>Tip</strong>: Add your own models and presets in <strong>Settings → Manage Agent Models</strong>.</p>
+</div>
+<h3 id="5-3-start-an-agent-from-the-terminal">5.3 Start an agent from the terminal</h3>
+<p>In addition to the Agent Wizard, you can launch agents directly by typing their command in the terminal:</p>
+<pre><code class="language-bash">claude</code></pre>
+<h3 id="5-4-when-the-agent-wizard-can-t-find-an-agent">5.4 When the Agent Wizard can't find an agent</h3>
+<p>Because QuickTUI Server runs as a background service, its default environment variables may not resolve agent binaries installed in non-standard locations.</p>
+<ol>
+<li>See which programs QuickTUI Server finds:
+<pre><code class="language-bash">quicktui-server doctor</code></pre></li>
+<li>Run <code>which claude</code> (on Windows, <code>Get-Command claude</code> in PowerShell; replace <code>claude</code> with your agent's command) and note the full path it prints.</li>
+<li>Open the config file in any text editor (on macOS and Linux you can run <code>nano ~/.config/quicktui-server-v2/config.toml</code>; for other systems see Appendix B) and add at the end:
+<pre><code class="language-toml">[agent_bins]
+claude = "/opt/homebrew/bin/claude"</code></pre>
+<p>Replace the path with the one from step 2.</p></li>
+<li>Save, then restart: <code>quicktui-server service restart</code>.</li>
+</ol>
+<h3 id="5-5-agent-status-detection-hooks">5.5 Agent status detection (hooks)</h3>
+<p>QuickTUI can show whether an agent is working or waiting for you, and notify you when needed. This relies on <strong>hooks</strong> that the installer adds to each agent's configuration. Usually you don't need to do anything, with two exceptions:</p>
+<ul>
+<li><strong>Codex</strong>: Type <code>/hooks</code> in Codex and trust the hooks QuickTUI added.</li>
+<li><strong>OpenCode</strong>: Restart OpenCode once after installing.</li>
+</ul>
+<hr>
+<h2 id="chapter-6-work-with-your-agents">Chapter 6 Work with Your Agents</h2>
+<p>Your agents run in the terminal on your computer. The app shows that terminal, and what you type goes straight to the agent.</p>
+<h3 id="6-1-the-terminal-screen">6.1 The terminal screen</h3>
+<ul>
+<li><strong>Top bar</strong>:
+<ul>
+<li>Left: back to the <strong>Server List</strong>, and full screen.</li>
+<li>Middle: the current workspace's name.</li>
+<li>Right: <strong>Files</strong> and <strong>Port Forwarding</strong>. <strong>Files</strong> opens the file manager to browse and transfer files on the computer; <strong>Port Forwarding</strong> makes a port on the computer (such as a web app you're developing) available on your phone. Both are outside the scope of this guide.</li>
+</ul></li>
+<li><strong>Terminal</strong>: The large area in the middle is your computer's terminal.</li>
+<li><strong>Shortcuts Bar</strong>: The strip at the bottom. Its default buttons, from left to right:
+<ul>
+<li><strong>Settings</strong>, <strong>Switcher</strong>, <strong>Files</strong>, <strong>Agent Wizard</strong></li>
+<li><strong>Custom Keyboard</strong>, <strong>Clipboard History</strong></li>
+<li><strong>Command Palette</strong>, <strong>Input Bar</strong>, <strong>Show / Dismiss Keyboard</strong></li>
+</ul></li>
+</ul>
+<p>Swipe sideways when the bar doesn't fit on screen. In <strong>Settings → Shortcuts Bar</strong> you can add up to 3 more bars with keys you use often, such as Esc, Tab, arrows and Ctrl combinations. Holding down a key repeats the keystroke.</p>
+<h3 id="6-2-send-instructions">6.2 Send instructions</h3>
+<p>The <strong>Input Bar</strong> is the best way to send longer instructions:</p>
+<ol>
+<li>Tap the <strong>Input Bar</strong> button on the Shortcuts Bar.</li>
+<li>Compose your prompt or command in the Input Bar with multi-line support.</li>
+<li>Tap Send to transmit the complete multi-line text block cleanly to the agent.</li>
+<li>Tap the paperclip icon in the Input Bar to attach images or files for the agent.</li>
+</ol>
+<div class="callout">
+<p><strong>Tip</strong>: In <strong>Settings → On terminal tap</strong>, you can make a tap on the terminal open the Input Bar.</p>
+</div>
+<p>Other ways to type:</p>
+<ul>
+<li><strong>System keyboard</strong>: Sends keystrokes immediately as typed; ideal for brief commands.</li>
+<li><strong>Custom keyboard</strong>: A keyboard made for terminals, with Esc, Ctrl, arrow keys and more.</li>
+<li><strong>Command Palette</strong>: Save recurring commands for one-tap execution. Configure them in <strong>Settings → Manage command palette</strong>.</li>
+<li><strong>Clipboard History</strong>: Quickly paste previously copied text snippets.</li>
+</ul>
+<h3 id="6-3-respond-to-an-agent">6.3 Respond to an agent</h3>
+<ul>
+<li><strong>When the agent offers numbered options</strong>: Type the corresponding number and press Return, or navigate with arrow keys and press Return.</li>
+<li><strong>Interrupt or stop the agent</strong>: Press Esc (Claude Code) or Ctrl + C. Both keys can go on a Shortcuts Bar.</li>
+<li><strong>Slash commands</strong>: Type them just as on the computer, for example <code>/clear</code>.</li>
+<li><strong>Approve from a notification</strong>: With agent notifications on (see 7.4), you get a notification when an agent asks for permission. Touch and hold it to choose <strong>Approve</strong> or <strong>Reject</strong> without opening the app.</li>
+</ul>
+<h3 id="6-4-read-and-copy-output">6.4 Read and copy output</h3>
+<ul>
+<li><strong>Scroll back</strong>: Swipe up and down on the terminal.</li>
+<li><strong>Copy text</strong>:
+<ol>
+<li>Touch and hold the text; when the magnifier appears, drag to adjust the selection.</li>
+<li>Tap the floating <strong>Copy</strong> button.</li>
+<li>When terminal line wrapping breaks continuous output across lines, tap <strong>Smart Copy</strong> to merge it into a single line before copying.</li>
+</ol></li>
+</ul>
+<h3 id="6-5-leave-and-come-back">6.5 Leave and come back</h3>
+<p>You can freely lock your device, switch apps, or disconnect; computer-side agents run uninterrupted. Returning to QuickTUI automatically reconnects and synchronizes the terminal display.</p>
+<hr>
+<h2 id="chapter-7-manage-tasks-with-the-switcher">Chapter 7 Manage Tasks with the Switcher</h2>
+<p>When running multiple agent tasks concurrently, use the <strong>Switcher</strong> to monitor status and toggle between them.</p>
+<h3 id="7-1-open-and-close-the-switcher">7.1 Open and close the Switcher</h3>
+<ul>
+<li><strong>Open</strong>: Tap the <strong>Switcher</strong> button on the Shortcuts Bar.</li>
+<li><strong>Close</strong>: Tap the close button in the top-right corner, or swipe down on an empty area.</li>
+</ul>
+<h3 id="7-2-read-the-switcher">7.2 Read the Switcher</h3>
+<p>The Switcher has two parts, top to bottom:</p>
+<pre><code class="language-text">Servers
+ [My Mac ✓] [Office Linux]             ← tap to switch to another computer
+
+Workspaces  ⊕                          ← new workspace
+  api-refactor   tmux · 3 windows  …   ← tap to expand or collapse; … opens the menu
+    ✓ 1 claude    (Claude icon) (Working)
+      2 codex     (Codex icon)  (Blocked)
+      3 shell
+  docs           herdr · 2 tabs    …</code></pre>
+<ul>
+<li><strong>Servers</strong>: Every computer you've added. The checkmark indicates the active computer; tap any other to switch.</li>
+<li><strong>Workspaces</strong>: Displays the underlying backend (tmux or Herdr) and window count ("N windows" for tmux, "N tabs" for Herdr). Tap to expand or collapse the window list. A workspace containing only a single window opens directly upon tapping.</li>
+<li><strong>Windows</strong>: The checkmark indicates the active window. Tap another window to switch to it. Windows running an agent show the agent's icon and status.</li>
+<li><strong>Panes</strong>: When a window is split, its panes are listed below it, and you can switch straight to one.</li>
+</ul>
+<h3 id="7-3-agent-status">7.3 Agent status</h3>
+<p>The status icon next to a window tells you what each agent is doing:</p>
+<ul>
+<li><strong>Working</strong>: The agent is actively executing tasks; no input required.</li>
+<li><strong>Blocked</strong>: The agent is paused awaiting permission or user input. <strong>Switch to this window to respond.</strong></li>
+<li><strong>Done</strong>: The current execution round finished. Review results and assign follow-up tasks.</li>
+<li><strong>Idle</strong>: The agent is inactive.</li>
+</ul>
+<div class="callout">
+<p><strong>Tip</strong>: For the smoothest workflow, check the Switcher and prioritize resolving <strong>Blocked</strong> sessions.</p>
+</div>
+<h3 id="7-4-get-agent-notifications">7.4 Get agent notifications</h3>
+<p>With notifications on, you know which agent needs you without opening the app.</p>
+<p><strong>Requirements</strong>:</p>
+<ul>
+<li>The computer is bound to the QuickTUI Cloud relay (see 4.3) or was paired through QuickTUI Cloud with Method C (3.5).</li>
+<li>Agent hooks are working (see 5.5).</li>
+<li>Notifications for QuickTUI are allowed in the iPhone's <strong>Settings → Notifications → QuickTUI</strong>.</li>
+</ul>
+<p><strong>Setup</strong>:</p>
+<ol>
+<li>In the <strong>Server List</strong>, open the computer's <strong>Agent Notifications</strong> page.</li>
+<li>Turn on <strong>Notify this device</strong>.</li>
+<li>Choose which notifications you want: <strong>Approval required</strong>, <strong>Task complete</strong>, <strong>Agent error</strong>, <strong>Session ended</strong>.</li>
+<li>(Optional) Choose what notifications include: <strong>Include agent</strong>, <strong>Include project</strong>, <strong>Include summary</strong>, <strong>Include session name</strong>.</li>
+</ol>
+<div class="callout">
+<p><strong>Note</strong>: By default a notification only says what happened, without project names or task details. If you turn on the options in step 4, those details are sent through QuickTUI Cloud. Notifications never include full terminal output, source code or passwords.</p>
+</div>
+<h3 id="7-5-recommended-task-workflow">7.5 Recommended task workflow</h3>
+<p><strong>One workspace per project, one window per task.</strong></p>
+<ol>
+<li>Create a dedicated workspace for each project, setting its CWD to the project root (see 5.1).</li>
+<li>Launch each task via the <strong>Agent Wizard</strong>, entering a descriptive name in <strong>Session title</strong> (e.g. <code>fix-login</code>).</li>
+<li>Once tasks are dispatched, you can step away. When a notification arrives or you open the Switcher, prioritize <strong>Blocked</strong> sessions.</li>
+<li>When a task finishes and results are verified, close the window (see 7.7).</li>
+</ol>
+<div class="callout">
+<p><strong>Tip</strong>: In a workspace's <strong>…</strong> menu, choose <strong>Default Working Directory</strong>. New windows and agents in that workspace then start in that folder.</p>
+</div>
+<h3 id="7-6-switch-quickly">7.6 Switch quickly</h3>
+<p><strong>Swipe sideways</strong> on the terminal to move to the previous or next window without opening the Switcher.</p>
+<p>In <strong>Settings → Horizontal swipe destination</strong> you choose what a swipe moves between:</p>
+<ul>
+<li><strong>Workspace</strong>: Switch between workspaces.</li>
+<li><strong>Session</strong>: Switch between windows.</li>
+<li><strong>Pane</strong>: Switch between panes.</li>
+<li><strong>Session+Pane</strong>: Switch across both windows and panes (default).</li>
+</ul>
+<h3 id="7-7-create-rename-and-close">7.7 Create, rename and close</h3>
+<ul>
+<li><strong>New workspace</strong>: Tap <strong>+</strong> next to the <strong>Workspaces</strong> heading.</li>
+<li><strong>New window in a workspace</strong>: Tap <strong>…</strong> on the right of the workspace → <strong>New session</strong>. The app switches to it.</li>
+<li><strong>Start an agent in a workspace</strong>: Tap <strong>…</strong> on the right of the workspace → <strong>Agent Wizard</strong>.</li>
+<li><strong>Rename or close a workspace</strong>: Tap <strong>…</strong> on the right of the workspace, or touch and hold it.</li>
+<li><strong>Rename or close a window</strong>: Touch and hold the window. This works only for windows in the current workspace.</li>
+</ul>
+<div class="callout warn">
+<p><strong>Warning</strong>: Closing a workspace or window terminates all processes running inside it (including agents) and cannot be undone. Verify all tasks have completed before closing.</p>
+</div>
+<div class="callout">
+<p><strong>Tip</strong>: If the current workspace is closed (for example, on the computer), QuickTUI automatically switches to another workspace, or generates a fresh workspace if none remain.</p>
+</div>
+<hr>
+<h2 id="chapter-8-maintenance">Chapter 8 Maintenance</h2>
+<h3 id="8-1-update-quicktui-server">8.1 Update QuickTUI Server</h3>
+<p><strong>Recommended (macOS and Linux): run the install command again.</strong> The same command you installed with updates to the latest version. Run one of:</p>
+<pre><code class="language-bash"><span class="com"># In mainland China</span>
+curl -fsSL https://dl.quicktui.cn/q.sh | sh
+
+<span class="com"># Everywhere else</span>
+curl -fsSL https://quicktui.ai/q.sh | sh</code></pre>
+<p>Reinstalling keeps your paired devices, the server identity, the QuickTUI Cloud relay binding and your settings. <strong>No re-pairing is required.</strong></p>
+<p>Other ways to update:</p>
+<ul>
+<li><strong>From your phone</strong>: When a new version is available, an <strong>upgrade</strong> button appears next to the computer in the <strong>Server List</strong>. Tap it and follow the prompts.</li>
+<li><strong>With a command (macOS and Linux)</strong>: <code>quicktui-server upgrade install</code>.</li>
+<li><strong>Windows</strong>: Microsoft Store updates it automatically.</li>
+</ul>
+<div class="callout">
+<p><strong>Note</strong>: QuickTUI Server restarts during updates; the app disconnects momentarily and reconnects automatically. Active terminal sessions and running agents remain unaffected.</p>
+</div>
+<h3 id="8-2-manage-paired-devices">8.2 Manage paired devices</h3>
+<p>When a phone is lost or retired, remove its pairing:</p>
+<ol>
+<li>List all paired devices:
+<pre><code class="language-bash">quicktui-server pairing devices list</code></pre></li>
+<li>Find the device, note its <code>device_id</code>, and run:
+<pre><code class="language-bash">quicktui-server pairing devices revoke &lt;device_id&gt;</code></pre>
+<p>Replace <code>&lt;device_id&gt;</code> with the real ID.</p></li>
+</ol>
+<p>A revoked device is disconnected within 5 minutes and cannot reconnect without re-pairing.</p>
+<div class="callout warn">
+<p><strong>Warning</strong>: If you suspect your pairing credentials have leaked, you can remove every device at once. All devices will then require re-pairing.</p>
+<ol>
+<li>Stop the service:
+<pre><code class="language-bash"><span class="com"># macOS</span>
+launchctl bootout gui/$(id -u)/ai.quicktui
+<span class="com"># Linux</span>
+systemctl --user stop quicktui
+<span class="com"># Linux (installed as root)</span>
+sudo systemctl stop quicktui
+<span class="com"># Windows (PowerShell; in the Microsoft Store version this only stops the server process)</span>
+quicktui-server service uninstall</code></pre></li>
+<li>Replace the server identity and clear all pairings:
+<pre><code class="language-bash">quicktui-server pairing identity rotate</code></pre></li>
+<li>Start the service again:
+<pre><code class="language-bash">quicktui-server service restart</code></pre></li>
+</ol>
+</div>
+<h3 id="8-3-uninstall">8.3 Uninstall</h3>
+<p>For uninstall commands and steps, including Windows and complete removal, see <a href="/install/#uninstall">Uninstall</a> on the website's install page.</p>
+<p>Uninstalling stops QuickTUI Server but preserves pairing credentials, allowing hassle-free reinstallation without re-pairing. tmux, Herdr and your agents remain untouched.</p>
+<hr>
+<h2 id="chapter-9-troubleshooting">Chapter 9 Troubleshooting</h2>
+<p>Causes and fixes for common problems are collected in the website's <a href="/faq/">FAQ</a>. Open the entry that matches what you see:</p>
+<ul>
+<li><a href="/faq/#q-local-network">The app says "Local Network Access Required"</a></li>
+<li><a href="/faq/#q-connection-refused">Can't connect — connection refused</a></li>
+<li><a href="/faq/#q-away-from-home">I can connect at home but not when I'm away</a></li>
+<li><a href="/faq/#q-tailscale">I can't connect through Tailscale</a></li>
+<li><a href="/faq/#q-hostname">Connecting by hostname fails, but the IP address works</a></li>
+<li><a href="/faq/#q-no-backend">The app says no session backend is available</a></li>
+<li><a href="/faq/#q-linux-linger">On Linux, the server stops after I sign out</a></li>
+<li><a href="/faq/#q-pairing-invalid">The app says this device is no longer paired with the server</a></li>
+<li><a href="/faq/#q-capability-http-status">Through a tunnel or reverse proxy, the app shows an HTTP status code</a></li>
+<li><a href="/faq/#q-port-in-use">Another QuickTUI server is listening on the port</a></li>
+<li><a href="/faq/#q-agent-not-found">The Agent Wizard shows an agent in a warning color</a></li>
+<li><a href="/faq/#q-agent-status">The app shows no live status for my agents</a></li>
+<li><a href="/faq/#q-logs">How do I view server logs?</a></li>
+</ul>
+<hr>
+<h2 id="appendix-a-commands">Appendix A: Commands</h2>
+<p>For every <code>quicktui-server</code> command and option, see <a href="/install/#cli">Command reference</a> on the website's install page. If <code>quicktui-server</code> isn't found, see the note in step 2 of 3.4.</p>
+<h2 id="appendix-b-file-locations-and-configuration">Appendix B: File Locations and Configuration</h2>
+<ul>
+<li>Where the program, config directory and background service live on each system: see <a href="/install/#locations">Install locations</a> on the website's install page.</li>
+<li>Every setting in <code>config.toml</code> (including <code>addr</code>, <code>trusted_proxies</code>, <code>session_backends</code> and <code>[agent_bins]</code>): see <a href="/install/#config">Configuration</a> on the install page.</li>
+</ul>
+<p>After editing the config file, run <code>quicktui-server service restart</code> for the changes to take effect.</p>
+</div>
+<div class="related">
+  <h2>Related</h2>
+  <ul>
+    <li><a href="/install/">Install the QuickTUI server</a></li>
+    <li><a href="/faq/">FAQ</a></li>
+    <li><a href="/guides/remote-access/">Remote access guide</a></li>
+  </ul>
+</div>
+</article>
+</main>
+<footer class="qt-foot">
+    <div class="qt-wrap">
+      <div class="qt-foot-inner">
+        <div class="left">
+          <span class="qt-brand-mark">q</span>
+          <span>quicktui.ai</span>
+          <span class="dot">·</span>
+          <span>© 2026 · All rights reserved.</span>
+        </div>
+        <div class="links">
+          <a href="/install/">Install</a>
+          <a href="/guide/">User Guide</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/tmux-ios-app/">tmux on iOS</a>
+          <a href="/herdr-ios-app/">Herdr on iOS</a>
+          <a href="/compare/">Compare</a>
+          <a href="/android/">Android (Preview)</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
+          <a href="https://x.com/dualface">X</a>
+          <a href="https://github.com/dualface/quicktui">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+// Shared site chrome behavior, injected inline at the end of <body> by scripts/build.mjs:
+// theme toggle (persisted, follows the system theme until chosen) and language preference
+// capture on the EN / CN links (pages are static per language; the link does the switch).
+(() => {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const paint = theme => {
+    if (btn) btn.textContent = theme === 'dark' ? '◐' : '◑';
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#090C09' : '#FAFBF3');
+  };
+  const stored = () => {
+    try {
+      const v = localStorage.getItem('quicktui.theme');
+      return v === 'dark' || v === 'light' ? v : null;
+    } catch (_) {
+      return null;
+    }
+  };
+  const apply = theme => {
+    root.setAttribute('data-theme', theme);
+    paint(theme);
+  };
+  paint(root.getAttribute('data-theme') || 'dark');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('quicktui.theme', next); } catch (_) { /* in-memory only */ }
+    });
+  }
+  if (window.matchMedia) {
+    const query = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = e => { if (!stored()) apply(e.matches ? 'light' : 'dark'); };
+    if (query.addEventListener) query.addEventListener('change', onChange);
+    else if (query.addListener) query.addListener(onChange);
+  }
+  document.querySelectorAll('.qt-lang a[data-lang]').forEach(a => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('quicktui.lang', a.getAttribute('data-lang')); } catch (_) { /* in-memory only */ }
+    });
+  });
+})();
+</script>
+</body>
+</html>

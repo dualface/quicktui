@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
 <title>QuickTUI vs Moshi, Happy, Termius, Blink, dotMux &amp; Omnara</title>
 <meta name="description" content="How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each." />
 <link rel="canonical" href="https://quicktui.ai/compare/" />
@@ -16,13 +17,13 @@
 <meta property="og:title" content="QuickTUI vs Moshi, Happy, Termius, Blink, dotMux &amp; Omnara" />
 <meta property="og:description" content="How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each." />
 <meta property="og:url" content="https://quicktui.ai/compare/" />
-<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="zh_CN" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="QuickTUI vs Moshi, Happy, Termius, Blink, dotMux &amp; Omnara" />
 <meta name="twitter:description" content="How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each." />
-<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <script>
 (() => {
   let theme = null;
@@ -37,6 +38,144 @@
 })();
 </script>
 <style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Shared site chrome (header + footer) for every page.
  * Injected inline by scripts/build.mjs; relies on the QT design tokens
  * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
@@ -191,7 +330,9 @@
   gap: 24px;
   flex-wrap: wrap;
 }
-.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
 .qt-foot .left .dot { opacity: .5; }
 .qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .qt-foot .links a { color: var(--ink-3); text-decoration: none; }
@@ -221,9 +362,6 @@ document.addEventListener('click', e => {
   if (placement) window.zaraz?.track('app_store_click', { placement });
 });
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/site.css" />
 <script type="application/ld+json">
 {
@@ -233,7 +371,7 @@ document.addEventListener('click', e => {
   "description": "How QuickTUI compares to Moshi, Happy, Termius, Blink Shell, dotMux and Omnara for running AI agents and terminals from your phone, with a detailed page for each.",
   "url": "https://quicktui.ai/compare/",
   "inLanguage": "en",
-  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "image": "https://quicktui.ai/images/og-image.png?v=20261005a",
   "author": {
     "@type": "Organization",
     "name": "QuickTUI",
@@ -282,8 +420,9 @@ document.addEventListener('click', e => {
       </a>
       <nav class="qt-nav-links">
         <a href="/#quick-start">Quick Start</a>
-        <a href="/#action">Enhanced Features</a>
+        <a href="/#action">Features</a>
         <a href="/install/">Install</a>
+        <a href="/guide/">User Guide</a>
         <a href="/compare/">Compare</a>
         <a href="/faq/">FAQ</a>
       </nav>
@@ -293,7 +432,7 @@ document.addEventListener('click', e => {
         </nav>
         <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
-        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
         <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
       </div>
     </div>
@@ -304,9 +443,9 @@ document.addEventListener('click', e => {
 
 <p class="eyebrow">Compare</p>
 <h1>QuickTUI compared</h1>
-<p class="lede">There are several ways to run AI agents or use a real terminal from your phone. Each of these tools overlaps with QuickTUI in different ways; here&#39;s a short take on each, with a detailed comparison page for every one.</p>
+<p class="lede">Whether you are running AI coding agents or managing remote shell sessions from a mobile device, different tools take fundamentally different approaches. Here is how QuickTUI compares to popular alternatives, with in-depth breakdowns for each.</p>
 
-<p>QuickTUI is a native iPhone, iPad and <a href="/android/">Android (Preview)</a> app that connects to the QuickTUI server on your computer and attaches straight to your running tmux or Herdr sessions, so you can run and supervise any CLI agent. It&#39;s end-to-end encrypted and direct by default, and the setup wizard installs the server over SSH and pairs for you. On iPhone and iPad it&#39;s free for one computer and Pro is a one-time purchase, and it&#39;s available on the App Store in China too; the Android app (Preview) is free during the preview. QuickTUI Relay is an optional subscription.</p>
+<p>QuickTUI is a native iPhone, iPad and <a href="/android/">Android (Preview)</a> app that connects to the QuickTUI server on your computer and attaches straight to your running tmux or Herdr sessions, so you can run and supervise any CLI agent. It&#39;s end-to-end encrypted and direct by default, and the setup wizard installs the server over SSH and pairs for you. On iOS, QuickTUI is free for a single computer, with a one-time Pro purchase for unlimited machines. The Android preview is completely free, and the QuickTUI Cloud relay includes free monthly traffic, with an optional subscription for regular use.</p>
 
 <h2>At a glance</h2>
 <div class="table-scroll"><table class="fact-table compare-table"><thead><tr><th>Tool</th><th>Interface</th><th>Connection</th><th>tmux / Herdr</th></tr></thead><tbody>
@@ -319,17 +458,17 @@ document.addEventListener('click', e => {
 <tr><th>Omnara</th><td>Dashboard</td><td>Managed agent platform</td><td>Not used</td></tr>
 </tbody></table></div>
 
-<h2>One by one</h2>
+<h2>Tool Overviews</h2>
 <dl class="ref-list">
-<dt><a href="/compare/quicktui-vs-moshi/">QuickTUI vs Moshi</a></dt><dd>A mobile terminal for AI agents that connects over SSH straight from your phone, with tmux and Herdr support (Pro-only), sold by subscription.</dd>
-<dt><a href="/compare/quicktui-vs-happy/">QuickTUI vs Happy</a></dt><dd>An open-source, chat-style remote control that launches agents like Claude Code through a wrapper and communicates through a relay.</dd>
-<dt><a href="/compare/quicktui-vs-termius/">QuickTUI vs Termius</a></dt><dd>A mature, cross-platform general-purpose SSH client for managing many servers, now with some AI agent conveniences.</dd>
-<dt><a href="/compare/quicktui-vs-blink/">QuickTUI vs Blink Shell</a></dt><dd>An open-source professional iPad terminal built around Mosh and SSH, for people who like to configure everything themselves.</dd>
-<dt><a href="/compare/quicktui-vs-dotmux/">QuickTUI vs dotMux</a></dt><dd>A lightweight tmux control-mode client that turns tmux windows and panes into native iOS UI, for a one-time price.</dd>
-<dt><a href="/compare/quicktui-vs-omnara/">QuickTUI vs Omnara</a></dt><dd>Formerly an app for controlling agents from your phone, now a managed-agent platform.</dd>
+<dt><a href="/compare/quicktui-vs-moshi/">QuickTUI vs Moshi</a></dt><dd>A mobile terminal built for AI agents that connects directly over SSH, offering tmux and Herdr integration under a subscription model.</dd>
+<dt><a href="/compare/quicktui-vs-happy/">QuickTUI vs Happy</a></dt><dd>An open-source, chat-centric mobile interface that wraps CLI agents and synchronizes through a cloud relay.</dd>
+<dt><a href="/compare/quicktui-vs-termius/">QuickTUI vs Termius</a></dt><dd>A mature cross-platform SSH client geared toward multi-server infrastructure management, with basic mobile input helpers.</dd>
+<dt><a href="/compare/quicktui-vs-blink/">QuickTUI vs Blink Shell</a></dt><dd>An open-source, keyboard-driven iOS terminal optimized for Mosh and customizable remote environments.</dd>
+<dt><a href="/compare/quicktui-vs-dotmux/">QuickTUI vs dotMux</a></dt><dd>A dedicated tmux control-mode client that maps remote panes into native iOS tabs and split views.</dd>
+<dt><a href="/compare/quicktui-vs-omnara/">QuickTUI vs Omnara</a></dt><dd>Originally a mobile client for Claude Code and Codex, now focused on managed cloud agent infrastructure.</dd>
 </dl>
 
-<p class="callout"><strong>The short version:</strong> choose QuickTUI to attach to the tmux or Herdr sessions on your computer and supervise AI agents from your phone, with easy setup, end-to-end encryption and a one-time price. If general-purpose SSH across many servers matters more, a terminal like Termius or Blink fits better.</p>
+<p class="callout"><strong>Summary:</strong> Choose QuickTUI to attach seamlessly to your existing tmux or Herdr sessions, supervising agents directly with full terminal control, zero open SSH ports, and a one-time purchase model. If your priority is broad multi-host SSH administration or an iPad-only Mosh terminal, Termius or Blink Shell may suit you better.</p>
 
 <p class="note">Information about other tools is based on their websites and App Store listings as of September 2026. Check each tool&#39;s site for the latest details.</p>
 
@@ -356,6 +495,7 @@ document.addEventListener('click', e => {
         </div>
         <div class="links">
           <a href="/install/">Install</a>
+          <a href="/guide/">User Guide</a>
           <a href="/faq/">FAQ</a>
           <a href="/tmux-ios-app/">tmux on iOS</a>
           <a href="/herdr-ios-app/">Herdr on iOS</a>
@@ -363,7 +503,7 @@ document.addEventListener('click', e => {
           <a href="/android/">Android (Preview)</a>
           <a href="/privacy">Privacy</a>
           <a href="/support">Support</a>
-          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
           <a href="https://x.com/dualface">X</a>
           <a href="https://github.com/dualface/quicktui">GitHub</a>
         </div>

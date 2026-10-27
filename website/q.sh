@@ -1,6 +1,6 @@
 #!/bin/sh
 # QuickTUI Unix bootstrap.
-# This script only selects, verifies when possible, and launches the native
+# This script only selects, downloads, and launches the native
 # quicktui-installer binary. Installation logic lives in the Rust installer and
 # the downloaded quicktui-server setup entry.
 
@@ -8,7 +8,7 @@ set -eu
 
 QUICKTUI_REPO="${QUICKTUI_REPO:-dualface/quicktui}"
 QUICKTUI_RELEASES="${QUICKTUI_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/latest/download}"
-QUICKTUI_INSTALLER_RELEASE_TAG="${QUICKTUI_INSTALLER_RELEASE_TAG:-installer-20260927-01}"
+QUICKTUI_INSTALLER_RELEASE_TAG="${QUICKTUI_INSTALLER_RELEASE_TAG:-installer-20261024-03}"
 QUICKTUI_INSTALLER_RELEASES="${QUICKTUI_INSTALLER_RELEASES:-https://github.com/${QUICKTUI_REPO}/releases/download/${QUICKTUI_INSTALLER_RELEASE_TAG}}"
 QUICKTUI_UPDATE_MANIFEST_URL="${QUICKTUI_UPDATE_MANIFEST_URL:-https://quicktui.ai/server-manifest.json}"
 QUICKTUI_MAX_INSTALLER_BYTES="${QUICKTUI_MAX_INSTALLER_BYTES:-52428800}"
@@ -38,17 +38,15 @@ Installer commands:
   uninstall                 Uninstall existing service via installed server
 
 Install source (choose at most one):
-  --channel stable|preview|server2
-                            Install from the stable (legacy server), server2
-                            (new server stable), or preview channel
+  --channel server2|preview
+                            Install from the server2 (official) or preview
+                            channel
   --tag TAG                 Install this exact release tag, bypassing manifest
   (none)                    Install the server manifest default channel
-                            (stable when the manifest sets none)
+                            (server2 when the manifest sets none)
 
 Install options:
   -y, --yes                 Non-interactive mode
-      --token TOKEN         Set a schema v1 server access token
-      --rotate-token        Generate a new schema v1 server access token
       --addr HOST[:PORT]|URL Listen host, host:port, or http(s)://host:port
                             (scheme/quotes stripped; listen stays plain HTTP)
       --port PORT           Listen port used with --addr host
@@ -58,18 +56,20 @@ Install options:
   -h, --help                Show this help
 
 Legacy flat compatibility:
-  --release | --preview | --publish-tag TAG
+  --preview | --publish-tag TAG
   --check [--server PATH] | --uninstall
   --required-version-2      Accepted as a compatibility no-op
   Flat install options without a source use the manifest default channel.
-  Token options fail explicitly when the selected server uses tokenless schema v2.
 
 Check source:
   check uses --server PATH when given, then an installed server if available.
   Otherwise it downloads a signed server temporarily. Check does not install it.
 
 Environment:
-  QUICKTUI_INSTALLER_RELEASES  Installer binary release base URL
+  QUICKTUI_INSTALLER_RELEASES  Installer binary release base URL. Must use
+                                https://, or http:// on loopback (127.0.0.1,
+                                [::1], localhost). HTTPS downloads need curl;
+                                wget is used only for loopback http
   QUICKTUI_INSTALLER_RELEASE_TAG
                                 Installer release tag used by default
   QUICKTUI_RELEASES            Server asset release base URL inherited by installer
@@ -126,26 +126,63 @@ log_download_url() {
     printf 'Downloading URL: %s\n' "$1" >&2
 }
 
-download() {
-    log_download_url "$1"
-    if command -v curl >/dev/null 2>&1; then
-        curl -fsSL "$1" -o "$2"
-    elif command -v wget >/dev/null 2>&1; then
-        wget -qO "$2" "$1"
-    else
-        die "curl or wget is required to download quicktui-installer"
-    fi
+is_https_url() {
+    case "$1" in
+        [Hh][Tt][Tt][Pp][Ss]://*) return 0 ;;
+    esac
+    return 1
+}
+
+# Plain http is accepted only for loopback test servers.
+is_loopback_http_url() {
+    case "$1" in
+        [Hh][Tt][Tt][Pp]://*) ;;
+        *) return 1 ;;
+    esac
+    authority=${1#*://}
+    authority=${authority%%[/?#]*}
+    case "$authority" in
+        *@*) return 1 ;;
+        \[*) host="${authority%%]*}]" ;;
+        *) host=${authority%%:*} ;;
+    esac
+    port=${authority#"$host"}
+    case "$port" in
+        ''|:*[!0-9]*) [ -z "$port" ] || return 1 ;;
+        :) return 1 ;;
+        :*) ;;
+        *) return 1 ;;
+    esac
+    case "$(printf '%s' "$host" | tr 'A-Z' 'a-z')" in
+        127.0.0.1|localhost|'[::1]') return 0 ;;
+    esac
+    return 1
 }
 
 download_installer() {
     case "$QUICKTUI_MAX_INSTALLER_BYTES" in
         ''|*[!0-9]*) die "QUICKTUI_MAX_INSTALLER_BYTES must be a byte count" ;;
     esac
-    if command -v curl >/dev/null 2>&1; then
-        log_download_url "$1"
-        curl -fsSL --max-filesize "$QUICKTUI_MAX_INSTALLER_BYTES" "$1" -o "$2"
+    log_download_url "$1"
+    if is_https_url "$1"; then
+        https_only=1
+    elif is_loopback_http_url "$1"; then
+        https_only=
     else
-        download "$1" "$2"
+        die "refusing a non-HTTPS installer download URL; use https://, or http:// on loopback (127.0.0.1, [::1], localhost)"
+    fi
+    if command -v curl >/dev/null 2>&1; then
+        if [ -n "$https_only" ]; then
+            curl -fsSL --proto '=https' --proto-redir '=https' --max-filesize "$QUICKTUI_MAX_INSTALLER_BYTES" "$1" -o "$2"
+        else
+            curl -fsSL --max-filesize "$QUICKTUI_MAX_INSTALLER_BYTES" "$1" -o "$2"
+        fi
+    elif command -v wget >/dev/null 2>&1; then
+        # GNU wget 1.x and BusyBox wget cannot refuse HTTPS-to-HTTP redirects.
+        [ -z "$https_only" ] || die "wget cannot restrict redirects to HTTPS, so the installer download could fall back to plain HTTP; install curl and retry"
+        wget -qO "$2" "$1"
+    else
+        die "curl or wget is required to download quicktui-installer"
     fi
 }
 
@@ -160,41 +197,6 @@ check_installer_size() {
     fi
 }
 
-sha256_file() {
-    file=$1
-    if command -v sha256sum >/dev/null 2>&1; then
-        sha256sum "$file" | awk '{print $1}'
-    elif command -v shasum >/dev/null 2>&1; then
-        shasum -a 256 "$file" | awk '{print $1}'
-    elif command -v openssl >/dev/null 2>&1; then
-        openssl dgst -sha256 "$file" | awk '{print $NF}'
-    else
-        return 127
-    fi
-}
-
-verify_installer_if_possible() {
-    file=$1
-    sha_file=$2
-    checksum_available=${3:-0}
-    if [ "$checksum_available" != "1" ]; then
-        printf 'quicktui bootstrap: warning: installer checksum not available; continuing without local verification\n' >&2
-        return 0
-    fi
-    expected=$(awk '{print $1; exit}' "$sha_file")
-    case "$expected" in
-        ''|*[!0-9a-fA-F]*) die "invalid installer checksum file" ;;
-    esac
-    [ "${#expected}" -eq 64 ] || die "invalid installer checksum file"
-    if actual=$(sha256_file "$file" 2>/dev/null); then
-        expected=$(printf '%s' "$expected" | tr 'A-F' 'a-f')
-        actual=$(printf '%s' "$actual" | tr 'A-F' 'a-f')
-        [ "$actual" = "$expected" ] || die "installer sha256 mismatch"
-    else
-        printf 'quicktui bootstrap: warning: no local sha256 tool found; continuing without local verification\n' >&2
-    fi
-}
-
 need_cmd uname
 detect_platform
 
@@ -205,21 +207,11 @@ trap cleanup EXIT HUP INT TERM
 
 base_url=${QUICKTUI_INSTALLER_RELEASES%/}
 installer_url="${base_url}/${asset}"
-sha_url="${installer_url}.sha256"
-
 installer="${tmp_dir}/${asset}"
-sha_file="${installer}.sha256"
 
 printf 'Downloading installer asset: %s\n' "$asset" >&2
 download_installer "$installer_url" "$installer" || die "download failed: $installer_url"
 check_installer_size "$installer"
-checksum_available=0
-if download "$sha_url" "$sha_file"; then
-    checksum_available=1
-else
-    : > "$sha_file"
-fi
-verify_installer_if_possible "$installer" "$sha_file" "$checksum_available"
 chmod +x "$installer"
 
 exec "$installer" "$@"

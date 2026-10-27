@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
 <title>QuickTUI 对比 Blink Shell</title>
 <meta name="description" content="QuickTUI 与 Blink Shell 的对比：带 Agent 状态的 tmux 与 Herdr 会话，对比需要自行配置的专业 SSH/Mosh 终端。" />
 <link rel="canonical" href="https://quicktui.ai/cn/compare/quicktui-vs-blink/" />
@@ -16,13 +17,13 @@
 <meta property="og:title" content="QuickTUI 对比 Blink Shell" />
 <meta property="og:description" content="QuickTUI 与 Blink Shell 的对比：带 Agent 状态的 tmux 与 Herdr 会话，对比需要自行配置的专业 SSH/Mosh 终端。" />
 <meta property="og:url" content="https://quicktui.ai/cn/compare/quicktui-vs-blink/" />
-<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <meta property="og:locale" content="zh_CN" />
 <meta property="og:locale:alternate" content="en_US" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="QuickTUI 对比 Blink Shell" />
 <meta name="twitter:description" content="QuickTUI 与 Blink Shell 的对比：带 Agent 状态的 tmux 与 Herdr 会话，对比需要自行配置的专业 SSH/Mosh 终端。" />
-<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <script>
 (() => {
   let theme = null;
@@ -37,6 +38,144 @@
 })();
 </script>
 <style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Shared site chrome (header + footer) for every page.
  * Injected inline by scripts/build.mjs; relies on the QT design tokens
  * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
@@ -191,7 +330,9 @@
   gap: 24px;
   flex-wrap: wrap;
 }
-.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
 .qt-foot .left .dot { opacity: .5; }
 .qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .qt-foot .links a { color: var(--ink-3); text-decoration: none; }
@@ -221,9 +362,6 @@ document.addEventListener('click', e => {
   if (placement) window.zaraz?.track('app_store_click', { placement });
 });
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/site.css" />
 <script type="application/ld+json">
 {
@@ -233,7 +371,7 @@ document.addEventListener('click', e => {
   "description": "QuickTUI 与 Blink Shell 的对比：带 Agent 状态的 tmux 与 Herdr 会话，对比需要自行配置的专业 SSH/Mosh 终端。",
   "url": "https://quicktui.ai/cn/compare/quicktui-vs-blink/",
   "inLanguage": "zh-Hans",
-  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "image": "https://quicktui.ai/images/og-image.png?v=20261005a",
   "author": {
     "@type": "Organization",
     "name": "QuickTUI",
@@ -290,6 +428,7 @@ document.addEventListener('click', e => {
         <a href="/cn/#quick-start">快速开始</a>
         <a href="/cn/#action">增强能力展示</a>
         <a href="/cn/install/">安装</a>
+        <a href="/cn/guide/">用户指南</a>
         <a href="/cn/compare/">对比</a>
         <a href="/cn/faq/">常见问题</a>
       </nav>
@@ -299,7 +438,7 @@ document.addEventListener('click', e => {
         </nav>
         <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
-        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
         <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
       </div>
     </div>
@@ -321,7 +460,7 @@ document.addEventListener('click', e => {
 <dt>真正的终端，接入已有会话</dt><dd>直接接入电脑上的 tmux 与 Herdr 会话，不需要用包装器改变 Agent 的启动方式，电脑前和手机上是同一个会话。</dd>
 <dt>Agent 状态一目了然</dt><dd>使用 <a href="/cn/herdr-ios-app/">Herdr</a> 时，会话管理器显示每个 Agent 是空闲、工作中、等待输入还是已完成。</dd>
 <dt>安装配对一步到位</dt><dd>设置向导通过 SSH 一次性装好服务端并自动配对，之后不需要在手机上管理 SSH。</dd>
-<dt>端到端加密，默认直连</dt><dd>手机与电脑之间全程端到端加密；不在同一网络时，可经 VPN、隧道或可选的 QuickTUI Relay 连接，无需开放 SSH。</dd>
+<dt>端到端加密，默认直连</dt><dd>手机与电脑之间全程端到端加密；不在同一网络时，可经 VPN、隧道或可选的 QuickTUI Cloud 中转连接，无需开放 SSH。</dd>
 <dt>为手机操作而设计</dt><dd>Agent 向导内置 19 种常用 Agent 的启动配置，命令面板收录 500 多条常用命令，另有可堆叠的快捷栏、支持文件与图片附件的输入栏、文件管理器，以及端口转发与内置浏览器。</dd>
 <dt>一次性买断</dt><dd>iPhone 与 iPad 上，免费版可连接一台电脑，Pro 一次性买断（中国区 App Store 为 168 元），不限电脑数量，中国区 App Store 同样可以下载；Android（Preview）在预览期间免费提供全部功能。</dd>
 </dl>
@@ -329,16 +468,16 @@ document.addEventListener('click', e => {
 <h2>逐项对比</h2>
 <dl class="ref-list">
 <dt>界面</dt><dd><span class="kv"><span class="k">QuickTUI</span>：完整终端与聊天视图，加上会话管理器、Agent 向导、文件管理器和端口转发</span><span class="kv"><span class="k">Blink Shell</span>：专业终端，带提示词输入模式</span></dd>
-<dt>连接方式</dt><dd><span class="kv"><span class="k">QuickTUI</span>：App 连接你电脑上的 QuickTUI 服务端，可在局域网直连，也可经 VPN、隧道或可选的 QuickTUI Relay；设置向导通过 SSH 一次性安装服务端</span><span class="kv"><span class="k">Blink Shell</span>：从 iPad 或 iPhone 直接 SSH 或 Mosh 到你的服务器，支持完整的 ssh_config</span></dd>
-<dt>数据是否经过厂商云端</dt><dd><span class="kv"><span class="k">QuickTUI</span>：默认直连你的电脑；使用 Relay 时只转发端到端加密的数据</span><span class="kv"><span class="k">Blink Shell</span>：终端流量不经过 Blink</span></dd>
+<dt>连接方式</dt><dd><span class="kv"><span class="k">QuickTUI</span>：App 连接你电脑上的 QuickTUI 服务端，可在局域网直连，也可经 VPN、隧道或可选的 QuickTUI Cloud 中转；设置向导通过 SSH 一次性安装服务端</span><span class="kv"><span class="k">Blink Shell</span>：从 iPad 或 iPhone 直接 SSH 或 Mosh 到你的服务器，支持完整的 ssh_config</span></dd>
+<dt>数据是否经过厂商云端</dt><dd><span class="kv"><span class="k">QuickTUI</span>：默认直连你的电脑；使用 QuickTUI Cloud 中转时只转发端到端加密的数据</span><span class="kv"><span class="k">Blink Shell</span>：终端流量不经过 Blink</span></dd>
 <dt>tmux / Herdr</dt><dd><span class="kv"><span class="k">QuickTUI</span>：原生支持 tmux 与 Herdr，也可手动启用 Luvus；使用 Herdr 时显示每个 Agent 的状态</span><span class="kv"><span class="k">Blink Shell</span>：没有原生 tmux 集成，会话保持依赖 Mosh</span></dd>
 <dt>支持的 Agent</dt><dd><span class="kv"><span class="k">QuickTUI</span>：任何终端里的 CLI Agent；Agent 向导内置 19 种常用 Agent 的启动配置</span><span class="kv"><span class="k">Blink Shell</span>：任何 CLI Agent</span></dd>
 <dt>平台</dt><dd><span class="kv"><span class="k">QuickTUI</span>：iPhone、iPad 与 <a href="/cn/android/">Android（Preview）</a></span><span class="kv"><span class="k">Blink Shell</span>：iOS 与 iPadOS</span></dd>
-<dt>定价</dt><dd><span class="kv"><span class="k">QuickTUI</span>：免费版可连接一台电脑；Pro 一次性买断（中国区 App Store 为 168 元），不限电脑数量；Relay 为可选订阅；Android（Preview）预览期间免费</span><span class="kv"><span class="k">Blink Shell</span>：两周免费试用，之后每年 19.99 美元；GPL-3.0 开源</span></dd>
+<dt>定价</dt><dd><span class="kv"><span class="k">QuickTUI</span>：免费版可连接一台电脑；Pro 一次性买断（中国区 App Store 为 168 元），不限电脑数量；QuickTUI Cloud 中转每月含免费流量，经常使用需订阅；Android（Preview）预览期间免费</span><span class="kv"><span class="k">Blink Shell</span>：两周免费试用，之后每年 19.99 美元；GPL-3.0 开源</span></dd>
 <dt>中国区 App Store</dt><dd><span class="kv"><span class="k">QuickTUI</span>：有</span><span class="kv"><span class="k">Blink Shell</span>：有</span></dd>
 </dl>
 
-<p>QuickTUI 可以从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_compare">App Store</a> 免费下载，安装方法见<a href="/cn/install/">安装指南</a>。</p>
+<p>QuickTUI 可以从 <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-compare-vs-blink&amp;mt=8" data-track-placement="content_compare">App Store</a> 免费下载，安装方法见<a href="/cn/install/">安装指南</a>。</p>
 
 <p class="note">Blink Shell 的信息根据其官网与 App Store 页面整理，截至 2026 年 9 月，最新情况请以对方官网为准。</p>
 
@@ -363,9 +502,12 @@ document.addEventListener('click', e => {
           <span>quicktui.ai</span>
           <span class="dot">·</span>
           <span>© 2026 · 版权所有。</span>
+          <span class="dot">·</span>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">蜀ICP备2023013634号-3</a>
         </div>
         <div class="links">
           <a href="/cn/install/">安装</a>
+          <a href="/cn/guide/">用户指南</a>
           <a href="/cn/faq/">常见问题</a>
           <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
           <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
@@ -373,7 +515,7 @@ document.addEventListener('click', e => {
           <a href="/cn/android/">Android（Preview）</a>
           <a href="/privacy">隐私</a>
           <a href="/cn/support">支持</a>
-          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
           <a href="https://x.com/dualface">X</a>
           <a href="https://github.com/dualface/quicktui">GitHub</a>
         </div>

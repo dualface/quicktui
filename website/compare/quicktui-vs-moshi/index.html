@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
 <title>QuickTUI vs Moshi</title>
 <meta name="description" content="QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription." />
 <link rel="canonical" href="https://quicktui.ai/compare/quicktui-vs-moshi/" />
@@ -16,13 +17,13 @@
 <meta property="og:title" content="QuickTUI vs Moshi" />
 <meta property="og:description" content="QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription." />
 <meta property="og:url" content="https://quicktui.ai/compare/quicktui-vs-moshi/" />
-<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:locale:alternate" content="zh_CN" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="QuickTUI vs Moshi" />
 <meta name="twitter:description" content="QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription." />
-<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <script>
 (() => {
   let theme = null;
@@ -37,6 +38,144 @@
 })();
 </script>
 <style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Shared site chrome (header + footer) for every page.
  * Injected inline by scripts/build.mjs; relies on the QT design tokens
  * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
@@ -191,7 +330,9 @@
   gap: 24px;
   flex-wrap: wrap;
 }
-.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
 .qt-foot .left .dot { opacity: .5; }
 .qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .qt-foot .links a { color: var(--ink-3); text-decoration: none; }
@@ -221,9 +362,6 @@ document.addEventListener('click', e => {
   if (placement) window.zaraz?.track('app_store_click', { placement });
 });
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/site.css" />
 <script type="application/ld+json">
 {
@@ -233,7 +371,7 @@ document.addEventListener('click', e => {
   "description": "QuickTUI vs Moshi: its own end-to-end encrypted server with a setup wizard and one-time pricing, versus direct SSH/Mosh from the phone with a subscription.",
   "url": "https://quicktui.ai/compare/quicktui-vs-moshi/",
   "inLanguage": "en",
-  "image": "https://quicktui.ai/images/og-image.png?v=20260930b",
+  "image": "https://quicktui.ai/images/og-image.png?v=20261005a",
   "author": {
     "@type": "Organization",
     "name": "QuickTUI",
@@ -288,8 +426,9 @@ document.addEventListener('click', e => {
       </a>
       <nav class="qt-nav-links">
         <a href="/#quick-start">Quick Start</a>
-        <a href="/#action">Enhanced Features</a>
+        <a href="/#action">Features</a>
         <a href="/install/">Install</a>
+        <a href="/guide/">User Guide</a>
         <a href="/compare/">Compare</a>
         <a href="/faq/">FAQ</a>
       </nav>
@@ -299,7 +438,7 @@ document.addEventListener('click', e => {
         </nav>
         <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">◐</button>
-        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta" href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="content_nav"><span class="lbl-long">iOS App</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
         <a class="qt-cta qt-cta-alt" href="/android/"><span class="lbl-long">Android App</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
       </div>
     </div>
@@ -316,39 +455,39 @@ document.addEventListener('click', e => {
 <p><a href="https://getmoshi.app" target="_blank" rel="noopener">Moshi</a> is a mobile terminal designed for AI coding agents, calling itself &quot;the baby monitor for your AI agents.&quot; It connects from your phone straight to your computer over SSH (Mosh and Eternal Terminal are Pro-only), integrates deeply with tmux, Herdr and Zellij, and offers a chat view on top of the terminal for agents such as Claude Code and Codex. With the optional <code>moshi-hook</code> daemon on your computer, you also get approvals and push notifications on your phone.</p>
 
 <h2>What QuickTUI is</h2>
-<p>QuickTUI is a native iPhone, iPad and <a href="/android/">Android (Preview)</a> app that works with the QuickTUI server on your computer, so you can attach to the sessions already running there and run and supervise any CLI agent from your phone. What sets it apart:</p>
+<p>QuickTUI is a native iPhone, iPad, and <a href="/android/">Android (Preview)</a> app that connects to the QuickTUI server on your computer, so you can attach to the sessions already running there and run and supervise any CLI agent from your phone. What sets it apart:</p>
 <dl class="ref-list">
-<dt>A real terminal on your existing sessions</dt><dd>Attaches straight to the tmux and Herdr sessions on your computer. No wrapper changes how you launch agents, and your desk and your phone share the same session.</dd>
-<dt>Agent status at a glance</dt><dd>With <a href="/herdr-ios-app/">Herdr</a>, the Session Manager shows whether each agent is idle, working, waiting for input or done.</dd>
-<dt>Setup and pairing in one step</dt><dd>The setup wizard installs the server over SSH once and pairs automatically; you never manage SSH on your phone after that.</dd>
-<dt>End-to-end encrypted, direct by default</dt><dd>Everything between your phone and your computer is end-to-end encrypted. Away from your network, connect through a VPN, a tunnel or the optional QuickTUI Relay without opening SSH.</dd>
-<dt>Built for working on a phone</dt><dd>The Agent Wizard includes launch settings for 19 popular agents and the Command Palette has more than 500 commands, plus stackable Shortcuts Bars, an Input Bar with file and image attachments, a file manager, and port forwarding with a built-in browser.</dd>
-<dt>A one-time purchase</dt><dd>On iPhone and iPad, the free version connects to one computer, and Pro is a one-time purchase ($39.99 on the US App Store) for unlimited computers; it&#39;s available on the App Store in China too. The Android (Preview) app includes every feature for free during the preview.</dd>
+<dt>A real terminal on your existing sessions</dt><dd>Attaches directly to the tmux and Herdr sessions on your computer. No wrapper changes how you launch agents, and your desktop and your phone share the same session.</dd>
+<dt>Agent status at a glance</dt><dd>With <a href="/herdr-ios-app/">Herdr</a>, the Session Manager shows whether each agent is idle, working, waiting for input, or done, so you can see which one needs you.</dd>
+<dt>Setup and pairing in one step</dt><dd>The setup wizard installs the server over SSH once and pairs automatically. After that, you never manage SSH on your phone.</dd>
+<dt>End-to-end encrypted, direct by default</dt><dd>Everything between your phone and your computer is end-to-end encrypted. Away from your network, connect through a VPN, a tunnel, or the optional QuickTUI Cloud relay without opening SSH to the internet.</dd>
+<dt>Built for working on a phone</dt><dd>The Agent Wizard includes launch settings for 19 popular agents, and the Command Palette has more than 500 commands. You also get stackable Shortcuts Bars, an Input Bar with file and image attachments, a file manager, and port forwarding with a built-in browser.</dd>
+<dt>A one-time purchase</dt><dd>On iOS, QuickTUI is free for one computer, and Pro is a one-time purchase ($39.99 USD) for unlimited computers, with no subscription. The Android preview includes every feature for free.</dd>
 </dl>
 
-<h2>What only QuickTUI offers</h2>
-<p>Moshi and QuickTUI both support tmux and Herdr, which makes them the two closest products. Compared with Moshi, QuickTUI offers:</p>
+<h2>QuickTUI Advantages</h2>
+<p>While both QuickTUI and Moshi support tmux and Herdr, QuickTUI provides distinct architectural and pricing advantages:</p>
 <dl class="ref-list">
-<dt>No SSH exposure required</dt><dd>Moshi needs your phone to reach your computer directly over SSH (Pro adds Mosh and Eternal Terminal). QuickTUI uses its own end-to-end encrypted server, and away from your network it can connect through the optional QuickTUI Relay, so your computer never has to open SSH to the outside.</dd>
+<dt>No SSH exposure required</dt><dd>Moshi needs your phone to reach your computer directly over SSH (Pro adds Mosh and Eternal Terminal). QuickTUI uses its own end-to-end encrypted server, and away from your network it can connect through the optional QuickTUI Cloud relay, so your computer never has to open SSH to the outside.</dd>
 <dt>Agent data stays off third-party servers</dt><dd>Moshi sends approval and notification summaries, including parts of prompts and responses, through Moshi&#39;s servers. With QuickTUI, terminal traffic, agent status and approvals travel end-to-end encrypted between your phone and your computer.</dd>
-<dt>A setup wizard that installs and pairs</dt><dd>Enter your SSH login once in the app and QuickTUI installs the server on your computer and pairs automatically, installing Herdr too if your computer has neither tmux nor Herdr. After that, there&#39;s no SSH configuration to keep on your phone.</dd>
-<dt>tmux and Herdr included for free</dt><dd>Multiplexer integration is Pro-only in Moshi. QuickTUI&#39;s tmux and Herdr support works in the free version, and it also supports the Luvus backend.</dd>
-<dt>A one-time purchase, no subscription</dt><dd>Moshi Pro is a monthly or yearly subscription, or $249 lifetime (US App Store). QuickTUI Pro is a one-time purchase ($39.99 on the US App Store) for unlimited computers, and the free version already connects to one computer.</dd>
+<dt>A setup wizard that installs and pairs</dt><dd>Enter your SSH login once in the app, and QuickTUI installs the server on your computer and pairs automatically. If your computer has neither tmux nor Herdr, it installs Herdr too. After that, there is no SSH configuration to keep on your phone.</dd>
+<dt>tmux and Herdr included for free</dt><dd>Moshi limits multiplexer integration to Pro. In QuickTUI, tmux and Herdr support works in the free version, and the Luvus backend is supported too.</dd>
+<dt>A one-time purchase, no subscription</dt><dd>Moshi Pro is a monthly or yearly subscription, or $249 for lifetime access. QuickTUI Pro is a one-time purchase ($39.99 USD) for unlimited computers, and the free version already connects to one computer.</dd>
 </dl>
 
 <h2>Side by side</h2>
 <dl class="ref-list">
 <dt>Interface</dt><dd><span class="kv"><span class="k">QuickTUI</span>: A full terminal and a chat view, plus a Session Manager, Agent Wizard, file manager and port forwarding</span><span class="kv"><span class="k">Moshi</span>: A real terminal with an optional chat view; the diff viewer is Pro-only, and the free version includes only 5 trial agent inbox actions</span></dd>
-<dt>How it connects</dt><dd><span class="kv"><span class="k">QuickTUI</span>: The app connects to the QuickTUI server on your computer, directly on your network or through a VPN, a tunnel or the optional QuickTUI Relay. The setup wizard installs the server once over SSH</span><span class="kv"><span class="k">Moshi</span>: Direct SSH from your phone to your computer, with Mosh and Eternal Terminal Pro-only; the optional <code>moshi-hook</code> daemon handles approvals and push</span></dd>
-<dt>Vendor cloud in the path</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Direct to your computer by default; with Relay, only end-to-end encrypted data is forwarded</span><span class="kv"><span class="k">Moshi</span>: Terminal traffic doesn&#39;t go through Moshi; approval and notification summaries (including parts of prompts and responses) go through Moshi&#39;s servers</span></dd>
+<dt>How it connects</dt><dd><span class="kv"><span class="k">QuickTUI</span>: The app connects to the QuickTUI server on your computer, directly on your network or through a VPN, a tunnel or the optional QuickTUI Cloud relay. The setup wizard installs the server once over SSH</span><span class="kv"><span class="k">Moshi</span>: Direct SSH from your phone to your computer, with Mosh and Eternal Terminal Pro-only; the optional <code>moshi-hook</code> daemon handles approvals and push</span></dd>
+<dt>Vendor cloud in the path</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Direct to your computer by default; through the QuickTUI Cloud relay, only end-to-end encrypted data is forwarded</span><span class="kv"><span class="k">Moshi</span>: Terminal traffic doesn&#39;t go through Moshi; approval and notification summaries (including parts of prompts and responses) go through Moshi&#39;s servers</span></dd>
 <dt>tmux / Herdr</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Native tmux and Herdr support, with Luvus available when enabled manually; with Herdr, each agent&#39;s status is shown</span><span class="kv"><span class="k">Moshi</span>: Native tmux, Herdr and Zellij support (Pro-only)</span></dd>
 <dt>Agents</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Any CLI agent that runs in a terminal; the Agent Wizard includes launch settings for 19 popular agents</span><span class="kv"><span class="k">Moshi</span>: Any CLI agent; a dozen or so agents, including Claude Code and Codex, get the chat view</span></dd>
 <dt>Platforms</dt><dd><span class="kv"><span class="k">QuickTUI</span>: iPhone, iPad and <a href="/android/">Android (Preview)</a></span><span class="kv"><span class="k">Moshi</span>: iOS, iPad, Android, Apple Watch and desktop apps</span></dd>
-<dt>Pricing</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Free for one computer; Pro is a one-time purchase ($39.99 on the US App Store) for unlimited computers; Relay is an optional subscription; the Android (Preview) app is free during the preview</span><span class="kv"><span class="k">Moshi</span>: The free version covers basic SSH; Pro is $7.99 a month or $69.99 a year on the US App Store, or $249 lifetime</span></dd>
+<dt>Pricing</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Free for one computer; Pro is a one-time purchase ($39.99 on the US App Store) for unlimited computers; the QuickTUI Cloud relay includes free monthly traffic, with a subscription for regular use; the Android (Preview) app is free during the preview</span><span class="kv"><span class="k">Moshi</span>: The free version covers basic SSH; Pro is $7.99 a month or $69.99 a year on the US App Store, or $249 lifetime</span></dd>
 <dt>China App Store</dt><dd><span class="kv"><span class="k">QuickTUI</span>: Yes</span><span class="kv"><span class="k">Moshi</span>: Yes</span></dd>
 </dl>
 
-<p>QuickTUI is free to download from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="content_compare">App Store</a>; see the <a href="/install/">install guide</a> to set it up.</p>
+<p>QuickTUI is free to download from the <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-compare-vs-moshi&amp;mt=8" data-track-placement="content_compare">App Store</a>; see the <a href="/install/">install guide</a> to set it up.</p>
 
 <p class="note">Information about Moshi is based on its website and App Store listing as of September 2026. Check Moshi&#39;s site for the latest details.</p>
 
@@ -376,6 +515,7 @@ document.addEventListener('click', e => {
         </div>
         <div class="links">
           <a href="/install/">Install</a>
+          <a href="/guide/">User Guide</a>
           <a href="/faq/">FAQ</a>
           <a href="/tmux-ios-app/">tmux on iOS</a>
           <a href="/herdr-ios-app/">Herdr on iOS</a>
@@ -383,7 +523,7 @@ document.addEventListener('click', e => {
           <a href="/android/">Android (Preview)</a>
           <a href="/privacy">Privacy</a>
           <a href="/support">Support</a>
-          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://apps.apple.com/us/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
           <a href="https://x.com/dualface">X</a>
           <a href="https://github.com/dualface/quicktui">GitHub</a>
         </div>

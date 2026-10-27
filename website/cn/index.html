@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="apple-itunes-app" content="app-id=6761338192" />
 <title>QuickTUI — 手机、iPad 远程终端 · tmux / Herdr · Claude Code / Codex</title>
 <meta name="description" content="自托管远程终端，支持 iPhone、iPad 与 Android。随时随地接入 tmux 或 Herdr 会话，运行 Claude Code、Codex 或任意 CLI Agent，默认直连。" />
 <link rel="canonical" href="https://quicktui.ai/cn/" />
@@ -14,13 +15,13 @@
 <meta property="og:title" content="QuickTUI — 在手机上掌控编程 Agent" />
 <meta property="og:description" content="在 iPhone、iPad 或 Android 上接入 tmux 或 Herdr，运行任意 CLI Agent。自托管、默认直连、端到端加密。" />
 <meta property="og:url" content="https://quicktui.ai/cn/" />
-<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta property="og:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <meta property="og:locale" content="zh_CN" />
 <meta property="og:locale:alternate" content="en_US" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="QuickTUI — 在手机上掌控编程 Agent" />
 <meta name="twitter:description" content="在 iPhone、iPad 或 Android 上接入 tmux 或 Herdr，运行任意 CLI Agent。自托管、默认直连、端到端加密。" />
-<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20260930b" />
+<meta name="twitter:image" content="https://quicktui.ai/images/og-image.png?v=20261005a" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -87,7 +88,7 @@
       "name": "可以通过公网连接吗？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "可以。任选一种方式，让手机能访问到你的电脑： QuickTUI Relay 可选订阅，在 App 里开通即可，无需任何网络配置。 VPN 例如 Tailscale ，手机和电脑处在同一个虚拟网络里即可直连。 隧道或反向代理 例如 Cloudflare Tunnel 或带 TLS 的反向代理，指向 http://127.0.0.1:8022 ，然后在 App 里填写公网 HTTPS 域名（不带 :8022 ）。 配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。 通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码： # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows（PowerShell） quicktui-server pairing qrcode --public-url https://your.domain 隧道或反向代理需要保留原始 Host 请求头，并发送 X-Forwarded-Proto ；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。 配对二维码短期有效，请勿泄露。"
+        "text": "可以。任选一种方式，让手机能访问到你的电脑： QuickTUI Cloud 中转 无需任何网络配置。每个账号每月有免费中转流量，经常使用可订阅 QuickTUI Cloud。 VPN 例如 Tailscale ，手机和电脑处在同一个虚拟网络里即可直连。 隧道或反向代理 例如 Cloudflare Tunnel 或带 TLS 的反向代理，指向 http://127.0.0.1:8022 ，然后在 App 里填写公网 HTTPS 域名（不带 :8022 ）。 配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。 通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码： # macOS / Linux ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain # Windows（PowerShell） quicktui-server pairing qrcode --public-url https://your.domain 隧道或反向代理需要保留原始 Host 请求头，并发送 X-Forwarded-Proto ；Cloudflare Tunnel 默认两者都满足。如果你的代理不发送该请求头，还需要把 QuickTUI App 更新到最新版。 配对二维码短期有效，请勿泄露。"
       }
     },
     {
@@ -95,7 +96,7 @@
       "name": "QuickTUI 如何认证设备？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "QuickTUI 通过设备配对来认证，全程端到端加密： 配对时 配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。 设备密钥 每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。 每次连接 App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。 经 Relay 转发时 QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。 撤销设备 手机丢失或不再使用时，在电脑上撤销它： # 列出已配对设备 ~/.local/bin/quicktui-server pairing devices list # 撤销指定设备 ~/.local/bin/quicktui-server pairing devices revoke <设备 ID> 撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 quicktui-server 开头。"
+        "text": "QuickTUI 通过设备配对来认证，全程端到端加密： 配对时 配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。 设备密钥 每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。 每次连接 App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。 经 QuickTUI Cloud 中转时 中转服务只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，中转服务在投递时会短暂看到通知文字。 撤销设备 手机丢失或不再使用时，在电脑上撤销它： # 列出已配对设备 ~/.local/bin/quicktui-server pairing devices list # 撤销指定设备 ~/.local/bin/quicktui-server pairing devices revoke <设备 ID> 撤销后，该设备最迟 5 分钟内被断开，之后无法再连接。Windows 请在 PowerShell 中运行同样的命令，以 quicktui-server 开头。"
       }
     },
     {
@@ -146,7 +147,13 @@
 <script>
 // EN / CN are separate static pages. Honor ?lang= (App entry) and, on the EN page, the
 // saved or browser language by jumping to the matching page before first paint.
+// quicktui.cn serves only the Chinese pages: never redirect there, and ignore ?lang= and the
+// saved choice (the EN link to quicktui.ai saves 'en' in this origin's storage).
 (() => {
+  if (/^(www\.)?quicktui\.cn$/.test(location.hostname)) {
+    document.documentElement.setAttribute('data-cn-host', '');
+    return;
+  }
   const zhPage = document.documentElement.lang.startsWith('zh');
   const norm = v => { const l = String(v || '').toLowerCase(); return l === 'zh' || l.startsWith('zh-') ? 'zh' : (l === 'en' || l.startsWith('en-') ? 'en' : null); };
   let want = null;
@@ -181,6 +188,144 @@
 })();
 </script>
 <style>
+/* Self-hosted web fonts (SIL OFL 1.1, licenses in /fonts/OFL-*.txt). Files and unicode-range
+   subsets mirror the Google Fonts css2 response for the same families, weights and styles. */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/instrument-serif-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-vietnamese.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Shared site chrome (header + footer) for every page.
  * Injected inline by scripts/build.mjs; relies on the QT design tokens
  * (--bg, --ink*, --line*, --accent*, --mono, --maxw, --gutter) that both the
@@ -335,7 +480,9 @@
   gap: 24px;
   flex-wrap: wrap;
 }
-.qt-foot .left { display: flex; align-items: center; gap: 14px; }
+.qt-foot .left { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.qt-foot .left a { color: var(--ink-3); text-decoration: none; }
+.qt-foot .left a:hover { color: var(--ink); }
 .qt-foot .left .dot { opacity: .5; }
 .qt-foot .links { display: flex; gap: 10px 20px; flex-wrap: wrap; }
 .qt-foot .links a { color: var(--ink-3); text-decoration: none; }
@@ -357,9 +504,6 @@
   .qt-lang a { padding: 4px; }
 }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 /* ───────────────────────────────────────────────── tokens */
 :root {
@@ -779,25 +923,31 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
 /* ───────────────────────────────────────────────── hero setup demo (right column)
    Replays the app's automatic setup (credentials → install → done → terminal),
    mirroring the iOS setup wizard demo. The phone screen uses the app's default
-   theme tokens (Dracula dark / Catppuccin Latte light). Scenes are authored at a 390px
+   theme tokens (Bamboo Multiplex dark / Matcha Zen light). Scenes are authored at a 390px
    design width; JS scales the stage into the screen and plays the demo. */
 .hero > .hero-side { flex: 0 0 auto; }
 .hero-side { width: 320px; max-width: 100%; }
 .hero-demo {
-  --sd-bg: #282A36;
-  --sd-surface: #363848;
-  --sd-surface-hi: #44475A;
-  --sd-stroke: rgba(255,255,255,0.08);
-  --sd-text: #F8F8F2;
-  --sd-text2: #BBBBBB;
-  --sd-text3: #6272A4;
-  --sd-accent: #BD93F9;
-  --sd-accent-soft: rgba(189,147,249,0.08);
-  --sd-accent-stroke: rgba(189,147,249,0.55);
-  --sd-log: rgba(0,0,0,0.6);
-  --sd-amber: #FFB86C;
-  --sd-red: #FF5555;
-  --sd-info: #8BE9FD;
+  /* App default dark theme: Bamboo Multiplex (design/design-system/tokens.json) */
+  --sd-bg: #232923;
+  --sd-surface: #282f28;
+  --sd-surface-hi: #2e352e;
+  --sd-stroke: #ffffff14;
+  --sd-text: #ece1c0;
+  --sd-text2: #b0aa91;
+  --sd-text3: #7d7c6a;
+  --sd-accent: #81af58;
+  --sd-accent-soft: #81af5814;
+  --sd-accent-stroke: #81af588c;
+  --sd-log: #00000099;
+  --sd-amber: #ceba49;
+  --sd-red: #dc4f62;
+  --sd-info: #409cdc;
+  --sd-chat-bg: #1d221d;
+  --sd-chat-surface: #2e352e;
+  --sd-chat-stroke: #ffffff24;
+  --sd-chat-text2: #ffffffb3;
+  --sd-chat-user: #81af5829;
   --sd-dw: 290px;
   --sd-dh: 592px;
   --sd-bezel: 10px;
@@ -808,20 +958,26 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
   border-radius: 28px;
 }
 [data-theme="light"] .hero-demo {
-  --sd-bg: #EFF1F5;
-  --sd-surface: #FFFFFF;
-  --sd-surface-hi: #E6E9EF;
-  --sd-stroke: rgba(60,60,67,0.14);
-  --sd-text: #4C4F69;
-  --sd-text2: #6C6F85;
-  --sd-text3: #9CA0B0;
-  --sd-accent: #8839EF;
-  --sd-accent-soft: #E8DDF9;
-  --sd-accent-stroke: #8839EF;
-  --sd-log: rgba(0,0,0,0.08);
-  --sd-amber: #905C13;
-  --sd-red: #CD0F38;
-  --sd-info: #1C5EE1;
+  /* App default light theme: Matcha Zen */
+  --sd-bg: #f5f7ea;
+  --sd-surface: #ffffff;
+  --sd-surface-hi: #0000000d;
+  --sd-stroke: #3c3c4324;
+  --sd-text: #354029;
+  --sd-text2: #656e59;
+  --sd-text3: #8b9280;
+  --sd-accent: #467e29;
+  --sd-accent-soft: #d5e1c7;
+  --sd-accent-stroke: #467e29;
+  --sd-log: #00000014;
+  --sd-amber: #8d6c00;
+  --sd-red: #c2452a;
+  --sd-info: #2e7c78;
+  --sd-chat-bg: #f5f7ea;
+  --sd-chat-surface: #00000006;
+  --sd-chat-stroke: #3c3c4324;
+  --sd-chat-text2: #3c3c43ad;
+  --sd-chat-user: #d5e1c7;
 }
 .sd-camera {
   position: absolute; inset: 0;
@@ -1050,6 +1206,121 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
 @media (prefers-reduced-motion: reduce) {
   .hero-demo *, .hero-demo *::before, .hero-demo *::after { animation: none !important; transition: none !important; }
 }
+/* ───────────────────────────────────────────────── hero agent demo (right column)
+   "Agent control loop": the session list shows which agents need you, an approval
+   notification is approved from the lock screen banner, a question is answered in
+   chat mode, and the agents keep working. Same phone frame and theme tokens as the
+   setup demo; scenes are authored at a 390px design width and scaled by JS. */
+.loop-time { position: absolute; top: 17px; left: 44px; font-family: var(--sans); font-weight: 600; font-size: 15px; color: var(--sd-text); z-index: 3; }
+.loop-scene { position: absolute; top: 56px; left: 0; right: 0; bottom: 0; opacity: 0; transition: opacity 450ms ease; }
+.loop-scene.on { opacity: 1; }
+.loop-nav { display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 16px; }
+.loop-nav b { font-size: 19px; font-weight: 700; color: var(--sd-text); display: flex; align-items: center; gap: 8px; }
+.loop-nav .loop-chev { color: var(--sd-text2); font-size: 14px; }
+.loop-btn { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--sd-stroke); display: grid; place-items: center; color: var(--sd-text2); font-size: 16px; }
+.loop-chips { display: flex; gap: 6px; padding: 8px 14px 4px; white-space: nowrap; overflow: hidden; }
+.loop-chips span { font-size: 11px; padding: 6px 11px; border-radius: 99px; border: 1px solid var(--sd-stroke); color: var(--sd-text2); background: var(--sd-surface); }
+.loop-chips span.on { color: var(--sd-accent); border-color: var(--sd-accent-stroke); background: var(--sd-accent-soft); }
+.loop-sh { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--sd-text2); padding: 16px 16px 4px; }
+.loop-row { display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px 11px 16px; border-bottom: 1px solid var(--sd-stroke); transition: background-color 700ms ease; }
+.loop-row.flash { background: var(--sd-accent-soft); transition: none; }
+.loop-row.hl { background: var(--sd-surface); }
+.loop-ic { flex: 0 0 18px; height: 18px; margin-top: 2px; display: grid; place-items: center; }
+.loop-ic svg { width: 16px; height: 16px; }
+.loop-ic .i { display: none; }
+.loop-row[data-state="approval"] .i-lock,
+.loop-row[data-state="question"] .i-q,
+.loop-row[data-state="running"] .i-run,
+.loop-row[data-state="done"] .i-done,
+.loop-row[data-state="idle"] .i-idle,
+.loop-row[data-state="failed"] .i-fail { display: block; }
+.loop-row[data-state="approval"] .loop-ic { color: var(--sd-amber); }
+.loop-row[data-state="question"] .loop-ic { color: var(--sd-amber); }
+.loop-row[data-state="running"] .loop-ic { color: var(--sd-accent); }
+.loop-row[data-state="done"] .loop-ic { color: var(--sd-text3); }
+.loop-row[data-state="idle"] .loop-ic { color: var(--sd-text3); }
+.loop-row[data-state="failed"] .loop-ic { color: var(--sd-red); }
+.loop-rt { flex: 1; min-width: 0; font-family: var(--sans); }
+.loop-r1 { display: flex; align-items: baseline; gap: 8px; }
+.loop-r1 b { font-size: 15.5px; font-weight: 600; color: var(--sd-text); white-space: nowrap; }
+.loop-r1 .loop-br { font-family: var(--mono); font-size: 11px; color: var(--sd-text3); }
+.loop-r1 .loop-ago { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--sd-text3); }
+.loop-r2 { margin-top: 3px; font-size: 13.5px; color: var(--sd-text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.loop-row[data-state="running"] .loop-r2 { color: var(--sd-accent); }
+.loop-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: loop-spin 900ms linear infinite; display: inline-block; }
+@keyframes loop-spin { to { transform: rotate(360deg); } }
+/* Every scene lives in the top of the screen, so the frame is cut off below it and
+   fades out instead of drawing the empty lower half. */
+#agentDemo {
+  aspect-ratio: 320 / 480;
+  border-radius: 28px 28px 0 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+}
+#agentDemo .sd-screen { background: var(--sd-chat-bg); }
+#agentDemo .loop-row { border-bottom-color: var(--sd-chat-stroke); }
+#agentDemo .loop-row .loop-r2 { color: var(--sd-chat-text2); }
+#agentDemo .loop-row[data-state="running"] .loop-r2 { color: var(--sd-accent); }
+#agentDemo .loop-row.hl { background: var(--sd-chat-surface); }
+#agentDemo .loop-msg { background: var(--sd-chat-user); }
+/* lock-screen style notification, drawn over the list */
+.loop-notif { position: absolute; top: 52px; left: 10px; right: 10px; z-index: 5; transform: translateY(-140%); transition: transform 420ms cubic-bezier(0.2, 0.8, 0.3, 1); font-family: var(--sans); }
+.loop-notif.on { transform: none; }
+.loop-nb { display: flex; gap: 10px; padding: 12px 14px; border-radius: 22px; background: rgba(40,40,46,0.92); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.35); transition: transform 300ms ease; }
+.loop-notif.hold .loop-nb { transform: scale(1.03); }
+.loop-appic { flex: 0 0 38px; height: 38px; border-radius: 9px; background: #2BD27A; color: #0B2A18; font: 700 14px/38px var(--mono); text-align: center; }
+.loop-n1 { display: flex; justify-content: space-between; font-size: 14px; }
+.loop-n1 span { color: rgba(255,255,255,0.55); font-size: 12px; }
+.loop-n2 { margin-top: 2px; font-size: 13.5px; line-height: 1.35; color: rgba(255,255,255,0.9); }
+.loop-menu { margin: 10px 0 0 auto; width: 230px; border-radius: 16px; overflow: hidden; background: rgba(48,48,54,0.96); box-shadow: 0 10px 30px rgba(0,0,0,0.35); opacity: 0; transform: scale(0.92); transform-origin: top right; transition: opacity 220ms ease, transform 220ms ease; }
+.loop-notif.hold .loop-menu { opacity: 1; transform: none; }
+.loop-mi { padding: 13px 16px; font-size: 15px; color: #fff; }
+.loop-mi + .loop-mi { border-top: 1px solid rgba(255,255,255,0.1); }
+.loop-mi.rej { color: #FF6961; }
+.loop-mi.pressed { background: rgba(255,255,255,0.12); }
+.loop-dim { position: absolute; inset: 0; z-index: 4; background: rgba(0,0,0,0.35); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; transition: opacity 220ms ease; pointer-events: none; }
+.loop-dim.on { opacity: 1; }
+/* chat mode */
+.loop-chat .loop-nav b { font-size: 16px; }
+.loop-cst { width: 14px; height: 14px; display: inline-grid; place-items: center; color: var(--sd-amber); }
+.loop-cst.run { color: var(--sd-accent); }
+.loop-msg { margin: 14px 16px 0 64px; padding: 10px 12px; border-radius: 12px; background: var(--sd-surface); font-size: 12.5px; line-height: 1.45; color: var(--sd-text); }
+.loop-q { margin: 16px 12px 0; padding: 14px 14px 12px; border-radius: 14px; border: 1px solid var(--sd-amber); background: var(--sd-surface); transition: opacity 300ms ease; }
+.loop-qh { font-family: var(--sans); font-size: 14px; font-weight: 700; color: var(--sd-amber); }
+.loop-qt { margin-top: 8px; font-family: var(--sans); font-size: 14px; color: var(--sd-text); }
+.loop-qs { margin-top: 4px; font-size: 11px; color: var(--sd-text3); }
+.loop-opt { display: flex; gap: 10px; align-items: flex-start; margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--sd-stroke); background: var(--sd-bg); transition: border-color 200ms ease, background-color 200ms ease; }
+.loop-opt i { flex: 0 0 14px; height: 14px; margin-top: 2px; border-radius: 50%; border: 1.5px solid var(--sd-text3); }
+.loop-opt b { display: block; font-family: var(--sans); font-size: 13.5px; font-weight: 600; color: var(--sd-text); }
+.loop-opt span { display: block; margin-top: 2px; font-size: 11px; color: var(--sd-text2); }
+.loop-opt.sel { border-color: var(--sd-accent-stroke); background: var(--sd-accent-soft); }
+.loop-opt.sel i { border-color: var(--sd-accent); background: radial-gradient(circle, var(--sd-accent) 0 45%, transparent 50%); }
+.loop-submit { margin-top: 12px; padding: 11px 0; text-align: center; border-radius: 10px; font-size: 12px; letter-spacing: 0.12em; border: 1px solid var(--sd-stroke); color: var(--sd-text3); transition: all 200ms ease; }
+.loop-submit.ready { border-color: var(--sd-accent-stroke); color: var(--sd-accent); background: var(--sd-accent-soft); }
+.loop-submit.pressed { filter: brightness(1.35); transform: scale(0.98); }
+.loop-ans { display: none; margin: 16px 16px 0; font-size: 13px; line-height: 1.5; }
+.loop-chat.answered .loop-q { display: none; }
+.loop-chat.answered .loop-ans { display: block; }
+.loop-ansq { color: var(--sd-text2); }
+.loop-ansq b { color: var(--sd-text); }
+.loop-work { margin-top: 12px; display: flex; align-items: center; gap: 8px; color: var(--sd-accent); }
+.loop-meta { margin: 18px 16px 0; font-size: 11px; color: var(--sd-text3); border-top: 1px solid var(--sd-stroke); padding-top: 10px; }
+/* step strip under the phone */
+.loop-steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0 0; padding: 0; }
+.loop-steps li { padding-top: 7px; border-top: 2px solid var(--line); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-4); transition: color 300ms ease, border-color 300ms ease; min-width: 0; }
+.loop-steps li span { display: block; font-size: 9.5px; letter-spacing: 0.14em; }
+.loop-steps li b { display: block; margin-top: 2px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.loop-steps li.on { color: var(--ink); border-top-color: var(--accent); }
+.hero-works { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-3); margin: 0 0 4px; }
+/* get started: steps beside the setup demo */
+.gs-body { display: flex; gap: clamp(32px, 4vw, 56px); align-items: flex-start; }
+.gs-body > :first-child { flex: 1 1 0; min-width: 0; }
+.gs-body .hero-steps { grid-template-columns: 1fr; max-width: 560px; margin-top: 0; }
+.gs-body .hero-side { flex: 0 0 auto; }
+@media (max-width: 900px) {
+  .gs-body { flex-direction: column; gap: 24px; }
+  .gs-body .hero-side { align-self: center; }
+}
 .sr-only {
   position: absolute !important;
   width: 1px; height: 1px;
@@ -1090,87 +1361,175 @@ html[lang="en"] .v3 h1 { font-size: clamp(25.92px, 4.536vw, 57.02px); }
   max-width: 52ch;
   margin: 0;
 }
-/* ───────────── product demo (In Action) */
-.demo {
+/* ───────────── features (two feature stories)
+   Each story: label + badge, title, intro, a grid of feature cards with a cropped
+   screenshot, and (tools story) a scrolling rail of smaller cards. Card shots are
+   720x720 crops; the box keeps a 1:1 ratio so lazy images never shift the page. */
+.feat { display: grid; gap: clamp(56px, 8vw, 96px); }
+.feat-tag { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+.feat-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.feat-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.feat-title {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 30px);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  max-width: 30ch;
+}
+.feat-text { color: var(--ink-2); font-size: 16px; line-height: 1.6; margin: 0 0 28px; max-width: 60ch; }
+.feat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.feat-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--bg-1);
-  overflow: hidden;
+  padding: 20px;
+  min-width: 0;
 }
-.demo-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-}
-.demo-tab {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.02em;
-  color: var(--ink-3);
-  background: transparent;
-  border: 0;
-  border-right: 1px solid var(--line-soft);
-  padding: 12px 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.demo-tab:hover { color: var(--ink); background: var(--bg-1); }
-.demo-tab.on {
-  color: var(--ink);
-  background: var(--bg-2);
-}
-/* Panels share one grid cell so the stage always takes the tallest panel's height:
-   switching tabs never changes the page height. */
-.demo-stage { padding: clamp(20px, 3vw, 36px); display: grid; }
-.demo-panel { grid-area: 1 / 1; display: grid; grid-template-columns: 1fr 1.1fr; gap: 28px; align-items: center; visibility: hidden; }
-.demo-panel.on { visibility: visible; }
-.demo-copy .idx {
-  font-family: var(--mono);
-  font-size: 12px;
+.feat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.feat-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
   color: var(--accent);
-  letter-spacing: 0.12em;
-  margin-bottom: 8px;
+  background: var(--accent-glow);
 }
-.demo-copy h3 {
+.feat-ic svg { width: 17px; height: 17px; }
+.feat-card h4, .feat-mini h4 {
   font-family: var(--mono);
   font-weight: 600;
-  font-size: 22px;
-  letter-spacing: -0.02em;
-  margin: 0 0 10px;
-}
-.demo-copy p {
-  color: var(--ink-2);
   font-size: 15px;
-  line-height: 1.55;
+  letter-spacing: -0.01em;
   margin: 0;
-  max-width: 42ch;
 }
-/* 1.9.0 iPhone screenshots are full portrait screens; cap the height so a
-   panel fits the viewport, and show paired shots side by side. */
-.demo-shot {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-/* All screenshots are 660x1434. Give each a definite width and aspect ratio so the
-   box is reserved before the (lazy) image loads and switching tabs never shifts the page. */
-.demo-shot img {
-  display: block;
-  width: min(100%, 285px);
-  height: auto;
-  aspect-ratio: 660 / 1434;
+.feat-card p { color: var(--ink-2); font-size: 14px; line-height: 1.55; margin: 0 0 18px; }
+.feat-media {
+  margin-top: auto;
+  aspect-ratio: 1 / 1;
   border: 1px solid var(--line);
-  border-radius: 22px;
+  border-radius: 6px;
+  overflow: hidden;
   background: var(--bg-2);
 }
-.demo-shot.pair img { width: min(calc(50% - 8px), 285px); }
-@media (max-width: 860px) {
-  .demo-panel { grid-template-columns: 1fr; align-content: start; }
-  .demo-tab { font-size: 11px; padding: 10px 10px; }
-  .demo-shot img { width: min(100%, 248px); }
-  .demo-shot.pair img { width: min(calc(50% - 8px), 248px); }
+.feat-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* QuickTUI Cloud: phone -> relay -> computer, drawn in markup instead of a screenshot. */
+.feat-relay {
+  display: grid;
+  grid-template-columns: auto minmax(12px, 1fr) auto minmax(12px, 1fr) auto;
+  align-items: start;
+  align-content: center;
+  padding: 16px 12px;
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 45%, var(--accent-glow), transparent 62%),
+    var(--bg-2);
+}
+.relay-node { display: grid; grid-template-rows: 56px; justify-items: center; align-items: center; align-content: start; gap: 8px; }
+.relay-ic {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-1);
+  color: var(--ink);
+}
+.relay-ic svg { width: 22px; height: 22px; }
+.relay-hub .relay-ic { width: 56px; height: 56px; border-color: var(--accent); color: var(--accent); }
+.relay-hub .relay-ic svg { width: 28px; height: 28px; }
+.relay-hub span:last-child { color: var(--ink); }
+.relay-fw .relay-ic { box-shadow: 0 0 0 4px var(--bg-2), 0 0 0 5px var(--line); }
+.relay-node small { font-size: 10px; color: var(--ink-4); margin-top: -4px; }
+/* Every icon sits in a 56px row, so the links line up with the icon centres. */
+.relay-link { align-self: start; height: 0; margin: 28px 6px 0; border-top: 1px dashed var(--accent); }
+.relay-e2e { grid-column: 1 / -1; justify-self: center; display: inline-flex; align-items: center; gap: 6px; margin-top: 22px; color: var(--accent); }
+.relay-lock svg { width: 13px; height: 13px; display: block; }
+/* "And 5 more": horizontal rail, snapped per card; arrows page by the visible width. */
+.feat-more { margin-top: 36px; }
+.feat-more-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.feat-more-h { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.feat-nav { display: flex; gap: 8px; }
+.feat-nav button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-1);
+  color: var(--ink);
+  cursor: pointer;
+}
+.feat-nav button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.feat-nav button:disabled { opacity: 0.35; cursor: default; }
+.feat-nav svg { width: 14px; height: 14px; }
+.feat-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 3 * 16px) / 4);
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.feat-rail::-webkit-scrollbar { display: none; }
+.feat-mini { scroll-snap-align: start; min-width: 0; }
+.feat-mini .feat-media { margin: 0 0 12px; }
+.feat-mini h4 { margin-bottom: 6px; }
+.feat-mini p { color: var(--ink-2); font-size: 13px; line-height: 1.5; margin: 0; }
+.feat-progress { height: 2px; margin-top: 20px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.feat-progress span { display: block; height: 100%; width: 25%; background: var(--accent); transform-origin: left; }
+@media (max-width: 1000px) {
+  .feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feat-rail { grid-auto-columns: calc((100% - 2 * 16px) / 3); }
+}
+@media (max-width: 640px) {
+  /* Phones: each story's cards become a swipeable row (the next card peeks in), so
+     twelve cards do not turn the section into a very long page. */
+  .feat-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 86%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .feat-grid::-webkit-scrollbar { display: none; }
+  .feat-card { scroll-snap-align: start; padding: 16px; }
+  .feat-card .feat-media { aspect-ratio: 4 / 3; }
+  .feat-card .feat-media img { object-position: center top; }
+  .feat-rail { grid-auto-columns: 72%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feat-rail { scroll-behavior: auto; }
 }
 
 /* ───────────── resources compact */
@@ -1364,8 +1723,10 @@ html[lang="zh-Hans"] h3 .serif {
       </a>
       <nav class="qt-nav-links">
         <a href="#action"><span class="n">01</span>增强能力展示</a>
-        <a href="#faq"><span class="n">02</span>常见问题</a>
-        <a href="#resources"><span class="n">03</span>进一步阅读</a>
+        <a href="#quick-start"><span class="n">02</span>快速上手</a>
+        <a href="#faq"><span class="n">03</span>常见问题</a>
+        <a href="#resources"><span class="n">04</span>进一步阅读</a>
+        <a href="/cn/guide/"><span class="n">05</span>用户指南</a>
       </nav>
       <div class="qt-nav-right">
         <nav class="qt-lang" aria-label="语言">
@@ -1373,7 +1734,7 @@ html[lang="zh-Hans"] h3 .serif {
         </nav>
         <a class="qt-icon-btn" href="https://x.com/dualface" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         <button type="button" class="qt-icon-btn" id="themeToggle" aria-label="切换主题" title="切换主题">◐</button>
-        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
+        <a class="qt-cta" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8" data-track-placement="nav"><span class="lbl-long">iOS 应用</span><span class="lbl-short">iOS</span> <span class="arr">→</span></a>
         <a class="qt-cta qt-cta-alt" href="/cn/android/"><span class="lbl-long">Android 应用</span><span class="lbl-short">Android</span> <span class="arr">→</span></a>
       </div>
     </div>
@@ -1392,12 +1753,256 @@ html[lang="zh-Hans"] h3 .serif {
     </div>
 
     <!-- ───────── HERO ───────── -->
-    <section class="hero" id="quick-start">
+    <section class="hero" id="top">
       <div class="hero v3">
         <div>
           <div class="tag">────  REMOTE CONTROL FOR AI AGENTS  ────</div>
           <h1 data-i-html="hero3.h1">电脑里的 Agent,<br><em>手机实时操作</em></h1>
-          <p class="sub" data-i="hero3.sub">Claude Code、Codex、OpenCode、Grok — 随时接入，秒级确认。</p>
+          <p class="sub" data-i="hero3.sub">让每个 Agent 都不停工：一眼看出谁在等你，在通知里直接批准，在手机上回答它的提问。</p>
+          <p class="hero-works" data-i="hero3.works">Claude Code · Codex · OpenCode · Grok · 任意 CLI Agent，跑在 tmux 或 Herdr 里</p>
+          <div class="ctas">
+            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-home-hero&amp;mt=8" data-track-placement="hero" data-i-html="in.cta">iOS 应用 <span class="arr">→</span></a>
+            <a class="btn btn-primary btn-xl" href="/cn/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android 应用 <span class="arr">→</span></a>
+            <a class="btn btn-xl" href="#action" data-i-html="cta.getQt">增强能力展示 <span class="arr">→</span></a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-demo" id="agentDemo" aria-hidden="true">
+            <div class="sd-camera">
+              <div class="sd-device">
+                <div class="sd-screen">
+                  <div class="sd-stage">
+                    <div class="sd-island"></div>
+                    <div class="loop-time">9:41</div>
+                    <div class="loop-scene loop-list on">
+                      <div class="loop-nav"><span class="loop-btn">‹</span><b>devbox <span class="loop-chev">⌄</span></b><span class="loop-btn">+</span></div>
+                      <div class="loop-chips"><span class="on" data-i="ad.chip.all">全部</span><span data-i="ad.chip.attn">待处理</span><span data-i="ad.chip.running">运行中</span><span data-i="ad.chip.idle">空闲</span></div>
+                      <div class="loop-sec" data-sec="attn">
+                        <div class="loop-sh" data-i="ad.sec.attn">需要你处理</div>
+                        <div class="loop-rows"></div>
+                      </div>
+                      <div class="loop-sec" data-sec="other">
+                        <div class="loop-sh" data-i="ad.sec.other">其他</div>
+                        <div class="loop-rows"></div>
+                      </div>
+                      <div hidden>
+                        <div class="loop-row" data-id="web" data-state="approval" data-sec0="attn">
+                          <span class="loop-ic"><svg class="i i-lock" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 7V5.2a3.5 3.5 0 0 1 7 0V7h.5a1 1 0 0 1 1 1v5.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1zm1.6 0h3.8V5.2a1.9 1.9 0 0 0-3.8 0z"/></svg><svg class="i i-q" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.4"/><path d="M8 7.3v3.6M8 5.1v.1" stroke-linecap="round"/></svg><span class="i i-run loop-spin"></span><svg class="i i-done" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg><svg class="i i-idle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M6.4 5.8v4.4M9.6 5.8v4.4"/></svg><svg class="i i-fail" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M5.9 5.9l4.2 4.2M10.1 5.9l-4.2 4.2"/></svg></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>web-dashboard</b><span class="loop-br">main</span><span class="loop-ago">1m</span></div><div class="loop-r2" data-t-approval="Allow Claude to use Bash?" data-t-running="Running go test ./users/…">Allow Claude to use Bash?</div></div>
+                        </div>
+                        <div class="loop-row" data-id="api" data-state="question" data-sec0="attn">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>acme-api</b><span class="loop-br">main</span><span class="loop-ago">2m</span></div><div class="loop-r2" data-t-question="Which JSON shape should GET /api/health return?" data-t-running="Writing the handler and its test…">Which JSON shape should GET /api/health return?</div></div>
+                        </div>
+                        <div class="loop-row" data-id="mobile" data-state="running" data-sec0="other">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>mobile-app</b><span class="loop-br">main</span><span class="loop-ago">now</span></div><div class="loop-r2" data-t-running="Codex · iOS simulator setup…" data-t-done="Simulator setup documented in README.md">Codex · iOS simulator setup…</div></div>
+                        </div>
+                        <div class="loop-row" data-id="tests" data-state="failed" data-sec0="attn">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>acme-api</b><span class="loop-br">tests</span><span class="loop-ago">4m</span></div><div class="loop-r2" data-i="ad.row.failed">Codex · auth/ 中 3 个测试失败</div></div>
+                        </div>
+                        <div class="loop-row" data-id="docs" data-state="idle" data-sec0="other">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>docs-site</b><span class="loop-br">main</span><span class="loop-ago">6m</span></div><div class="loop-r2" data-i="ad.row.idle">Claude · 等待你的下一条指令</div></div>
+                        </div>
+                        <div class="loop-row" data-id="landing" data-state="done" data-sec0="other">
+                          <span class="loop-ic"></span>
+                          <div class="loop-rt"><div class="loop-r1"><b>landing-page</b><span class="loop-br">main</span><span class="loop-ago">12m</span></div><div class="loop-r2" data-t-done="OpenCode · Updated hero copy and links">OpenCode · Updated hero copy and links</div></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="loop-scene loop-chat">
+                      <div class="loop-nav"><span class="loop-btn">‹</span><b><span class="loop-cst"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.4"/><path d="M8 7.3v3.6M8 5.1v.1" stroke-linecap="round"/></svg></span>acme-api</b><span class="loop-btn">⋯</span></div>
+                      <div class="loop-msg">Add a GET /api/health endpoint with a unit test. Before writing any code, ask me which JSON shape it should return.</div>
+                      <div class="loop-q">
+                        <div class="loop-qh">ⓘ JSON shape</div>
+                        <div class="loop-qt">Which JSON shape should GET /api/health return?</div>
+                        <div class="loop-qs" data-i="ad.chooseOne">单选</div>
+                        <div class="loop-opt" data-opt="pick"><i></i><div><b>Minimal status</b><span>{"status":"ok"}</span></div></div>
+                        <div class="loop-opt"><i></i><div><b>Status + DB check</b><span>Also pings the database</span></div></div>
+                        <div class="loop-opt"><i></i><div><b>Status + metadata</b><span>Includes uptime and timestamp</span></div></div>
+                        <div class="loop-submit" data-i="ad.submit">提交</div>
+                      </div>
+                      <div class="loop-ans">
+                        <div class="loop-ansq">✓ JSON shape: <b>Minimal status</b></div>
+                        <div class="loop-work"><span class="loop-spin"></span><span>Writing the handler and its test…</span></div>
+                      </div>
+                      <div class="loop-meta">claude · claude-sonnet-5-5</div>
+                    </div>
+                    <div class="loop-dim"></div>
+                    <div class="loop-notif">
+                      <div class="loop-nb"><span class="loop-appic">&gt;_</span><div><div class="loop-n1"><b>QuickTUI</b><span data-i="ad.now">现在</span></div><div class="loop-n2">Claude: Approval requested · web-dashboard · Run go test ./users/...</div></div></div>
+                      <div class="loop-menu"><div class="loop-mi rej" data-i="ad.reject">拒绝</div><div class="loop-mi app" data-i="ad.approve">批准</div></div>
+                    </div>
+                    <div class="sd-tap"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ol class="loop-steps" aria-hidden="true">
+            <li data-step="0"><span>01</span><b data-i="ad.step.0">看状态</b></li>
+            <li data-step="1"><span>02</span><b data-i="ad.step.1">批准</b></li>
+            <li data-step="2"><span>03</span><b data-i="ad.step.2">回答</b></li>
+            <li data-step="3"><span>04</span><b data-i="ad.step.3">接着跑</b></li>
+          </ol>
+          <p class="sd-caption" data-i="hero.loop.caption">Agent 通知与聊天模式 · 演示动画</p>
+          <p class="sr-only" data-i="hero.loop.sr">动画演示：QuickTUI 会话列表里有两个 Agent 在等你。一条审批通知到达，在通知上直接批准；另一个 Agent 的提问在聊天模式里回答；两个 Agent 都接着工作。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── FEATURES (feature stories) ───────── -->
+    <section id="action" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="ia.eyebrow">§ 01 / 增强能力展示</div>
+          <h2 data-i-html="ia.h2">舒适、高效</h2>
+        </div>
+        <div>
+          <p data-i="ia.desc">每一项功能，都为移动设备精心打造。</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-story">
+          <div class="feat-tag"><span class="feat-label" data-i="feat.agents.label">Agent</span><span class="feat-badge" data-i="feat.agents.badge">随时随地处理审批</span></div>
+          <h3 class="feat-title" data-i="feat.agents.h">在手机上照看每一个 Agent。</h3>
+          <p class="feat-text" data-i="feat.agents.p">QuickTUI 跟踪电脑上 tmux 或 Herdr 中运行的 Claude Code、Codex 等命令行 Agent。哪个在等你、怎么回答、再开一个新的，都不用回到电脑前。</p>
+          <div class="feat-grid">
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span><h4 data-i="feat.agents.1.t">聊天模式</h4></div>
+              <p data-i="feat.agents.1.b">以聊天形式查看 Agent 的输出，支持 Markdown。直接回答它的问题，处理它的审批请求。</p>
+              <div class="feat-media"><img src="/images/usage/card-chat-zh.webp" data-lang-src-en="/images/usage/card-chat-en.webp" data-lang-src-zh="/images/usage/card-chat-zh.webp" alt="聊天模式中 Claude Code 提出的问题" data-i-alt="feat.alt.chat" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span><h4 data-i="feat.agents.2.t">Agent 通知</h4></div>
+              <p data-i="feat.agents.2.b">Agent 需要你时，手机立刻收到通知。长按通知就能批准或拒绝，不用打开 App。</p>
+              <div class="feat-media"><img src="/images/usage/card-notifications-zh.webp" data-lang-src-en="/images/usage/card-notifications-en.webp" data-lang-src-zh="/images/usage/card-notifications-zh.webp" alt="带有拒绝和批准按钮的 Agent 审批通知" data-i-alt="feat.alt.notifications" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 15 9"/><path d="m13 7 4 4"/><path d="M18 3v3M16.5 4.5h3M20 10v2M19 11h2M9 3v2M8 4h2"/></svg></span><h4 data-i="feat.agents.3.t">Agent 向导</h4></div>
+              <p data-i="feat.agents.3.b">选好模型、推理等级和工作目录，直接启动 Agent，不用手打参数。</p>
+              <div class="feat-media"><img src="/images/usage/card-agent-wizard-zh.webp" data-lang-src-en="/images/usage/card-agent-wizard-en.webp" data-lang-src-zh="/images/usage/card-agent-wizard-zh.webp" alt="Agent 向导选择要启动的 Agent" data-i-alt="feat.alt.agent-wizard" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><h4 data-i="feat.agents.4.t">Agent 状态</h4></div>
+              <p data-i="feat.agents.4.b">一眼看清每个 Agent 的状态：哪些在等你，哪些还在运行，哪些已经完成。</p>
+              <div class="feat-media"><img src="/images/usage/card-agent-status-zh.webp" data-lang-src-en="/images/usage/card-agent-status-en.webp" data-lang-src-zh="/images/usage/card-agent-status-zh.webp" alt="Agent 列表显示每个 Agent 的状态" data-i-alt="feat.alt.agent-status" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="5" rx="1"/><path d="M6.5 9v9H13M6.5 13H13"/><rect x="13" y="11" width="8" height="4" rx="1"/><rect x="13" y="16" width="8" height="4" rx="1"/></svg></span><h4 data-i="feat.agents.5.t">会话管理器</h4></div>
+              <p data-i="feat.agents.5.b">电脑上全部的 tmux 与 Herdr 工作区集中在一棵树里。跳转、新建、重命名、关闭会话，都在手机上完成。</p>
+              <div class="feat-media"><img src="/images/usage/card-switcher-zh.webp" data-lang-src-en="/images/usage/card-switcher-en.webp" data-lang-src-zh="/images/usage/card-switcher-zh.webp" alt="会话管理器展示工作区与会话" data-i-alt="feat.alt.switcher" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3z"/></svg></span><h4 data-i="feat.agents.6.t">命令面板</h4></div>
+              <p data-i="feat.agents.6.b">500 多条 Agent 与终端命令。搜索后一键发送，也可以在设置中添加自己的命令。</p>
+              <div class="feat-media"><img src="/images/usage/card-command-palette-zh.webp" data-lang-src-en="/images/usage/card-command-palette-en.webp" data-lang-src-zh="/images/usage/card-command-palette-zh.webp" alt="命令面板搜索 Agent 命令" data-i-alt="feat.alt.command-palette" width="720" height="720" loading="lazy"></div>
+            </article>
+          </div>
+        </div>
+        <div class="feat-story">
+          <div class="feat-tag"><span class="feat-label" data-i="feat.tools.label">终端与工具</span><span class="feat-badge" data-i="feat.tools.badge">为触屏打造</span></div>
+          <h3 class="feat-title" data-i="feat.tools.h">装进口袋的真终端。</h3>
+          <p class="feat-text" data-i="feat.tools.p">连接你在电脑前用的同一批会话。在任何网络下都能连上电脑，在浮动窗口里查看文件和网页，不用离开终端。</p>
+          <div class="feat-grid">
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M12 15h5"/></svg></span><h4 data-i="feat.tools.1.t">终端</h4></div>
+              <p data-i="feat.tools.1.b">自动重连、会话恢复、快速输入，为触屏上的低延迟操作调校。</p>
+              <div class="feat-media"><img src="/images/usage/card-terminal-zh.webp" data-lang-src-en="/images/usage/card-terminal-en.webp" data-lang-src-zh="/images/usage/card-terminal-zh.webp" alt="iPhone 上 QuickTUI 终端中的 Agent 输出" data-i-alt="feat.alt.terminal" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></svg></span><h4 data-i="feat.tools.2.t">QuickTUI Cloud</h4></div>
+              <p data-i="feat.tools.2.b">电脑在内网或防火墙后也能连接，无需任何网络配置。每个账号每月都有免费中转流量。</p>
+              <div class="feat-media feat-relay" role="img" data-i-label="feat.cloud.sr" aria-label="示意图：你的手机经 QuickTUI Cloud 中转连接到防火墙后的电脑，全程端到端加密。" title="示意图：你的手机经 QuickTUI Cloud 中转连接到防火墙后的电脑，全程端到端加密。">
+                <div class="relay-node"><span class="relay-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span><span data-i="feat.cloud.phone">你的手机</span></div>
+                <div class="relay-link"></div>
+                <div class="relay-node relay-hub"><span class="relay-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></svg></span><span data-i="feat.cloud.relay">QuickTUI Cloud</span></div>
+                <div class="relay-link"></div>
+                <div class="relay-node relay-fw"><span class="relay-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg></span><span data-i="feat.cloud.pc">你的电脑</span><small data-i="feat.cloud.fw">在防火墙后</small></div>
+                <div class="relay-e2e"><span class="relay-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span data-i="feat.cloud.e2e">端到端加密</span></div>
+              </div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="12" height="10" rx="1.5"/><rect x="9" y="11" width="12" height="10" rx="1.5"/></svg></span><h4 data-i="feat.tools.3.t">浮动窗口</h4></div>
+              <p data-i="feat.tools.3.b">文件预览、Markdown 和内置浏览器都在浮动窗口中打开，可以随时展开或收起。</p>
+              <div class="feat-media"><img src="/images/usage/card-floating-windows-zh.webp" data-lang-src-en="/images/usage/card-floating-windows-en.webp" data-lang-src-zh="/images/usage/card-floating-windows-zh.webp" alt="终端上方的内置浏览器浮窗与文件预览浮窗" data-i-alt="feat.alt.floating-windows" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 15V9l2.5 3L11 9v6M16 9v6m-2-2 2 2 2-2"/></svg></span><h4 data-i="feat.tools.4.t">Markdown 预览</h4></div>
+              <p data-i="feat.tools.4.b">渲染后阅读 Markdown 文件，支持代码高亮、数学公式、Mermaid 图，链接可以直接点开。</p>
+              <div class="feat-media"><img src="/images/usage/card-markdown-preview-zh.webp" data-lang-src-en="/images/usage/card-markdown-preview-en.webp" data-lang-src-zh="/images/usage/card-markdown-preview-zh.webp" alt="预览窗口中渲染后的 Markdown 文件" data-i-alt="feat.alt.markdown-preview" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg></span><h4 data-i="feat.tools.5.t">文件管理器</h4></div>
+              <p data-i="feat.tools.5.b">浏览电脑上的文件，上传、下载、压缩、解压，收藏常用目录。</p>
+              <div class="feat-media"><img src="/images/usage/card-files-zh.webp" data-lang-src-en="/images/usage/card-files-en.webp" data-lang-src-zh="/images/usage/card-files-zh.webp" alt="文件管理器列出电脑上的目录" data-i-alt="feat.alt.files" width="720" height="720" loading="lazy"></div>
+            </article>
+            <article class="feat-card">
+              <div class="feat-head"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span><h4 data-i="feat.tools.6.t">端口转发</h4></div>
+              <p data-i="feat.tools.6.b">自动发现电脑上的 Web 服务，用内置浏览器打开，Agent 改完就能看到效果。</p>
+              <div class="feat-media"><img src="/images/usage/card-port-forward-zh.webp" data-lang-src-en="/images/usage/card-port-forward-en.webp" data-lang-src-zh="/images/usage/card-port-forward-zh.webp" alt="端口转发规则与打开的内置浏览器" data-i-alt="feat.alt.port-forward" width="720" height="720" loading="lazy"></div>
+            </article>
+          </div>
+          <div class="feat-more" id="featMore">
+            <div class="feat-more-head">
+              <span class="feat-more-h" data-i="feat.more.h">还有 5 项功能</span>
+              <div class="feat-nav">
+                <button type="button" class="feat-prev" data-i-label="feat.more.prev" aria-label="上一组" title="上一组"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg></button>
+                <button type="button" class="feat-next" data-i-label="feat.more.next" aria-label="下一组" title="下一组"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button>
+              </div>
+            </div>
+            <div class="feat-rail">
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-input-bar-zh.webp" data-lang-src-en="/images/usage/card-input-bar-en.webp" data-lang-src-zh="/images/usage/card-input-bar-zh.webp" alt="键盘上方带图片附件的输入栏" data-i-alt="feat.alt.input-bar" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.1.t">输入栏</h4>
+                <p data-i="feat.more.1.b">语音输入、添加附件，确认无误后再发送到终端。</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-shortcuts-editor-zh.webp" data-lang-src-en="/images/usage/card-shortcuts-editor-en.webp" data-lang-src-zh="/images/usage/card-shortcuts-editor-zh.webp" alt="快捷栏编辑器" data-i-alt="feat.alt.shortcuts-editor" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.2.t">快捷栏</h4>
+                <p data-i="feat.more.2.b">最多堆叠三条自定义快捷栏，用于执行命令、发送组合键和打开 App 工具。</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-dpad-zh.webp" data-lang-src-en="/images/usage/card-dpad-en.webp" data-lang-src-zh="/images/usage/card-dpad-zh.webp" alt="终端上方的方向键面板" data-i-alt="feat.alt.dpad" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.3.t">方向键面板</h4>
+                <p data-i="feat.more.3.b">输入方向键和换行，或跳到屏幕底部。可以拖到任意位置并锁定。</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-smart-copy-zh.webp" data-lang-src-en="/images/usage/card-smart-copy-en.webp" data-lang-src-zh="/images/usage/card-smart-copy-zh.webp" alt="选中的终端文字与复制、智能复制按钮" data-i-alt="feat.alt.smart-copy" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.4.t">智能复制</h4>
+                <p data-i="feat.more.4.b">选中终端文字后直接复制，或先合并成一行再复制。</p>
+              </article>
+              <article class="feat-mini">
+                <div class="feat-media"><img src="/images/usage/card-clipboard-history-zh.webp" data-lang-src-en="/images/usage/card-clipboard-history-en.webp" data-lang-src-zh="/images/usage/card-clipboard-history-zh.webp" alt="剪贴板历史中的最近记录" data-i-alt="feat.alt.clipboard-history" width="720" height="720" loading="lazy"></div>
+                <h4 data-i="feat.more.5.t">剪贴板历史</h4>
+                <p data-i="feat.more.5.b">搜索复制过的内容，一点就放进输入栏。</p>
+              </article>
+            </div>
+            <div class="feat-progress" aria-hidden="true"><span></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <!-- ───────── GET STARTED (setup) ───────── -->
+    <section id="quick-start" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" data-i="gs.eyebrow">§ 02 / 快速上手</div>
+          <h2 data-i-html="gs.h2">几分钟<em>就能用上</em></h2>
+        </div>
+        <div>
+          <p data-i="gs.desc">在 App 里填一次电脑的 SSH 登录信息，App 会自动安装 QuickTUI Server 并完成配对。</p>
+        </div>
+      </div>
+      <div class="gs-body">
+        <div>
           <ol class="hero-steps">
             <li>
               <div class="hs-device" data-i="hero.steps.device.phone">在手机上</div>
@@ -1415,11 +2020,6 @@ html[lang="zh-Hans"] h3 .serif {
               <p class="hs-body" data-i="hero.steps.3.body">电脑上 tmux 或 Herdr 里运行的 Agent 会话，在手机上实时操作。</p>
             </li>
           </ol>
-          <div class="ctas">
-            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="hero" data-i-html="in.cta">iOS 应用 <span class="arr">→</span></a>
-            <a class="btn btn-primary btn-xl" href="/cn/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android 应用 <span class="arr">→</span></a>
-            <a class="btn btn-xl" href="#action" data-i-html="cta.getQt">增强能力展示 <span class="arr">→</span></a>
-          </div>
           <p class="hero-note"><span data-i-html="hero.note">Mac/Linux 电脑可以通过 SSH 登录自动安装服务端；无法使用 SSH 登录时，需要<a href="#manual-install">手动安装</a>。</span></p>
           <p class="hero-note hero-win"><span data-i-html="hero.win">Windows 电脑请从 Microsoft Store 安装服务端：<a class="btn btn-primary" href="https://apps.microsoft.com/detail/9P1SRCZ4CJ8Z" target="_blank" rel="noopener">Windows 服务端 <span class="arr">→</span></a></span></p>
         </div>
@@ -1509,106 +2109,11 @@ html[lang="zh-Hans"] h3 .serif {
       </div>
     </section>
 
-    <!-- ───────── IN ACTION (product demo) ───────── -->
-    <section id="action" class="section">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow" data-i="ia.eyebrow">§ 01 / 增强能力展示</div>
-          <h2 data-i-html="ia.h2">舒适、高效</h2>
-        </div>
-        <div>
-          <p data-i="ia.desc">每一项功能，都为移动设备精心打造。</p>
-        </div>
-      </div>
-
-      <div class="demo" id="productDemo">
-        <div class="demo-tabs" role="tablist">
-          <button type="button" class="demo-tab on" data-demo="terminal" role="tab" aria-selected="true" data-i="usage.terminal.t">终端</button>
-          <button type="button" class="demo-tab" data-demo="wizard" role="tab" aria-selected="false" data-i="usage.wizard.t">Agent 向导</button>
-          <button type="button" class="demo-tab" data-demo="switcher" role="tab" aria-selected="false" data-i="usage.switcher.t">会话管理器</button>
-          <button type="button" class="demo-tab" data-demo="files" role="tab" aria-selected="false" data-i="usage.files.t">文件管理器</button>
-          <button type="button" class="demo-tab" data-demo="ports" role="tab" aria-selected="false" data-i="usage.ports.t">端口转发</button>
-          <button type="button" class="demo-tab" data-demo="palette" role="tab" aria-selected="false" data-i="usage.palette.t">命令面板</button>
-          <button type="button" class="demo-tab" data-demo="inputbar" role="tab" aria-selected="false" data-i="usage.inputbar.t">输入栏</button>
-          <button type="button" class="demo-tab" data-demo="shortcuts" role="tab" aria-selected="false" data-i="usage.shortcuts.t">快捷栏</button>
-        </div>
-        <div class="demo-stage">
-          <div class="demo-panel on" data-demo="terminal">
-            <div class="demo-copy">
-              <div class="idx">D.01</div>
-              <h3 data-i="usage.terminal.t">终端</h3>
-              <p data-i="usage.terminal.b">从自动断线重连、会话恢复、自适应布局，到快速输入与复制粘贴，所有细节都针对移动设备做了充分优化，提供最舒适的使用体验。</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/terminal-zh.webp" data-lang-src-en="/images/usage/terminal-en.webp" data-lang-src-zh="/images/usage/terminal-zh.webp" alt="iPhone 上 QuickTUI 终端里运行的 Claude Code" data-i-alt="usage.alt.terminal" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="wizard">
-            <div class="demo-copy">
-              <div class="idx">D.02</div>
-              <h3 data-i="usage.wizard.t">Agent 向导</h3>
-              <p data-i="usage.wizard.b">快速启动各种 Agent，无需再手动输入命令来选择模型和推理等级。在设置界面里添加自定义参数组合，随时复用。</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/agent-wizard-zh.webp" data-lang-src-en="/images/usage/agent-wizard-en.webp" data-lang-src-zh="/images/usage/agent-wizard-zh.webp" alt="Agent 向导选择要启动的 Agent" data-i-alt="usage.alt.agent-wizard" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="switcher">
-            <div class="demo-copy">
-              <div class="idx">D.03</div>
-              <h3 data-i="usage.switcher.t">会话管理器</h3>
-              <p data-i="usage.switcher.b">展示电脑上所有的 tmux 与 Herdr 工作区和会话，让你可以快速跳转。新建、重命名、关闭等常用功能也样样具备。</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/switcher-zh.webp" data-lang-src-en="/images/usage/switcher-en.webp" data-lang-src-zh="/images/usage/switcher-zh.webp" alt="会话管理器展示工作区与会话" data-i-alt="usage.alt.switcher" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="files">
-            <div class="demo-copy">
-              <div class="idx">D.04</div>
-              <h3 data-i="usage.files.t">文件管理器</h3>
-              <p data-i="usage.files.b">浏览电脑上的文件，预览图片、Markdown 和代码。下载电脑文件或者上传文件到电脑，都可以在文件管理器中完成。还支持压缩与解压，以及快速切换目录的收藏夹。</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/files-zh.webp" data-lang-src-en="/images/usage/files-en.webp" data-lang-src-zh="/images/usage/files-zh.webp" alt="文件管理器列出电脑上的目录" data-i-alt="usage.alt.files" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="ports">
-            <div class="demo-copy">
-              <div class="idx">D.05</div>
-              <h3 data-i="usage.ports.t">端口转发</h3>
-              <p data-i="usage.ports.b">自动扫描电脑上打开的 Web 服务等端口，用内置浏览器预览页面。Agent 的改动立即就可以看到效果。再也不用依赖缓慢的远程桌面工具。</p>
-            </div>
-            <div class="demo-shot pair"><img src="/images/usage/port-forward-zh.webp" data-lang-src-en="/images/usage/port-forward-en.webp" data-lang-src-zh="/images/usage/port-forward-zh.webp" alt="端口转发列表显示检测到的服务器端口" data-i-alt="usage.alt.port-forward" width="660" height="1434" loading="lazy"><img src="/images/usage/mini-browser-zh.webp" data-lang-src-en="/images/usage/mini-browser-en.webp" data-lang-src-zh="/images/usage/mini-browser-zh.webp" alt="内置浏览器打开转发的开发服务器" data-i-alt="usage.alt.mini-browser" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="palette">
-            <div class="demo-copy">
-              <div class="idx">D.06</div>
-              <h3 data-i="usage.palette.t">命令面板</h3>
-              <p data-i="usage.palette.b">支持绝大多数 Agent 和各种常用终端操作的命令入口，无需查阅命令行参数，直接快速输入到 Agent 或终端。目前已添加超过 500 个命令。命令清单自动更新，还能在设置界面中自定义。</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/command-palette-zh.webp" data-lang-src-en="/images/usage/command-palette-en.webp" data-lang-src-zh="/images/usage/command-palette-zh.webp" alt="命令面板搜索 Agent 命令" data-i-alt="usage.alt.command-palette" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="inputbar">
-            <div class="demo-copy">
-              <div class="idx">D.07</div>
-              <h3 data-i="usage.inputbar.t">输入栏</h3>
-              <p data-i="usage.inputbar.b">支持语音输入、附件上传，编辑好内容一次性发送给终端。高效、易用。</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/input-bar-zh.webp" data-lang-src-en="/images/usage/input-bar-en.webp" data-lang-src-zh="/images/usage/input-bar-zh.webp" alt="键盘上方带图片附件的输入栏" data-i-alt="usage.alt.input-bar" width="660" height="1434" loading="lazy"></div>
-          </div>
-          <div class="demo-panel" data-demo="shortcuts">
-            <div class="demo-copy">
-              <div class="idx">D.08</div>
-              <h3 data-i="usage.shortcuts.t">快捷栏</h3>
-              <p data-i="usage.shortcuts.b">最多可以堆叠三个完全自定义的快捷栏，用于执行命令、发送组合键、打开功能 UI 等高频操作。</p>
-            </div>
-            <div class="demo-shot"><img src="/images/usage/shortcuts-editor-zh.webp" data-lang-src-en="/images/usage/shortcuts-editor-en.webp" data-lang-src-zh="/images/usage/shortcuts-editor-zh.webp" alt="快捷栏编辑器" data-i-alt="usage.alt.shortcuts-editor" width="660" height="1434" loading="lazy"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-
-
     <!-- ───────── FAQ ───────── -->
     <section id="faq" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="faq.eyebrow">§ 02 / 常见问题</div>
+          <div class="eyebrow" data-i="faq.eyebrow">§ 03 / 常见问题</div>
           <h2 data-i-html="faq.h2">常见问题。</h2>
         </div>
         <div>
@@ -1679,7 +2184,7 @@ quicktui-server pairing welcome</pre><p>按引导选择显示二维码的方式�
           <div class="n">Q.06</div>
           <div>
             <div class="q" data-i="q16.q">可以通过公网连接吗？</div>
-            <div class="a" data-i-html="q16.a"><p>可以。任选一种方式，让手机能访问到你的电脑：</p><dl class="ref-list"><dt>QuickTUI Relay</dt><dd>可选订阅，在 App 里开通即可，无需任何网络配置。</dd><dt>VPN</dt><dd>例如 <b>Tailscale</b>，手机和电脑处在同一个虚拟网络里即可直连。</dd><dt>隧道或反向代理</dt><dd>例如 <b>Cloudflare Tunnel</b> 或带 TLS 的反向代理，指向 <span class="mono">http://127.0.0.1:8022</span>，然后在 App 里填写公网 HTTPS 域名（不带 <span class="mono">:8022</span>）。</dd></dl><p>配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。</p><p>通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
+            <div class="a" data-i-html="q16.a"><p>可以。任选一种方式，让手机能访问到你的电脑：</p><dl class="ref-list"><dt>QuickTUI Cloud 中转</dt><dd>无需任何网络配置。每个账号每月有免费中转流量，经常使用可订阅 QuickTUI Cloud。</dd><dt>VPN</dt><dd>例如 <b>Tailscale</b>，手机和电脑处在同一个虚拟网络里即可直连。</dd><dt>隧道或反向代理</dt><dd>例如 <b>Cloudflare Tunnel</b> 或带 TLS 的反向代理，指向 <span class="mono">http://127.0.0.1:8022</span>，然后在 App 里填写公网 HTTPS 域名（不带 <span class="mono">:8022</span>）。</dd></dl><p>配对码、设备登录和你的所有操作都在端到端加密隧道里传输，即使直接开放 8022 端口，别人也无法窃听内容或冒充你的电脑。不过直接开放时，外界能看到这里运行着 QuickTUI 及其版本号等少量信息，大量恶意连接也可能让你自己的设备暂时连不上，所以更推荐上面几种方式。</p><p>通过隧道或反向代理配对时，先把 QuickTUI 服务端更新到最新版，再生成带公网地址的配对二维码：</p><pre class="cmd"><span class="com"># macOS / Linux</span>
 ~/.local/bin/quicktui-server pairing qrcode --public-url https://your.domain
 
 <span class="com"># Windows（PowerShell）</span>
@@ -1691,7 +2196,7 @@ quicktui-server pairing qrcode --public-url https://your.domain</pre><p>隧道�
           <div class="n">Q.07</div>
           <div>
             <div class="q" data-i="q15.q">QuickTUI 如何认证设备？</div>
-            <div class="a" data-i-html="q15.a"><p>QuickTUI 通过设备配对来认证，全程端到端加密：</p><dl class="ref-list"><dt>配对时</dt><dd>配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。</dd><dt>设备密钥</dt><dd>每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。</dd><dt>每次连接</dt><dd>App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。</dd><dt>经 Relay 转发时</dt><dd>QuickTUI Relay 只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，Relay 在投递时会短暂看到通知文字。</dd><dt>撤销设备</dt><dd>手机丢失或不再使用时，在电脑上撤销它：<pre class="cmd"><span class="com"># 列出已配对设备</span>
+            <div class="a" data-i-html="q15.a"><p>QuickTUI 通过设备配对来认证，全程端到端加密：</p><dl class="ref-list"><dt>配对时</dt><dd>配对二维码里包含一次性配对码和电脑的身份指纹。配对码 15 分钟内有效、只能用一次，而且只在加密通道里传输。App 会记住电脑的身份，之后只连接身份一致的电脑，别人无法冒充。</dd><dt>设备密钥</dt><dd>每台手机在配对时生成自己的密钥，私钥保存在系统安全存储里（iPhone 的安全隔区或钥匙串，Android 的 Keystore），不会离开手机。</dd><dt>每次连接</dt><dd>App 先核对电脑身份，再用设备私钥证明自己是已配对的设备，双方为这次连接协商出全新的加密密钥。终端、文件、端口转发等所有数据都经过加密，并有防重放保护。</dd><dt>经 QuickTUI Cloud 中转时</dt><dd>中转服务只转发加密后的数据，看不到内容，也无法冒充任何一方。唯一的例外是推送通知：开启后，中转服务在投递时会短暂看到通知文字。</dd><dt>撤销设备</dt><dd>手机丢失或不再使用时，在电脑上撤销它：<pre class="cmd"><span class="com"># 列出已配对设备</span>
 ~/.local/bin/quicktui-server pairing devices list
 
 <span class="com"># 撤销指定设备</span>
@@ -1752,7 +2257,7 @@ systemctl --user restart quicktui</pre>
     <section id="resources" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow" data-i="res.eyebrow">§ 03 / 资源</div>
+          <div class="eyebrow" data-i="res.eyebrow">§ 04 / 资源</div>
           <h2 data-i="res.h2">进一步阅读</h2>
         </div>
         <div>
@@ -1787,7 +2292,7 @@ systemctl --user restart quicktui</pre>
           <h2 data-i-html="ctaClose.h2">手动安装，<br><em>一行命令搞定</em></h2>
           <p class="lead" data-i="ctaClose.p">不支持 SSH 登录的 Mac/Linux 电脑，只需在电脑上运行一行命令安装 QuickTUI 服务端；Windows 电脑从 Microsoft Store 安装。之后用 App 扫码完成配对。能用 SSH 登录的电脑，App 的设置向导会自动完成这一切。</p>
           <div class="app-cta">
-            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8" data-track-placement="cta_close" data-i-html="in.cta">iOS 应用 <span class="arr">→</span></a>
+            <a class="btn btn-primary btn-xl" href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-home-install&amp;mt=8" data-track-placement="cta_close" data-i-html="in.cta">iOS 应用 <span class="arr">→</span></a>
             <a class="btn btn-primary btn-xl" href="/cn/android/" data-lang-href-en="/android/" data-lang-href-zh="/cn/android/" data-i-html="in.ctaAndroid">Android 应用 <span class="arr">→</span></a>
           </div>
         </div>
@@ -1823,7 +2328,7 @@ systemctl --user restart quicktui</pre>
 ~/.local/bin/quicktui-server pairing welcome
 
 <span class="com"># Windows（PowerShell）</span>
-quicktui-server pairing welcome</pre><p><b>扫码</b>：在 App 里：</p><ol class="steps"><li>在服务器列表点 <b>+</b>。</li><li>选择 <b>其他连接方式</b>。</li><li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li><li>将摄像头对准二维码，完成配对。</li></ol></div>
+quicktui-server pairing welcome</pre><p><b>扫码</b>：在 App 里：</p><ol class="steps"><li>在服务器列表点 <b>+</b>。</li><li>选择 <b>其他连接方式</b>。</li><li>选择 <b>扫描二维码连接已启用增强功能的电脑</b>，点 <b>下一步</b>。</li><li>将摄像头对准二维码，完成配对。</li></ol><p>不方便扫码？第 3 步改选 <b>粘贴配对文本</b>，粘贴 <span class="mono">quicktui-server pairing qrcode --text</span> 输出的那一行。</p></div>
         </div>
       </div>
     </section>
@@ -1837,9 +2342,12 @@ quicktui-server pairing welcome</pre><p><b>扫码</b>：在 App 里：</p><ol cl
           <span>quicktui.ai</span>
           <span class="dot">·</span>
           <span>© 2026 · 版权所有。</span>
+          <span class="dot">·</span>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">蜀ICP备2023013634号-3</a>
         </div>
         <div class="links">
           <a href="/cn/install/">安装</a>
+          <a href="/cn/guide/">用户指南</a>
           <a href="/cn/faq/">常见问题</a>
           <a href="/cn/tmux-ios-app/">iOS 上的 tmux</a>
           <a href="/cn/herdr-ios-app/">iOS 上的 Herdr</a>
@@ -1847,7 +2355,7 @@ quicktui-server pairing welcome</pre><p><b>扫码</b>：在 App 里：</p><ol cl
           <a href="/cn/android/">Android（Preview）</a>
           <a href="/privacy">隐私</a>
           <a href="/cn/support">支持</a>
-          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=organic-search&amp;mt=8">App Store</a>
+          <a href="https://apps.apple.com/cn/app/id6761338192?pt=468883&amp;ct=web-nav&amp;mt=8">App Store</a>
           <a href="https://x.com/dualface">X</a>
           <a href="https://github.com/dualface/quicktui">GitHub</a>
         </div>
@@ -1881,6 +2389,8 @@ document.querySelectorAll('.install-box').forEach(box => {
     box.querySelectorAll('.note-variant').forEach(v => v.classList.toggle('on', v.getAttribute('data-region') === region));
   };
   tabs.forEach(t => t.addEventListener('click', () => setRegion(t.getAttribute('data-region'))));
+  // data-cn-host is set by the language script in <head>.
+  if (document.documentElement.hasAttribute('data-cn-host')) setRegion('cn');
 
   box.querySelectorAll('.hi-row').forEach(row => {
     const copyBtn = row.querySelector('.copy');
@@ -1934,19 +2444,27 @@ document.querySelectorAll('.faq-item').forEach(it => {
   });
 });
 
-// Product demo tabs (In Action)
-document.querySelectorAll('#productDemo').forEach(box => {
-  const tabs = box.querySelectorAll('.demo-tab');
-  const panels = box.querySelectorAll('.demo-panel');
-  const setDemo = id => {
-    tabs.forEach(t => {
-      const on = t.getAttribute('data-demo') === id;
-      t.classList.toggle('on', on);
-      t.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-    panels.forEach(p => p.classList.toggle('on', p.getAttribute('data-demo') === id));
+// Features "And 5 more" rail: arrows page by the visible width; the bar shows the
+// visible share and its position. Touch and trackpad scrolling work natively.
+document.querySelectorAll('#featMore').forEach(box => {
+  const rail = box.querySelector('.feat-rail');
+  const prev = box.querySelector('.feat-prev');
+  const next = box.querySelector('.feat-next');
+  const bar = box.querySelector('.feat-progress span');
+  const update = () => {
+    const max = rail.scrollWidth - rail.clientWidth;
+    const share = rail.scrollWidth ? rail.clientWidth / rail.scrollWidth : 1;
+    bar.style.width = (share * 100) + '%';
+    bar.style.transform = 'translateX(' + (max > 0 ? (rail.scrollLeft / max) * (1 / share - 1) * 100 : 0) + '%)';
+    prev.disabled = rail.scrollLeft <= 1;
+    next.disabled = rail.scrollLeft >= max - 1;
   };
-  tabs.forEach(t => t.addEventListener('click', () => setDemo(t.getAttribute('data-demo'))));
+  // No explicit behavior: the rail's CSS scroll-behavior already honours reduced motion.
+  prev.addEventListener('click', () => rail.scrollBy({ left: -rail.clientWidth }));
+  next.addEventListener('click', () => rail.scrollBy({ left: rail.clientWidth }));
+  rail.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
 });
 
 // Hero setup demo — replays the app's automatic setup on a loop, following the
@@ -1959,7 +2477,7 @@ document.querySelectorAll('#productDemo').forEach(box => {
   const TYPE_MS = 70;
   const PAUSE_MS = 700;
   const CROSSFADE_MS = 500;
-  const CONFETTI = ['#BD93F9', '#FF79C6', '#8BE9FD', '#50FA7B', '#F1FA8C', '#FFB86C'];
+  const CONFETTI = ['#81af58', '#a6cf7e', '#409cdc', '#ceba49', '#ece1c0', '#dc4f62'];
   const device = root.querySelector('.sd-device');
   const stage = root.querySelector('.sd-stage');
   const scenes = {
@@ -2152,6 +2670,210 @@ document.querySelectorAll('#productDemo').forEach(box => {
   }
 })();
 
+// Hero agent demo — the agent control loop: see which agents need you, approve one
+// from the notification banner, answer another's question in chat mode, and both go
+// back to work. Decorative (aria-hidden); still frame under reduced motion; paused
+// off-screen. Shares the phone frame geometry with the setup demo.
+(function agentDemo() {
+  const root = document.getElementById('agentDemo');
+  if (!root) return;
+  const DESIGN_W = 390;
+  const stage = root.querySelector('.sd-stage');
+  const list = root.querySelector('.loop-list');
+  const chat = root.querySelector('.loop-chat');
+  const secs = { attn: root.querySelector('[data-sec="attn"]'), other: root.querySelector('[data-sec="other"]') };
+  const rows = {};
+  root.querySelectorAll('.loop-row').forEach(r => { rows[r.getAttribute('data-id')] = r; });
+  const icons = rows.web.querySelector('.loop-ic').innerHTML;
+  Object.keys(rows).forEach(k => { rows[k].querySelector('.loop-ic').innerHTML = icons; });
+  const order = Object.keys(rows);
+  const notif = root.querySelector('.loop-notif');
+  const dim = root.querySelector('.loop-dim');
+  const approveItem = root.querySelector('.loop-mi.app');
+  const pick = root.querySelector('.loop-opt[data-opt="pick"]');
+  const submit = root.querySelector('.loop-submit');
+  const chatStatus = root.querySelector('.loop-cst');
+  const tap = root.querySelector('.sd-tap');
+  const steps = root.parentElement.querySelectorAll('.loop-steps li');
+  const reduced = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  const geo = { x: 0, y: 0, k: 1 };
+  let generation = 0;
+  let timers = [];
+  let visible = false;
+
+  function layout() {
+    // Size the phone for the uncropped 320:620 box; the root itself is shorter.
+    const h = root.clientWidth * 620 / 320;
+    if (!h) return;
+    const dh = h - 28;
+    const dw = Math.round(dh * 0.49);
+    const bezel = Math.round(dw * 0.035);
+    root.style.setProperty('--sd-dh', dh + 'px');
+    root.style.setProperty('--sd-dw', dw + 'px');
+    root.style.setProperty('--sd-bezel', bezel + 'px');
+    const k = (dw - 2 * bezel) / DESIGN_W;
+    stage.style.height = ((dh - 2 * bezel) / k) + 'px';
+    stage.style.transform = 'scale(' + k + ')';
+    geo.k = k;
+  }
+
+  // Position of `el` inside the (unscaled) stage.
+  function pos(el) {
+    const s = stage.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return { x: (r.left - s.left + r.width / 2) / geo.k, y: (r.top - s.top + r.height / 2) / geo.k };
+  }
+
+  function at(ms, fn) {
+    const token = generation;
+    timers.push(setTimeout(() => { if (token === generation) fn(); }, ms));
+  }
+
+  function press(el, hold) {
+    const p = pos(el);
+    tap.style.left = p.x + 'px';
+    tap.style.top = p.y + 'px';
+    tap.classList.remove('go');
+    void tap.offsetWidth;
+    tap.classList.add('go');
+    if (!hold) {
+      at(180, () => el.classList.add('pressed'));
+      at(480, () => el.classList.remove('pressed'));
+    }
+  }
+
+  function step(n) {
+    steps.forEach(li => li.classList.toggle('on', Number(li.getAttribute('data-step')) === n));
+  }
+
+  function setState(id, state) {
+    const r = rows[id];
+    r.setAttribute('data-state', state);
+    const t = r.querySelector('.loop-r2');
+    const text = t.getAttribute('data-t-' + state);
+    if (text) t.textContent = text;
+  }
+
+  function place(id, sec, first) {
+    const box = secs[sec].querySelector('.loop-rows');
+    if (first) box.insertBefore(rows[id], box.firstChild); else box.appendChild(rows[id]);
+  }
+
+  function flash(id) {
+    const r = rows[id];
+    r.classList.add('flash');
+    void r.offsetWidth;
+    at(60, () => r.classList.remove('flash'));
+  }
+
+  function scene(name) {
+    list.classList.toggle('on', name === 'list');
+    chat.classList.toggle('on', name === 'chat');
+  }
+
+  function reset() {
+    order.forEach(id => {
+      const r = rows[id];
+      r.classList.remove('flash', 'hl');
+      setState(id, ({ web: 'approval', api: 'question', tests: 'failed', mobile: 'running', docs: 'idle' })[id] || 'done');
+      place(id, r.getAttribute('data-sec0'));
+    });
+    notif.classList.remove('on', 'hold');
+    dim.classList.remove('on');
+    chat.classList.remove('answered');
+    pick.classList.remove('sel');
+    submit.classList.remove('ready', 'pressed');
+    chatStatus.classList.remove('run');
+    tap.classList.remove('go');
+    scene('list');
+    step(0);
+  }
+
+  function stop() {
+    generation++;
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function run() {
+    stop();
+    reset();
+    if (reduced && reduced.matches) {
+      // Still frame: who needs you, and the approval actions on the banner.
+      notif.classList.add('on', 'hold');
+      dim.classList.add('on');
+      step(1);
+      return;
+    }
+    let t = 400;
+    at(t, () => { rows.web.classList.add('hl'); rows.api.classList.add('hl'); });
+    t += 1400;
+    at(t, () => { rows.web.classList.remove('hl'); rows.api.classList.remove('hl'); });
+    // Approve from the notification.
+    at(t, () => { step(1); notif.classList.add('on'); });
+    t += 900;
+    at(t, () => press(notif.querySelector('.loop-nb'), true));
+    at(t + 250, () => { notif.classList.add('hold'); dim.classList.add('on'); });
+    t += 1100;
+    at(t, () => press(approveItem));
+    t += 450;
+    at(t, () => { notif.classList.remove('hold', 'on'); dim.classList.remove('on'); });
+    t += 350;
+    at(t, () => { setState('web', 'running'); place('web', 'other', true); flash('web'); });
+    // Answer a question in chat mode.
+    t += 1000;
+    at(t, () => { step(2); press(rows.api); });
+    t += 450;
+    at(t, () => scene('chat'));
+    t += 900;
+    at(t, () => press(pick));
+    at(t + 200, () => { pick.classList.add('sel'); submit.classList.add('ready'); });
+    t += 700;
+    at(t, () => press(submit));
+    t += 450;
+    at(t, () => { chat.classList.add('answered'); chatStatus.classList.add('run'); });
+    // Back to the list: everyone is working again.
+    t += 1300;
+    at(t, () => {
+      step(3);
+      setState('api', 'running');
+      place('api', 'other', true);
+      scene('list');
+    });
+    at(t + 500, () => flash('api'));
+    t += 1400;
+    at(t, () => { setState('mobile', 'done'); flash('mobile'); });
+    t += 1500;
+    at(t, () => list.classList.remove('on'));
+    at(t + 450, run);
+  }
+
+  function sync() {
+    const active = visible && !document.hidden;
+    if (active && !timers.length) run();
+    if (!active && timers.length) { stop(); reset(); }
+  }
+
+  layout();
+  reset();
+  if (window.ResizeObserver) new ResizeObserver(layout).observe(root);
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(entries => {
+      visible = entries[entries.length - 1].isIntersecting;
+      sync();
+    }, { threshold: 0.25 }).observe(root);
+  } else {
+    visible = true;
+    sync();
+  }
+  document.addEventListener('visibilitychange', sync);
+  if (reduced) {
+    const onMotionChange = () => { stop(); if (visible && !document.hidden) run(); };
+    if (reduced.addEventListener) reduced.addEventListener('change', onMotionChange);
+    else if (reduced.addListener) reduced.addListener(onMotionChange);
+  }
+})();
+
 // FAQ deeplinks — clients link to #q-tcc-macos etc. Full FAQ moved to /faq/;
 // if the anchor is not on this page, send users there with the same hash.
 function openFaqByHash() {
@@ -2159,7 +2881,8 @@ function openFaqByHash() {
   if (!hash) return;
   const target = document.getElementById(hash);
   if (!target) {
-    if (/^q-/.test(hash)) {
+    // Unknown q-* anchors fall back to the FAQ page; quicktui.cn pages never redirect.
+    if (/^q-/.test(hash) && !document.documentElement.hasAttribute('data-cn-host')) {
       const base = location.pathname.indexOf('/cn/') === 0 ? '/cn/faq/' : '/faq/';
       location.replace(base + '#' + hash);
     }

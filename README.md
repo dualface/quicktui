@@ -15,3 +15,13 @@ The mirror is not a deployment source. Changes here do not flow back to the prod
 ## Releases and monitoring
 
 Download published binaries from [GitHub Releases](https://github.com/dualface/quicktui/releases). The `monitoring/` directory contains local installation checks for the `server2` and `preview` channels. This repository has no GitHub Actions workflows. See [the monitoring guide](monitoring/README.md).
+
+---
+
+## More Projects by the Author
+
+Explore other projects by [dualface](https://dualface.dev/):
+
+- [Kander](https://github.com/dualface/kander): rule-driven multi-agent kanban orchestration, with independent review and delivery gates.
+- [Ullage](https://github.com/dualface/ullage-cli): a local daemon and CLI that shows subscription usage for Claude, ChatGPT, Grok, Cursor, and more.
+- [ste-zh](https://github.com/dualface/ste-zh): an agent skill that makes agents report results in Chinese by ASD-STE100 principles: conclusion first, fixed status words, explicit verification state.

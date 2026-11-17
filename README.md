@@ -25,3 +25,4 @@ Explore other projects by [dualface](https://dualface.dev/):
 - [Kander](https://github.com/dualface/kander): rule-driven multi-agent kanban orchestration, with independent review and delivery gates.
 - [Ullage](https://github.com/dualface/ullage-cli): a local daemon and CLI that shows subscription usage for Claude, ChatGPT, Grok, Cursor, and more.
 - [ste-zh](https://github.com/dualface/ste-zh): an agent skill that makes agents report results in Chinese by ASD-STE100 principles: conclusion first, fixed status words, explicit verification state.
+- [ask-user-question](https://github.com/dualface/ask-user-question): an agent skill that makes agents ask you to decide through their structured question tool, with a numbered text format as the fallback.
